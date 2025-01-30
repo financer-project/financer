@@ -1,14 +1,18 @@
 "use client"
-import {AuthenticationError, PromiseReturnType} from "blitz"
+import { AuthenticationError, PromiseReturnType } from "blitz"
 import Link from "next/link"
-import {LabeledTextField} from "src/app/components/LabeledTextField"
-import {Form, FORM_ERROR} from "src/app/components/Form"
+import { TextField } from "@/src/lib/components/common/form/TextField"
+import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import login from "../mutations/login"
-import {Login} from "../validations"
-import {useMutation} from "@blitzjs/rpc"
-import {useSearchParams} from "next/navigation"
-import {useRouter} from "next/navigation"
-import type {Route} from "next"
+import { Login } from "../validations"
+import { useMutation } from "@blitzjs/rpc"
+import { useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
+import type { Route } from "next"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -19,44 +23,52 @@ export const LoginForm = (props: LoginFormProps) => {
   const router = useRouter()
   const next = useSearchParams()?.get("next")
   return (
-    <>
-      <h1>Login</h1>
+    <Card className={"w-full"}>
+      <CardHeader>
+        <CardTitle>Login</CardTitle>
+        <CardDescription>Login in to access Financer</CardDescription>
+      </CardHeader>
 
-      <Form
-        submitText="Login"
-        schema={Login}
-        initialValues={{email: "", password: ""}}
-        onSubmit={async (values) => {
-          try {
-            await loginMutation(values)
-            router.refresh()
-            if (next) {
-              router.push(next as Route)
-            } else {
-              router.push("/")
-            }
-          } catch (error: any) {
-            if (error instanceof AuthenticationError) {
-              return {[FORM_ERROR]: "Sorry, those credentials are invalid"}
-            } else {
-              return {
-                [FORM_ERROR]:
-                  "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
+      <CardContent className={cn("flex flex-col gap-4")}>
+        <Form
+          submitText="Login"
+          schema={Login}
+          initialValues={{ email: "", password: "" }}
+          onSubmit={async (values) => {
+            try {
+              await loginMutation(values)
+              router.refresh()
+              if (next) {
+                router.push(next as Route)
+              } else {
+                router.push("/")
+              }
+            } catch (error: any) {
+              if (error instanceof AuthenticationError) {
+                return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
+              } else {
+                return {
+                  [FORM_ERROR]:
+                    "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
+                }
               }
             }
-          }
-        }}
-      >
-        <LabeledTextField name="email" label="Email" placeholder="Email" />
-        <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
-        <div>
-          <Link href={"/forgot-password"}>Forgot your password?</Link>
-        </div>
-      </Form>
+          }}
+        >
+          <TextField name="email" label={"E-Mail Address"} placeholder="Email" />
+          <TextField name="password" label={"Password"} placeholder="Password" type="password" />
 
-      <div style={{marginTop: "1rem"}}>
-        Or <Link href="/signup">Sign Up</Link>
-      </div>
-    </>
+          <small>
+            <span className={"text-muted-foreground"}>Forgot your password? </span>
+            <Link href={"/forgot-password"}>Reset Password</Link>
+          </small>
+        </Form>
+
+        <small>
+          <span className={"text-muted-foreground"}>You don't have an account? </span>
+          <Link href="/signup">Sign Up</Link>
+        </small>
+      </CardContent>
+    </Card>
   )
 }

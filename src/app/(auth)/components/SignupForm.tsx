@@ -1,10 +1,15 @@
 "use client"
-import {LabeledTextField} from "src/app/components/LabeledTextField"
-import {Form, FORM_ERROR} from "src/app/components/Form"
+import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import signup from "../mutations/signup"
-import {Signup} from "../validations"
-import {useMutation} from "@blitzjs/rpc"
-import {useRouter} from "next/navigation"
+import { Signup } from "../validations"
+import { useMutation } from "@blitzjs/rpc"
+import { useRouter } from "next/navigation"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
+import { ErrorMessage } from "formik"
+import TextField from "@/src/lib/components/common/form/TextField"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -15,31 +20,60 @@ export const SignupForm = (props: SignupFormProps) => {
   const router = useRouter()
 
   return (
-    <div>
-      <h1>Create an Account</h1>
+    <Card className={"w-full"}>
+      <CardHeader>
+        <CardTitle>Create an Account</CardTitle>
+        <CardDescription>You can register here.</CardDescription>
+      </CardHeader>
 
-      <Form
-        submitText="Create Account"
-        schema={Signup}
-        initialValues={{email: "", password: ""}}
-        onSubmit={async (values) => {
-          try {
-            await signupMutation(values)
-            router.refresh()
-            router.push("/")
-          } catch (error: any) {
-            if (error.code === "P2002" && error.meta?.target?.includes("email")) {
-              // This error comes from Prisma
-              return {email: "This email is already being used"}
-            } else {
-              return {[FORM_ERROR]: error.toString()}
+      <CardContent>
+        <Form
+          submitText="Create Account"
+          schema={Signup}
+          initialValues={{ email: "", password: "", firstName: "", lastName: "" }}
+          onSubmit={async (values) => {
+            try {
+              await signupMutation(values)
+              router.refresh()
+              router.push("/")
+            } catch (error: any) {
+              if (error.code === "P2002" && error.meta?.target?.includes("email")) {
+                // This error comes from Prisma
+                return { email: "This email is already being used" }
+              } else {
+                return { [FORM_ERROR]: error.toString() }
+              }
             }
-          }
-        }}
-      >
-        <LabeledTextField name="email" label="Email" placeholder="Email" />
-        <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
-      </Form>
-    </div>
+          }}
+        >
+          <div className={"flex flex-row gap-4"}>
+            <div className={cn("flex-flex-col gap-2")}>
+              <TextField
+                type={"text"}
+                label={"First Name"}
+                name="firstName"
+                placeholder="First Name"
+              />
+            </div>
+            <div className={cn("flex-flex-col gap-2")}>
+              <TextField
+                type={"text"}
+                label={"Last Name"}
+                name="lastName"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+
+          <div className={cn("flex-flex-col gap-2")}>
+            <TextField type={"email"} label={"E-Mail Address"} name="email" placeholder="Email" />
+          </div>
+
+          <div className={cn("flex-flex-col gap-2")}>
+            <TextField name="password" label={"Password"} placeholder="Password" type="password" />
+          </div>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

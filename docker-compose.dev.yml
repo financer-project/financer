@@ -1,0 +1,11 @@
+services:
+  mysql:
+    image: mysql:9
+    container_name: financer-dev-db
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: financer
+      MYSQL_USER: financer
+      MYSQL_PASSWORD: financer

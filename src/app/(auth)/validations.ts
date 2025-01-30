@@ -1,4 +1,4 @@
-import {z} from "zod"
+import { z } from "zod"
 
 export const email = z
   .string()
@@ -12,6 +12,8 @@ export const password = z
   .transform((str) => str.trim())
 
 export const Signup = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
   email,
   password,
 })

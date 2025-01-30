@@ -1,0 +1,19 @@
+model Category {
+    id           String        @id @default(uuid())
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    name         String
+    type         CategoryType
+    budget       Float?
+    parent       Category?     @relation(name: "CategoryHierarchy", fields: [parentId], references: [id])
+    parentId     String?
+    children     Category[]    @relation(name: "CategoryHierarchy")
+    transactions Transaction[]
+
+    @@index([parentId])
+}
+
+enum CategoryType {
+    INCOME
+    EXPENSE
+}

@@ -110,7 +110,7 @@ financer
 │   │   ├── blitz-server.ts
 │   │   ├── components
 │   │   │   ├── Form.tsx
-│   │   │   └── LabeledTextField.tsx
+│   │   │   └── TextField.tsx
 │   │   ├── error.tsx
 │   │   ├── layout.tsx
 │   │   ├── loading.tsx

@@ -1,0 +1,38 @@
+model Household {
+    id          String   @id @default(uuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    name        String
+    description String?
+    currency    String
+
+    owner    User                  @relation(name: "HouseholdOwner", fields: [ownerId], references: [id])
+    ownerId  String
+    accounts Account[]
+    members  HouseholdMembership[]
+}
+
+model HouseholdMembership {
+    id          Int           @id @default(autoincrement())
+    createdAt   DateTime      @default(now())
+    user        User          @relation(fields: [userId], references: [id])
+    userId      String
+    household   Household     @relation(fields: [householdId], references: [id])
+    householdId String
+    role        HouseholdRole
+    accessLevel AccessLevel
+
+    @@unique([userId, householdId])
+}
+
+enum HouseholdRole {
+    ADMIN
+    MEMBER
+    GUEST
+}
+
+enum AccessLevel {
+    FULL
+    TRANSACTIONS_ONLY
+    VIEW_ONLY
+}

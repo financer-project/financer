@@ -1,16 +1,16 @@
 "use client"
-import {LabeledTextField} from "src/app/components/LabeledTextField"
-import {Form, FORM_ERROR} from "src/app/components/Form"
-import {ResetPassword} from "../validations"
+import { TextField } from "@/src/lib/components/common/form/TextField"
+import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
+import { ResetPassword } from "../validations"
 import resetPassword from "../mutations/resetPassword"
-import {useMutation} from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import Link from "next/link"
-import {useSearchParams} from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams()
   const token = searchParams?.get("token")?.toString()
-  const [resetPasswordMutation, {isSuccess}] = useMutation(resetPassword)
+  const [resetPasswordMutation, { isSuccess }] = useMutation(resetPassword)
 
   return (
     <div>
@@ -34,7 +34,7 @@ export function ResetPasswordForm() {
           }}
           onSubmit={async (values) => {
             try {
-              await resetPasswordMutation({...values, token})
+              await resetPasswordMutation({ ...values, token })
             } catch (error: any) {
               if (error.name === "ResetPasswordError") {
                 return {
@@ -48,12 +48,8 @@ export function ResetPasswordForm() {
             }
           }}
         >
-          <LabeledTextField name="password" label="New Password" type="password" />
-          <LabeledTextField
-            name="passwordConfirmation"
-            label="Confirm New Password"
-            type="password"
-          />
+          <TextField name="password" label="New Password" type="password" />
+          <TextField name="passwordConfirmation" label="Confirm New Password" type="password" />
         </Form>
       )}
     </div>
