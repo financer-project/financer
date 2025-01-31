@@ -4,12 +4,9 @@ import signup from "../mutations/signup"
 import { Signup } from "../validations"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { cn } from "@/lib/utils"
-import { ErrorMessage } from "formik"
-import TextField from "@/src/lib/components/common/form/TextField"
+import TextField from "@/src/lib/components/common/form/elements/TextField"
 
 type SignupFormProps = {
   onSuccess?: () => void

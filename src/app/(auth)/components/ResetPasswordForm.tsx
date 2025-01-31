@@ -1,5 +1,5 @@
 "use client"
-import { TextField } from "@/src/lib/components/common/form/TextField"
+import { TextField } from "@/src/lib/components/common/form/elements/TextField"
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import { ResetPassword } from "../validations"
 import resetPassword from "../mutations/resetPassword"
