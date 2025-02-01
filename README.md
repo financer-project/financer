@@ -73,7 +73,7 @@ financer
 ├── mailers
 │   └── forgotPasswordMailer.ts
 ├── next-env.d.ts
-├── next.config.js
+├── next.config.ts
 ├── package.json
 ├── public
 │   └── favicon.ico

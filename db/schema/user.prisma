@@ -12,6 +12,20 @@ model User {
     sessions        Session[]
     householdsOwned Household[]           @relation("HouseholdOwner")
     memberships     HouseholdMembership[]
+    settings        Settings?             @relation("UserSettings")
+}
+
+model Settings {
+    user   User   @relation(name: "UserSettings", fields: [userId], references: [id])
+    userId String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    language String
+    theme    String
+
+    @@id([userId])
 }
 
 model Session {

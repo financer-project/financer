@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { invoke } from "src/app/blitz-server"
-import getHousehold from "../../queries/getHousehold"
+import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { EditHousehold } from "../../components/EditHousehold"
 
 type EditHouseholdPageProps = {

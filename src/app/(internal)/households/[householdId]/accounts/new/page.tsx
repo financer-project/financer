@@ -1,23 +1,24 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
-import { NewHouseholdForm } from "../components/NewHousehold"
+import { New__ModelName } from "../components/NewAccount"
 import Header from "@/src/lib/components/content/nav/Header"
 
 export const metadata: Metadata = {
-    title: "New Household",
-    description: "Create a new Household"
+    title: "New Project",
+    description: "Create a new project"
 }
 
 export default function Page() {
     return (
         <div>
-            <Header title={"Create a new Household"}
+            <Header title={"New Account"}
                     breadcrumbs={[
                         { label: "Households", url: "/households" },
-                        { label: "New" }
-                    ]} />
+                        { label: "Household", url: "/households/[householdId]" },
+                        { label: "Accounts", url: "/accounts" },
+                        { label: "New" }]} />
             <Suspense fallback={<div>Loading...</div>}>
-                <NewHouseholdForm />
+                <New__ModelName />
             </Suspense>
         </div>
     )

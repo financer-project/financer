@@ -2,24 +2,28 @@ import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
-    BreadcrumbList, BreadcrumbPage,
+    BreadcrumbList,
+    BreadcrumbPage,
     BreadcrumbSeparator
 } from "@/src/lib/components/ui/breadcrumb"
 import { HomeIcon } from "lucide-react"
 import { Separator } from "@/src/lib/components/ui/separator"
-import { Title } from "@/src/lib/components/common/typography"
+import { SubTitle, Title } from "@/src/lib/components/common/typography"
+import React from "react"
+
+interface BreadcumbItem {
+    label: string,
+    url?: string
+}
 
 interface HeaderProps {
     title: string,
-    breadcrumbs: [
-        {
-            label: string,
-            url?: string
-        }
-    ]
+    subtitle?: string
+    breadcrumbs: BreadcumbItem[],
+    actions?: React.ReactNode | (() => React.ReactNode);
 }
 
-const Header = ({ title, breadcrumbs }: HeaderProps) => {
+const Header = ({ title, subtitle, breadcrumbs, actions }: HeaderProps) => {
     return (
         <div className={"flex flex-col gap-4 mb-8"}>
             <div className={"flex flex-col h-10 justify-between"}>
@@ -41,7 +45,7 @@ const Header = ({ title, breadcrumbs }: HeaderProps) => {
                                         </BreadcrumbPage>
                                     ) : (
                                         <BreadcrumbItem>
-                                            <BreadcrumbLink href={item.url}>
+                                            <BreadcrumbLink href={item.url ?? "#"}>
                                                 {item.label}
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
@@ -52,7 +56,13 @@ const Header = ({ title, breadcrumbs }: HeaderProps) => {
                 </Breadcrumb>
                 <Separator />
             </div>
-            <Title>{title}</Title>
+            <div className={"flex justify-between items-center"}>
+                <div>
+                    <Title>{title}</Title>
+                    <SubTitle>{subtitle}</SubTitle>
+                </div>
+                {actions && (typeof actions === "function" ? actions() : actions)}
+            </div>
         </div>
     )
 }

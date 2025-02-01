@@ -1,21 +1,11 @@
 model Account {
-    id        String      @id @default(uuid())
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
-    name      String
-    type      AccountType
-    balance   Float       @default(0)
-    currency  String      @default("USD")
+    id            String   @id @default(uuid())
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+    name          String
+    technicalName String?
 
     household    Household     @relation(fields: [householdId], references: [id])
     householdId  String
     transactions Transaction[]
-}
-
-enum AccountType {
-    CHECKING
-    SAVINGS
-    CREDIT
-    INVESTMENT
-    OTHER
 }
