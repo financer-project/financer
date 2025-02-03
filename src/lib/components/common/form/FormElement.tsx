@@ -8,7 +8,9 @@ export interface FormElementProps {
     name: string
     required?: boolean
     placeholder?: string
-    className?: string
+    className?: string,
+    readonly?: boolean
+    value?: string | number
 }
 
 const FormElement: React.FC<PropsWithChildren<FormElementProps>> = ({ label, name, children, className, required }) => {

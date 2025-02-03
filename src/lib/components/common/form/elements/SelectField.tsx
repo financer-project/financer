@@ -16,7 +16,9 @@ export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, option
     const [field, meta, helpers] = useField(name)
     const { isSubmitting } = useFormikContext()
     const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
-    const [search, setSearch] = useState("") // Lokaler Suchzustand
+    const [search, setSearch] = useState("")
+
+    helpers.setValue(props.value);
 
     // Bei Auswahl: Wert setzen und Dropdown schließen
     const handleSelect = (value: string) => {
@@ -46,7 +48,7 @@ export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, option
                             className={cn("w-full items-start justify-start font-normal", field.value ? "" : "text-muted-foreground")}
                             onClick={() => setIsOpen(!isOpen)}
                             onFocusCapture={() => setIsOpen(true)}
-                            disabled={isSubmitting}>
+                            disabled={isSubmitting || props.readonly}>
                             {field.value
                                 ? options.find((option) => option.value === field.value)?.label || "Auswählen..."
                                 : "Auswählen..."}

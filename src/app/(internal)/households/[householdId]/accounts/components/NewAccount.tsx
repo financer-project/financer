@@ -6,13 +6,14 @@ import createAccount from "@/src/lib/model/account/mutations/createAccount"
 import { useRouter } from "next/navigation"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 
-export function New__ModelName() {
+export function NewAccount({ householdId }: { householdId: string }) {
     const [createAccountMutation] = useMutation(createAccount)
     const router = useRouter()
     return (
         <AccountForm
             submitText="Create Account"
             schema={CreateAccountSchema}
+            householdId={householdId}
             onSubmit={async (values) => {
                 try {
                     const account = await createAccountMutation(values)

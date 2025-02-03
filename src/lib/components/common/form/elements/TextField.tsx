@@ -14,7 +14,7 @@ export const TextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
 
         return (
             <FormElement name={name} {...props}>
-                <Input {...input} disabled={isSubmitting} {...props} ref={ref} />
+                <Input {...input} disabled={isSubmitting || props.readonly} {...props} ref={ref} />
             </FormElement>
         )
     }

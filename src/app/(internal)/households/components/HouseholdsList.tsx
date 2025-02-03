@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import getHouseholds from "@/src/lib/model/household/queries/getHouseholds"
 import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { Formatters } from "@/src/lib/util/Formatter"
 
 const ITEMS_PER_PAGE = 100
 
@@ -27,7 +28,7 @@ export const HouseholdsList = () => {
                     name: "Name",
                     render: (household) => <Link href={`/households/${household.id}`}>{household.name}</Link>
                 },
-                { name: "Currency", render: (household) => household.currency },
+                { name: "Currency", render: (household) => Formatters.currencyDescription.format(household.currency) },
                 { name: "Description", render: (household) => household.description }
             ]}
             createRoute="/households/new"
