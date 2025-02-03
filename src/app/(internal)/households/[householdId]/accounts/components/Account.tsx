@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import deleteAccount from "@/src/lib/model/account/mutations/deleteAccount";
 import getAccount from "@/src/lib/model/account/queries/getAccount";
 
-export const Account = ({ accountId }: { accountId: number }) => {
+export const Account = ({ accountId }: { accountId: string }) => {
   const router = useRouter();
   const [deleteAccountMutation] = useMutation(deleteAccount);
   const [account] = useQuery(getAccount, { id: accountId });

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react"
 import { useField, useFormikContext } from "formik"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/lib/components/ui/popover" // Radix Popover
@@ -12,28 +14,27 @@ export interface SearchableSelectFieldProps extends FormElementProps {
     options: { label: string; value: string }[] // Liste der verfügbaren Optionen
 }
 
-export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, options, ...props }) => {
+export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, options, readonly, ...props }) => {
     const [field, meta, helpers] = useField(name)
     const { isSubmitting } = useFormikContext()
     const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
     const [search, setSearch] = useState("")
 
-    helpers.setValue(props.value);
-
-    // Bei Auswahl: Wert setzen und Dropdown schließen
     const handleSelect = (value: string) => {
-        helpers.setValue(value)
-        setSearch("") // Leeren des Suchtextfelds
-        setIsOpen(false)
+        if (!readonly) {
+            helpers.setValue(value)
+            setSearch("") // Leeren des Suchtextfelds
+            setIsOpen(false)
+        }
     }
 
-    // Wert löschen
     const handleClear = () => {
-        helpers.setValue("")
-        setSearch("")
+        if (!readonly) {
+            helpers.setValue("")
+            setSearch("")
+        }
     }
 
-    // Filter die Optionen basierend auf der Suche
     const filteredOptions = options.filter((option) =>
         option.label.toLowerCase().includes(search.toLowerCase())
     )
@@ -46,15 +47,15 @@ export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, option
                         <Button
                             variant={"outline"}
                             className={cn("w-full items-start justify-start font-normal", field.value ? "" : "text-muted-foreground")}
-                            onClick={() => setIsOpen(!isOpen)}
-                            onFocusCapture={() => setIsOpen(true)}
-                            disabled={isSubmitting || props.readonly}>
+                            onClick={() => !readonly && setIsOpen(!isOpen)}
+                            onFocusCapture={() => !readonly && setIsOpen(true)}
+                            disabled={isSubmitting || readonly}>
                             {field.value
                                 ? options.find((option) => option.value === field.value)?.label || "Auswählen..."
                                 : "Auswählen..."}
                         </Button>
 
-                        {field.value && (
+                        {field.value && !readonly && (
                             <Button
                                 variant={"ghost"}
                                 onClick={handleClear}
@@ -70,13 +71,16 @@ export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, option
                         <CommandInput
                             placeholder="Suchen..."
                             value={search}
-                            onValueChange={(value) => setSearch(value)} />
+                            onValueChange={(value) => setSearch(value)}
+                            disabled={readonly} />
 
                         <ScrollArea>
                             <CommandList>
                                 {filteredOptions.length > 0 ? (
                                     filteredOptions.map((option) => (
-                                        <CommandItem key={option.value} onSelect={() => handleSelect(option.value)}>
+                                        <CommandItem
+                                            key={option.value}
+                                            onSelect={() => handleSelect(option.value)}>
                                             {option.label}
                                         </CommandItem>
                                     ))

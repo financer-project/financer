@@ -5,19 +5,22 @@ import { useMutation } from "@blitzjs/rpc"
 import createAccount from "@/src/lib/model/account/mutations/createAccount"
 import { useRouter } from "next/navigation"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
+import { HouseholdProvider, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 
-export function NewAccount({ householdId }: { householdId: string }) {
+export function NewAccount({ householdId }: Readonly<{ householdId: string }>) {
     const [createAccountMutation] = useMutation(createAccount)
+    const households = useHouseholds()
     const router = useRouter()
     return (
         <AccountForm
             submitText="Create Account"
             schema={CreateAccountSchema}
-            householdId={householdId}
+            households={households || []}
+            initialValues={{ householdId: householdId, name: "", technicalName: "" }}
             onSubmit={async (values) => {
                 try {
                     const account = await createAccountMutation(values)
-                    router.push(`/accounts/${account.id}`)
+                    router.push(`/households/${householdId}`)
                 } catch (error: any) {
                     console.error(error)
                     return {

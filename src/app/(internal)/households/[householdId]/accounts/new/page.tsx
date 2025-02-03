@@ -4,6 +4,7 @@ import { NewAccount } from "../components/NewAccount"
 import Header from "@/src/lib/components/content/nav/Header"
 import { invoke } from "@/src/app/blitz-server"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
+import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 
 export async function generateMetadata(props: HouseholdPageProps): Promise<Metadata> {
     const params = await props.params
@@ -29,7 +30,10 @@ export default async function Page(props: Readonly<HouseholdPageProps>) {
                         { label: "Accounts", url: "/accounts" },
                         { label: "New" }]} />
             <Suspense fallback={<div>Loading...</div>}>
-                <NewAccount householdId={params.householdId} />
+                <HouseholdProvider>
+                    <NewAccount householdId={params.householdId} />
+                </HouseholdProvider>
+
             </Suspense>
         </div>
     )

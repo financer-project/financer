@@ -19,6 +19,7 @@ export const Household = ({ householdId }: { householdId: string }) => {
     const urlSearchParams = useSearchParams()!
     const page = Number(urlSearchParams.get("page")) || 0
     const [{ accounts, hasMore }] = usePaginatedQuery(getAccounts, {
+        householdId: householdId,
         orderBy: { id: "asc" },
         skip: ITEMS_PER_PAGE * page,
         take: ITEMS_PER_PAGE

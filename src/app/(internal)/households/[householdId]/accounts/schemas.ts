@@ -2,7 +2,6 @@ import { z } from "zod"
 
 export const CreateAccountSchema = z.object({
     householdId: z.string().uuid(),
-    id: z.string().uuid(),
     name: z.string(),
     technicalName: z.string().optional()
 })

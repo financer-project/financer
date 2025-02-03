@@ -7,7 +7,7 @@ import { FORM_ERROR, AccountForm } from "./AccountForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 
-export const EditAccount = ({ accountId }: { accountId: number }) => {
+export const EditAccount = ({ accountId }: { accountId: string }) => {
     const [account, { setQueryData }] = useQuery(
         getAccount,
         { id: accountId },

@@ -3,24 +3,21 @@ import { z } from "zod"
 import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
 import SelectField from "@/src/lib/components/common/form/elements/SelectField"
-import { invoke } from "@/src/app/blitz-server"
-import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 
-
-export async function AccountForm<S extends z.ZodType<any, any>>(
-    props: FormProps<S> & { householdId: string }
-) {
-    const household = await invoke(getHousehold, {
-        id: props.householdId
-    })
+export async function AccountForm<S extends z.ZodType<any, any>>(props: FormProps<S> & {
+    households: { id: string, name: string }[]
+}) {
 
     return (
         <Form<S> {...props}>
             <div className={"flex flex-row gap-4 w-full"}>
                 <SelectField label={"Household"}
                              name={"householdId"}
-                             value={household.id}
-                             options={[{ label: household.name, value: household.id }]} />
+                             readonly
+                             options={props.households.map((household) => ({
+                                 value: household.id,
+                                 label: household.name
+                             }))} />
                 <TextField label={"Name"}
                            name={"name"}
                            placeholder={"Name"}

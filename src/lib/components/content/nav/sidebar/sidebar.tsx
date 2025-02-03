@@ -14,6 +14,7 @@ import {
 import { Separator } from "@/src/lib/components/ui/separator"
 import { NavUser } from "@/src/lib/components/content/nav/sidebar/nav-user"
 import { ArrowLeftRightIcon, BookmarkIcon, ChartLineIcon, HandCoinsIcon, HouseIcon, WalletIcon } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 const groups = [
     {
@@ -64,6 +65,8 @@ const groups = [
 ]
 
 const Sidebar = () => {
+    const pathname = usePathname()
+
     return (
         <SidebarComponent
             variant={"inset"}
@@ -82,7 +85,8 @@ const Sidebar = () => {
                         <SidebarMenu>
                             {group.items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuButton asChild
+                                                       isActive={pathname.includes(item.url)}>
                                         <a href={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>
