@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/db"
-import { CreateHouseholdSchema } from "../../../../app/(internal)/households/schemas"
+import { CreateHouseholdSchema } from "../schemas"
 import { Ctx } from "blitz"
 
 export default resolver.pipe(

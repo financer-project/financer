@@ -25,7 +25,7 @@ interface HeaderProps {
 
 const Header = ({ title, subtitle, breadcrumbs, actions }: HeaderProps) => {
     return (
-        <div className={"flex flex-col gap-4 mb-8"}>
+        <div className={"flex flex-col gap-4 mb-16"}>
             <div className={"flex flex-col h-10 justify-between"}>
                 <Breadcrumb>
                     <BreadcrumbList>

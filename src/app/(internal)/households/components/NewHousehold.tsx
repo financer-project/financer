@@ -1,6 +1,6 @@
 "use client"
 import { FORM_ERROR, HouseholdForm } from "./HouseholdForm"
-import { CreateHouseholdSchema } from "../schemas"
+import { CreateHouseholdSchema } from "../../../../lib/model/household/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import createHousehold from "@/src/lib/model/household/mutations/createHousehold"
 import { useRouter } from "next/navigation"

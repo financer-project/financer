@@ -5,7 +5,7 @@ import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { Household } from "../components/Household"
 import Header from "./header"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export async function generateMetadata(props: HouseholdPageProps): Promise<Metadata> {
     const params = await props.params

@@ -2,8 +2,8 @@
 import { Suspense } from "react"
 import updateAccount from "@/src/lib/model/account/mutations/updateAccount"
 import getAccount from "@/src/lib/model/account/queries/getAccount"
-import { UpdateAccountSchema } from "../schemas"
-import { FORM_ERROR, AccountForm } from "./AccountForm"
+import { UpdateAccountSchema } from "../../../../../../lib/model/account/schemas"
+import { AccountForm, FORM_ERROR } from "./AccountForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 

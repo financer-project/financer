@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/db"
-import { UpdateHouseholdSchema } from "../../../../app/(internal)/households/schemas"
+import { UpdateHouseholdSchema } from "../schemas"
 
 export default resolver.pipe(
   resolver.zod(UpdateHouseholdSchema),

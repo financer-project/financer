@@ -1,11 +1,11 @@
 "use client"
 import { AccountForm } from "./AccountForm"
-import { CreateAccountSchema } from "../schemas"
+import { CreateAccountSchema } from "../../../../../../lib/model/account/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import createAccount from "@/src/lib/model/account/mutations/createAccount"
 import { useRouter } from "next/navigation"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
-import { HouseholdProvider, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
+import { useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 
 export function NewAccount({ householdId }: Readonly<{ householdId: string }>) {
     const [createAccountMutation] = useMutation(createAccount)

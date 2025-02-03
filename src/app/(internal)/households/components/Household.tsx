@@ -26,12 +26,13 @@ export const Household = ({ householdId }: { householdId: string }) => {
     })
 
     return (
-        <div className={"flex flex-col gap-12"}>
-            <section>
-                <Heading1>Basic Information</Heading1>
-                <SubHeading>Please find all information to the household below.</SubHeading>
-
-                <Separator className={"my-4"} />
+        <div className={"flex flex-col gap-16"}>
+            <section className={"flex flex-col gap-6"}>
+                <Separator />
+                <div>
+                    <Heading1>Basic Information</Heading1>
+                    <SubHeading>Please find all information to the household below.</SubHeading>
+                </div>
 
                 <div className={"flex flex-row w-full"}>
                     <DataItem label={"Name"}
@@ -48,11 +49,13 @@ export const Household = ({ householdId }: { householdId: string }) => {
                 </div>
             </section>
 
-            <section>
-                <Heading1>Accounts</Heading1>
-                <SubHeading>Please find all information to the household below.</SubHeading>
+            <section className={"flex flex-col gap-6"}>
+                <Separator />
+                <div>
+                    <Heading1>Accounts</Heading1>
+                    <SubHeading>Please find all information to the household below.</SubHeading>
+                </div>
 
-                <Separator className={"my-4"} />
 
                 <Suspense fallback={<div>Loading...</div>}>
                     <PaginatedTable
@@ -63,8 +66,13 @@ export const Household = ({ householdId }: { householdId: string }) => {
                         columns={[
                             {
                                 name: "Name",
-                                render: (household) =>
-                                    <Link href={`/households/${household.id}`}>{household.name}</Link>
+                                render: (account) =>
+                                    <Link href={`/households/${householdId}/accounts/${account.id}`}
+                                          className={"font-semibold"}>{account.name}</Link>
+                            },
+                            {
+                                name: "Technical Name",
+                                render: (account) => account.technicalName
                             }
                         ]}
                     />

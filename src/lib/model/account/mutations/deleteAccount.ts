@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/db"
-import { DeleteAccountSchema } from "@/src/app/(internal)/households/[householdId]/accounts/schemas"
+import { DeleteAccountSchema } from "@/src/lib/model/account/schemas"
 
 export default resolver.pipe(
     resolver.zod(DeleteAccountSchema),

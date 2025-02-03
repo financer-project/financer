@@ -2,7 +2,7 @@
 import { Suspense } from "react"
 import updateHousehold from "@/src/lib/model/household/mutations/updateHousehold"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
-import { UpdateHouseholdSchema } from "../schemas"
+import { UpdateHouseholdSchema } from "../../../../lib/model/household/schemas"
 import { FORM_ERROR, HouseholdForm } from "./HouseholdForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
