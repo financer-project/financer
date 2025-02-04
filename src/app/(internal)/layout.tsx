@@ -24,10 +24,10 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
             <SidebarProvider>
                 <HouseholdProvider>
                     <Sidebar />
-                    <SidebarInset className={"flex p-4 box-border bg-gray-100 max-h-screen"}>
+                    <SidebarInset className={"flex p-4 box-border bg-gray-100 h-screen max-h-screen"}>
                         <ScrollArea className={"h-full"} type={"auto"}>
                             <main
-                                className={"flex-1 flex flex-col mx-auto px-8 py-6 w-full bg-background rounded-xl"}>
+                                className={"flex-1 flex flex-col justify-start px-8 py-6 w-full bg-background rounded-xl h-full"}>
                                 {children}
                             </main>
                         </ScrollArea>
