@@ -1,22 +1,21 @@
 "use client"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
-import { Heading1, SubHeading } from "@/src/lib/components/common/typography"
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import { Formatters } from "@/src/lib/util/Formatter"
-import { Separator } from "@/src/lib/components/ui/separator"
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
 import Link from "next/link"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
+import Section from "@/src/lib/components/common/structure/Section"
 
 const ITEMS_PER_PAGE = 100
 
 export const Household = ({ householdId }: { householdId: string }) => {
     const [household] = useQuery(getHousehold, { id: householdId })
 
-    const urlSearchParams = useSearchParams()!
+    const urlSearchParams = useSearchParams()
     const page = Number(urlSearchParams.get("page")) || 0
     const [{ accounts, hasMore }] = usePaginatedQuery(getAccounts, {
         householdId: householdId,
@@ -27,13 +26,8 @@ export const Household = ({ householdId }: { householdId: string }) => {
 
     return (
         <div className={"flex flex-col gap-16"}>
-            <section className={"flex flex-col gap-6"}>
-                <Separator />
-                <div>
-                    <Heading1>Basic Information</Heading1>
-                    <SubHeading>Please find all information to the household below.</SubHeading>
-                </div>
-
+            <Section title={"Basic Information"}
+                     subtitle={"Please find all information to the household below."}>
                 <div className={"flex flex-row w-full"}>
                     <DataItem label={"Name"}
                               data={household.name}
@@ -47,16 +41,11 @@ export const Household = ({ householdId }: { householdId: string }) => {
                               data={household.description}
                               className={"basis-1/4"} />
                 </div>
-            </section>
-
-            <section className={"flex flex-col gap-6"}>
-                <Separator />
-                <div>
-                    <Heading1>Accounts</Heading1>
-                    <SubHeading>Please find all information to the household below.</SubHeading>
-                </div>
+            </Section>
 
 
+            <Section title={"Accounts"}
+                     subtitle={"Please find all information to the household below."}>
                 <Suspense fallback={<div>Loading...</div>}>
                     <PaginatedTable
                         data={accounts}
@@ -77,7 +66,7 @@ export const Household = ({ householdId }: { householdId: string }) => {
                         ]}
                     />
                 </Suspense>
-            </section>
+            </Section>
         </div>
     )
 }

@@ -36,7 +36,7 @@ const Header = ({ title, subtitle, breadcrumbs, actions }: HeaderProps) => {
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         {breadcrumbs.map((item, index) => (
-                            <>
+                            <React.Fragment key={item.url}>
                                 <BreadcrumbSeparator />
                                 {index === breadcrumbs.length - 1 ?
                                     (
@@ -50,7 +50,7 @@ const Header = ({ title, subtitle, breadcrumbs, actions }: HeaderProps) => {
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
                                     )}
-                            </>
+                            </React.Fragment>
                         ))}
                     </BreadcrumbList>
                 </Breadcrumb>

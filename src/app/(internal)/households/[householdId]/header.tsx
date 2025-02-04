@@ -8,15 +8,16 @@ import { useMutation } from "@blitzjs/rpc"
 import deleteHousehold from "@/src/lib/model/household/mutations/deleteHousehold"
 import { useRouter } from "next/navigation"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
+import { Household } from "@prisma/client"
 
-export default function HouseholdHeader({ householdId }: Readonly<{ householdId: string }>) {
+export default function HouseholdHeader({ household }: Readonly<{ household: Household }>) {
     const router = useRouter()
     const [deleteHouseholdMutation] = useMutation(deleteHousehold)
 
     const renderHeaderButtons = () => (
         <div className={"flex gap-2"}>
             <Button variant={"outline"} asChild>
-                <Link href={"#"}>Edit</Link>
+                <Link href={`/households/${household.id}/edit`}>Edit</Link>
             </Button>
             <Button variant={"destructive"} onClick={async () => {
                 const confirmed = await ConfirmationDialog({
@@ -25,7 +26,7 @@ export default function HouseholdHeader({ householdId }: Readonly<{ householdId:
                 })
 
                 if (confirmed) {
-                    await deleteHouseholdMutation({ id: householdId })
+                    await deleteHouseholdMutation({ id: household.id })
                     router.push("/households")
                 }
             }}>
@@ -39,7 +40,7 @@ export default function HouseholdHeader({ householdId }: Readonly<{ householdId:
                 subtitle={"Here can you edit, delete and view the household details."}
                 breadcrumbs={[
                     { label: "Households", url: "/households" },
-                    { label: householdId, url: "" }
+                    { label: household.name, url: "" }
                 ]}
                 actions={renderHeaderButtons} />
     )

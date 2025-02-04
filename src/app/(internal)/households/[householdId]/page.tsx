@@ -4,27 +4,34 @@ import { invoke } from "src/app/blitz-server"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { Household } from "../components/Household"
 import Header from "./header"
+import { Household as HouseholdModel } from "@prisma/client"
 
 export const dynamic = "force-dynamic"
 
+async function fetchHousehold(householdId: string): Promise<HouseholdModel> {
+    return await invoke(getHousehold, { id: householdId })
+}
+
 export async function generateMetadata(props: HouseholdPageProps): Promise<Metadata> {
     const params = await props.params
-    const Household = await invoke(getHousehold, { id: String(params.householdId) })
+    const household = await fetchHousehold(params.householdId)
     return {
-        title: `Household ${Household.name}`
+        title: `Household ${household.name}`
     }
 }
 
 type HouseholdPageProps = {
-    params: Promise<{ householdId: string }>
+    params: Promise<{ householdId: string }>,
+    household: Promise<HouseholdModel>
 }
 
 export default async function Page(props: Readonly<HouseholdPageProps>) {
     const params = await props.params
+    const household = await fetchHousehold(params.householdId)
 
     return (
         <div>
-            <Header householdId={params.householdId} />
+            <Header household={household} />
             <Suspense fallback={<div>Loading...</div>}>
                 <Household householdId={params.householdId} />
             </Suspense>

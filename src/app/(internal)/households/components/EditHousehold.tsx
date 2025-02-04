@@ -6,6 +6,7 @@ import { UpdateHouseholdSchema } from "../../../../lib/model/household/schemas"
 import { FORM_ERROR, HouseholdForm } from "./HouseholdForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
+import Section from "@/src/lib/components/common/structure/Section"
 
 export const EditHousehold = ({ householdId }: { householdId: string }) => {
     const [household, { setQueryData }] = useQuery(
@@ -17,30 +18,30 @@ export const EditHousehold = ({ householdId }: { householdId: string }) => {
     const router = useRouter()
     return (
         <div>
-            <h1>Edit Household {household.id}</h1>
-            <pre>{JSON.stringify(household, null, 2)}</pre>
-            <Suspense fallback={<div>Loading...</div>}>
-                <HouseholdForm
-                    submitText="Update Household"
-                    schema={UpdateHouseholdSchema}
-                    initialValues={household}
-                    onSubmit={async (values) => {
-                        try {
-                            const updated = await updateHouseholdMutation({
-                                ...values,
-                                id: household.id
-                            })
-                            await setQueryData(updated)
-                            router.refresh()
-                        } catch (error: any) {
-                            console.error(error)
-                            return {
-                                [FORM_ERROR]: error.toString()
+            <Section title={"Basic Information"}>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <HouseholdForm
+                        submitText="Update Household"
+                        schema={UpdateHouseholdSchema}
+                        initialValues={{ ...household, description: household.description ?? undefined }}
+                        onSubmit={async (values) => {
+                            try {
+                                const updated = await updateHouseholdMutation({
+                                    ...values,
+                                    id: household.id
+                                })
+                                await setQueryData(updated)
+                                router.refresh()
+                            } catch (error: any) {
+                                console.error(error)
+                                return {
+                                    [FORM_ERROR]: error.toString()
+                                }
                             }
-                        }
-                    }}
-                />
-            </Suspense>
+                        }}
+                    />
+                </Suspense>
+            </Section>
         </div>
     )
 }
