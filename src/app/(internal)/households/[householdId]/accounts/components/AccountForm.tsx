@@ -13,18 +13,20 @@ export async function AccountForm<S extends z.ZodType<any, any>>(props: FormProp
             <div className={"flex flex-row gap-4 w-full"}>
                 <SelectField label={"Household"}
                              name={"householdId"}
-                             readonly
                              options={props.households.map((household) => ({
                                  value: household.id,
                                  label: household.name
                              }))} />
+            </div>
+            <div className={"flex flex-row gap-4 w-full"}>
                 <TextField label={"Name"}
                            name={"name"}
                            placeholder={"Name"}
                            required />
                 <TextField label={"Technical Name"}
                            name={"technicalName"}
-                           placeholder={"Technical Name"} />
+                           placeholder={"Technical Name"}
+                description={"This can be an IBAN or an E-Mail Address."}/>
             </div>
         </Form>
     )

@@ -9,10 +9,18 @@ export interface FormElementProps {
     required?: boolean
     placeholder?: string
     className?: string,
-    readonly?: boolean
+    readonly?: boolean,
+    description?: string
 }
 
-const FormElement: React.FC<PropsWithChildren<FormElementProps>> = ({ label, name, children, className, required }) => {
+const FormElement: React.FC<PropsWithChildren<FormElementProps>> = ({
+                                                                        label,
+                                                                        name,
+                                                                        children,
+                                                                        className,
+                                                                        required,
+                                                                        description
+                                                                    }) => {
     return (
         <div className={cn("flex flex-col gap-2 flex-1", className)}>
             <Label htmlFor={name}>
@@ -21,6 +29,8 @@ const FormElement: React.FC<PropsWithChildren<FormElementProps>> = ({ label, nam
             </Label>
 
             {children}
+
+            {description && <small className={"text-muted-foreground"}>{description}</small>}
 
             <ErrorMessage name={name}>
                 {(msg) => <small className={"text-destructive"}>{msg}</small>}

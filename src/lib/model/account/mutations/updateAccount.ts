@@ -6,8 +6,10 @@ export default resolver.pipe(
     resolver.zod(UpdateAccountSchema),
     resolver.authorize(),
     async ({ id, ...data }) => {
-        const account = await db.account.update({ where: { id }, data })
-
-        return account
+        return await db.account.update({
+            where: { id },
+            data,
+            include: { household: true }
+        })
     }
 )

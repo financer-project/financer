@@ -1,17 +1,30 @@
 import { Label } from "../../ui/label"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
+
+type Data = string | number | null;
 
 interface DataItemProps {
     className?: string,
     label: string,
-    data: string | number | null
+    data: Data
+    linkTo?: string
 }
 
-const DataItem = ({ label, data, className }: DataItemProps) => {
+const DataItem = ({ label, data, className, linkTo }: DataItemProps) => {
+    const renderData = (data: Data) => (
+        <p className={"text-md"}>{data ?? "-"}</p>
+    )
+
     return (
         <div className={cn("flex flex-col", className)}>
             <Label className={"text-sm text-muted-foreground"}>{label}</Label>
-            <p className={"text-md"}>{data ?? "-"}</p>
+            {linkTo
+                ? <Link href={linkTo}
+                        className={"underline underline-offset-5 font-medium"}>
+                    {renderData(data)}
+                </Link>
+                : renderData(data)}
         </div>
     )
 

@@ -6,28 +6,26 @@ import { UpdateAccountSchema } from "../../../../../../lib/model/account/schemas
 import { AccountForm, FORM_ERROR } from "./AccountForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
+import Section from "@/src/lib/components/common/structure/Section"
+import { useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 
 export const EditAccount = ({ accountId }: { accountId: string }) => {
     const [account, { setQueryData }] = useQuery(
         getAccount,
         { id: accountId },
-        {
-            // This ensures the query never refreshes and overwrites the form data while the user is editing.
-            staleTime: Infinity
-        }
+        { staleTime: Infinity }
     )
     const [updateAccountMutation] = useMutation(updateAccount)
     const router = useRouter()
     return (
-        <>
-            <div>
-                <h1>Edit Account {account.id}</h1>
-                <pre>{JSON.stringify(account, null, 2)}</pre>
+        <div>
+            <Section title={"Basic Information"}>
                 <Suspense fallback={<div>Loading...</div>}>
                     <AccountForm
                         submitText="Update Account"
                         schema={UpdateAccountSchema}
-                        initialValues={account}
+                        households={useHouseholds()}
+                        initialValues={{ ...account, technicalName: account.technicalName ?? undefined }}
                         onSubmit={async (values) => {
                             try {
                                 const updated = await updateAccountMutation({
@@ -45,7 +43,7 @@ export const EditAccount = ({ accountId }: { accountId: string }) => {
                         }}
                     />
                 </Suspense>
-            </div>
-        </>
+            </Section>
+        </div>
     )
 }

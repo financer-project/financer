@@ -18,6 +18,11 @@ export const Account = ({ accountId }: { accountId: string }) => {
 
                 <div className={"flex flex-row w-full"}>
                     <DataItem label={"Name"}
+                              data={account.household.name}
+                              linkTo={`/households/${account.household.id}`}
+                              className={"basis-1/4"} />
+
+                    <DataItem label={"Name"}
                               data={account.name}
                               className={"basis-1/4"} />
 
