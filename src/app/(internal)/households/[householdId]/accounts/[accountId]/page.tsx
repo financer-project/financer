@@ -2,7 +2,6 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 import { invoke } from "src/app/blitz-server"
 import getAccount, { AccountModel } from "@/src/lib/model/account/queries/getAccount"
-import Header from "@/src/lib/components/content/nav/Header"
 import { Account } from "@/src/app/(internal)/households/[householdId]/accounts/components/Account"
 import AccountHeader from "@/src/app/(internal)/households/[householdId]/accounts/[accountId]/header"
 

@@ -15,6 +15,8 @@ import { Separator } from "@/src/lib/components/ui/separator"
 import { NavUser } from "@/src/lib/components/content/nav/sidebar/nav-user"
 import { ArrowLeftRightIcon, BookmarkIcon, ChartLineIcon, HandCoinsIcon, HouseIcon, WalletIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
+import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
+import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 
 const groups = [
     {
@@ -73,14 +75,13 @@ const Sidebar = () => {
             collapsible="none"
             side={"left"}
             className={"h-screen "}>
-            <SidebarHeader className={"flex flex-col justify-center items-center py-4 h-18 max-h-18"}>
-                <h1>F I N A N C E R</h1>
+            <SidebarHeader className={"flex flex-col justify-center items-center py-4 h-20 max-h-20"}>
+                <NavHousehold />
             </SidebarHeader>
-
+            <Separator />
             <SidebarContent>
                 {groups.map((group) => (
                     <SidebarGroup key={group.name}>
-                        <Separator className={"mb-4"} />
                         <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
                         <SidebarMenu>
                             {group.items.map((item) => (

@@ -12,60 +12,60 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { cn } from "@/lib/utils"
 
 type LoginFormProps = {
-  onSuccess?: (user: PromiseReturnType<typeof login>) => void
+    onSuccess?: (user: PromiseReturnType<typeof login>) => void
 }
 
 export const LoginForm = (props: LoginFormProps) => {
-  const [loginMutation] = useMutation(login)
-  const router = useRouter()
-  const next = useSearchParams()?.get("next")
-  return (
-    <Card className={"w-full"}>
-      <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Login in to access Financer</CardDescription>
-      </CardHeader>
+    const [loginMutation] = useMutation(login)
+    const router = useRouter()
+    const next = useSearchParams()?.get("next")
+    return (
+        <Card className={"w-full"}>
+            <CardHeader>
+                <CardTitle>Login</CardTitle>
+                <CardDescription>Login in to access Financer</CardDescription>
+            </CardHeader>
 
-      <CardContent className={cn("flex flex-col gap-4")}>
-        <Form
-          submitText="Login"
-          schema={Login}
-          initialValues={{ email: "", password: "" }}
-          onSubmit={async (values) => {
-            try {
-              await loginMutation(values)
-              router.refresh()
-              if (next) {
-                router.push(next as Route)
-              } else {
-                router.push("/")
-              }
-            } catch (error: any) {
-              if (error instanceof AuthenticationError) {
-                return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
-              } else {
-                return {
-                  [FORM_ERROR]:
-                    "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
-                }
-              }
-            }
-          }}
-        >
-          <TextField name="email" label={"E-Mail Address"} placeholder="Email" />
-          <TextField name="password" label={"Password"} placeholder="Password" type="password" />
+            <CardContent className={cn("flex flex-col gap-4")}>
+                <Form
+                    submitText="Login"
+                    schema={Login}
+                    initialValues={{ email: "", password: "" }}
+                    onSubmit={async (values) => {
+                        try {
+                            await loginMutation(values)
+                            router.refresh()
+                            if (next) {
+                                router.push(next as Route)
+                            } else {
+                                router.push("/")
+                            }
+                        } catch (error: any) {
+                            if (error instanceof AuthenticationError) {
+                                return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
+                            } else {
+                                return {
+                                    [FORM_ERROR]:
+                                    "Sorry, we had an unexpected error. Please try again. - " + error.toString()
+                                }
+                            }
+                        }
+                    }}
+                >
+                    <TextField name="email" label={"E-Mail Address"} placeholder="Email" />
+                    <TextField name="password" label={"Password"} placeholder="Password" type="password" />
 
-          <small>
-            <span className={"text-muted-foreground"}>Forgot your password? </span>
-            <Link href={"/forgot-password"}>Reset Password</Link>
-          </small>
-        </Form>
+                    <small>
+                        <span className={"text-muted-foreground"}>Forgot your password? </span>
+                        <Link href={"/forgot-password"}>Reset Password</Link>
+                    </small>
+                </Form>
 
-        <small>
-          <span className={"text-muted-foreground"}>You don't have an account? </span>
-          <Link href="/signup">Sign Up</Link>
-        </small>
-      </CardContent>
-    </Card>
-  )
+                <small>
+                    <span className={"text-muted-foreground"}>You don't have an account? </span>
+                    <Link href="/signup">Sign Up</Link>
+                </small>
+            </CardContent>
+        </Card>
+    )
 }
