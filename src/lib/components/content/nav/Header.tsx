@@ -6,10 +6,12 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator
 } from "@/src/lib/components/ui/breadcrumb"
-import { HomeIcon } from "lucide-react"
+import { ArrowLeftIcon, HomeIcon } from "lucide-react"
 import { Separator } from "@/src/lib/components/ui/separator"
 import { SubTitle, Title } from "@/src/lib/components/common/typography"
 import React from "react"
+import Link from "next/link"
+import { Button } from "@/src/lib/components/ui/button"
 
 interface BreadcumbItem {
     label: string,
@@ -21,44 +23,60 @@ interface HeaderProps {
     subtitle?: string
     breadcrumbs: BreadcumbItem[],
     actions?: React.ReactNode | (() => React.ReactNode);
+    hideBackButton?: boolean
 }
 
-const Header = ({ title, subtitle, breadcrumbs, actions }: HeaderProps) => {
+const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: HeaderProps) => {
     return (
         <div className={"flex flex-col gap-4 mb-16"}>
             <div className={"flex flex-col h-10 justify-between"}>
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href={"/dashboard"}>
-                                <HomeIcon className={"w-4"} />
-                                Home
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        {breadcrumbs.map((item, index) => (
-                            <React.Fragment key={item.url}>
-                                <BreadcrumbSeparator />
-                                {index === breadcrumbs.length - 1 ?
-                                    (
-                                        <BreadcrumbPage>
-                                            {item.label}
-                                        </BreadcrumbPage>
-                                    ) : (
-                                        <BreadcrumbItem>
-                                            <BreadcrumbLink href={item.url ?? "#"}>
+                <div className={"flex flex-row gap-4"}>
+                    {!hideBackButton && (
+                        <Button variant={"link"} asChild className={"text-default p-0 h-full"}>
+                            <Link
+                                href={breadcrumbs.length - 2 > 0 ? breadcrumbs[breadcrumbs.length - 2].url ?? "/dashboard" : "/dashboard"}>
+                                <ArrowLeftIcon />
+                                Back
+                            </Link>
+                        </Button>
+                    )}
+
+                    <Separator orientation={"vertical"}  />
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href={"/dashboard"}>
+                                    <HomeIcon className={"w-4"} />
+                                    Home
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            {breadcrumbs.map((item, index) => (
+                                <React.Fragment key={item.url}>
+                                    <BreadcrumbSeparator />
+                                    {index === breadcrumbs.length - 1 ?
+                                        (
+                                            <BreadcrumbPage>
                                                 {item.label}
-                                            </BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                    )}
-                            </React.Fragment>
-                        ))}
-                    </BreadcrumbList>
-                </Breadcrumb>
+                                            </BreadcrumbPage>
+                                        ) : (
+                                            <BreadcrumbItem>
+                                                <BreadcrumbLink href={item.url ?? "#"}>
+                                                    {item.label}
+                                                </BreadcrumbLink>
+                                            </BreadcrumbItem>
+                                        )}
+                                </React.Fragment>
+                            ))}
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
                 <Separator />
             </div>
             <div className={"flex justify-between items-center"}>
                 <div>
-                    <Title>{title}</Title>
+                    <Title className={"flex flex-row gap-4 items-center"}>
+                        {title}
+                    </Title>
                     <SubTitle>{subtitle}</SubTitle>
                 </div>
                 {actions && (typeof actions === "function" ? actions() : actions)}

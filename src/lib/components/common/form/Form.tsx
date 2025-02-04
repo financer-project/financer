@@ -43,7 +43,6 @@ export function Form<S extends z.ZodType<any, any>>({
                 }
             }}
             onSubmit={async (values, { setErrors }) => {
-                console.log(values)
                 const { FORM_ERROR, ...otherErrors } = (await onSubmit(values)) || {}
 
                 if (FORM_ERROR) {

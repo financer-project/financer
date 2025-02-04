@@ -7,8 +7,11 @@ import { FORM_ERROR, HouseholdForm } from "./HouseholdForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import Section from "@/src/lib/components/common/structure/Section"
+import { useToast } from "@/hooks/use-toast"
 
 export const EditHousehold = ({ householdId }: { householdId: string }) => {
+    const { toast } = useToast()
+
     const [household, { setQueryData }] = useQuery(
         getHousehold,
         { id: householdId },
@@ -32,6 +35,10 @@ export const EditHousehold = ({ householdId }: { householdId: string }) => {
                                 })
                                 await setQueryData(updated)
                                 router.refresh()
+                                toast({
+                                    title: "Updated Household!",
+                                    description: `Your changes to the household "${updated.name}" have been successfully applied.`
+                                })
                             } catch (error: any) {
                                 console.error(error)
                                 return {

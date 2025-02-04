@@ -13,7 +13,7 @@ export default function Page() {
         <div>
             <Header title={"Households"}
                     subtitle={"Here is a list of all households."}
-                    breadcrumbs={[{ label: "Households", url: "/households" }]} />
+                    breadcrumbs={[{ label: "Households" }]} />
             <Suspense fallback={<div>Loading...</div>}>
                 <HouseholdsList />
             </Suspense>

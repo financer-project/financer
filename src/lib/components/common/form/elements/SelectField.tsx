@@ -47,7 +47,10 @@ export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, option
                         <Button
                             variant={"outline"}
                             className={cn("w-full items-start justify-start font-normal", field.value ? "" : "text-muted-foreground")}
-                            onClick={() => !readonly && setIsOpen(!isOpen)}
+                            onClick={(event) => {
+                                event.preventDefault()
+                                if (!readonly) setIsOpen(true)
+                            }}
                             onFocusCapture={() => !readonly && setIsOpen(true)}
                             disabled={isSubmitting || readonly}>
                             {field.value
