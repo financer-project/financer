@@ -10,7 +10,9 @@ export interface FormElementProps {
     placeholder?: string
     className?: string,
     readonly?: boolean,
-    description?: string
+    description?: string,
+    onChange?: (value: string | number | null) => void
+    value?: string | number
 }
 
 const FormElement: React.FC<PropsWithChildren<FormElementProps>> = ({

@@ -22,7 +22,6 @@ import { Household } from "@prisma/client"
 
 const NavHousehold = () => {
     const [currentHousehold, setCurrentHousehold] = useState<Household | null>(useCurrentHousehold())
-    const user = useCurrentUser()
     const isMobile = useIsMobile()
     const [changeCurrentHouseholdMutation] = useMutation(changeCurrentHousehold)
 
@@ -45,9 +44,9 @@ const NavHousehold = () => {
                                 <HouseIcon className={"w-4"} />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">{currentHousehold?.name}</span>
+                                <span className="truncate font-semibold">{currentHousehold?.name ?? "No Household selected"}</span>
                                 <span className="truncate text-xs">
-                                    {Formatters.currencyDescription.format(currentHousehold?.currency ?? "")}
+                                    {Formatters.currencyDescription.format(currentHousehold?.currency ?? "Please create one first")}
                                 </span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />

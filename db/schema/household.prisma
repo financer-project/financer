@@ -10,6 +10,8 @@ model Household {
     ownerId  String
     accounts Account[]
     members  HouseholdMembership[]
+
+    Category Category[] @relation(name: "CategoryHousehold")
 }
 
 model HouseholdMembership {

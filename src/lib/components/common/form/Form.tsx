@@ -50,10 +50,10 @@ export function Form<S extends z.ZodType<any, any>>({
                 }
 
                 if (Object.keys(otherErrors).length > 0) {
+                    // @ts-ignore
                     setErrors(otherErrors)
                 }
-            }}
-        >
+            }}>
             <FormikForm className="flex flex-col gap-4 w-full my-4">
                 {formError && (
                     <Alert variant={"destructive"}>

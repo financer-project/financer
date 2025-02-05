@@ -16,7 +16,6 @@ import { NavUser } from "@/src/lib/components/content/nav/sidebar/nav-user"
 import { ArrowLeftRightIcon, BookmarkIcon, ChartLineIcon, HandCoinsIcon, HouseIcon, WalletIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
-import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 
 const groups = [
     {
@@ -44,7 +43,7 @@ const groups = [
             },
             {
                 title: "Categories",
-                url: "",
+                url: "/categories",
                 icon: BookmarkIcon
             }
         ]

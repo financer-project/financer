@@ -1,17 +1,19 @@
 import { BlitzPage } from "@blitzjs/auth"
-import { invoke } from "../../blitz-server"
-import getCurrentUser from "../../users/queries/getCurrentUser"
+import Header from "@/src/lib/components/content/nav/Header"
 
 export const dynamic = "force-dynamic"
 
 const Dashboard: BlitzPage = async () => {
-  const currentUser = await invoke(getCurrentUser, null)
-  return (
-    <main className={"w-full h-full flex flex-col "}>
-      <h1>Hi, {currentUser?.firstName}</h1>
-      <p>Welcome to your new Blitz app.</p>
-    </main>
-  )
+
+    return (
+        <div>
+            <Header title={"Dashboard"}
+                    breadcrumbs={[
+                        { label: "Dashboard" }
+                    ]} />
+
+        </div>
+    )
 }
 
 export default Dashboard

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useField, useFormikContext } from "formik"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/lib/components/ui/popover" // Radix Popover
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/src/lib/components/ui/command" // Radix Command
@@ -15,16 +15,23 @@ export interface SearchableSelectFieldProps extends FormElementProps {
 }
 
 export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, options, readonly, ...props }) => {
-    const [field, meta, helpers] = useField(name)
+    const [field, meta, helpers] = useField({ name: name, options: {} })
     const { isSubmitting } = useFormikContext()
     const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
     const [search, setSearch] = useState("")
+
+    useEffect(() => {
+        if (props.value !== undefined && props.value !== field.value) {
+            helpers.setValue(props.value)
+        }
+    }, [props, helpers])
 
     const handleSelect = (value: string) => {
         if (!readonly) {
             helpers.setValue(value)
             setSearch("") // Leeren des Suchtextfelds
             setIsOpen(false)
+            props.onChange?.(value)
         }
     }
 
@@ -32,6 +39,7 @@ export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, option
         if (!readonly) {
             helpers.setValue("")
             setSearch("")
+            props.onChange?.(null)
         }
     }
 
