@@ -1,5 +1,6 @@
 // components/TreeView.tsx
 import React, { useState } from "react"
+import clsx from "clsx"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import Tree, { TreeNode } from "@/src/lib/model/categories/Tree"
 
@@ -40,21 +41,19 @@ function TreeNodeComponent<T>({ node, renderNode, childrenKey }: Readonly<{
     const children = node[childrenKey]
 
     return (
-        <li className="flex flex-col">
+        <li className="flex flex-col gap-2">
             <div
                 className="flex items-center space-x-2 cursor-pointer"
                 onClick={handleToggle}>
-                {children && children.length > 0 && (
-                    <button
-                        className="text-gray-500"
-                        title={isExpanded ? "Collapse" : "Expand"}>
-                        {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                    </button>
-                )}
+                <span
+                    className={clsx("text-gray-500", children && children.length > 0 ? "" : "invisible")}
+                    title={isExpanded ? "Collapse" : "Expand"}>
+                    {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </span>
                 <span>{renderNode(node)}</span>
             </div>
             {isExpanded && children && (
-                <ul className="ml-4 space-y-2">
+                <ul className="ml-2 border-l-1 pl-2">
                     {children.map((child) => (
                         <TreeNodeComponent
                             key={`${child.id}`}

@@ -27,6 +27,8 @@ export default resolver.pipe(
     resolver.zod(GetCategories),
     resolver.authorize(),
     async ({ householdId }) => {
-        return await fetchCategoriesRecursively(householdId, null)
+        return await db.category.findMany({
+            where: { householdId: householdId }
+        })
     }
 )

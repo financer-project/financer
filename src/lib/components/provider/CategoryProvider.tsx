@@ -13,7 +13,12 @@ export function CategoryProvider({ children }: Readonly<{ children: React.ReactN
     const currentHousehold = useCurrentHousehold()
     const [categories] = useQuery(getCategories, { householdId: currentHousehold!.id })
     const categoryTree = () =>
-        new Tree<CategoryModel>(categories ?? [], "id", "parentId", "children")
+        Tree.fromFlatList<CategoryModel>(
+            categories?.map((category) => ({ ...category, children: [] })) ?? [],
+            "id",
+            "parentId",
+            "children"
+        )
 
     return (
         <CategoryContext.Provider value={categoryTree()}>

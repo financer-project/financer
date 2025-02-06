@@ -3,20 +3,53 @@ export type TreeNode<T> = T & {
 }
 
 export default class Tree<T> {
-
     public readonly nodes: TreeNode<T>[]
     public readonly childrenKey: keyof T
     public readonly idKey: keyof T
     public readonly parentKey: keyof T
 
-    constructor(items: T[], idKey: keyof T, parentKey: keyof T, childrenKey: keyof T) {
+    private constructor(items: TreeNode<T>[], idKey: keyof T, parentKey: keyof T, childrenKey: keyof T) {
+        this.nodes = items
         this.idKey = idKey
         this.parentKey = parentKey
         this.childrenKey = childrenKey
-        this.nodes = Tree.buildTree(items, idKey, parentKey, childrenKey)
     }
 
-    static buildTree<T>(
+    /**
+     * Factory method to create a Tree from a flat list of nodes.
+     * @param items - The flat list of nodes.
+     * @param idKey - The key identifying the ID of a node.
+     * @param parentKey - The key identifying the parent ID of a node.
+     * @param childrenKey - The key used to store child nodes.
+     */
+    static fromFlatList<T>(
+        items: T[],
+        idKey: keyof T,
+        parentKey: keyof T,
+        childrenKey: keyof T
+    ): Tree<T> {
+        const nodes = this.buildTree(items, idKey, parentKey, childrenKey)
+        return new Tree(nodes, idKey, parentKey, childrenKey)
+    }
+
+
+    /**
+     * Factory method to create a Tree from an already structured tree.
+     * @param structuredNodes - The tree structure.
+     * @param idKey - The key identifying the ID of a node.
+     * @param parentKey - The key identifying the parent ID of a node.
+     * @param childrenKey - The key used to store child nodes.
+     */
+    static fromStructuredTree<T>(
+        structuredNodes: TreeNode<T>[],
+        idKey: keyof T,
+        parentKey: keyof T,
+        childrenKey: keyof T
+    ): Tree<T> {
+        return new Tree(structuredNodes, idKey, parentKey, childrenKey)
+    }
+
+    private static buildTree<T>(
         items: T[],
         idKey: keyof T,
         parentKey: keyof T,
@@ -61,7 +94,7 @@ export default class Tree<T> {
             const { [this.childrenKey]: _, ...data } = node
             result.push(data as T)
             // Recursively process children
-            const children = node[this.childrenKey] as TreeNode<T>[] | undefined
+            const children = node[this.childrenKey]
             if (children) {
                 children.forEach(traverse)
             }
@@ -79,7 +112,7 @@ export default class Tree<T> {
                 result = node
                 return true // Stop searching
             }
-            const children = node[this.childrenKey] as TreeNode<T>[] | undefined
+            const children = node[this.childrenKey]
             if (children) {
                 for (const child of children) {
                     if (traverse(child)) return true
@@ -93,5 +126,28 @@ export default class Tree<T> {
         }
 
         return result
+    }
+
+    filter(predicate: (node: TreeNode<T>) => boolean): Tree<T> {
+        const filterNodes = (nodes: TreeNode<T>[]): TreeNode<T>[] => {
+            return nodes
+                .map((node) => {
+                    const children = node[this.childrenKey]
+                    const filteredChildren = children ? filterNodes(children) : []
+
+                    if (predicate(node) || (filteredChildren && filteredChildren.length > 0)) {
+                        return {
+                            ...node,
+                            [this.childrenKey]: filteredChildren
+                        }
+                    }
+
+                    return null
+                })
+                .filter((node): node is TreeNode<T> => node !== null)
+        }
+
+        const filteredNodes = filterNodes(this.nodes)
+        return Tree.fromStructuredTree<T>(filteredNodes, this.idKey, this.parentKey, this.childrenKey)
     }
 }
