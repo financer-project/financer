@@ -1,6 +1,5 @@
 "use client"
 
-import { useCurrentUser } from "@/src/app/users/hooks/useCurrentUser"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { useMutation } from "@blitzjs/rpc"

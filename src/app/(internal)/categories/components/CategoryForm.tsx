@@ -9,6 +9,7 @@ import { CategoryType } from "@prisma/client"
 import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
+import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
 
 
 export function CategoryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
@@ -29,32 +30,35 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
 
     return (
         <Form<S> {...props}>
-            <SelectField label={"Household"}
-                         name={"householdId"}
-                         readonly
-                         value={useCurrentHousehold()?.id}
-                         options={useHouseholds()?.map(household =>
-                             ({ label: household.name, value: household.id })) ?? []}
-            />
-            <SelectField label={"Parent Category"}
-                         name={"parentId"}
-                         options={categories
-                             .flatten()
-                             .filter(category => category.id !== props.id)
-                             .map(category => ({ label: category.name, value: category.id }))}
-                         onChange={(value) => handleParentChange(value as string)} />
+            <SelectField<CategoryModel>
+                label={"Household"}
+                name={"householdId"}
+                readonly
+                value={useCurrentHousehold()?.id}
+                options={useHouseholds()?.map(household =>
+                    ({ label: household.name, value: household.id })) ?? []} />
+            <SelectField<CategoryModel>
+                label={"Parent Category"}
+                name={"parentId"}
+                options={categories
+                    .flatten()
+                    .filter(category => category.id !== props.id)
+                    .map(category => ({ label: category.name, value: category.id }))}
+                onChange={(value) => handleParentChange(value as string)} />
             <div className={"flex flex-row gap-4"}>
-                <TextField label={"Name"}
-                           name={"name"}
-                           required />
-                <SelectField label={"Type"}
-                             name={"type"}
-                             required
-                             value={parentType?.toString()}
-                             options={[
-                                 { value: CategoryType.INCOME, label: "Income" },
-                                 { value: CategoryType.EXPENSE, label: "Expense" }
-                             ]} />
+                <TextField<CategoryModel, string>
+                    label={"Name"}
+                    name={"name"}
+                    required />
+                <SelectField<CategoryModel>
+                    label={"Type"}
+                    name={"type"}
+                    required
+                    value={parentType?.toString()}
+                    options={[
+                        { value: CategoryType.INCOME, label: "Income" },
+                        { value: CategoryType.EXPENSE, label: "Expense" }
+                    ]} />
             </div>
         </Form>
     )

@@ -3,26 +3,20 @@ import { ErrorMessage } from "formik"
 import { Label } from "@/src/lib/components/ui/label"
 import { cn } from "@/lib/utils"
 
-export interface FormElementProps {
+export interface FormElementProps<Entity, Value> {
     label: string
-    name: string
+    name: keyof Entity
+    value?: Value
     required?: boolean
     placeholder?: string
     className?: string,
     readonly?: boolean,
     description?: string,
     onChange?: (value: string | number | null) => void
-    value?: string | number
 }
 
-const FormElement: React.FC<PropsWithChildren<FormElementProps>> = ({
-                                                                        label,
-                                                                        name,
-                                                                        children,
-                                                                        className,
-                                                                        required,
-                                                                        description
-                                                                    }) => {
+const FormElement = <E, V>(
+    { label, name, children, className, required, description }: PropsWithChildren<FormElementProps<E, V>>) => {
     return (
         <div className={cn("flex flex-col gap-2 flex-1", className)}>
             <Label htmlFor={name}>

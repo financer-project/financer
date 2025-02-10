@@ -10,12 +10,12 @@ import { Button } from "@/src/lib/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
 
-export interface SearchableSelectFieldProps extends FormElementProps {
-    options: { label: string; value: string }[] // Liste der verfügbaren Optionen
+export interface SearchableSelectFieldProps<Entity> extends FormElementProps<Entity, string> {
+    options: { label: string; value: string }[]
 }
 
-export const SelectField: React.FC<SearchableSelectFieldProps> = ({ name, options, readonly, ...props }) => {
-    const [field, meta, helpers] = useField({ name: name, options: {} })
+export const SelectField = <E, >({ name, options, readonly, ...props }: SearchableSelectFieldProps<E>) => {
+    const [field, , helpers] = useField({ name: name, options: {} })
     const { isSubmitting } = useFormikContext()
     const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
     const [search, setSearch] = useState("")

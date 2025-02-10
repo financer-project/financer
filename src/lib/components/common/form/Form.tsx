@@ -4,6 +4,7 @@ import { z } from "zod"
 import { Button } from "@/src/lib/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
 import { AlertCircle } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 
 export interface FormProps<S extends z.ZodSchema<any>>
     extends Omit<PropsWithoutRef<React.JSX.IntrinsicElements["form"]>, "onSubmit"> {
@@ -30,9 +31,23 @@ export function Form<S extends z.ZodType<any, any>>({
                                                         onSubmit
                                                     }: Readonly<FormProps<S>>) {
     const [formError, setFormError] = useState<string | null>(null)
+
+    const searchParams = useSearchParams() // Access query parameters dynamically
+
+    const getInitialValues = () => {
+        if (searchParams) {
+            const params = Object.fromEntries(searchParams.entries()) // Convert query params into an object
+            return {
+                ...initialValues,
+                ...params
+            }
+        }
+    }
+
+
     return (
         <Formik<z.infer<typeof schema>>
-            initialValues={initialValues ?? {}}
+            initialValues={getInitialValues()}
             validate={(values) => {
                 try {
                     schema.parse(values)
