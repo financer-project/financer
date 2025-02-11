@@ -1,14 +1,13 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/db"
 import { UpdateTransactionSchema } from "../schemas"
+import { TransactionType } from "@prisma/client"
 
 export default resolver.pipe(
-  resolver.zod(UpdateTransactionSchema),
-  resolver.authorize(),
-  async ({ id, ...data }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const transaction = await db.transaction.update({ where: { id }, data })
-
-    return transaction
-  }
+    resolver.zod(UpdateTransactionSchema),
+    resolver.authorize(),
+    async ({ id, ...transaction }) => {
+        transaction.amount = transaction.type === TransactionType.EXPENSE ? -Math.abs(transaction.amount) : Math.abs(transaction.amount)
+        return await db.transaction.update({ where: { id }, data: transaction })
+    }
 )

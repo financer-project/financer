@@ -22,8 +22,8 @@ model Settings {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    language String
-    theme    String
+    language String @default("en-US")
+    theme    String @default("light")
 
     @@id([userId])
 }

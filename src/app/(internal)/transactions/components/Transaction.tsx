@@ -40,13 +40,28 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                               data={transaction.name}
                               className={"basis-1/4"} />
 
+                    <DataItem label={"Type"}
+                              data={transaction.type}
+                              className={"basis-1/4"} />
+
                     <DataItem label={"Description"}
                               data={transaction.description}
-                              className={"basis-1/4"} />
+                              className={"basis-1/2"} />
                 </div>
             </Section>
 
+            <Section title={"Administrative Data"}
+                     subtitle={"Adminstrative data contains information about who has changed what etc."}>
+                <div className={"flex flex-row w-full"}>
+                    <DataItem label={"Created At"}
+                              data={formatters.date.format(transaction.createdAt)}
+                              className={"basis-1/4"} />
 
+                    <DataItem label={"Updated At"}
+                              data={formatters.date.format(transaction.updatedAt)}
+                              className={"basis-1/2"} />
+                </div>
+            </Section>
         </div>
     )
 })

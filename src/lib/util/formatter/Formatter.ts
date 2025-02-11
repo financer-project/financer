@@ -5,17 +5,17 @@ export type FormatterContext = {
     currency: CurrencyCodeRecord;
 }
 
-export interface Formatter<TInput, TOutput> {
-    format(input: TInput): TOutput;
+export interface Formatter<TInput, TOutput, TOptions = {}> {
+    format(input: TInput, options?: TOptions): TOutput;
 }
 
-export abstract class FormatterBase<TInput, TOutput> implements Formatter<TInput, TOutput> {
+export abstract class FormatterBase<TInput, TOutput, TOptions = {}> implements Formatter<TInput, TOutput, TOptions> {
     protected context: FormatterContext
 
     constructor(context: FormatterContext) {
         this.context = context
     }
 
-    abstract format(input: TInput): TOutput;
+    abstract format(input: TInput, options: TOptions): TOutput;
 }
 

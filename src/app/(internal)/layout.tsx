@@ -5,6 +5,13 @@ import Sidebar from "@/src/lib/components/content/nav/sidebar/Sidebar"
 import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
 import { useAuthenticatedBlitzContext } from "@/src/app/blitz-server"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
+import { invoke } from "src/app/blitz-server"
+import getSetting from "@/src/lib/model/settings/queries/getSetting"
+import Theme from "@/src/app/(internal)/theme"
+
+async function fetchSettings() {
+    return await invoke(getSetting, {});
+}
 
 export const metadata: Metadata = {
     title: {
@@ -15,16 +22,19 @@ export const metadata: Metadata = {
 }
 
 const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode }) => {
+    const settings = await fetchSettings()
+
     await useAuthenticatedBlitzContext({
         redirectTo: "/login"
     })
 
     return (
-        <div className={"bg-gray-100"}>
+        <div className={"bg-neutral-100 dark:bg-neutral-900"}>
+            <Theme theme={settings.theme} />
             <SidebarProvider>
                 <HouseholdProvider>
                     <Sidebar />
-                    <SidebarInset className={"flex p-4 box-border bg-gray-100 h-screen max-h-screen"}>
+                    <SidebarInset className={"flex p-4 box-border bg-neutral-100 dark:bg-neutral-900 h-screen max-h-screen"}>
                         <ScrollArea className={"h-full"} type={"auto"}>
                             <main
                                 className={"flex-1 flex flex-col justify-start px-8 py-6 w-full bg-background rounded-xl h-full"}>

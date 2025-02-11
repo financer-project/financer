@@ -3,16 +3,15 @@ import db from "db"
 
 export default async function getCurrentUser(_: null, ctx: Ctx) {
     if (!ctx.session.userId) return null
-    const user = await db.user.findFirst({
+    return await db.user.findFirst({
         where: { id: ctx.session.userId },
         select: {
             id: true,
             firstName: true,
             lastName: true,
             email: true,
-            role: true
+            role: true,
+            settings: true
         }
     })
-
-    return user
 }

@@ -30,19 +30,11 @@ export const EditTransaction = ({ transactionId }: { transactionId: string }) =>
                 <TransactionForm
                     submitText="Update Transaction"
                     schema={UpdateTransactionSchema}
-                    initialValues={{
-                        ...transaction,
-                        description: transaction.description ?? undefined,
-                        categoryId: transaction.categoryId ?? undefined
-                    }}
+                    initialValues={transaction}
                     onSubmit={async (values) => {
                         try {
-                            const updated = await updateTransactionMutation({
-                                ...values,
-                                id: transaction.id
-                            })
-                            await setQueryData(updated)
-                            router.refresh()
+                            await updateTransactionMutation({ ...values, id: transaction.id })
+                            router.push(`/transactions/${transaction.id}`)
                         } catch (error: any) {
                             console.error(error)
                             return {

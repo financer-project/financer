@@ -6,11 +6,13 @@ import { Formatter, FormatterContext } from "@/src/lib/util/formatter/Formatter"
 import React from "react"
 import AmountFormatter from "@/src/lib/util/formatter/AmountFormatter"
 import CurrencyDescriptionFormatter from "@/src/lib/util/formatter/CurrencyDescriptionFormatter"
+import DateFormatter from "@/src/lib/util/formatter/DateFormatter"
 
 const getFormatters = (context: FormatterContext) => ({
-    currencyDescription: new CurrencyDescriptionFormatter(context),
     amount: new AmountFormatter(context),
-    capitalize: { format: (str: string) => str.charAt(0).toUpperCase() + str.slice(1) } satisfies Formatter<string, string>
+    capitalize: { format: (str: string) => str.charAt(0).toUpperCase() + str.slice(1) } satisfies Formatter<string, string>,
+    currencyDescription: new CurrencyDescriptionFormatter(context),
+    date: new DateFormatter(context)
 })
 
 export interface WithFormattersProps {
