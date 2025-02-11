@@ -2,10 +2,12 @@ model Transaction {
     id          String          @id @default(uuid())
     createdAt   DateTime        @default(now())
     updatedAt   DateTime        @updatedAt
-    amount      Float
-    date        DateTime        @default(now())
-    description String
+    name        String
     type        TransactionType
+    amount      Float
+    valueDate   DateTime        @default(now())
+    description String?
+    isTransfer  Boolean         @default(false)
 
     account    Account   @relation(fields: [accountId], references: [id])
     accountId  String

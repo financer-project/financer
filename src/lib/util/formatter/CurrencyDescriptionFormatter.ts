@@ -1,8 +1,8 @@
-import { Formatter } from "./Formatter"
+import { FormatterBase } from "./Formatter"
 import currencyCodes from "currency-codes"
 
-export const CurrencyDescriptionFormatter: Formatter<string, string> = {
-    format: (input: string) => {
+export default class CurrencyDescriptionFormatter extends FormatterBase<string, string> {
+    format(input: string) {
         const currency = currencyCodes.code(input)
         if (!currency) {
             return input
@@ -10,3 +10,4 @@ export const CurrencyDescriptionFormatter: Formatter<string, string> = {
         return `${currency.currency} (${currency.code})`
     }
 }
+

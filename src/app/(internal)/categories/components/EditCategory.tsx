@@ -2,10 +2,11 @@
 import { Suspense } from "react"
 import updateCategory from "@/src/lib/model/categories/mutations/updateCategory"
 import getCategory from "@/src/lib/model/categories/queries/getCategory"
-import { UpdateCategorySchema } from "../../../../lib/model/categories/schemas"
-import { CategoryForm, FORM_ERROR } from "./CategoryForm"
+import { UpdateCategorySchema } from "@/src/lib/model/categories/schemas"
+import { CategoryForm } from "./CategoryForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
+import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 
 export const EditCategory = ({ categoryId }: { categoryId: string }) => {
     const [category, { setQueryData }] = useQuery(

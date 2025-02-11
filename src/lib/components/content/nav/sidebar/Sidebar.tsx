@@ -28,7 +28,7 @@ const groups = [
             },
             {
                 title: "Transactions",
-                url: "",
+                url: "/transactions",
                 icon: ArrowLeftRightIcon
             }
         ]

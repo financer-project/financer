@@ -27,7 +27,7 @@ export const useHouseholds = () => {
     if (context === null) {
         throw new Error("useHouseholds must be used within a HouseholdProvider")
     }
-    return context
+    return context ?? []
 }
 
 export const useCurrentHousehold = (): Household | undefined => {

@@ -8,12 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 const ITEMS_PER_PAGE = 100
 
 interface PaginatedTableProps<T> {
-    data: T[] // Die Daten der Liste (Accounts, Households, etc.)
-    columns: Array<{ name: string; render: (item: T) => React.ReactNode }> // Spalten mit Renderer
-    itemRoute: (item: T) => string // Ziel-Route eines Items (für Link)
-    hasMore: boolean // Gibt es mehr Seiten?
-    count?: number // Gesamtanzahl (optional)
-    createRoute?: string // Route, um ein neues Element zu erstellen
+    data: T[]
+    columns: Array<{ name: string; render: (item: T) => React.ReactNode }>
+    itemRoute: (item: T) => string
+    hasMore: boolean
+    count?: number
+    createRoute?: string
 }
 
 export const PaginatedTable = <T, >({
@@ -61,7 +61,9 @@ export const PaginatedTable = <T, >({
                 </TableHeader>
                 <TableBody>
                     {data.map((item, index) => (
-                        <TableRow key={index}>
+                        <TableRow key={index}
+                                  className={"cursor-pointer"}
+                                  onClick={() => router.push(itemRoute(item) as  __next_route_internal_types__.RouteImpl<string>)}>
                             {columns.map((column, colIndex) => (
                                 <TableCell key={colIndex}>{column.render(item)}</TableCell>
                             ))}

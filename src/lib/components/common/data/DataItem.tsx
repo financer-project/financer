@@ -2,7 +2,7 @@ import { Label } from "../../ui/label"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
-type Data = string | number | null;
+type Data = string | number | null | undefined;
 
 interface DataItemProps {
     className?: string,

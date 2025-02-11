@@ -15,12 +15,12 @@ import { ChevronsUpDown, HouseIcon, Sparkles } from "lucide-react"
 import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 import changeCurrentHousehold from "@/src/lib/model/household/mutations/changeCurrentHousehold"
 import { cn } from "@/lib/utils"
-import { Formatters } from "@/src/lib/util/Formatter"
+import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useState } from "react"
 import { Household } from "@prisma/client"
 
-const NavHousehold = () => {
-    const [currentHousehold, setCurrentHousehold] = useState<Household | null>(useCurrentHousehold())
+const NavHousehold = withFormatters(({ formatters }: WithFormattersProps) => {
+    const [currentHousehold, setCurrentHousehold] = useState<Household | undefined>(useCurrentHousehold())
     const isMobile = useIsMobile()
     const [changeCurrentHouseholdMutation] = useMutation(changeCurrentHousehold)
 
@@ -43,9 +43,10 @@ const NavHousehold = () => {
                                 <HouseIcon className={"w-4"} />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">{currentHousehold?.name ?? "No Household selected"}</span>
+                                <span
+                                    className="truncate font-semibold">{currentHousehold?.name ?? "No Household selected"}</span>
                                 <span className="truncate text-xs">
-                                    {Formatters.currencyDescription.format(currentHousehold?.currency ?? "Please create one first")}
+                                    {formatters.currencyDescription.format(currentHousehold?.currency ?? "Please create one first")}
                                 </span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
@@ -85,6 +86,6 @@ const NavHousehold = () => {
             </SidebarMenuItem>
         </SidebarMenu>
     )
-}
+})
 
 export default NavHousehold

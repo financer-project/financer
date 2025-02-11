@@ -37,7 +37,7 @@ export const SelectField = <E, >({ name, options, readonly, ...props }: Searchab
 
     const handleClear = () => {
         if (!readonly) {
-            helpers.setValue("")
+            helpers.setValue(undefined)
             setSearch("")
             props.onChange?.(null)
         }

@@ -2,17 +2,19 @@
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import DataItem from "@/src/lib/components/common/data/DataItem"
-import { Formatters } from "@/src/lib/util/Formatter"
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
 import Link from "next/link"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
+import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 
 const ITEMS_PER_PAGE = 100
 
-export const Household = ({ householdId }: { householdId: string }) => {
+export const Household = withFormatters(({ formatters, householdId }: WithFormattersProps & {
+    householdId: string
+}) => {
     const [household] = useQuery(getHousehold, { id: householdId })
 
     const urlSearchParams = useSearchParams()
@@ -34,7 +36,7 @@ export const Household = ({ householdId }: { householdId: string }) => {
                               className={"basis-1/4"} />
 
                     <DataItem label={"Currency"}
-                              data={Formatters.currencyDescription.format(household.currency)}
+                              data={formatters.currencyDescription.format(household.currency)}
                               className={"basis-1/4"} />
 
                     <DataItem label={"Description"}
@@ -69,4 +71,4 @@ export const Household = ({ householdId }: { householdId: string }) => {
             </Section>
         </div>
     )
-}
+})
