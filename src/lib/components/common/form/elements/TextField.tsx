@@ -9,13 +9,17 @@ export interface LabeledTextFieldProps<E, V> extends FormElementProps<E, V> {
 
 export const TextField = <E, V>({ name, ...props }: LabeledTextFieldProps<E, V>) => {
     const [input, , helpers] = useField(name)
-    const { isSubmitting, initialValues } = useFormikContext<FormikValues>()
+    const { isSubmitting } = useFormikContext<FormikValues>()
 
     useEffect(() => {
+        if (input.value === undefined) {
+            helpers.setValue(null)
+        }
+
         if (props.value && props.value !== input.value) {
             helpers.setValue(props.value)
         }
-    }, [props, helpers, initialValues])
+    }, [props, helpers, input])
 
     return (
         <FormElement name={name} {...props}>

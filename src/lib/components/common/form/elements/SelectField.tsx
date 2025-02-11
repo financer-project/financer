@@ -7,24 +7,33 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@
 import { X } from "lucide-react"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
 import { Button } from "@/src/lib/components/ui/button"
-import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
+
+interface SelectOption {
+    label: string;
+    value: string;
+    render?: (label: string) => React.ReactNode
+}
 
 export interface SearchableSelectFieldProps<Entity> extends FormElementProps<Entity, string> {
-    options: { label: string; value: string }[]
+    options: SelectOption[]
 }
 
 export const SelectField = <E, >({ name, options, readonly, ...props }: SearchableSelectFieldProps<E>) => {
-    const [field, , helpers] = useField({ name: name, options: {} })
+    const [field, , helpers] = useField(name)
     const { isSubmitting } = useFormikContext()
     const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
     const [search, setSearch] = useState("")
 
     useEffect(() => {
-        if (props.value !== undefined && props.value !== field.value) {
+        if (field.value === undefined) {
+            helpers.setValue(null)
+        }
+        if (props.value !== undefined && props.value !== null && props.value !== field.value) {
             helpers.setValue(props.value)
         }
-    }, [props, helpers])
+    }, [props, helpers, field])
 
     const handleSelect = (value: string) => {
         if (!readonly) {
@@ -37,7 +46,7 @@ export const SelectField = <E, >({ name, options, readonly, ...props }: Searchab
 
     const handleClear = () => {
         if (!readonly) {
-            helpers.setValue(undefined)
+            helpers.setValue(null)
             setSearch("")
             props.onChange?.(null)
         }
@@ -46,6 +55,10 @@ export const SelectField = <E, >({ name, options, readonly, ...props }: Searchab
     const filteredOptions = options.filter((option) =>
         option.label.toLowerCase().includes(search.toLowerCase())
     )
+
+    const renderValue = (option: SelectOption) => {
+        return option.render ? option.render(option.label) : option.label
+    }
 
     return (
         <FormElement name={name} {...props}>
@@ -62,7 +75,7 @@ export const SelectField = <E, >({ name, options, readonly, ...props }: Searchab
                             onFocusCapture={() => !readonly && setIsOpen(true)}
                             disabled={isSubmitting || readonly}>
                             {field.value
-                                ? options.find((option) => option.value === field.value)?.label || "Auswählen..."
+                                ? renderValue(options.find((option) => option.value === field.value)!)
                                 : "Auswählen..."}
                         </Button>
 
@@ -92,7 +105,7 @@ export const SelectField = <E, >({ name, options, readonly, ...props }: Searchab
                                         <CommandItem
                                             key={option.value}
                                             onSelect={() => handleSelect(option.value)}>
-                                            {option.label}
+                                            {renderValue(option)}
                                         </CommandItem>
                                     ))
                                 ) : (

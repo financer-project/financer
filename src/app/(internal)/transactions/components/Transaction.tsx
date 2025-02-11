@@ -4,6 +4,7 @@ import getTransaction from "@/src/lib/model/transactions/queries/getTransaction"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import Section from "@/src/lib/components/common/structure/Section"
+import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
 export const Transaction = withFormatters(({ transactionId, formatters }: WithFormattersProps & {
     transactionId: string
@@ -27,7 +28,10 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                               className={"basis-1/4"} />
 
                     <DataItem label={"Category"}
-                              data={transaction.category?.name}
+                              data={transaction.category &&
+                                  <ColoredTag label={transaction.category.name}
+                                              color={transaction.category.color} />}
+                              linkTo={`/categories/${transaction.category?.id}`}
                               className={"basis-1/4"} />
                 </div>
 

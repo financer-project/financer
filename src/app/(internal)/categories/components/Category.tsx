@@ -4,33 +4,36 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import deleteCategory from "@/src/lib/model/categories/mutations/deleteCategory"
 import getCategory from "@/src/lib/model/categories/queries/getCategory"
+import Section from "@/src/lib/components/common/structure/Section"
+import DataItem from "@/src/lib/components/common/data/DataItem"
+import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
+import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
-export const Category = ({ categoryId }: { categoryId: number }) => {
-  const router = useRouter()
-  const [deleteCategoryMutation] = useMutation(deleteCategory)
-  const [category] = useQuery(getCategory, { id: categoryId })
+export const Category = withFormatters(({ categoryId, formatters }: WithFormattersProps & { categoryId: string }) => {
+    const [category] = useQuery(getCategory, { id: categoryId })
 
-  return (
-    <>
-      <div>
-        <h1>Project {category.id}</h1>
-        <pre>{JSON.stringify(category, null, 2)}</pre>
+    return (
+        <div>
+            <Section title={"Basic Data"}
+                     subtitle={"This is the basic data of the category."}>
 
-        <Link href={`/categories/${category.id}/edit`}>Edit</Link>
+                <div className={"flex flex-row w-full"}>
+                    <DataItem label={"Name"}
+                              className={"basis-1/4"}
+                              data={category.name} />
 
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteCategoryMutation({ id: category.id })
-              router.push("/categories")
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
-      </div>
-    </>
-  )
-}
+                    <DataItem label={"Description"}
+                              className={"basis-1/4"}
+                              data={category.description} />
+
+                    <DataItem label={"Color"}
+                              className={"basis-1/4"}
+                              data={category.color &&
+                                  <ColoredTag label={formatters.capitalize.format(category.color)}
+                                              color={category.color} />} />
+                </div>
+
+            </Section>
+        </div>
+    )
+})

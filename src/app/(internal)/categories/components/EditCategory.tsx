@@ -18,8 +18,6 @@ export const EditCategory = ({ categoryId }: { categoryId: string }) => {
     const router = useRouter()
     return (
         <div>
-            <h1>Edit Category {category.id}</h1>
-            <pre>{JSON.stringify(category, null, 2)}</pre>
             <Suspense fallback={<div>Loading...</div>}>
                 <CategoryForm
                     submitText="Update Category"

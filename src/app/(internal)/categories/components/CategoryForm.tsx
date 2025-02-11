@@ -10,12 +10,17 @@ import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
+import ColorType from "@/src/lib/model/common/ColorType"
+import { cn } from "@/lib/utils"
+import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
 
 export function CategoryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
 
     const [parentType, setParentType] = useState<CategoryType | null>(null)
     const categories = useCategories()
+
+    let colours = "bg-green-900 bg-red-900 bg-yellow-900 bg-purple-900"
 
     const handleParentChange = (parentId: string | null) => {
         if (parentId) {
@@ -30,35 +35,46 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
 
     return (
         <Form<S> {...props}>
-            <SelectField<CategoryModel>
-                label={"Household"}
-                name={"householdId"}
-                readonly
-                value={useCurrentHousehold()?.id}
-                options={useHouseholds()?.map(household =>
-                    ({ label: household.name, value: household.id })) ?? []} />
-            <SelectField<CategoryModel>
-                label={"Parent Category"}
-                name={"parentId"}
-                options={categories
-                    .flatten()
-                    .filter(category => category.id !== props.id)
-                    .map(category => ({ label: category.name, value: category.id }))}
-                onChange={(value) => handleParentChange(value as string)} />
+            <div className={"flex flex-row gap-4"}>
+                <SelectField<CategoryModel>
+                    label={"Household"}
+                    name={"householdId"}
+                    readonly
+                    value={useCurrentHousehold()?.id}
+                    options={useHouseholds()?.map(household =>
+                        ({ label: household.name, value: household.id })) ?? []} />
+                <SelectField<CategoryModel>
+                    label={"Parent Category"}
+                    name={"parentId"}
+                    options={categories
+                        .flatten()
+                        .filter(category => category.id !== props.id)
+                        .map(category => ({ label: category.name, value: category.id }))}
+                    onChange={(value) => handleParentChange(value as string)} />
+            </div>
             <div className={"flex flex-row gap-4"}>
                 <TextField<CategoryModel, string>
                     label={"Name"}
                     name={"name"}
                     required />
-                <SelectField<CategoryModel>
-                    label={"Type"}
-                    name={"type"}
-                    required
-                    value={parentType?.toString()}
-                    options={[
-                        { value: CategoryType.INCOME, label: "Income" },
-                        { value: CategoryType.EXPENSE, label: "Expense" }
-                    ]} />
+                <div className={"flex flex-row gap-4 flex-1 "}>
+                    <SelectField<CategoryModel>
+                        label={"Type"}
+                        name={"type"}
+                        required
+                        value={parentType?.toString()}
+                        options={[
+                            { value: CategoryType.INCOME, label: "Income" },
+                            { value: CategoryType.EXPENSE, label: "Expense" }
+                        ]} />
+                    <SelectField label={"Color"}
+                                 name={"color"}
+                                 options={Object.values(ColorType).map(color => ({
+                                     value: color.toLowerCase(),
+                                     label: color.charAt(0).toUpperCase() + color.slice(1),
+                                     render: (label: string) => (<ColoredTag label={label} color={color} />)
+                                 }))} />
+                </div>
             </div>
         </Form>
     )

@@ -2,7 +2,7 @@ import { Label } from "../../ui/label"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
-type Data = string | number | null | undefined;
+type Data = string | number | React.ReactNode | null | undefined;
 
 interface DataItemProps {
     className?: string,
@@ -19,7 +19,7 @@ const DataItem = ({ label, data, className, linkTo }: DataItemProps) => {
     return (
         <div className={cn("flex flex-col", className)}>
             <Label className={"text-sm text-muted-foreground"}>{label}</Label>
-            {linkTo
+            {linkTo && data
                 ? <Link href={linkTo}
                         className={"underline underline-offset-5 font-medium"}>
                     {renderData(data)}

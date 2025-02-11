@@ -4,7 +4,7 @@ import db from "@/db"
 import { z } from "zod"
 
 const GetHousehold = z.object({
-    id: z.string().uuid().optional()
+    id: z.string().uuid()
 })
 
 export default resolver.pipe(

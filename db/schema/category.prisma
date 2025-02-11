@@ -5,6 +5,8 @@ model Category {
     name         String
     type         CategoryType
     budget       Float?
+    color        String?
+    description  String?
     household    Household     @relation(name: "CategoryHousehold", fields: [householdId], references: [id])
     householdId  String
     parent       Category?     @relation(name: "CategoryHierarchy", fields: [parentId], references: [id])

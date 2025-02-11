@@ -3,10 +3,10 @@ import { TransactionType } from "@prisma/client"
 
 export const CreateTransactionSchema = z.object({
     accountId: z.string().uuid(),
-    categoryId: z.string().uuid().optional(),
+    categoryId: z.string().uuid().nullable(),
     type: z.nativeEnum(TransactionType),
     name: z.string(),
-    description: z.string().optional(),
+    description: z.string().nullable(),
     amount: z.number()
 })
 

@@ -40,7 +40,8 @@ export const CategoriesList = () => {
                 <TreeView
                     tree={useCategories().filter(node => node.type === CategoryType.INCOME)}
                     renderNode={node => node.name}
-                    expandedAll={expandAllIncome} />
+                    expandedAll={expandAllIncome}
+                    itemRoute={category => `/categories/${category.id}`} />
             </Section>
             <Section title={"Expenses"}
                      subtitle={"All categories that are marked as expense."}
@@ -48,7 +49,8 @@ export const CategoriesList = () => {
                 <TreeView
                     tree={useCategories().filter(node => node.type === CategoryType.EXPENSE)}
                     renderNode={node => node.name}
-                    expandedAll={expandAllExpense} />
+                    expandedAll={expandAllExpense}
+                    itemRoute={category => `/categories/${category.id}`} />
             </Section>
         </div>
     )

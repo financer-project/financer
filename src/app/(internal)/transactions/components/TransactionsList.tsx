@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
 import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
+import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
 const ITEMS_PER_PAGE = 100
 
@@ -21,7 +22,12 @@ export const TransactionsList = withFormatters(({ formatters }: WithFormattersPr
             <PaginatedTable data={transactions}
                             columns={[
                                 { name: "Name", render: transaction => transaction.name },
-                                { name: "Category", render: transaction => transaction.category?.name ?? "Uncategorized"},
+                                {
+                                    name: "Category", render: transaction => transaction.category
+                                        ? <ColoredTag color={transaction.category.color}
+                                                      label={transaction.category.name} />
+                                        : <span className={"text-muted-foreground"}>Uncategorized</span>
+                                },
                                 { name: "Amount", render: transaction => formatters.amount.format(transaction.amount) }
                             ]}
                             itemRoute={transaction => `/transactions/${transaction.id}`}

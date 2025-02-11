@@ -5,6 +5,7 @@ export default class AmountFormatter extends FormatterBase<number, string> {
         return Intl.NumberFormat(this.context.locale, {
             style: "currency",
             currency: this.context.currency.code,
+            currencySign: "standard",
             currencyDisplay: "code"
         }).format(input)
     }
