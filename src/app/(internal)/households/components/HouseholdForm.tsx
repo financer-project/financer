@@ -2,7 +2,7 @@ import React from "react"
 import { Form, FormProps } from "@/src/lib/components/common/form/Form"
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
 import { z } from "zod"
-import SelectField from "@/src/lib/components/common/form/elements/SelectField"
+import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 import currencyCodes from "currency-codes"
 import TextAreaField from "@/src/lib/components/common/form/elements/TextAreaField"
 
@@ -17,7 +17,7 @@ export function HouseholdForm<S extends z.ZodType<any, any>>(props: Readonly<For
                            label="Name"
                            placeholder="Name"
                            required />
-                <SelectField
+                <SelectFormField
                     name="currency"
                     label="Currency"
                     placeholder="Currency"

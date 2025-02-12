@@ -7,7 +7,7 @@ import TextField from "@/src/lib/components/common/form/elements/TextField"
 import { Transaction, TransactionType } from "@prisma/client"
 import TextAreaField from "@/src/lib/components/common/form/elements/TextAreaField"
 import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
-import SelectField from "@/src/lib/components/common/form/elements/SelectField"
+import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
 
@@ -18,14 +18,14 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: FormProps<
     return (
         <Form<S> {...props}>
             <div className={"flex flex-row gap-4"}>
-                <SelectField<Transaction>
+                <SelectFormField<Transaction>
                     label={"Account"}
                     name={"accountId"}
                     options={accounts
                         .toSorted((a, b) => a.name.localeCompare(b.name))
                         .map(account => ({ label: account.name, value: account.id }))} />
 
-                <SelectField<Transaction>
+                <SelectFormField<Transaction>
                     label={"Category"}
                     name={"categoryId"}
                     options={categories
@@ -41,7 +41,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: FormProps<
             </div>
 
             <div className={"flex flex-row gap-4"}>
-                <SelectField<CategoryModel>
+                <SelectFormField<CategoryModel>
                     label={"Type"}
                     name={"type"}
                     required

@@ -3,16 +3,20 @@ import { ErrorMessage } from "formik"
 import { Label } from "@/src/lib/components/ui/label"
 import { cn } from "@/lib/utils"
 
-export interface FormElementProps<Entity, Value> {
-    label: string
-    name: keyof Entity
-    value?: Value
+export interface ElementProps<TValue> {
+    value?: TValue | null
+    onChange?: (value: TValue | null) => void
     required?: boolean
     placeholder?: string
     className?: string,
     readonly?: boolean,
+}
+
+
+export interface FormElementProps<TEntity, Value = TEntity[keyof TEntity]> extends ElementProps<Value> {
+    name: keyof TEntity
+    label: string
     description?: string,
-    onChange?: (value: string | number | null) => void
 }
 
 const FormElement = <E, V>(

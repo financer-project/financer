@@ -2,7 +2,7 @@ import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import React from "react"
 
 import { z } from "zod"
-import SelectField from "@/src/lib/components/common/form/elements/SelectField"
+import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 import { Settings } from "@prisma/client"
 import Section from "@/src/lib/components/common/structure/Section"
 
@@ -13,7 +13,7 @@ export function SettingForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
             <Section title={"General"} className={"mt-0"}>
 
                 <div className={"flex flex-row gap-4"}>
-                    <SelectField<Settings>
+                    <SelectFormField<Settings>
                         label={"Language"}
                         name={"language"}
                         options={[
@@ -22,7 +22,7 @@ export function SettingForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
                         ]}
                         description={"The language of the application."} />
 
-                    <SelectField<Settings>
+                    <SelectFormField<Settings>
                         label={"Theme"}
                         name={"theme"}
                         options={[

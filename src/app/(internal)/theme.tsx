@@ -1,15 +1,17 @@
 "use client"
 
-const Theme = ({ theme }: { theme: string }) => {
-    if (theme === "dark") {
-        document.documentElement.classList.add("dark")
-    } else {
-        document.documentElement.classList.remove("dark")
-    }
+import { useEffect } from "react"
 
-    return (
-        <></>
-    )
+const Theme = ({ theme }: { theme: string }) => {
+    useEffect(() => {
+        if (theme === "dark") {
+            document.documentElement.classList.add("dark")
+        } else {
+            document.documentElement.classList.remove("dark")
+        }
+    }, [theme]) // Runs the effect whenever the 'theme' prop changes
+
+    return null
 }
 
 export default Theme

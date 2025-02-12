@@ -2,7 +2,7 @@ import React from "react"
 import { z } from "zod"
 import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
-import SelectField from "@/src/lib/components/common/form/elements/SelectField"
+import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 
 export async function AccountForm<S extends z.ZodType<any, any>>(props: FormProps<S> & {
     households: { id: string, name: string }[]
@@ -11,9 +11,9 @@ export async function AccountForm<S extends z.ZodType<any, any>>(props: FormProp
     return (
         <Form<S> {...props}>
             <div className={"flex flex-row gap-4 w-full"}>
-                <SelectField label={"Household"}
-                             name={"householdId"}
-                             options={props.households.map((household) => ({
+                <SelectFormField label={"Household"}
+                                 name={"householdId"}
+                                 options={props.households.map((household) => ({
                                  value: household.id,
                                  label: household.name
                              }))} />

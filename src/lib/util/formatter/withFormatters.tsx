@@ -7,6 +7,8 @@ import React from "react"
 import AmountFormatter from "@/src/lib/util/formatter/AmountFormatter"
 import CurrencyDescriptionFormatter from "@/src/lib/util/formatter/CurrencyDescriptionFormatter"
 import DateFormatter from "@/src/lib/util/formatter/DateFormatter"
+import { useQuery } from "@blitzjs/rpc"
+import getSetting from "@/src/lib/model/settings/queries/getSetting"
 
 const getFormatters = (context: FormatterContext) => ({
     amount: new AmountFormatter(context),
@@ -22,9 +24,10 @@ export interface WithFormattersProps {
 function withFormatters<T extends WithFormattersProps = WithFormattersProps>(WrappedComponent: React.ComponentType<T>) {
     return (props: Omit<T, keyof WithFormattersProps>) => {
         const currentHousehold = useCurrentHousehold()
+        const [settings] = useQuery(getSetting, {})
 
         const context: FormatterContext = {
-            locale: "en-US",
+            locale: settings?.language ?? "en-US",
             currency: currencyCodes.code(currentHousehold?.currency ?? "USD")!
         }
         const formatters = getFormatters(context)
