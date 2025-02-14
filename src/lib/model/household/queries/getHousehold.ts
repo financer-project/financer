@@ -1,6 +1,6 @@
 import { AuthenticatedCtx, NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db from "@/db"
+import db from "src/lib/db"
 import { z } from "zod"
 
 const GetHousehold = z.object({

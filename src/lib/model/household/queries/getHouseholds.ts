@@ -1,6 +1,6 @@
 import { AuthenticatedCtx, paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "@/db"
+import db, { Prisma } from "src/lib/db"
 
 interface GetHouseholdsInput
     extends Pick<Prisma.HouseholdFindManyArgs, "where" | "orderBy" | "skip" | "take"> {

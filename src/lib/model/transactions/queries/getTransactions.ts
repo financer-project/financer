@@ -1,6 +1,6 @@
 import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "@/db"
+import db, { Prisma } from "src/lib/db"
 
 interface GetTransactionsInput
     extends Pick<Prisma.TransactionFindManyArgs, "where" | "orderBy" | "skip" | "take"> {

@@ -1,6 +1,6 @@
 import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "@/db"
+import db, { Prisma } from "src/lib/db"
 
 interface GetAccountsInput
     extends Pick<Prisma.AccountFindManyArgs, "where" | "orderBy" | "skip" | "take"> {

@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "@/db"
+import db from "src/lib/db"
 import { UpdateSettingSchema } from "@/src/lib/model/settings/schemas"
 
 export default resolver.pipe(

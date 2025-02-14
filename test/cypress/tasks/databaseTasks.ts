@@ -1,0 +1,35 @@
+import { execSync } from "child_process"
+import db from "src/lib/db"
+import { SecurePassword } from "@blitzjs/auth/secure-password"
+
+const databaseTasks = {
+    async resetDatabase() {
+        console.log("Resetting the database...")
+
+        try {
+            execSync("blitz prisma db push --force-reset --skip-generate", { stdio: "inherit" })
+            console.log("Database successfully reset.")
+            return null
+        } catch (error) {
+            console.error("Error while resetting the database:", error)
+            throw error instanceof Error ? error : new Error(String(error))
+        }
+    },
+
+    async seedDatabase() {
+        try {
+            const hashedPassword = await SecurePassword.hash("password")
+            return await db.user.create({
+                data: {
+                    email: "test@financer.com",
+                    hashedPassword: hashedPassword,
+                    firstName: "Test",
+                    lastName: "User"
+                }
+            })
+        } catch (error) {
+            throw new Error(`Error seeding database: ${error}`)
+        }
+    }
+}
+export default databaseTasks

@@ -1,5 +1,5 @@
 import { Ctx } from "blitz"
-import db from "@/db"
+import db from "src/lib/db"
 import changeCurrentHousehold from "@/src/lib/model/household/mutations/changeCurrentHousehold"
 import { Household } from "@prisma/client"
 

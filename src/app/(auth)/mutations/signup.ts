@@ -1,4 +1,4 @@
-import db from "db"
+import db from "src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 
 export default async function signup(

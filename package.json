@@ -9,10 +9,18 @@
         "studio": "blitz prisma studio",
         "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
         "test": "vitest run --passWithNoTests",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "db:start:test": "docker-compose -f docker/docker-compose.test.yml up -d",
+        "db:stop:test": "docker-compose -f docker/docker-compose.test.yml down",
+        "db:wait:test": "docker-compose -f docker/docker-compose.test.yml exec mysql /bin/bash -c \"until mysqladmin ping -hlocalhost -ufinancer-test -ppassword --silent; do echo waiting...; sleep 2; done;\"",
+        "db:migrate:test": "dotenv -e .env.test blitz prisma db push --force-reset",
+        "app:start:test": "dotenv -e .env.test blitz dev",
+        "test:start:app": "yarn db:start:test &&  yarn db:migrate:test && yarn app:start:test",
+        "test:e2e:open": "dotenv -e .env.test start-server-and-test test:start:app http://localhost:3000 cypress:e2e:open",
+        "cypress:e2e:open": "cypress open --e2e"
     },
     "prisma": {
-        "schema": "db/schema/"
+        "schema": "src/lib/db/schema/"
     },
     "prettier": {
         "semi": false,
@@ -27,7 +35,7 @@
         "@blitzjs/auth": "2.2.1",
         "@blitzjs/next": "2.2.1",
         "@blitzjs/rpc": "2.2.1",
-        "@prisma/client": "^6.3.0",
+        "@prisma/client": "^6.3.1",
         "@radix-ui/react-alert-dialog": "^1.1.5",
         "@radix-ui/react-avatar": "^1.1.2",
         "@radix-ui/react-dialog": "^1.1.5",
@@ -52,7 +60,7 @@
         "luxon": "3.5.0",
         "next": "^15.1.6",
         "postcss": "^8.5.1",
-        "prisma": "6.3.0",
+        "prisma": "6.3.1",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "recharts": "^2.15.1",
@@ -75,17 +83,18 @@
         "@typescript-eslint/eslint-plugin": "^8.22.0",
         "@vitejs/plugin-react": "^4.3.4",
         "ajv": "^8.17.1",
+        "cypress": "14.0.3",
+        "dotenv-cli": "8.0.0",
         "eslint": "^9.19.0",
         "eslint-config-next": "^15.1.6",
         "eslint-config-prettier": "^10.0.1",
         "jsdom": "^26.0.0",
         "lint-staged": "^15.4.3",
-        "prettier": "^3.4.2",
-        "prettier-plugin-prisma": "^5.0.0",
-        "pretty-quick": "^4.0.0",
         "preview-email": "^3.1.0",
+        "start-server-and-test": "2.0.10",
         "typescript": "^5.7.3",
         "vite-tsconfig-paths": "^5.1.4",
-        "vitest": "^3.0.4"
+        "vitest": "^3.0.4",
+        "vitest-mock-extended": "2.0.2"
     }
 }

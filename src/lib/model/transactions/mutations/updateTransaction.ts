@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "@/db"
+import db from "src/lib/db"
 import { UpdateTransactionSchema } from "../schemas"
 import { TransactionType } from "@prisma/client"
 
