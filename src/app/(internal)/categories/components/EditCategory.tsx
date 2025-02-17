@@ -24,7 +24,7 @@ export const EditCategory = ({ categoryId }: { categoryId: string }) => {
                         try {
                             await updateCategoryMutation({ ...values, id: category.id })
                             router.push("/categories")
-                        } catch (error: any) {
+                        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                             console.error(error)
                             return {
                                 [FORM_ERROR]: error.toString()

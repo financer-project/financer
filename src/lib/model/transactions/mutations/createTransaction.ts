@@ -8,6 +8,6 @@ export default resolver.pipe(
     resolver.authorize(),
     async (transaction) => {
         transaction.amount = transaction.type === TransactionType.EXPENSE ? -Math.abs(transaction.amount) : Math.abs(transaction.amount)
-        return await db.transaction.create({ data: { ...transaction } })
+        return db.transaction.create({ data: { ...transaction } })
     }
 )

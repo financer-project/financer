@@ -3,10 +3,7 @@ import FormElement, { FormElementProps } from "@/src/lib/components/common/form/
 import { Textarea } from "@/src/lib/components/ui/textarea"
 import { useEffect } from "react"
 
-export interface TextAreaProps<E> extends FormElementProps<E, string> {
-}
-
-export const TextAreaField = <E, >({ name, label, ...props }: TextAreaProps<E>) => {
+export const TextAreaField = <E, >({ name, label, ...props }: FormElementProps<E, string>) => {
     const [input, , helpers] = useField(name)
     const { isSubmitting } = useFormikContext()
 

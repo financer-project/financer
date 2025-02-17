@@ -29,7 +29,7 @@ export const SignupForm = () => {
                             await signupMutation(values)
                             router.refresh()
                             router.push("/")
-                        } catch (error: any) {
+                        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                             if (error.code === "P2002" && error.meta?.target?.includes("email")) {
                                 // This error comes from Prisma
                                 return { email: "This email is already being used" }

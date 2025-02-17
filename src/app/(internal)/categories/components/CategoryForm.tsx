@@ -13,7 +13,7 @@ import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
 import ColorType from "@/src/lib/model/common/ColorType"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
-
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
 
     const [parentType, setParentType] = useState<CategoryType | null>(null)

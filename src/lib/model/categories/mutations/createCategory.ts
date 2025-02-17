@@ -12,6 +12,6 @@ export default resolver.pipe(
                 throw new Error(`Type must be the same as parent (${parentCategory?.type}).`)
             }
         }
-        return await db.category.create({ data: input })
+        return db.category.create({ data: input })
     }
 )

@@ -7,7 +7,7 @@ import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider
 import Header from "@/src/lib/components/content/nav/Header"
 
 async function fetchCategory(id: string) {
-    return await invoke(getCategory, { id: id })
+    return invoke(getCategory, { id: id })
 }
 
 type EditCategoryPageProps = {

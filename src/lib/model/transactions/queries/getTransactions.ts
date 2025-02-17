@@ -2,13 +2,14 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "src/lib/db"
 
-interface GetTransactionsInput
-    extends Pick<Prisma.TransactionFindManyArgs, "where" | "orderBy" | "skip" | "take"> {
-}
-
 export default resolver.pipe(
     resolver.authorize(),
-    async ({ where, orderBy, skip = 0, take = 100 }: GetTransactionsInput) => {
+    async ({
+               where,
+               orderBy,
+               skip = 0,
+               take = 100
+           }: Pick<Prisma.TransactionFindManyArgs, "where" | "orderBy" | "skip" | "take">) => {
         const {
             items: transactions,
             hasMore,

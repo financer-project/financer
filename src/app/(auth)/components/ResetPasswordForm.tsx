@@ -35,7 +35,7 @@ export function ResetPasswordForm() {
                       onSubmit={async (values) => {
                           try {
                               await resetPasswordMutation({ ...values, token })
-                          } catch (error: any) {
+                          } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                               if (error.name === "ResetPasswordError") {
                                   return {
                                       [FORM_ERROR]: error.message

@@ -55,6 +55,7 @@ export default class Tree<T> {
         parentKey: keyof T,
         childrenKey: keyof T
     ): TreeNode<T>[] {
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
         const nodeMap = new Map<any, TreeNode<T>>() // Map to store nodes by their ID
         const tree: TreeNode<T>[] = [] // This will hold the root nodes
 
@@ -91,7 +92,7 @@ export default class Tree<T> {
 
         const traverse = (node: TreeNode<T>) => {
             // Extract the original item (without children) and add it to the result
-            const { [this.childrenKey]: _, ...data } = node
+            const { [this.childrenKey]: _, ...data } = node  // eslint-disable-line @typescript-eslint/no-unused-vars
             result.push(data as T)
             // Recursively process children
             const children = node[this.childrenKey]

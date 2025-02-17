@@ -6,6 +6,6 @@ export default resolver.pipe(
     resolver.zod(UpdateCategorySchema),
     resolver.authorize(),
     async ({ id, ...data }) => {
-        return await db.category.update({ where: { id }, data })
+        return db.category.update({ where: { id }, data })
     }
 )

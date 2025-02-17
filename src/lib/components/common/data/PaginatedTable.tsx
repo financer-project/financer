@@ -5,14 +5,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
 
-const ITEMS_PER_PAGE = 100
-
 interface PaginatedTableProps<T> {
     data: T[]
     columns: Array<{ name: string; render: (item: T) => React.ReactNode }>
     itemRoute: (item: T) => string
     hasMore: boolean
-    count?: number
     createRoute?: string
 }
 
@@ -21,25 +18,23 @@ export const PaginatedTable = <T, >({
                                         columns,
                                         itemRoute,
                                         hasMore,
-                                        count,
                                         createRoute
                                     }: PaginatedTableProps<T>) => {
-    const searchparams = useSearchParams()!
-    const page = Number(searchparams.get("page")) || 0
+    const searchParams = useSearchParams()
+    const page = Number(searchParams.get("page")) || 0
     const router = useRouter()
     const pathname = usePathname()
 
     const goToPreviousPage = () => {
-        const params = new URLSearchParams(searchparams)
+        const params = new URLSearchParams(searchParams)
         params.set("page", (page - 1).toString())
-        // @ts-ignore
-        router.push((pathname + "?" + params.toString()))
+        router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
     }
+
     const goToNextPage = () => {
-        const params = new URLSearchParams(searchparams)
+        const params = new URLSearchParams(searchParams)
         params.set("page", (page + 1).toString())
-        // @ts-ignore
-        router.push((pathname + "?" + params.toString()))
+        router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
     }
 
     return (

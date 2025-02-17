@@ -1,11 +1,12 @@
 import { PropsWithoutRef, ReactNode, useState } from "react"
-import { Form as FormikForm, Formik, FormikProps } from "formik"
+import { Form as FormikForm, Formik, FormikErrors, FormikProps } from "formik"
 import { z } from "zod"
 import { Button } from "@/src/lib/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface FormProps<S extends z.ZodSchema<any>>
     extends Omit<PropsWithoutRef<React.JSX.IntrinsicElements["form"]>, "onSubmit"> {
     schema: S
@@ -18,11 +19,12 @@ export interface FormProps<S extends z.ZodSchema<any>>
 interface OnSubmitResult {
     FORM_ERROR?: string
 
-    [prop: string]: any
+    [prop: string]: any //eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export const FORM_ERROR = "FORM_ERROR"
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function Form<S extends z.ZodType<any, any>>({
                                                         children,
                                                         submitText,
@@ -65,8 +67,7 @@ export function Form<S extends z.ZodType<any, any>>({
                 }
 
                 if (Object.keys(otherErrors).length > 0) {
-                    // @ts-ignore
-                    setErrors(otherErrors)
+                    setErrors(otherErrors as FormikErrors<typeof values>)
                 }
             }}>
             <FormikForm className="flex flex-col gap-4 w-full my-4">

@@ -1,5 +1,3 @@
-import db from "@/src/lib/db"
-
 describe("Authentication Spec", () => {
     beforeEach(() => {
         cy.task("resetDatabase")

@@ -8,6 +8,7 @@ import TextAreaField from "@/src/lib/components/common/form/elements/TextAreaFie
 
 export { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function HouseholdForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
     return (
         <Form<S> {...props}>

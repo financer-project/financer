@@ -28,7 +28,7 @@ export function ForgotPasswordForm() {
                         onSubmit={async (values) => {
                             try {
                                 await forgotPasswordMutation(values)
-                            } catch (error: any) {
+                            } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
                                 return {
                                     [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again."
                                 }

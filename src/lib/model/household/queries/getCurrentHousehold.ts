@@ -8,7 +8,7 @@ export default async function getCurrentHousehold(_: null, ctx: Ctx): Promise<Ho
     if (!privateData.currentHouseholdId) {
         const household = await db.household.findFirst()
         if (household) {
-            return await changeCurrentHousehold({ id: household.id }, ctx)
+            return changeCurrentHousehold({ id: household.id }, ctx)
         } else {
             return null
         }

@@ -6,7 +6,7 @@ import { Transaction } from "../components/Transaction"
 import TransactionHeader from "@/src/app/(internal)/transactions/[transactionId]/header"
 
 async function fetchTransaction(id: string): Promise<TransactionModel> {
-    return await invoke(getTransaction, { id: id })
+    return invoke(getTransaction, { id: id })
 }
 
 export async function generateMetadata(props: TransactionPageProps): Promise<Metadata> {

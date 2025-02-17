@@ -7,6 +7,7 @@ import { Settings } from "@prisma/client"
 import Section from "@/src/lib/components/common/structure/Section"
 
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SettingForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
     return (
         <Form<S> {...props}>

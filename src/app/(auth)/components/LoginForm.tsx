@@ -36,7 +36,7 @@ export const LoginForm = () => {
                             } else {
                                 router.push("/")
                             }
-                        } catch (error: any) {
+                        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                             if (error instanceof AuthenticationError) {
                                 return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
                             } else {

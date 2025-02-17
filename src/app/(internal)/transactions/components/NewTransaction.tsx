@@ -18,7 +18,7 @@ export function NewTransaction() {
                 try {
                     const transaction = await createTransactionMutation(values)
                     router.push(`/transactions/${transaction.id}`)
-                } catch (error: any) {
+                } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                     console.error(error)
                     return {
                         [FORM_ERROR]: error.toString()

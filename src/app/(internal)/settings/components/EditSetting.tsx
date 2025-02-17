@@ -30,7 +30,7 @@ export const EditSetting = () => {
                             })
                             await setQueryData(updated)
                             router.refresh()
-                        } catch (error: any) {
+                        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                             console.error(error)
                             return {
                                 [FORM_ERROR]: error.toString()

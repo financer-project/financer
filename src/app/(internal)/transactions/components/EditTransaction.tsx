@@ -10,11 +10,7 @@ import Header from "@/src/lib/components/content/nav/Header"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 
 export const EditTransaction = ({ transactionId }: { transactionId: string }) => {
-    const [transaction, { setQueryData }] = useQuery(
-        getTransaction,
-        { id: transactionId },
-        { staleTime: Infinity }
-    )
+    const [transaction] = useQuery(getTransaction, { id: transactionId }, { staleTime: Infinity })
     const [updateTransactionMutation] = useMutation(updateTransaction)
     const router = useRouter()
     return (
@@ -35,7 +31,7 @@ export const EditTransaction = ({ transactionId }: { transactionId: string }) =>
                         try {
                             await updateTransactionMutation({ ...values, id: transaction.id })
                             router.push(`/transactions/${transaction.id}`)
-                        } catch (error: any) {
+                        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                             console.error(error)
                             return {
                                 [FORM_ERROR]: error.toString()

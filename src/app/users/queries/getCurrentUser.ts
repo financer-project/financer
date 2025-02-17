@@ -3,7 +3,7 @@ import db from "src/lib/db"
 
 export default async function getCurrentUser(_: null, ctx: Ctx) {
     if (!ctx.session.userId) return null
-    return await db.user.findFirst({
+    return db.user.findFirst({
         where: { id: ctx.session.userId },
         select: {
             id: true,

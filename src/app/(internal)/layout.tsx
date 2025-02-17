@@ -11,11 +11,11 @@ import getCurrentUser from "@/src/app/users/queries/getCurrentUser"
 import { redirect } from "next/navigation"
 
 async function fetchUser() {
-    return await invoke(getCurrentUser, {})
+    return invoke(getCurrentUser, {})
 }
 
 async function fetchSettings() {
-    return await invoke(getSetting, {})
+    return invoke(getSetting, {})
 }
 
 export const metadata: Metadata = {

@@ -6,7 +6,7 @@ export default resolver.pipe(
     resolver.zod(CreateAccountSchema),
     resolver.authorize(),
     async (input) => {
-        return await db.account.create({
+        return db.account.create({
             data: { ...input }
         })
     }

@@ -18,8 +18,7 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
         await db.user.update({ where: { id: user.id }, data: { hashedPassword: improvedHash } })
     }
 
-    const { hashedPassword, ...rest } = user
-    return rest
+    return user
 }
 
 export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ctx) => {

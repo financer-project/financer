@@ -6,7 +6,7 @@ import { Category } from "@/src/app/(internal)/categories/components/Category"
 import CategoryHeader from "@/src/app/(internal)/categories/[categoryId]/header"
 
 async function fetchCategory(id: string) {
-    return await invoke(getCategory, { id: id })
+    return invoke(getCategory, { id: id })
 }
 
 export async function generateMetadata(props: CategoryPageProps): Promise<Metadata> {

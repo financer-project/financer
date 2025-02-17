@@ -7,7 +7,7 @@ export default defineConfig({
         baseUrl: "http://localhost:3000",
         supportFile: false,
         specPattern: "test/cypress/e2e/**/*.spec.ts",
-        setupNodeEvents(on, config) {
+        setupNodeEvents(on) {
             on("task", {
                 ...databaseTasks
             })

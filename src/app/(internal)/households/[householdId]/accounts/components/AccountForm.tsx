@@ -4,6 +4,7 @@ import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function AccountForm<S extends z.ZodType<any, any>>(props: FormProps<S> & {
     households: { id: string, name: string }[]
 }) {

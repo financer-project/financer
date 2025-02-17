@@ -18,7 +18,7 @@ export const HouseholdsList = withFormatters(({ formatters }: WithFormattersProp
 
     const urlSearchParams = useSearchParams()!
     const page = Number(urlSearchParams.get("page")) || 0
-    const [{ households, hasMore, count }] = usePaginatedQuery(getHouseholds, {
+    const [{ households, hasMore }] = usePaginatedQuery(getHouseholds, {
         orderBy: { id: "asc" },
         skip: ITEMS_PER_PAGE * page,
         take: ITEMS_PER_PAGE

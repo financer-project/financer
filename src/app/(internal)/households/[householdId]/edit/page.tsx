@@ -7,7 +7,7 @@ import Header from "@/src/lib/components/content/nav/Header"
 import { Household as HouseholdModel } from ".prisma/client"
 
 async function fetchHousehold(householdId: string): Promise<HouseholdModel> {
-    return await invoke(getHousehold, { id: householdId })
+    return invoke(getHousehold, { id: householdId })
 }
 
 type EditHouseholdPageProps = {

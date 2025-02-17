@@ -7,7 +7,7 @@ export default resolver.pipe(
         const settings = await db.settings.findFirst({ where: { userId: ctx.session.userId } })
 
         if (!settings) {
-            return await db.settings.create({
+            return db.settings.create({
                 data: {
                     userId: ctx.session.userId,
                     language: "en-US",

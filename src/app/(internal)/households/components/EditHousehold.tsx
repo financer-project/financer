@@ -39,7 +39,7 @@ export const EditHousehold = ({ householdId }: { householdId: string }) => {
                                     title: "Updated Household!",
                                     description: `Your changes to the household "${updated.name}" have been successfully applied.`
                                 })
-                            } catch (error: any) {
+                            } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                                 console.error(error)
                                 return {
                                     [FORM_ERROR]: error.toString()

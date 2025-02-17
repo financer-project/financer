@@ -7,7 +7,7 @@ export default resolver.pipe(
     resolver.zod(CreateHouseholdSchema),
     resolver.authorize(),
     async (input, ctx: Ctx) => {
-        return await db.household.create({
+        return db.household.create({
             data: {
                 ...input,
                 ownerId: ctx.session.userId!

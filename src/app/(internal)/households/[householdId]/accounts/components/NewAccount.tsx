@@ -19,9 +19,9 @@ export function NewAccount({ householdId }: Readonly<{ householdId: string }>) {
             initialValues={{ householdId: householdId, name: "", technicalName: "" }}
             onSubmit={async (values) => {
                 try {
-                    const account = await createAccountMutation(values)
+                    await createAccountMutation(values)
                     router.push(`/households/${householdId}`)
-                } catch (error: any) {
+                } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                     console.error(error)
                     return {
                         [FORM_ERROR]: error.toString()

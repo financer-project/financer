@@ -6,6 +6,6 @@ export default resolver.pipe(
     resolver.zod(UpdateSettingSchema),
     resolver.authorize(),
     async ({ userId, ...data }) => {
-        return await db.settings.update({ where: { userId }, data })
+        return db.settings.update({ where: { userId }, data })
     }
 )

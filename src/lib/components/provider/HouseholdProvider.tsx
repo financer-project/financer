@@ -11,7 +11,7 @@ const CurrentHouseholdContext = createContext<Household | undefined>(undefined)
 
 export function HouseholdProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     const [{ households }] = useQuery(getHouseholds, { orderBy: { name: "asc" } })
-    let [currentHousehold] = useQuery(getCurrentHousehold, null)
+    const [currentHousehold] = useQuery(getCurrentHousehold, null)
 
     return (
         <HouseholdContext.Provider value={households}>
