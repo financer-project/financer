@@ -83,7 +83,6 @@ financer
 │   │   │   ├── components
 │   │   │   │   ├── ForgotPasswordForm.tsx
 │   │   │   │   ├── LoginForm.tsx
-│   │   │   │   ├── LogoutButton.tsx
 │   │   │   │   ├── ResetPasswordForm.tsx
 │   │   │   │   └── SignupForm.tsx
 │   │   │   ├── forgot-password

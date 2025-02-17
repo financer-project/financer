@@ -1,6 +1,8 @@
 import db from "src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { AuthenticatedCtx } from "blitz"
+import { $Enums } from ".prisma/client"
+import Role = $Enums.Role
 
 export default async function signup(
     input: {
@@ -24,7 +26,7 @@ export default async function signup(
 
     await blitzContext.session.$create({
         userId: user.id,
-        role: "user"
+        role: Role.USER
     })
 
     return { userId: blitzContext.session.userId, ...user, email: input.email }

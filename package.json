@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "blitz dev",
-        "build": "blitz build",
+        "build": "dotenv -e .env.production blitz build",
         "start": "blitz start",
         "studio": "blitz prisma studio",
         "lint": "eslint .",

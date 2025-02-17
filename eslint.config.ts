@@ -1,3 +1,4 @@
+// @ts-nocheck
 import nextPlugin from "@next/eslint-plugin-next"
 import reactPlugin from "eslint-plugin-react"
 import hooksPlugin from "eslint-plugin-react-hooks"
