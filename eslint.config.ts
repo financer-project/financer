@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import nextPlugin from "@next/eslint-plugin-next"
 import reactPlugin from "eslint-plugin-react"
