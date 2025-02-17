@@ -20,7 +20,7 @@ const DataItem = ({ label, data, className, linkTo }: DataItemProps) => {
         <div className={cn("flex flex-col", className)}>
             <Label className={"text-sm text-muted-foreground"}>{label}</Label>
             {linkTo && data
-                ? <Link href={linkTo}
+                ? <Link href={{ pathname: linkTo }}
                         className={"underline underline-offset-5 font-medium"}>
                     {renderData(data)}
                 </Link>

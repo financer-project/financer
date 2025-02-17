@@ -21,8 +21,7 @@ export async function generateMetadata(props: HouseholdPageProps): Promise<Metad
 }
 
 type HouseholdPageProps = {
-    params: Promise<{ householdId: string }>,
-    household: Promise<HouseholdModel>
+    params: Promise<{ householdId: string }>
 }
 
 export default async function Page(props: Readonly<HouseholdPageProps>) {

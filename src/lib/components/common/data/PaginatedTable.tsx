@@ -47,7 +47,7 @@ export const PaginatedTable = <T, >({
             <div className="flex flex-row justify-between items-center">
                 {createRoute && (
                     <Button variant="outline" asChild>
-                        <Link href={createRoute}>Create</Link>
+                        <Link href={{ pathname: createRoute }}>Create</Link>
                     </Button>
                 )}
             </div>
@@ -63,7 +63,7 @@ export const PaginatedTable = <T, >({
                     {data.map((item, index) => (
                         <TableRow key={index}
                                   className={"cursor-pointer"}
-                                  onClick={() => router.push(itemRoute(item) as  __next_route_internal_types__.RouteImpl<string>)}>
+                                  onClick={() => router.push(itemRoute(item) as __next_route_internal_types__.RouteImpl<string>)}>
                             {columns.map((column, colIndex) => (
                                 <TableCell key={colIndex}>{column.render(item)}</TableCell>
                             ))}

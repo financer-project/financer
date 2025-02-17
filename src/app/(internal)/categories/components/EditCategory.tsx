@@ -7,13 +7,10 @@ import { CategoryForm } from "./CategoryForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
+import ColorType from "@/src/lib/model/common/ColorType"
 
 export const EditCategory = ({ categoryId }: { categoryId: string }) => {
-    const [category, { setQueryData }] = useQuery(
-        getCategory,
-        { id: categoryId },
-        { staleTime: Infinity }
-    )
+    const [category] = useQuery(getCategory, { id: categoryId }, { staleTime: Infinity })
     const [updateCategoryMutation] = useMutation(updateCategory)
     const router = useRouter()
     return (
@@ -22,15 +19,11 @@ export const EditCategory = ({ categoryId }: { categoryId: string }) => {
                 <CategoryForm
                     submitText="Update Category"
                     schema={UpdateCategorySchema}
-                    initialValues={category}
+                    initialValues={{ ...category, color: category.color as ColorType | null }}
                     onSubmit={async (values) => {
                         try {
-                            const updated = await updateCategoryMutation({
-                                ...values,
-                                id: category.id
-                            })
-                            await setQueryData(updated)
-                            router.refresh()
+                            await updateCategoryMutation({ ...values, id: category.id })
+                            router.push("/categories")
                         } catch (error: any) {
                             console.error(error)
                             return {

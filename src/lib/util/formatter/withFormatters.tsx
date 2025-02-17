@@ -22,7 +22,7 @@ export interface WithFormattersProps {
 }
 
 function withFormatters<T extends WithFormattersProps = WithFormattersProps>(WrappedComponent: React.ComponentType<T>) {
-    return (props: Omit<T, keyof WithFormattersProps>) => {
+    const WithFormatters = (props: Omit<T, keyof WithFormattersProps>) => {
         const currentHousehold = useCurrentHousehold()
         const [settings] = useQuery(getSetting, {})
 
@@ -34,6 +34,8 @@ function withFormatters<T extends WithFormattersProps = WithFormattersProps>(Wra
 
         return (<WrappedComponent {...(props as T)} formatters={formatters} />)
     }
+    WithFormatters.displayName = "WithFormatters"
+    return WithFormatters;
 }
 
 export default withFormatters

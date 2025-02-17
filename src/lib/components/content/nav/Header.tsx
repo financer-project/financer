@@ -13,7 +13,7 @@ import React from "react"
 import Link from "next/link"
 import { Button } from "@/src/lib/components/ui/button"
 
-interface BreadcumbItem {
+interface BreadcrumbItem {
     label: string,
     url?: string
 }
@@ -21,7 +21,7 @@ interface BreadcumbItem {
 interface HeaderProps {
     title: string,
     subtitle?: string
-    breadcrumbs: BreadcumbItem[],
+    breadcrumbs: BreadcrumbItem[],
     actions?: React.ReactNode | (() => React.ReactNode);
     hideBackButton?: boolean
 }
@@ -34,14 +34,18 @@ const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: Heade
                     {!hideBackButton && (
                         <Button variant={"link"} asChild className={"text-default p-0 h-full"}>
                             <Link
-                                href={breadcrumbs.length - 2 > 0 ? breadcrumbs[breadcrumbs.length - 2].url ?? "/dashboard" : "/dashboard"}>
+                                href={{
+                                    pathname: breadcrumbs.length - 2 > 0
+                                        ? breadcrumbs[breadcrumbs.length - 2].url ?? "/dashboard"
+                                        : "/dashboard"
+                                }}>
                                 <ArrowLeftIcon />
                                 Back
                             </Link>
                         </Button>
                     )}
 
-                    <Separator orientation={"vertical"}  />
+                    <Separator orientation={"vertical"} />
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>

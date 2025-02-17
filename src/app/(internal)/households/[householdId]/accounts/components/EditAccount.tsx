@@ -2,12 +2,13 @@
 import { Suspense } from "react"
 import updateAccount from "@/src/lib/model/account/mutations/updateAccount"
 import getAccount from "@/src/lib/model/account/queries/getAccount"
-import { UpdateAccountSchema } from "../../../../../../lib/model/account/schemas"
-import { AccountForm, FORM_ERROR } from "./AccountForm"
+import { UpdateAccountSchema } from "@/src/lib/model/account/schemas"
+import { AccountForm } from "./AccountForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import Section from "@/src/lib/components/common/structure/Section"
 import { useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
+import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 
 export const EditAccount = ({ accountId }: { accountId: string }) => {
     const [account, { setQueryData }] = useQuery(
@@ -25,7 +26,7 @@ export const EditAccount = ({ accountId }: { accountId: string }) => {
                         submitText="Update Account"
                         schema={UpdateAccountSchema}
                         households={useHouseholds()}
-                        initialValues={{ ...account, technicalName: account.technicalName ?? undefined }}
+                        initialValues={account}
                         onSubmit={async (values) => {
                             try {
                                 const updated = await updateAccountMutation({

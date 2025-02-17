@@ -14,17 +14,17 @@
         "db:stop:test": "docker-compose -f docker/docker-compose.test.yml down",
         "db:wait:test": "docker-compose -f docker/docker-compose.test.yml exec mysql /bin/bash -c \"until mysqladmin ping -hlocalhost -ufinancer-test -ppassword --silent; do echo waiting...; sleep 2; done;\"",
         "db:migrate:test": "dotenv -e .env.test blitz prisma db push --force-reset",
-        "app:start:test": "dotenv -e .env.test blitz dev",
-        "test:start:app": "yarn db:start:test &&  yarn db:migrate:test && yarn app:start:test",
-        "test:e2e:open": "dotenv -e .env.test start-server-and-test test:start:app http://localhost:3000 cypress:e2e:open",
+        "test:start:app": "yarn db:start:test && yarn db:migrate:test && blitz build && dotenv -e .env.test blitz start",
+        "test:start:app:dev": "yarn db:start:test && yarn db:migrate:test && dotenv -e .env.test blitz dev",
+        "test:e2e": "dotenv -e .env.test start-server-and-test test:start:app http://localhost:3000 cypress:e2e",
+        "test:e2e:headed": "dotenv -e .env.test start-server-and-test test:start:app http://localhost:3000 cypress:e2e:headed",
+        "test:e2e:open": "dotenv -e .env.test start-server-and-test test:start:app:dev http://localhost:3000 cypress:e2e:open",
+        "cypress:e2e": "cypress run --e2e --browser chrome --headless",
+        "cypress:e2e:headed": "cypress run --e2e --browser chrome",
         "cypress:e2e:open": "cypress open --e2e"
     },
     "prisma": {
         "schema": "src/lib/db/schema/"
-    },
-    "prettier": {
-        "semi": false,
-        "printWidth": 100
     },
     "lint-staged": {
         "*.{js,ts,tsx}": [

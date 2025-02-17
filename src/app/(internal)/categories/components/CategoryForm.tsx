@@ -11,16 +11,13 @@ import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
 import ColorType from "@/src/lib/model/common/ColorType"
-import { cn } from "@/lib/utils"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
 
-export function CategoryForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
 
     const [parentType, setParentType] = useState<CategoryType | null>(null)
     const categories = useCategories()
-
-    let colours = "bg-green-900 bg-red-900 bg-yellow-900 bg-purple-900"
 
     const handleParentChange = (parentId: string | null) => {
         if (parentId) {
@@ -70,10 +67,10 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
                     <SelectFormField label={"Color"}
                                      name={"color"}
                                      options={Object.values(ColorType).map(color => ({
-                                     value: color.toLowerCase(),
-                                     label: color.charAt(0).toUpperCase() + color.slice(1),
-                                     render: (label: string) => (<ColoredTag label={label} color={color} />)
-                                 }))} />
+                                         value: color.toLowerCase(),
+                                         label: color.charAt(0).toUpperCase() + color.slice(1),
+                                         render: (label: string) => (<ColoredTag label={label} color={color} />)
+                                     }))} />
                 </div>
             </div>
         </Form>
