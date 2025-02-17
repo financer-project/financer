@@ -1,8 +1,7 @@
 import db from "src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { AuthenticatedCtx } from "blitz"
-import { $Enums } from ".prisma/client"
-import Role = $Enums.Role
+import { Role } from "@prisma/client"
 
 export default async function signup(
     input: {
