@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build
+.next/
+
+# Tests
+test/
+cypress.config.ts
+.env.test
+
+# Tools
+.github/
+.idea/
+docker/
+
+# Docs
+README.md

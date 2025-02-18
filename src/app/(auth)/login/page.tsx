@@ -14,7 +14,7 @@ export default function LoginPage() {
                         Back
                     </Link>
                 </Button>
-                    <LoginForm />
+                <LoginForm />
             </div>
         </main>
     )

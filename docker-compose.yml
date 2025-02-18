@@ -1,0 +1,35 @@
+services:
+  app:
+    image: financer:latest
+    container_name: financer-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: mysql://financer:password@financer-db:3306/financer
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:9
+    container_name: financer-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: financer
+      MYSQL_USER: financer
+      MYSQL_PASSWORD: password
+    healthcheck:
+      test: [ "CMD", "/usr/bin/mysql", "--user=root",  "--password=password", "--execute", "SHOW DATABASES;" ]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+#    volumes:
+#      - ./data:/var/lib/mysql
+
+networks:
+  financer:
+    external: true

@@ -911,7 +911,7 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
-"@blitzjs/auth@2.2.1":
+"@blitzjs/auth@^2.2.1":
   version "2.2.1"
   resolved "https://registry.npmjs.org/@blitzjs/auth/-/auth-2.2.1.tgz#46d4166848703cdb6984d94f8a438c15f5a16f58"
   integrity sha512-G3P37KpVf0IDqzeI7xw3eqNjVqTvwADwRSujci2QwsS93pNVavWw2aL2jOeAr9bM/4hD1JrouzX0yG56M7Ehww==
@@ -971,7 +971,7 @@
     vinyl "2.2.1"
     zod "3.23.8"
 
-"@blitzjs/next@2.2.1":
+"@blitzjs/next@^2.2.1":
   version "2.2.1"
   resolved "https://registry.npmjs.org/@blitzjs/next/-/next-2.2.1.tgz#cb929b682d16f7a998acfee7f142d53261e53a08"
   integrity sha512-7clJdqNIEn/7Oh4l3JDlw7eRkCbbLiFQziD2t4DKI0c/4/7HJKn+iNdN0k/+3DgmbMI27WcqrEdQX5rlV5WNFg==
@@ -985,7 +985,7 @@
     superjson "1.11.0"
     supports-color "8.1.1"
 
-"@blitzjs/rpc@2.2.1":
+"@blitzjs/rpc@2.2.1", "@blitzjs/rpc@^2.2.1":
   version "2.2.1"
   resolved "https://registry.npmjs.org/@blitzjs/rpc/-/rpc-2.2.1.tgz#fb79a8a90d124fbba0254e61975da11d4b2651a6"
   integrity sha512-GYdQvFVIcyR9Jyg92jDV/FDE5ni+I6JHxOKNweQUKZe610riserffqW/VG0dJf0Bc18ijIEFFy1i3USvQr8Eyw==
@@ -7839,7 +7839,7 @@ neo-async@^2.5.0:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-next@^15.1.6:
+next@^15.1.7:
   version "15.1.7"
   resolved "https://registry.npmjs.org/next/-/next-15.1.7.tgz#e814845e7cdb0294aee88ceab0bb962de83e8e6f"
   integrity sha512-GNeINPGS9c6OZKCvKypbL8GTsT5GhWPp4DM0fzkXJuXMilOO2EeFxuAY6JZbtk6XIl6Ws10ag3xRINDjSO5+wg==

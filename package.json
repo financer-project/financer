@@ -4,6 +4,7 @@
     "scripts": {
         "dev": "blitz dev",
         "build": "dotenv -e .env.production yarn db:generate && blitz build",
+        "build:docker:latest": "docker build -t financer:latest .",
         "start": "blitz start",
         "studio": "blitz prisma studio",
         "lint": "eslint .",
@@ -13,6 +14,7 @@
         "db:test:start": "docker compose -f docker/docker-compose.test.yml up -d",
         "db:test:stop": "docker compose -f docker/docker-compose.test.yml down",
         "db:test:wait": "docker compose -f docker/docker-compose.test.yml exec -T mysql /bin/bash -c \"until mysqladmin ping -hlocalhost -ufinancer-test -ppassword --silent; do echo waiting...; sleep 2; done;\"",
+        "db:migrate:deploy": "blitz prisma migrate deploy",
         "db:push": "blitz prisma db push",
         "db:push:test": "dotenv -e .env.test blitz prisma db push --force-reset",
         "test:start:app": "yarn db:test:start && yarn db:test:wait && yarn db:push:test && dotenv -e .env.test blitz start",
@@ -33,9 +35,9 @@
         ]
     },
     "dependencies": {
-        "@blitzjs/auth": "2.2.1",
-        "@blitzjs/next": "2.2.1",
-        "@blitzjs/rpc": "2.2.1",
+        "@blitzjs/auth": "^2.2.1",
+        "@blitzjs/next": "^2.2.1",
+        "@blitzjs/rpc": "^2.2.1",
         "@prisma/client": "^6.3.1",
         "@radix-ui/react-alert-dialog": "^1.1.5",
         "@radix-ui/react-avatar": "^1.1.2",
@@ -59,7 +61,7 @@
         "formik": "^2.4.6",
         "lucide-react": "0.475.0",
         "luxon": "3.5.0",
-        "next": "^15.1.6",
+        "next": "^15.1.7",
         "postcss": "^8.5.1",
         "prisma": "6.3.1",
         "react": "^19.0.0",
