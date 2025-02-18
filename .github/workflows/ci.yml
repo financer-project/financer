@@ -69,8 +69,5 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Start Test Database
-        run: yarn db:start:test
-
       - name: Run E2E Tests using Cypress
-        run: yarn test:e2e:open
+        run: yarn test:e2e
