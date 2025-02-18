@@ -2,16 +2,15 @@ services:
   mysql:
     image: mysql:9
     container_name: financer-db-test
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: financer-test
       MYSQL_USER: financer-test
       MYSQL_PASSWORD: password
     ports:
-      - "3307:3306" # Expose MySQL on port 3307 to avoid conflicts with local MySQL
+      - "3307:3306"
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: [ "CMD", "/usr/bin/mysql", "--user=root",  "--password=password", "--execute", "SHOW DATABASES;" ]
       interval: 10s
-      timeout: 5s
-      retries: 3
+      timeout: 2s
+      retries: 10
