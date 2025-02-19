@@ -15,23 +15,7 @@ jobs:
 
     container:
       image: cypress/browsers:latest
-    #      options: -v /var/run/docker.sock:/var/run/docker.sock
-
-    services:
-      mysql:
-        image: mysql:9
-        environment:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: financer-test
-          MYSQL_USER: financer-test
-          MYSQL_PASSWORD: password
-        ports:
-          - "3307:3306"
-        healthcheck:
-          test: [ "CMD", "/usr/bin/mysql", "--user=root",  "--password=password", "--execute", "SHOW DATABASES;" ]
-          interval: 10s
-          timeout: 2s
-          retries: 10
+      options: -v /var/run/docker.sock:/var/run/docker.sock
 
     steps:
       - name: Install Docker CLI and Compose
@@ -73,6 +57,11 @@ jobs:
 
       - name: Run Vitest
         run: yarn test
+
+      - name: Start Test Database
+        run:
+          docker-compose -f docker/docker-compose.test.yml up -d --wait 
+          sleep 2
 
       - name: Run E2E Tests using Cypress
         run: yarn test:e2e
