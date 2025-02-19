@@ -58,5 +58,10 @@ jobs:
       - name: Run Vitest
         run: yarn test
 
+      - name: Start Test Database
+        run: | 
+          docker-compose -f docker/docker-compose.test.yml up -d --wait 
+          sleep 2
+
       - name: Run E2E Tests using Cypress
         run: yarn test:e2e

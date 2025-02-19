@@ -16,7 +16,7 @@
         "db:migrate:deploy": "blitz prisma migrate deploy",
         "db:push": "blitz prisma db push",
         "db:push:test": "dotenv -e .env.test blitz prisma db push --force-reset",
-        "test:start:app": "yarn db:test:start && yarn db:push:test && dotenv -e .env.test blitz start",
+        "test:start:app": "yarn db:push:test && dotenv -e .env.test blitz start",
         "test:start:app:dev": "yarn db:test:start && yarn db:push:test && dotenv -e .env.test blitz dev",
         "test:e2e": "dotenv -e .env.test start-server-and-test test:start:app http://localhost:3000 cypress:e2e && yarn db:test:stop",
         "test:e2e:headed": "dotenv -e .env.test start-server-and-test test:start:app http://localhost:3000 cypress:e2e:headed && yarn db:test:stop",
