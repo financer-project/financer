@@ -13,6 +13,9 @@ jobs:
     name: Build, Check & Test
     runs-on: ubuntu-latest
 
+    container:
+      image: cypress/browsers:latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
