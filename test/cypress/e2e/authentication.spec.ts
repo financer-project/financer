@@ -1,7 +1,12 @@
 describe("Authentication Spec", () => {
     beforeEach(() => {
+        // cy.task("startDatabase")
         cy.task("resetDatabase")
         cy.task("seedDatabase")
+    })
+
+    after(() => {
+        // cy.task("stopDatabase")
     })
 
     it("Create a new user", () => {
