@@ -32,7 +32,7 @@ const databaseTasks = {
         console.log("Resetting the database...")
 
         try {
-            execSync("blitz prisma db push --force-reset --skip-generate", { stdio: "inherit" })
+            execSync("yarn db:push:test", { stdio: "inherit" })
             console.log("Database successfully reset.")
             return null
         } catch (error) {
