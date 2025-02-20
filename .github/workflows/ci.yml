@@ -30,6 +30,7 @@ jobs:
           path: |
             node_modules
             ~/.cache/yarn
+            ~/.cache/Cypress
           key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             deps-${{ runner.os }}-
