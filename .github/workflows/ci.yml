@@ -65,6 +65,6 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.pullrequest.key = ${{ github.event.number }}
-            -Dsonar.pullrequest.branch = ${{ github.ref_name }}
-            -Dsonar.pullrequest.base = main
+            --define sonar.pullrequest.key=${{ github.event.number }}
+            --define sonar.pullrequest.branch=${{ github.ref_name }}
+            --define sonar.pullrequest.base=main
