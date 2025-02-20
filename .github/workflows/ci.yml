@@ -56,3 +56,14 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: mysql://financer-test:password@localhost:3307/financer-test
           SESSION_SECRET_KEY: test-session-secret-which-is-32-bytes-long
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        if: ${{ always() }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        args: >
+          -Dsonar.pullrequest.key = ${{ github.event.number }}
+          -Dsonar.pullrequest.branch = ${{ github.ref_name }}
+          -Dsonar.pullrequest.base = main
