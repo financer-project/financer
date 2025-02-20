@@ -47,7 +47,7 @@ const databaseTasks = {
 
     async seedDatabase() {
         const hashedPassword = await SecurePassword.hash("password")
-        return await db.user.create({
+        const user = await db.user.create({
             data: {
                 email: "test@financer.com",
                 hashedPassword: hashedPassword,
@@ -55,6 +55,8 @@ const databaseTasks = {
                 lastName: "User"
             }
         })
+
+        return user
     }
 }
 export default databaseTasks
