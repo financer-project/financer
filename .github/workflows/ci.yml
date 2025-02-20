@@ -13,10 +13,6 @@ jobs:
     name: Build, Check & Test
     runs-on: ubuntu-latest
 
-    container:
-      image: cypress/browsers:latest
-      options: -v /var/run/docker.sock:/var/run/docker.sock
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -51,4 +47,7 @@ jobs:
         run: yarn test
 
       - name: Run E2E Tests using Cypress
-        run: yarn test:e2e
+        uses: cypress-io/github-action@v6
+        with:
+          start: yarn test:start:app
+          wait-on: http://localhost:3000
