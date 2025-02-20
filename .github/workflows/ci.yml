@@ -18,14 +18,6 @@ jobs:
       options: -v /var/run/docker.sock:/var/run/docker.sock
 
     steps:
-      - name: Install Docker CLI and Compose
-        run: |
-          apt update
-          apt install -y docker.io curl
-          curl -L "https://github.com/docker/compose/releases/download/v2.33.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
-          docker-compose version  # Verify compose installation
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -57,16 +49,6 @@ jobs:
 
       - name: Run Vitest
         run: yarn test
-
-      - name: Start Test Database
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          host port: 3307 # Optional, default value is 3306. The port of host
-          container port: 3306 # Optional, default value is 3306. The port of container
-          mysql database: financer-test
-          mysql root password: password
-          mysql user: financer-test
-          mysql password: password
 
       - name: Run E2E Tests using Cypress
         run: yarn test:e2e
