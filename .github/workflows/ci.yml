@@ -59,9 +59,14 @@ jobs:
         run: yarn test
 
       - name: Start Test Database
-        run: |
-          docker-compose -f docker/docker-compose.test.yml up -d --wait 
-          sleep 2
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3307 # Optional, default value is 3306. The port of host
+          container port: 3306 # Optional, default value is 3306. The port of container
+          mysql database: financer-test
+          mysql root password: password
+          mysql user: financer-test
+          mysql password: password
 
       - name: Run E2E Tests using Cypress
         run: yarn test:e2e
