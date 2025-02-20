@@ -1,5 +1,5 @@
 import { execSync } from "child_process"
-import db from "src/lib/db"
+import db, { Prisma } from "src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { MySqlContainer } from "@testcontainers/mysql"
 import { StartedTestContainer } from "testcontainers"
@@ -19,6 +19,9 @@ const databaseTasks = {
 
         console.info(`Started test database running on port ${port} (url: '${process.env.DATABASE_URL}')`)
 
+        execSync("yarn db:push:test", { stdio: "inherit" })
+        console.info("Updated schema for test database.")
+
         return container
     },
 
@@ -29,32 +32,29 @@ const databaseTasks = {
     },
 
     async resetDatabase() {
-        console.log("Resetting the database...")
+        console.info("Resetting the database...")
+        await db.$queryRawUnsafe(`SET FOREIGN_KEY_CHECKS = 0`)
 
-        try {
-            execSync("yarn db:push:test", { stdio: "inherit" })
-            console.log("Database successfully reset.")
-            return null
-        } catch (error) {
-            console.error("Error while resetting the database:", error)
-            throw error instanceof Error ? error : new Error(String(error))
+        const tableNames = Object.values(Prisma.ModelName)
+        for (const tableName of tableNames) {
+            await db.$queryRawUnsafe(`TRUNCATE TABLE ${tableName};`)
         }
+
+        await db.$queryRawUnsafe(`SET FOREIGN_KEY_CHECKS = 1`)
+        console.info("Database successfully reset.")
+        return null
     },
 
     async seedDatabase() {
-        try {
-            const hashedPassword = await SecurePassword.hash("password")
-            return await db.user.create({
-                data: {
-                    email: "test@financer.com",
-                    hashedPassword: hashedPassword,
-                    firstName: "Test",
-                    lastName: "User"
-                }
-            })
-        } catch (error) {
-            throw new Error(`Error seeding database: ${error}`)
-        }
+        const hashedPassword = await SecurePassword.hash("password")
+        return await db.user.create({
+            data: {
+                email: "test@financer.com",
+                hashedPassword: hashedPassword,
+                firstName: "Test",
+                lastName: "User"
+            }
+        })
     }
 }
 export default databaseTasks

@@ -1,12 +1,7 @@
 describe("Authentication Spec", () => {
     beforeEach(() => {
-        // cy.task("startDatabase")
         cy.task("resetDatabase")
         cy.task("seedDatabase")
-    })
-
-    after(() => {
-        // cy.task("stopDatabase")
     })
 
     it("Create a new user", () => {
@@ -16,7 +11,7 @@ describe("Authentication Spec", () => {
 
         cy.get("input[name='firstName']").type("Cypress")
         cy.get("input[name='lastName']").type("Test")
-        cy.get("input[name='email']").type("cypress@test.com")
+        cy.get("input[name='email']").type("cypress2@test.com")
         cy.get("input[name='password']").type("password123")
         cy.get("button[type='submit']").click()
 
