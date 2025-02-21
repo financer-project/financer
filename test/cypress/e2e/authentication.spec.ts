@@ -23,7 +23,7 @@ describe("Authentication Spec", () => {
 
         cy.get("a[href='/login']").click()
 
-        cy.get("input[name='email']").type("test@financer.com")
+        cy.get("input[name='email']").type("user@financer.com")
         cy.get("input[name='password']").type("password")
         cy.get("button[type='submit']").click()
 
