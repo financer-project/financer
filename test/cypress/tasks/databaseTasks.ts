@@ -3,11 +3,18 @@ import db, { Prisma } from "src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { MySqlContainer } from "@testcontainers/mysql"
 import { StartedTestContainer } from "testcontainers"
+import { Role, User } from "@prisma/client"
+
+let container: StartedTestContainer
 
 const databaseTasks = {
     async startDatabase(): Promise<StartedTestContainer> {
+        if (container) {
+            await this.stopDatabase()
+        }
+
         console.info("Starting test database ...")
-        const container = await new MySqlContainer("mysql:9")
+        container = await new MySqlContainer("mysql:9")
             .withDatabase("financer-test")
             .withRootPassword("password")
             .withUsername("financer-test")
@@ -19,13 +26,13 @@ const databaseTasks = {
 
         console.info(`Started test database running on port ${port} (url: '${process.env.DATABASE_URL}')`)
 
-        execSync("yarn db:push:test", { stdio: "inherit" })
+        execSync("yarn blitz prisma db push --skip-generate", { stdio: "inherit" })
         console.info("Updated schema for test database.")
 
         return container
     },
 
-    async stopDatabase(container: StartedTestContainer): Promise<void> {
+    async stopDatabase(): Promise<void> {
         console.info("Stopping test database ...")
         await container.stop()
         console.info("Test database was stopped.")
@@ -47,16 +54,28 @@ const databaseTasks = {
 
     async seedDatabase() {
         const hashedPassword = await SecurePassword.hash("password")
-        const user = await db.user.create({
+        const adminUser = await db.user.create({
             data: {
-                email: "test@financer.com",
+                email: "admin@financer.com",
+                hashedPassword: hashedPassword,
+                firstName: "Test",
+                lastName: "User",
+                role: Role.ADMIN
+            }
+        })
+        const defaultUser = await db.user.create({
+            data: {
+                email: "user@financer.com",
                 hashedPassword: hashedPassword,
                 firstName: "Test",
                 lastName: "User"
             }
         })
 
-        return user
+        return {
+            adminUser: adminUser,
+            defaultUser: defaultUser
+        }
     }
 }
 export default databaseTasks

@@ -1,8 +1,5 @@
 import { defineConfig } from "cypress"
 import databaseTasks from "@/test/cypress/tasks/databaseTasks"
-import { StartedTestContainer } from "testcontainers"
-
-let container: StartedTestContainer
 
 export default defineConfig({
     projectId: "financer",
@@ -15,11 +12,10 @@ export default defineConfig({
                 ...databaseTasks
             })
             on("before:run", async () => {
-                container = await databaseTasks.startDatabase()
-                // await databaseTasks.startApp()
+                await databaseTasks.startDatabase()
             })
             on("after:run", async () => {
-                await databaseTasks.stopDatabase(container)
+                await databaseTasks.stopDatabase()
             })
         }
     },
@@ -28,7 +24,7 @@ export default defineConfig({
     videosFolder: "test/cypress/videos",
     downloadsFolder: "test/cypress/downloads",
     defaultBrowser: "chrome",
-    pageLoadTimeout: 100000,
+    pageLoadTimeout: 200000,
     experimentalInteractiveRunEvents: true
 })
 

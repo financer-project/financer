@@ -13,7 +13,6 @@
         "db:generate": "blitz prisma generate",
         "db:migrate:deploy": "blitz prisma migrate deploy",
         "db:push": "blitz prisma db push",
-        "db:push:test": "dotenv -e .env.test blitz prisma db push --force-reset --skip-generate",
         "test:start:app": "dotenv -e .env.test blitz start",
         "test:start:app:dev": "dotenv -e .env.test blitz dev",
         "test:e2e": "dotenv -e .env.test start-server-and-test test:start:app 3000 cypress:e2e",
