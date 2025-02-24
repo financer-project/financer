@@ -3,7 +3,7 @@ import db, { Prisma } from "src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { MySqlContainer } from "@testcontainers/mysql"
 import { StartedTestContainer } from "testcontainers"
-import { Role, User } from "@prisma/client"
+import { Role } from "@prisma/client"
 
 let container: StartedTestContainer
 
