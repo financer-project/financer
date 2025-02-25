@@ -11,7 +11,7 @@ const Theme = ({ theme }: { theme: string }) => {
         }
     }, [theme]) // Runs the effect whenever the 'theme' prop changes
 
-    return null
+    return (<></>)
 }
 
 export default Theme

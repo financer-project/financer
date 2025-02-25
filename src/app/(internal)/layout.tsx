@@ -9,6 +9,9 @@ import getSetting from "@/src/lib/model/settings/queries/getSetting"
 import Theme from "@/src/app/(internal)/theme"
 import getCurrentUser from "@/src/app/users/queries/getCurrentUser"
 import { redirect } from "next/navigation"
+import { Suspense } from "react"
+
+export const dynamic = "force-dynamic"
 
 async function fetchUser() {
     return invoke(getCurrentUser, {})
@@ -36,21 +39,23 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
 
     return (
         <div className={"bg-neutral-100 dark:bg-neutral-900"}>
-            <Theme theme={settings.theme} />
-            <SidebarProvider>
-                <HouseholdProvider>
-                    <Sidebar />
-                    <SidebarInset
-                        className={"flex p-4 box-border bg-neutral-100 dark:bg-neutral-900 h-screen max-h-screen"}>
-                        <ScrollArea className={"h-full"} type={"auto"}>
-                            <main
-                                className={"flex-1 flex flex-col justify-start px-8 py-6 w-full bg-background rounded-xl h-full"}>
-                                {children}
-                            </main>
-                        </ScrollArea>
-                    </SidebarInset>
-                </HouseholdProvider>
-            </SidebarProvider>
+            <Suspense>
+                <Theme theme={settings.theme} />
+                <SidebarProvider>
+                    <HouseholdProvider>
+                        <Sidebar />
+                        <SidebarInset
+                            className={"flex p-4 box-border bg-neutral-100 dark:bg-neutral-900 h-screen max-h-screen"}>
+                            <ScrollArea className={"h-full"} type={"auto"}>
+                                <main
+                                    className={"flex-1 flex flex-col justify-start px-8 py-6 w-full bg-background rounded-xl h-full"}>
+                                    {children}
+                                </main>
+                            </ScrollArea>
+                        </SidebarInset>
+                    </HouseholdProvider>
+                </SidebarProvider>
+            </Suspense>
         </div>
     )
 }

@@ -6,7 +6,7 @@ import { useQuery } from "@blitzjs/rpc"
 import getHouseholds from "@/src/lib/model/household/queries/getHouseholds"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
-const HouseholdContext = createContext<Household[] | undefined>(undefined)
+const HouseholdContext = createContext<Household[]>([])
 const CurrentHouseholdContext = createContext<Household | undefined>(undefined)
 
 export function HouseholdProvider({ children }: Readonly<{ children: React.ReactNode }>) {

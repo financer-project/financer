@@ -5,7 +5,7 @@ export default defineConfig({
     projectId: "financer",
     e2e: {
         baseUrl: "http://localhost:3000",
-        supportFile: false,
+        supportFile: "test/cypress/support/index.ts",
         specPattern: "test/cypress/e2e/**/*.spec.ts",
         setupNodeEvents(on) {
             on("task", {
@@ -23,8 +23,9 @@ export default defineConfig({
     screenshotsFolder: "test/cypress/screenshots",
     videosFolder: "test/cypress/videos",
     downloadsFolder: "test/cypress/downloads",
+    supportFolder: "test/cypress/support",
     defaultBrowser: "chrome",
     pageLoadTimeout: 200000,
-    experimentalInteractiveRunEvents: true
+    experimentalInteractiveRunEvents: true,
 })
 

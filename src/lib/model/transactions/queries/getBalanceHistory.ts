@@ -9,7 +9,7 @@ const GetBalanceHistory = z.object({
 })
 
 
-interface BalanceHistory {
+export interface BalanceHistory {
     month: Date,
     expenses: number
     income: number
