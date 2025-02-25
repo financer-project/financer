@@ -13,7 +13,6 @@ const nextConfig: NextConfig = {
         }
         return config
     }
-
 }
 
 export default withBlitz(nextConfig)

@@ -5,8 +5,6 @@ import BalanceChart from "@/src/app/(internal)/dashboard/components/BalanceChart
 export const dynamic = "force-dynamic"
 
 const Dashboard: BlitzPage = async () => {
-
-
     return (
         <div>
             <Header title={"Dashboard"}

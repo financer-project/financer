@@ -1,9 +1,14 @@
 import { execSync } from "child_process"
 import db, { Prisma } from "src/lib/db"
-import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { MySqlContainer } from "@testcontainers/mysql"
 import { StartedTestContainer } from "testcontainers"
-import { Role } from "@prisma/client"
+import seedUsers, { UserSeed } from "@/test/seed/user"
+import seedHouseholds, { HouseholdSeed } from "@/test/seed/households"
+
+export interface TestData {
+    users: UserSeed,
+    households: HouseholdSeed
+}
 
 let container: StartedTestContainer
 
@@ -29,6 +34,8 @@ const databaseTasks = {
         execSync("yarn blitz prisma db push --skip-generate", { stdio: "inherit" })
         console.info("Updated schema for test database.")
 
+        await seedUsers()
+
         return container
     },
 
@@ -38,12 +45,16 @@ const databaseTasks = {
         console.info("Test database was stopped.")
     },
 
-    async resetDatabase() {
+    async resetDatabase(resetUsers?: boolean) {
         console.info("Resetting the database...")
         await db.$queryRawUnsafe(`SET FOREIGN_KEY_CHECKS = 0`)
 
         const tableNames = Object.values(Prisma.ModelName)
+            .filter(value => {
+                return !resetUsers ? value !== "User" && value !== "Session" : true
+            })
         for (const tableName of tableNames) {
+            console.info(`Resetting database table name ${tableName}`)
             await db.$queryRawUnsafe(`TRUNCATE TABLE ${tableName};`)
         }
 
@@ -52,29 +63,22 @@ const databaseTasks = {
         return null
     },
 
-    async seedDatabase() {
-        const hashedPassword = await SecurePassword.hash("password")
-        const adminUser = await db.user.create({
-            data: {
-                email: "admin@financer.com",
-                hashedPassword: hashedPassword,
-                firstName: "Test",
-                lastName: "User",
-                role: Role.ADMIN
+    async seedDatabase(): Promise<TestData> {
+        let users: UserSeed
+        if (await db.user.findFirst({ where: { email: "user@financer.com" } })) {
+            users = {
+                standard: (await db.user.findFirst({ where: { email: "user@financer.com" } }))!,
+                admin: (await db.user.findFirst({ where: { email: "admin@financer.com" } }))!
             }
-        })
-        const defaultUser = await db.user.create({
-            data: {
-                email: "user@financer.com",
-                hashedPassword: hashedPassword,
-                firstName: "Test",
-                lastName: "User"
-            }
-        })
+        } else {
+            users = await seedUsers()
+        }
+
+        const households = await seedHouseholds(users)
 
         return {
-            adminUser: adminUser,
-            defaultUser: defaultUser
+            users: users,
+            households: households
         }
     }
 }

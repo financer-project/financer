@@ -21,8 +21,11 @@ export const authenticateUser = async (rawEmail: string, rawPassword: string) =>
     return user
 }
 
-export default resolver.pipe(resolver.zod(Login), async ({ email, password }, ctx) => {
-    const user = await authenticateUser(email, password)
-    await ctx.session.$create({ userId: user.id, role: user.role as Role })
-    return user
-})
+export default resolver.pipe(
+    resolver.zod(Login),
+    async ({ email, password }, ctx) => {
+        const user = await authenticateUser(email, password)
+        await ctx.session.$create({ userId: user.id, role: user.role as Role })
+        return user
+    }
+)
