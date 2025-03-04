@@ -14,7 +14,6 @@ describe("Households", () => {
     })
 
     it("should display an own household", () => {
-
         cy.get("tbody tr").should("have.length", 1)
         cy.get("tbody tr:first-child").click()
         cy.url().should("include", `/households/${testData.households.standard.id}`)
