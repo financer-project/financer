@@ -3,6 +3,7 @@ import { User } from "@prisma/client"
 import { TestData } from "@/test/cypress/tasks/databaseTasks"
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Cypress {
         interface Chainable {
             /**
