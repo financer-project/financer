@@ -7,7 +7,6 @@ import { AccountForm } from "./AccountForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import Section from "@/src/lib/components/common/structure/Section"
-import { useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 
 export const EditAccount = ({ accountId }: { accountId: string }) => {
@@ -25,7 +24,6 @@ export const EditAccount = ({ accountId }: { accountId: string }) => {
                     <AccountForm
                         submitText="Update Account"
                         schema={UpdateAccountSchema}
-                        households={useHouseholds()}
                         initialValues={account}
                         onSubmit={async (values) => {
                             try {
