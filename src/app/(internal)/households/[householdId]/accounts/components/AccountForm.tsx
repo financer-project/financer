@@ -8,8 +8,7 @@ import SelectFormField from "@/src/lib/components/common/form/elements/SelectFor
 import { useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function AccountForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
-
+export function AccountForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
     return (
         <Form<S> {...props}>
             <div className={"flex flex-row gap-4 w-full"}>

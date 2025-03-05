@@ -7,7 +7,7 @@ import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { Household } from "@prisma/client"
 
 async function fetchHousehold(householdId: string): Promise<Household> {
-    return await invoke(getHousehold, { id: householdId })
+    return invoke(getHousehold, { id: householdId })
 }
 
 export async function generateMetadata(props: HouseholdPageProps): Promise<Metadata> {
