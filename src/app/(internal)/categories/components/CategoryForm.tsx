@@ -59,7 +59,7 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                         label={"Type"}
                         name={"type"}
                         required
-                        value={parentType?.toString()}
+                        value={parentType}
                         options={[
                             { value: CategoryType.INCOME, label: "Income" },
                             { value: CategoryType.EXPENSE, label: "Expense" }

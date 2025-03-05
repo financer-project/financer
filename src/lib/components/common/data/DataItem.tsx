@@ -13,7 +13,7 @@ interface DataItemProps {
 
 const DataItem = ({ label, data, className, linkTo }: DataItemProps) => {
     const renderData = (data: Data) => (
-        <p className={"text-md"}>{data ?? "-"}</p>
+        <span className={"text-md"}>{data ?? "-"}</span>
     )
 
     return (

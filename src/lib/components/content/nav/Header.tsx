@@ -48,28 +48,25 @@ const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: Heade
                     <Separator orientation={"vertical"} />
                     <Breadcrumb>
                         <BreadcrumbList>
-                            <BreadcrumbItem>
+                            <BreadcrumbItem key={"/dashboard"}>
                                 <BreadcrumbLink href={"/dashboard"}>
                                     <HomeIcon className={"w-4"} />
                                     Home
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             {breadcrumbs.map((item, index) => (
-                                <React.Fragment key={item.url}>
-                                    <BreadcrumbSeparator />
-                                    {index === breadcrumbs.length - 1 ?
-                                        (
-                                            <BreadcrumbPage>
+                                <>
+                                    <BreadcrumbSeparator key={`${item.url}-separator`} />
+                                    <BreadcrumbItem key={item.url}>
+                                        {index === breadcrumbs.length - 1
+                                            ? <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                                            : <BreadcrumbLink href={item.url ?? "#"}>
                                                 {item.label}
-                                            </BreadcrumbPage>
-                                        ) : (
-                                            <BreadcrumbItem>
-                                                <BreadcrumbLink href={item.url ?? "#"}>
-                                                    {item.label}
-                                                </BreadcrumbLink>
-                                            </BreadcrumbItem>
-                                        )}
-                                </React.Fragment>
+                                            </BreadcrumbLink>
+
+                                        }
+                                    </BreadcrumbItem>
+                                </>
                             ))}
                         </BreadcrumbList>
                     </Breadcrumb>

@@ -13,7 +13,7 @@ export interface ElementProps<TValue> {
 }
 
 
-export interface FormElementProps<TEntity, Value = TEntity[keyof TEntity]> extends ElementProps<Value> {
+export interface FormElementProps<TEntity, TValue = TEntity[keyof TEntity]> extends ElementProps<TValue> {
     name: keyof TEntity
     label: string
     description?: string,

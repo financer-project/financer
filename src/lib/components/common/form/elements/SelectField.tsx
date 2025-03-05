@@ -17,29 +17,35 @@ interface SelectFieldProps<T> extends ElementProps<T> {
     options: SelectOption<T>[]
 }
 
-export const SelectField = <T, >({ options, value, onChange, readonly, ...props }: SelectFieldProps<T>) => {
-
+export const SelectField = <T, >({ options, onChange, readonly, value, ...props }: SelectFieldProps<T>) => {
     const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
     const [search, setSearch] = useState("")
+
     const handleSelect = (newValue: T) => {
         if (!readonly) {
-            onChange?.(newValue)
-            setSearch("") // Clear search field
+            setSearch("")
             setIsOpen(false)
+            onChange?.(newValue)
         }
     }
     const handleClear = () => {
         if (!readonly) {
-            onChange?.(null)
             setSearch("")
+            onChange?.(null)
         }
     }
     const filteredOptions = options.filter((option) =>
         option.label.toLowerCase().includes(search.toLowerCase())
     )
-    const renderValue = (option: SelectOption<T>) => {
-        return option.render ? option.render(option.label) : option.label
+
+    const renderValue = (value: T | null) => {
+        const option = options.find((option) => option.value === value)
+        if (option) {
+            return option.render ? option.render(option.label) : option.label
+        }
+        return "Select option ..."
     }
+
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen} modal={false}>
             <PopoverTrigger asChild>
@@ -52,9 +58,7 @@ export const SelectField = <T, >({ options, value, onChange, readonly, ...props 
                             if (!readonly) setIsOpen(true)
                         }}
                         disabled={readonly}>
-                        {value
-                            ? renderValue(options.find((option) => option.value === value)!)
-                            : "Auswählen..."}
+                        {renderValue(value ?? null)}
                     </Button>
                     {value && !readonly && (
                         <Button
@@ -69,7 +73,7 @@ export const SelectField = <T, >({ options, value, onChange, readonly, ...props 
             <PopoverContent className="p-2 w-full max-w-sm">
                 <Command>
                     <CommandInput
-                        placeholder="Suchen..."
+                        placeholder="Search ..."
                         value={search}
                         onValueChange={(value) => setSearch(value)}
                         disabled={readonly} />
@@ -80,7 +84,7 @@ export const SelectField = <T, >({ options, value, onChange, readonly, ...props 
                                     <CommandItem
                                         key={option.value as string}
                                         onSelect={() => handleSelect(option.value)}>
-                                        {renderValue(option)}
+                                        {renderValue(option.value)}
                                     </CommandItem>
                                 ))
                             ) : (

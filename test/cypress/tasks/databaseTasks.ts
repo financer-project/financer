@@ -5,11 +5,13 @@ import { StartedTestContainer } from "testcontainers"
 import seedUsers, { UserSeed } from "@/test/seed/user"
 import seedHouseholds, { HouseholdSeed } from "@/test/seed/households"
 import seedAccounts, { AccountSeed } from "@/test/seed/accounts"
+import seedCategories, { CategorySeed } from "@/test/seed/categorySeed"
 
 export interface TestData {
     users: UserSeed,
     households: HouseholdSeed,
-    accounts: AccountSeed
+    accounts: AccountSeed,
+    categories: CategorySeed,
 }
 
 let container: StartedTestContainer
@@ -78,11 +80,13 @@ const databaseTasks = {
 
         const households = await seedHouseholds(users)
         const accounts = await seedAccounts(households)
+        const categories = await seedCategories(households)
 
         return {
             users: users,
             households: households,
-            accounts: accounts
+            accounts: accounts,
+            categories: categories
         }
     }
 }
