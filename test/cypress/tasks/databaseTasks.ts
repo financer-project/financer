@@ -4,10 +4,12 @@ import { MySqlContainer } from "@testcontainers/mysql"
 import { StartedTestContainer } from "testcontainers"
 import seedUsers, { UserSeed } from "@/test/seed/user"
 import seedHouseholds, { HouseholdSeed } from "@/test/seed/households"
+import seedAccounts, { AccountSeed } from "@/test/seed/accounts"
 
 export interface TestData {
     users: UserSeed,
-    households: HouseholdSeed
+    households: HouseholdSeed,
+    accounts: AccountSeed
 }
 
 let container: StartedTestContainer
@@ -75,10 +77,12 @@ const databaseTasks = {
         }
 
         const households = await seedHouseholds(users)
+        const accounts = await seedAccounts(households)
 
         return {
             users: users,
-            households: households
+            households: households,
+            accounts: accounts
         }
     }
 }

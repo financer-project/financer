@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { SidebarInset, SidebarProvider } from "@/src/lib/components/ui/sidebar"
 import { BlitzLayout } from "@blitzjs/next"
 import Sidebar from "@/src/lib/components/content/nav/sidebar/Sidebar"
-import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/src/lib/components/ui/scroll-area"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 import { invoke } from "src/app/blitz-server"
 import getSetting from "@/src/lib/model/settings/queries/getSetting"
@@ -46,12 +46,13 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
                         <Sidebar />
                         <SidebarInset
                             className={"flex p-4 box-border bg-neutral-100 dark:bg-neutral-900 h-screen max-h-screen"}>
-                            <ScrollArea className={"h-full"} type={"auto"}>
-                                <main
-                                    className={"flex-1 flex flex-col justify-start px-8 py-6 w-full bg-background rounded-xl h-full"}>
+                            <main
+                                className={"flex-1 p-4 w-full bg-background rounded-xl h-full"}>
+                                <ScrollArea className={"h-full overflow-y-auto rounded-xl px-4 py-2 flex flex-col justify-start"}>
                                     {children}
-                                </main>
-                            </ScrollArea>
+                                    <ScrollBar orientation="vertical" className={"pl-2"}/>
+                                </ScrollArea>
+                            </main>
                         </SidebarInset>
                     </HouseholdProvider>
                 </SidebarProvider>
