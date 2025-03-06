@@ -21,7 +21,7 @@ describe("Categories", () => {
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
-
+        cy.wait(1000)
         cy.get("ul li ul li")
             .should("have.text", "Food")
             .click()
@@ -31,6 +31,8 @@ describe("Categories", () => {
 
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").click()
+        cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
+        cy.wait(1000)
         cy.get("ul li ul li").should("not.exist")
     })
 })
