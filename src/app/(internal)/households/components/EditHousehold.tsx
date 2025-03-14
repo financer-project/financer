@@ -26,7 +26,7 @@ export const EditHousehold = ({ householdId }: { householdId: string }) => {
                     <HouseholdForm
                         submitText="Update Household"
                         schema={UpdateHouseholdSchema}
-                        initialValues={{ ...household, description: household.description ?? undefined }}
+                        initialValues={household}
                         onSubmit={async (values) => {
                             try {
                                 const updated = await updateHouseholdMutation({
