@@ -6,6 +6,6 @@ export default resolver.pipe(
     resolver.zod(DeleteAccountSchema),
     resolver.authorize(),
     async ({ id }) => {
-        return await db.account.deleteMany({ where: { id } })
+        return db.account.deleteMany({ where: { id } })
     }
 )

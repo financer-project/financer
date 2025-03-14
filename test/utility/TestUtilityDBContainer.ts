@@ -25,7 +25,7 @@ export default class TestUtilityDBContainer extends TestUtilityBase {
 
         console.info(`Started test database running on port ${port} (url: '${process.env.DATABASE_URL}')`)
 
-        execSync("yarn blitz prisma db push --skip-generate", { stdio: "inherit" })
+        execSync("yarn prisma db push --skip-generate", { stdio: "inherit" })
         console.info("Updated schema for test database.")
 
         await seedUsers()
