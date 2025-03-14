@@ -15,5 +15,6 @@ import { Prisma } from "@prisma/client"
 import db from "@/src/lib/db"
 
 beforeEach(async () => {
+    // @ts-ignore
     createPrismaMock({}, Prisma.dmmf.datamodel, db)
 })
