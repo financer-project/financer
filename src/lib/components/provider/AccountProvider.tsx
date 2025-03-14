@@ -6,7 +6,7 @@ import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProv
 import { Account } from "@prisma/client"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 
-const AccountContext = createContext<Account[] | undefined>(undefined)
+const AccountContext = createContext<Account[]>([])
 
 export function AccountProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     const currentHousehold = useCurrentHousehold()
@@ -24,5 +24,5 @@ export const useAccounts = (): Account[] => {
     if (context === null) {
         throw new Error("useCategories must be used within a CategoryContext")
     }
-    return context ?? []
+    return context
 }

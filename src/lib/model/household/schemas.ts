@@ -6,7 +6,7 @@ const availableCurrencies = currencyCodes.codes()
 export const CreateHouseholdSchema = z.object({
     name: z.string().min(3),
     currency: z.enum(availableCurrencies as [string, ...string[]]),
-    description: z.string().optional()
+    description: z.string().nullable()
 })
 
 export const UpdateHouseholdSchema = CreateHouseholdSchema.merge(
