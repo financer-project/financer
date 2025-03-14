@@ -1,4 +1,4 @@
-import db from "src/lib/db"
+import db from "@/src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { AuthenticatedCtx } from "blitz"
 import { Role } from "@prisma/client"

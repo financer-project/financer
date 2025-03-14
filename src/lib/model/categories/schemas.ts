@@ -5,7 +5,7 @@ import ColorType from "@/src/lib/model/common/ColorType"
 export const CreateCategorySchema = z.object({
     householdId: z.string().uuid(),
     parentId: z.string().uuid().nullable(),
-    name: z.string(),
+    name: z.string().min(3),
     type: z.nativeEnum(CategoryType),
     color: z.nativeEnum(ColorType).nullable()
 })

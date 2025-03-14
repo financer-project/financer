@@ -1,6 +1,6 @@
 "use client"
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
-import signup from "../mutations/signup"
+import signup from "@/src/lib/model/auth/mutations/signup"
 import { Signup } from "../validations"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"

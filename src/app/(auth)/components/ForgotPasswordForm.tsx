@@ -2,7 +2,7 @@
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import { ForgotPassword } from "../validations"
-import forgotPassword from "../mutations/forgotPassword"
+import forgotPassword from "@/src/lib/model/auth/mutations/forgotPassword"
 import { useMutation } from "@blitzjs/rpc"
 
 export function ForgotPasswordForm() {

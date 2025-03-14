@@ -7,7 +7,7 @@ import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvid
 import { invoke } from "src/app/blitz-server"
 import getSetting from "@/src/lib/model/settings/queries/getSetting"
 import Theme from "@/src/app/(internal)/theme"
-import getCurrentUser from "@/src/app/users/queries/getCurrentUser"
+import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 

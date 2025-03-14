@@ -1,5 +1,5 @@
 import { invoke } from "./blitz-server"
-import getCurrentUser from "./users/queries/getCurrentUser"
+import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Button } from "@/src/lib/components/ui/button"

@@ -3,7 +3,7 @@
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import { ResetPassword } from "../validations"
-import resetPassword from "../mutations/resetPassword"
+import resetPassword from "@/src/lib/model/auth/mutations/resetPassword"
 import { useMutation } from "@blitzjs/rpc"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"

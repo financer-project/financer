@@ -1,5 +1,5 @@
 import { Ctx } from "blitz"
-import db from "src/lib/db"
+import db from "@/src/lib/db"
 
 export default async function getCurrentUser(_: null, ctx: Ctx) {
     if (!ctx.session.userId) return null

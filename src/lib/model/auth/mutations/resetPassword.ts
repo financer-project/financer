@@ -1,8 +1,8 @@
 import { hash256 } from "@blitzjs/auth"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
-import db from "src/lib/db"
-import { ResetPassword } from "../validations"
+import db from "@/src/lib/db"
+import { ResetPassword } from "../../../../app/(auth)/validations"
 import login from "./login"
 
 export class ResetPasswordError extends Error {
