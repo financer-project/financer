@@ -8,7 +8,7 @@
         "start": "blitz start",
         "studio": "blitz prisma studio",
         "lint": "eslint .",
-        "test": "vitest run --passWithNoTests",
+        "test": "vitest run --passWithNoTests --coverage",
         "test:watch": "vitest",
         "db:generate": "blitz prisma generate",
         "db:migrate:deploy": "blitz prisma migrate deploy",
@@ -81,8 +81,9 @@
         "@types/react": "^19.0.8",
         "@types/react-dom": "19.0.3",
         "@typescript-eslint/eslint-plugin": "^8.22.0",
-        "@vitejs/plugin-react": "^4.3.4",
         "ajv": "^8.17.1",
+        "@vitest/coverage-istanbul": "^3.0.8",
+        "@vitejs/plugin-react": "^4.3.4",
         "cypress": "^14.1.0",
         "dotenv-cli": "8.0.0",
         "eslint": "^9.19.0",
@@ -91,11 +92,12 @@
         "jsdom": "^26.0.0",
         "lint-staged": "^15.4.3",
         "preview-email": "^3.1.0",
+        "prisma-mock": "^0.10.3",
         "start-server-and-test": "2.0.10",
         "testcontainers": "^10.18.0",
         "typescript": "^5.7.3",
         "vite-tsconfig-paths": "^5.1.4",
-        "vitest": "^3.0.4",
-        "vitest-mock-extended": "2.0.2"
+        "vitest": "^3.0.8",
+        "vitest-mock-extended": "^3.0.1"
     }
 }

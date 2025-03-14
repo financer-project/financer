@@ -28,7 +28,7 @@ export const SelectFormField = <E, V = E[keyof E]>({
         if (value && value !== field.value) {
             helpers.setValue(value)
         }
-    }, [props, helpers, field])
+    }, [value, helpers, field])
 
     const handleChange = (newValue: V | null) => {
         if (!readonly) {

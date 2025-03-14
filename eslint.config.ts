@@ -37,7 +37,7 @@ export default [
         }
     },
     {
-        ignores: [".next/*"]
+        ignores: [".next/*", ".test/**"]
     },
     {
         files: ["**/*.ts", "**/*.tsx"],
