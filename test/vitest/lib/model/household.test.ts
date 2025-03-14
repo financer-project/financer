@@ -33,7 +33,11 @@ describe("Household Mutations & Queries", () => {
         })
 
         test("creates a new household with wrong data", async () => {
-            await expect(async () => createHousehold({ name: "", currency: "USD" }, util.getMockContext()))
+            await expect(async () => createHousehold({
+                name: "",
+                currency: "USD",
+                description: null
+            }, util.getMockContext()))
                 .rejects.toThrowError("String must contain at least 3 character(s)")
         })
     })
@@ -43,7 +47,8 @@ describe("Household Mutations & Queries", () => {
             const result = await updateHousehold({
                 id: util.getTestData().households.standard.id,
                 name: "Test Household (updated)",
-                currency: "EUR"
+                currency: "EUR",
+                description: null
             }, util.getMockContext())
 
             expect(result.name).toBe("Test Household (updated)")
