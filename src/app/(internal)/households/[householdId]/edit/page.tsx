@@ -22,7 +22,7 @@ export async function generateMetadata(props: EditHouseholdPageProps): Promise<M
     }
 }
 
-export default async function Page(props: EditHouseholdPageProps) {
+export default async function Page(props: Readonly<EditHouseholdPageProps>) {
     const params = await props.params
     const household = await fetchHousehold(params.householdId)
     return (

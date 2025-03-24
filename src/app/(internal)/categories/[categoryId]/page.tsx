@@ -21,7 +21,7 @@ type CategoryPageProps = {
     params: Promise<{ categoryId: string }>
 }
 
-export default async function Page(props: CategoryPageProps) {
+export default async function Page(props: Readonly<CategoryPageProps>) {
     const params = await props.params
     const category = await fetchCategory(params.categoryId)
 

@@ -24,7 +24,7 @@ export async function generateMetadata(
     }
 }
 
-export default async function Page(props: EditAccountPageProps) {
+export default async function Page(props: Readonly<EditAccountPageProps>) {
     const params = await props.params
     const account = await fetchAccount(params.accountId)
     return (

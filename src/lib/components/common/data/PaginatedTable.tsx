@@ -50,17 +50,17 @@ export const PaginatedTable = <T, >({
                 <TableHeader>
                     <TableRow>
                         {columns.map((column, index) => (
-                            <TableHead key={index}>{column.name}</TableHead>
+                            <TableHead key={`th-${index}`}>{column.name}</TableHead>
                         ))}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {data.map((item, index) => (
-                        <TableRow key={index}
+                        <TableRow key={`tr-${index}`}
                                   className={"cursor-pointer"}
                                   onClick={() => router.push(itemRoute(item) as __next_route_internal_types__.RouteImpl<string>)}>
                             {columns.map((column, colIndex) => (
-                                <TableCell key={colIndex}>{column.render(item)}</TableCell>
+                                <TableCell key={`td-${colIndex}`}>{column.render(item)}</TableCell>
                             ))}
                         </TableRow>
                     ))}

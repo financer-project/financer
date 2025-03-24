@@ -21,7 +21,7 @@ type AccountPageProps = {
     params: Promise<{ accountId: string }>;
 };
 
-export default async function Page(props: AccountPageProps) {
+export default async function Page(props: Readonly<AccountPageProps>) {
 
 
     const params = await props.params

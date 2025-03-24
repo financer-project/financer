@@ -22,7 +22,7 @@ export async function generateMetadata(props: EditCategoryPageProps): Promise<Me
     }
 }
 
-export default async function Page(props: EditCategoryPageProps) {
+export default async function Page(props: Readonly<EditCategoryPageProps>) {
     const params = await props.params
     const category = await fetchCategory(params.categoryId)
 

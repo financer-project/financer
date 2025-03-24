@@ -12,7 +12,7 @@ import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function TransactionForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
     const accounts = useAccounts()
     const categories = useCategories()
 
