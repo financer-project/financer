@@ -1,5 +1,5 @@
 import { Separator } from "@/src/lib/components/ui/separator"
-import { Heading1, SubHeading } from "@/src/lib/components/common/typography"
+import { Heading1, SubTitle } from "@/src/lib/components/common/typography"
 import React, { PropsWithChildren } from "react"
 import { cn } from "@/lib/utils"
 
@@ -17,7 +17,7 @@ const Section = ({ title, subtitle, actions, children, className }: SectionProps
             <div className={"flex flex-row justify-between"}>
                 <div>
                     <Heading1>{title}</Heading1>
-                    {subtitle && (<SubHeading>{subtitle}</SubHeading>)}
+                    {subtitle && (<SubTitle>{subtitle}</SubTitle>)}
                 </div>
                 {actions && (typeof actions === "function" ? actions() : actions)}
             </div>
