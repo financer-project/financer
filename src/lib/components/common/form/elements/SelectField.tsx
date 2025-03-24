@@ -17,21 +17,24 @@ interface SelectFieldProps<T> extends ElementProps<T> {
     options: SelectOption<T>[]
 }
 
-export const SelectField = <T, >({ options, onChange, readonly, value, ...props }: SelectFieldProps<T>) => {
+export const SelectField = <T, >({ options, onChange, readonly, ...props }: SelectFieldProps<T>) => {
     const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
     const [search, setSearch] = useState("")
+    const [value, setValue] = useState<T | null>(props.value ?? null)
 
     const handleSelect = (newValue: T) => {
         if (!readonly) {
             setSearch("")
             setIsOpen(false)
             onChange?.(newValue)
+            setValue(newValue)
         }
     }
     const handleClear = () => {
         if (!readonly) {
             setSearch("")
             onChange?.(null)
+            setValue(null)
         }
     }
     const filteredOptions = options.filter((option) =>

@@ -1,6 +1,7 @@
 import "./commands"
 import { User } from "@prisma/client"
 import { TestData } from "@/test/cypress/tasks/databaseTasks"
+import "@cypress/code-coverage/support"
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace

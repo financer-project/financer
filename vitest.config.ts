@@ -18,7 +18,7 @@ export default defineConfig({
             reporter: ["text", "json", "html", "lcov"],
             include: ["src/**"],
             extension: [".ts"],
-            reportsDirectory: ".test/coverage/"
+            reportsDirectory: ".test/coverage/",
         }
     }
 })

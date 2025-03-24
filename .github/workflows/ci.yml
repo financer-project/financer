@@ -47,6 +47,11 @@ jobs:
       - name: Run Vitest
         run: yarn test
 
+      - name: Run Component Tests using Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          component: true
+
       - name: Run E2E Tests using Cypress
         uses: cypress-io/github-action@v6
         with:

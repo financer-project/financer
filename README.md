@@ -67,7 +67,7 @@ Here is the starting structure of your app.
 financer
 ├── README.md
 ├── db
-│   ├── index.ts
+│   ├── e2e.ts
 │   └── schema.prisma
 ├── integrations
 ├── mailers
