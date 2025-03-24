@@ -4,8 +4,8 @@ import { z } from "zod"
 import { DateTime } from "luxon"
 
 const GetBalanceHistory = z.object({
-    startDate: z.date().max(new Date()),
-    endDate: z.date().optional()
+    startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
+    endDate: z.date().max(DateTime.now().endOf("month").toJSDate()).optional()
 })
 
 
@@ -19,7 +19,7 @@ export default resolver.pipe(
     resolver.zod(GetBalanceHistory),
     resolver.authorize(),
     async ({ startDate, endDate }): Promise<BalanceHistory[]> => {
-        if (!endDate) endDate = new Date()
+        if (!endDate) endDate = DateTime.now().toJSDate()
 
         const transactions = await db.transaction.findMany({
             where: { valueDate: { gte: startDate, lte: endDate } },
