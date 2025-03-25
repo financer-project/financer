@@ -1,5 +1,6 @@
 import { defineConfig } from "cypress"
 import databaseTasks from "@/test/cypress/tasks/databaseTasks"
+import codeCoverageTask from "@cypress/code-coverage/task"
 
 export default defineConfig({
     projectId: "financer",
@@ -9,7 +10,7 @@ export default defineConfig({
         supportFile: "test/cypress/support/e2e.ts",
         specPattern: "test/cypress/e2e/**/*.spec.ts",
         setupNodeEvents(on, config) {
-            require("@cypress/code-coverage/task")(on, config)
+            codeCoverageTask(on, config)
             on("task", {
                 ...databaseTasks
             })
@@ -44,7 +45,7 @@ export default defineConfig({
             bundler: "webpack"
         },
         setupNodeEvents(on, config) {
-            require("@cypress/code-coverage/task")(on, config)
+            codeCoverageTask(on, config)
             return config
         }
     }
