@@ -8,6 +8,9 @@ export default defineConfig({
     e2e: {
         baseUrl: "http://localhost:3000",
         supportFile: "test/cypress/support/e2e.ts",
+        screenshotsFolder: ".test/e2e/screenshots",
+        videosFolder: ".test/e2e/videos",
+        downloadsFolder: ".test/e2e/downloads",
         specPattern: "test/cypress/e2e/**/*.spec.ts",
         setupNodeEvents(on, config) {
             codeCoverageTask(on, config)
@@ -28,9 +31,6 @@ export default defineConfig({
     },
 
     fixturesFolder: "test/cypress/fixtures",
-    screenshotsFolder: "test/cypress/screenshots",
-    videosFolder: "test/cypress/videos",
-    downloadsFolder: "test/cypress/downloads",
     supportFolder: "test/cypress/support",
     defaultBrowser: "chrome",
     experimentalInteractiveRunEvents: true,
@@ -40,9 +40,30 @@ export default defineConfig({
         indexHtmlFile: "test/cypress/support/component-index.html",
         supportFile: "test/cypress/support/component.ts",
         specPattern: "test/cypress/component/**/*.spec.tsx",
+        screenshotsFolder: ".test/component/screenshots",
+        videosFolder: ".test/component/videos",
+        downloadsFolder: ".test/component/downloads",
         devServer: {
             framework: "next",
-            bundler: "webpack"
+            bundler: "webpack",
+            webpackConfig: {
+                module: {
+                    rules: [
+                        {
+                            test: /\.(ts|tsx)$/,
+                            exclude: /node_modules/,
+                            use: [
+                                {
+                                    loader: "babel-loader",
+                                    options: {
+                                        plugins: ["istanbul"]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
         },
         setupNodeEvents(on, config) {
             codeCoverageTask(on, config)

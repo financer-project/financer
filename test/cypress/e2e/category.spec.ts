@@ -22,6 +22,7 @@ describe("Categories", () => {
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
         cy.wait(1000)
+        cy.reload()
         cy.get("ul li ul li")
             .should("have.text", "Food")
             .click()

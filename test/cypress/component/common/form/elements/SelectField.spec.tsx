@@ -1,5 +1,4 @@
 import React from "react"
-import "@/src/app/globals.css"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
 
 describe("<SelectField />", () => {
