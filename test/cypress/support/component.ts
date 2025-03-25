@@ -1,3 +1,4 @@
+import "@/src/app/globals.css"
 import "./commands"
 import "@cypress/code-coverage/support"
 

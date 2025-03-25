@@ -8,11 +8,12 @@
         "start": "blitz start",
         "studio": "prisma studio",
         "lint": "eslint .",
-        "test": "vitest run --passWithNoTests --coverage",
-        "test:watch": "vitest",
         "db:generate": "prisma generate",
         "db:migrate:deploy": "prisma migrate deploy",
         "db:push": "prisma db push",
+        "test": "yarn test:unit && yarn test:component && yarn test:e2e && yarn coverage:merge",
+        "test:unit": "vitest run --passWithNoTests --coverage",
+        "test:unit:watch": "vitest",
         "test:start:app": "dotenv -e .env.test blitz start",
         "test:start:app:dev": "dotenv -e .env.test blitz dev",
         "test:e2e": "dotenv -e .env.test start-server-and-test test:start:app 3000 cypress:e2e",
@@ -21,13 +22,13 @@
         "test:component": "dotenv -e .env.test yarn cypress:component",
         "test:component:headed": "dotenv -e .env.test yarn cypress:component:headed",
         "test:component:open": "dotenv -e .env.test yarn cypress:component:open",
-        "cypress:e2e": "cypress run --e2e --browser chrome",
-        "cypress:e2e:headed": "cypress run --e2e --browser chrome --headed",
+        "cypress:e2e": "nyc --report-dir=.test/e2e/coverage cypress run --e2e --browser chrome",
+        "cypress:e2e:headed": "nyc --report-dir=.test/e2e/coverage cypress run --e2e --browser chrome --headed",
         "cypress:e2e:open": "cypress open --e2e",
-        "cypress:component": "cypress run --component --browser chrome",
-        "cypress:component:headed": "cypress run --component --browser chrome --headed",
+        "cypress:component": "nyc --report-dir=.test/component/coverage cypress run --component --browser chrome",
+        "cypress:component:headed": "nyc --report-dir=.test/component/coverage cypress run --component --browser chrome --headed",
         "cypress:component:open": "cypress open --component",
-        "coverage": "nyc report --reporter=lcov && coveralls < coverage/lcov.info"
+        "coverage:merge": "lcov-result-merger \".test/**/*.info\" .test/lcov.info"
     },
     "prisma": {
         "schema": "src/lib/db/schema/"
@@ -79,6 +80,7 @@
     },
     "devDependencies": {
         "@cypress/code-coverage": "3.13.12",
+        "@istanbuljs/nyc-config-typescript": "^1.0.2",
         "@next/env": "^15.1.6",
         "@testcontainers/mysql": "^10.18.0",
         "@testing-library/jest-dom": "^6.6.3",
@@ -92,16 +94,19 @@
         "@vitejs/plugin-react": "^4.3.4",
         "@vitest/coverage-istanbul": "^3.0.8",
         "ajv": "^8.17.1",
-        "babel-plugin-istanbul": "7.0.0",
+        "babel-loader": "^10.0.0",
+        "babel-plugin-istanbul": "^7.0.0",
         "cypress": "^14.1.0",
         "dotenv-cli": "8.0.0",
         "eslint": "^9.19.0",
         "eslint-config-next": "^15.1.6",
         "eslint-config-prettier": "^10.0.1",
         "istanbul-lib-coverage": "3.2.2",
+        "istanbul-merge": "^2.0.0",
         "jsdom": "^26.0.0",
         "lcov-result-merger": "5.0.1",
         "lint-staged": "^15.4.3",
+        "nyc": "^17.1.0",
         "preview-email": "^3.1.0",
         "prisma-mock": "^0.10.3",
         "start-server-and-test": "2.0.10",
@@ -110,5 +115,8 @@
         "vite-tsconfig-paths": "^5.1.4",
         "vitest": "^3.0.8",
         "vitest-mock-extended": "^3.0.1"
+    },
+    "resolutions": {
+        "@babel/core": "^7.22.0"
     }
 }

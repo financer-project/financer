@@ -15,10 +15,10 @@ export default defineConfig({
         setupFiles: "test/vitest/setup/mock-prisma.ts",
         coverage: {
             provider: "istanbul",
-            reporter: ["text", "json", "html", "lcov"],
+            reporter: ["text-summary", "json", "html", "lcov"],
             include: ["src/**"],
-            extension: [".ts"],
-            reportsDirectory: ".test/coverage/",
+            extension: [".ts", ".tsx"],
+            reportsDirectory: ".test/unit/coverage/",
         }
     }
 })
