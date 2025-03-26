@@ -21,7 +21,7 @@ describe("Categories", () => {
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
-        cy.wait(1000)
+        cy.wait(2000)
         cy.reload()
         cy.get("ul li ul li")
             .should("have.text", "Food")

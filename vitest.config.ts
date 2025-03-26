@@ -13,12 +13,19 @@ export default defineConfig({
         dir: "./test/vitest",
         globals: true,
         setupFiles: "test/vitest/setup/mock-prisma.ts",
+        environment: "node",
         coverage: {
+            enabled: true,
             provider: "istanbul",
-            reporter: ["text-summary", "json", "html", "lcov"],
+            reporter: [
+                ["text-summary"],
+                ["json", {file: "../../../.nyc_output/out.json"}],
+                ["html"],
+                ["lcov"]],
             include: ["src/**"],
             extension: [".ts", ".tsx"],
             reportsDirectory: ".test/unit/coverage/",
+            excludeAfterRemap: true
         }
     }
 })
