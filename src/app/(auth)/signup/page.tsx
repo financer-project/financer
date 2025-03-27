@@ -1,4 +1,4 @@
-import { SignupForm } from "../components/SignupForm"
+import { SignupForm } from "@/src/app/(auth)/components/SignupForm"
 import { ArrowLeftIcon } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/src/lib/components/ui/button"

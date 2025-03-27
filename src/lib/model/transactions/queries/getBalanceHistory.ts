@@ -1,15 +1,15 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "@/db"
+import db from "src/lib/db"
 import { z } from "zod"
 import { DateTime } from "luxon"
 
 const GetBalanceHistory = z.object({
-    startDate: z.date().max(new Date()),
-    endDate: z.date().optional()
+    startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
+    endDate: z.date().max(DateTime.now().endOf("month").toJSDate()).optional()
 })
 
 
-interface BalanceHistory {
+export interface BalanceHistory {
     month: Date,
     expenses: number
     income: number
@@ -19,7 +19,7 @@ export default resolver.pipe(
     resolver.zod(GetBalanceHistory),
     resolver.authorize(),
     async ({ startDate, endDate }): Promise<BalanceHistory[]> => {
-        if (!endDate) endDate = new Date()
+        if (!endDate) endDate = DateTime.now().toJSDate()
 
         const transactions = await db.transaction.findMany({
             where: { valueDate: { gte: startDate, lte: endDate } },

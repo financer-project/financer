@@ -5,10 +5,12 @@ export type FormatterContext = {
     currency: CurrencyCodeRecord;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Formatter<TInput, TOutput, TOptions = {}> {
     format(input: TInput, options?: TOptions): TOutput;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export abstract class FormatterBase<TInput, TOutput, TOptions = {}> implements Formatter<TInput, TOutput, TOptions> {
     protected context: FormatterContext
 

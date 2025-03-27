@@ -7,7 +7,7 @@ import Header from "@/src/lib/components/content/nav/Header"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 
 async function fetchAccount(accountId: string): Promise<AccountModel> {
-    return await invoke(getAccount, { id: accountId })
+    return invoke(getAccount, { id: accountId })
 }
 
 type EditAccountPageProps = {
@@ -24,7 +24,7 @@ export async function generateMetadata(
     }
 }
 
-export default async function Page(props: EditAccountPageProps) {
+export default async function Page(props: Readonly<EditAccountPageProps>) {
     const params = await props.params
     const account = await fetchAccount(params.accountId)
     return (

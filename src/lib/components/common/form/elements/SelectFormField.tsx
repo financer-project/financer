@@ -1,22 +1,40 @@
 "use client"
 
-import React from "react"
+import React, { useEffect } from "react"
 import { useField, useFormikContext } from "formik"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
 import { SelectField, SelectOption } from "@/src/lib/components/common/form/elements/SelectField"
 
-export interface SelectFormFieldProps<TEntity, TValue = TEntity[keyof TEntity]> extends FormElementProps<TEntity, TValue> {
+export interface SelectFormFieldProps<TEntity, TValue> extends FormElementProps<TEntity, TValue> {
     options: SelectOption<TValue>[]
 }
 
-export const SelectFormField = <E, >({ name, options, readonly, ...props }: SelectFormFieldProps<E>) => {
-    const [field, , helpers] = useField(name)
+export const SelectFormField = <E, V = E[keyof E]>({
+                                                       name,
+                                                       options,
+                                                       readonly,
+                                                       onChange,
+                                                       value,
+                                                       ...props
+                                                   }: SelectFormFieldProps<E, V>) => {
+    const [field, , helpers] = useField<V | null>(name)
     const { isSubmitting } = useFormikContext()
-    const handleChange = (value: E[keyof E] | null) => {
-        if (!readonly) {
-            helpers.setValue(value)
-            props.onChange?.(value)
+
+    useEffect(() => {
+        if (field.value === undefined) {
+            helpers.setValue(null)
         }
+
+        if (value && value !== field.value) {
+            helpers.setValue(value)
+        }
+    }, [value, helpers, field])
+
+    const handleChange = (newValue: V | null) => {
+        if (!readonly) {
+            helpers.setValue(newValue)
+        }
+        onChange?.(newValue)
     }
     return (
         <FormElement name={name} {...props}>

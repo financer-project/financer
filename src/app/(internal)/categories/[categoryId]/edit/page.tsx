@@ -7,7 +7,7 @@ import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider
 import Header from "@/src/lib/components/content/nav/Header"
 
 async function fetchCategory(id: string) {
-    return await invoke(getCategory, { id: id })
+    return invoke(getCategory, { id: id })
 }
 
 type EditCategoryPageProps = {
@@ -22,7 +22,7 @@ export async function generateMetadata(props: EditCategoryPageProps): Promise<Me
     }
 }
 
-export default async function Page(props: EditCategoryPageProps) {
+export default async function Page(props: Readonly<EditCategoryPageProps>) {
     const params = await props.params
     const category = await fetchCategory(params.categoryId)
 

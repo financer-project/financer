@@ -1,0 +1,78 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  ci:
+    name: Build, Check & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+            ~/.cache/Cypress
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build Project
+        run: yarn build
+
+      - name: Run ESLint
+        run: yarn lint
+
+      - name: Run Unit Tests
+        run: yarn test:unit
+
+      - name: Run Component Tests
+        uses: cypress-io/github-action@v6
+        with:
+          component: true
+
+      - name: Run E2E Tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: yarn test:start:app
+          wait-on: http://localhost:3000
+        env:
+          NODE_ENV: test
+          DATABASE_URL: mysql://financer-test:password@localhost:3307/financer-test
+          SESSION_SECRET_KEY: test-session-secret-which-is-32-bytes-long
+
+      - name: Merge Coverage
+        run: yarn coverage:merge
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        if: ${{ always() }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            --define sonar.pullrequest.key=${{ github.event.number }}
+            --define sonar.pullrequest.branch=${{ github.ref_name }}
+            --define sonar.pullrequest.base=main

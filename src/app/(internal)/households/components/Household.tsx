@@ -5,7 +5,6 @@ import DataItem from "@/src/lib/components/common/data/DataItem"
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
-import Link from "next/link"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
@@ -52,14 +51,13 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                     <PaginatedTable
                         data={accounts}
                         hasMore={hasMore}
-                        itemRoute={(household) => `/households/${household.id}`}
+                        itemRoute={(account) => `/households/${account.householdId}/accounts/${account.id}`}
                         createRoute={`/households/${household.id}/accounts/new`}
                         columns={[
                             {
                                 name: "Name",
                                 render: (account) =>
-                                    <Link href={`/households/${householdId}/accounts/${account.id}`}
-                                          className={"font-semibold"}>{account.name}</Link>
+                                    <span className={"font-semibold"}>{account.name}</span>
                             },
                             {
                                 name: "Technical Name",

@@ -7,7 +7,7 @@ import Header from "@/src/lib/components/content/nav/Header"
 import { Household as HouseholdModel } from ".prisma/client"
 
 async function fetchHousehold(householdId: string): Promise<HouseholdModel> {
-    return await invoke(getHousehold, { id: householdId })
+    return invoke(getHousehold, { id: householdId })
 }
 
 type EditHouseholdPageProps = {
@@ -22,7 +22,7 @@ export async function generateMetadata(props: EditHouseholdPageProps): Promise<M
     }
 }
 
-export default async function Page(props: EditHouseholdPageProps) {
+export default async function Page(props: Readonly<EditHouseholdPageProps>) {
     const params = await props.params
     const household = await fetchHousehold(params.householdId)
     return (

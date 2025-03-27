@@ -3,7 +3,7 @@ import React, { useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Button } from "@/src/lib/components/ui/button"
 
-export default function Error({ error, reset }: { error: Error; reset: () => void }) {
+export default function DefaultError({ error, reset }: Readonly<{ error: Error; reset: () => void }>) {
     useEffect(() => {
         // Log the error to an error reporting service
         console.error(error)

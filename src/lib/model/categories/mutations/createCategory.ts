@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "@/db"
+import db from "src/lib/db"
 import { CreateCategorySchema } from "../schemas"
 
 export default resolver.pipe(
@@ -12,6 +12,6 @@ export default resolver.pipe(
                 throw new Error(`Type must be the same as parent (${parentCategory?.type}).`)
             }
         }
-        return await db.category.create({ data: input })
+        return db.category.create({ data: input })
     }
 )

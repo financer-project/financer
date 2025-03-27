@@ -13,7 +13,7 @@ export interface ElementProps<TValue> {
 }
 
 
-export interface FormElementProps<TEntity, Value = TEntity[keyof TEntity]> extends ElementProps<Value> {
+export interface FormElementProps<TEntity, TValue = TEntity[keyof TEntity]> extends ElementProps<TValue> {
     name: keyof TEntity
     label: string
     description?: string,
@@ -23,7 +23,7 @@ const FormElement = <E, V>(
     { label, name, children, className, required, description }: PropsWithChildren<FormElementProps<E, V>>) => {
     return (
         <div className={cn("flex flex-col gap-2 flex-1", className)}>
-            <Label htmlFor={name}>
+            <Label htmlFor={name.toString()}>
                 {label}
                 {required && <span className={"text-destructive"}> *</span>}
             </Label>
@@ -32,7 +32,7 @@ const FormElement = <E, V>(
 
             {description && <small className={"text-muted-foreground"}>{description}</small>}
 
-            <ErrorMessage name={name}>
+            <ErrorMessage name={name.toString()}>
                 {(msg) => <small className={"text-destructive"}>{msg}</small>}
             </ErrorMessage>
         </div>

@@ -7,7 +7,8 @@ import { Settings } from "@prisma/client"
 import Section from "@/src/lib/components/common/structure/Section"
 
 
-export function SettingForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function SettingForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
     return (
         <Form<S> {...props}>
             <Section title={"General"} className={"mt-0"}>

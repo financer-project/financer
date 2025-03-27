@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
-import db from "@/db"
+import db from "src/lib/db"
 import { NotFoundError } from "blitz"
 
 const ChangeCurrentHouseholdSchema = z.object({

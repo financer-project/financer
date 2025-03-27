@@ -2,15 +2,23 @@ import { Metadata } from "next"
 import { SidebarInset, SidebarProvider } from "@/src/lib/components/ui/sidebar"
 import { BlitzLayout } from "@blitzjs/next"
 import Sidebar from "@/src/lib/components/content/nav/sidebar/Sidebar"
-import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
-import { useAuthenticatedBlitzContext } from "@/src/app/blitz-server"
+import { ScrollArea, ScrollBar } from "@/src/lib/components/ui/scroll-area"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 import { invoke } from "src/app/blitz-server"
 import getSetting from "@/src/lib/model/settings/queries/getSetting"
 import Theme from "@/src/app/(internal)/theme"
+import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
+import { redirect } from "next/navigation"
+import { Suspense } from "react"
+
+export const dynamic = "force-dynamic"
+
+async function fetchUser() {
+    return invoke(getCurrentUser, {})
+}
 
 async function fetchSettings() {
-    return await invoke(getSetting, {});
+    return invoke(getSetting, {})
 }
 
 export const metadata: Metadata = {
@@ -22,28 +30,33 @@ export const metadata: Metadata = {
 }
 
 const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode }) => {
-    const settings = await fetchSettings()
+    const currentUser = await fetchUser()
+    if (!currentUser) {
+        redirect("/login")
+    }
 
-    await useAuthenticatedBlitzContext({
-        redirectTo: "/login"
-    })
+    const settings = await fetchSettings()
 
     return (
         <div className={"bg-neutral-100 dark:bg-neutral-900"}>
-            <Theme theme={settings.theme} />
-            <SidebarProvider>
-                <HouseholdProvider>
-                    <Sidebar />
-                    <SidebarInset className={"flex p-4 box-border bg-neutral-100 dark:bg-neutral-900 h-screen max-h-screen"}>
-                        <ScrollArea className={"h-full"} type={"auto"}>
+            <Suspense>
+                <Theme theme={settings.theme} />
+                <SidebarProvider>
+                    <HouseholdProvider>
+                        <Sidebar />
+                        <SidebarInset
+                            className={"flex p-4 box-border bg-neutral-100 dark:bg-neutral-900 h-screen max-h-screen"}>
                             <main
-                                className={"flex-1 flex flex-col justify-start px-8 py-6 w-full bg-background rounded-xl h-full"}>
-                                {children}
+                                className={"flex-1 p-4 w-full bg-background rounded-xl h-full"}>
+                                <ScrollArea className={"h-full overflow-y-auto rounded-xl px-4 py-2 flex flex-col justify-start"}>
+                                    {children}
+                                    <ScrollBar orientation="vertical" className={"pl-2"}/>
+                                </ScrollArea>
                             </main>
-                        </ScrollArea>
-                    </SidebarInset>
-                </HouseholdProvider>
-            </SidebarProvider>
+                        </SidebarInset>
+                    </HouseholdProvider>
+                </SidebarProvider>
+            </Suspense>
         </div>
     )
 }

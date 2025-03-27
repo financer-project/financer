@@ -9,7 +9,7 @@ import { Household as HouseholdModel } from "@prisma/client"
 export const dynamic = "force-dynamic"
 
 async function fetchHousehold(householdId: string): Promise<HouseholdModel> {
-    return await invoke(getHousehold, { id: householdId })
+    return invoke(getHousehold, { id: householdId })
 }
 
 export async function generateMetadata(props: HouseholdPageProps): Promise<Metadata> {
@@ -21,8 +21,7 @@ export async function generateMetadata(props: HouseholdPageProps): Promise<Metad
 }
 
 type HouseholdPageProps = {
-    params: Promise<{ householdId: string }>,
-    household: Promise<HouseholdModel>
+    params: Promise<{ householdId: string }>
 }
 
 export default async function Page(props: Readonly<HouseholdPageProps>) {

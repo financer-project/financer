@@ -5,14 +5,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
 
-const ITEMS_PER_PAGE = 100
-
 interface PaginatedTableProps<T> {
     data: T[]
     columns: Array<{ name: string; render: (item: T) => React.ReactNode }>
     itemRoute: (item: T) => string
     hasMore: boolean
-    count?: number
     createRoute?: string
 }
 
@@ -21,25 +18,23 @@ export const PaginatedTable = <T, >({
                                         columns,
                                         itemRoute,
                                         hasMore,
-                                        count,
                                         createRoute
                                     }: PaginatedTableProps<T>) => {
-    const searchparams = useSearchParams()!
-    const page = Number(searchparams.get("page")) || 0
+    const searchParams = useSearchParams()
+    const page = Number(searchParams.get("page")) || 0
     const router = useRouter()
     const pathname = usePathname()
 
     const goToPreviousPage = () => {
-        const params = new URLSearchParams(searchparams)
+        const params = new URLSearchParams(searchParams)
         params.set("page", (page - 1).toString())
-        // @ts-ignore
-        router.push((pathname + "?" + params.toString()))
+        router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
     }
+
     const goToNextPage = () => {
-        const params = new URLSearchParams(searchparams)
+        const params = new URLSearchParams(searchParams)
         params.set("page", (page + 1).toString())
-        // @ts-ignore
-        router.push((pathname + "?" + params.toString()))
+        router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
     }
 
     return (
@@ -47,7 +42,7 @@ export const PaginatedTable = <T, >({
             <div className="flex flex-row justify-between items-center">
                 {createRoute && (
                     <Button variant="outline" asChild>
-                        <Link href={createRoute}>Create</Link>
+                        <Link href={{ pathname: createRoute }}>Create</Link>
                     </Button>
                 )}
             </div>
@@ -55,17 +50,17 @@ export const PaginatedTable = <T, >({
                 <TableHeader>
                     <TableRow>
                         {columns.map((column, index) => (
-                            <TableHead key={index}>{column.name}</TableHead>
+                            <TableHead key={`th-${index}`}>{column.name}</TableHead>
                         ))}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {data.map((item, index) => (
-                        <TableRow key={index}
+                        <TableRow key={`tr-${index}`}
                                   className={"cursor-pointer"}
-                                  onClick={() => router.push(itemRoute(item) as  __next_route_internal_types__.RouteImpl<string>)}>
+                                  onClick={() => router.push(itemRoute(item) as __next_route_internal_types__.RouteImpl<string>)}>
                             {columns.map((column, colIndex) => (
-                                <TableCell key={colIndex}>{column.render(item)}</TableCell>
+                                <TableCell key={`td-${colIndex}`}>{column.render(item)}</TableCell>
                             ))}
                         </TableRow>
                     ))}

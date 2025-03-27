@@ -1,0 +1,177 @@
+import { describe, expect, test } from "vitest"
+import createTransaction from "@/src/lib/model/transactions/mutations/createTransaction"
+import updateTransaction from "@/src/lib/model/transactions/mutations/updateTransaction"
+import deleteTransaction from "@/src/lib/model/transactions/mutations/deleteTransaction"
+import getTransaction from "@/src/lib/model/transactions/queries/getTransaction"
+import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
+import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import { TransactionType } from "@prisma/client"
+
+describe("Transaction Mutations & Queries", () => {
+    const util = TestUtilityFactory.mock()
+
+    beforeEach(async () => {
+        await util.seedDatabase()
+    })
+
+    describe("get", () => {
+        test("get all transactions with pagination", async () => {
+            const { transactions, count } = await getTransactions({
+                where: { accountId: util.getTestData().accounts.standard.id }
+            }, util.getMockContext())
+
+            expect(transactions).toBeDefined()
+            expect(count).toBeGreaterThanOrEqual(0)
+        })
+
+        test("get specific transaction by ID", async () => {
+            const transaction = await getTransaction({ id: util.getTestData().transactions.standard.income.id }, util.getMockContext())
+
+            expect(transaction.id).toBe(util.getTestData().transactions.standard.income.id)
+            expect(transaction.category).toBeDefined()
+            expect(transaction.account).toBeDefined()
+        })
+    })
+
+    describe("create", () => {
+        test("creates a new income transaction successfully", async () => {
+            const transactionData = {
+                name: "Test Income",
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: util.getTestData().categories.standard.income.id,
+                type: TransactionType.INCOME,
+                amount: 500,
+                description: "Test income transaction"
+            }
+
+            const result = await createTransaction(transactionData, util.getMockContext())
+
+            expect(result.id).not.toBeUndefined()
+            expect(result.name).toBe("Test Income")
+            expect(result.amount).toBe(500) // Positive for income
+        })
+
+        test("creates a new expense transaction successfully", async () => {
+            const transactionData = {
+                name: "Test Expense",
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: util.getTestData().categories.standard.livingCosts.id,
+                type: TransactionType.EXPENSE,
+                amount: 300,
+                description: "Test expense transaction"
+            }
+
+            const result = await createTransaction(transactionData, util.getMockContext())
+
+            expect(result.id).not.toBeUndefined()
+            expect(result.name).toBe("Test Expense")
+            expect(result.amount).toBe(-300) // Negative for expense
+        })
+
+        test("creates a transaction without category", async () => {
+            const result = await createTransaction({
+                name: "No Category",
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: null,
+                type: TransactionType.INCOME,
+                amount: 100,
+                description: null
+            }, util.getMockContext())
+
+            expect(result.id).not.toBeUndefined()
+            expect(result.categoryId).toBeNull()
+        })
+
+        test("fails with invalid data", async () => {
+            await expect(async () => createTransaction({
+                name: "",
+                accountId: "invalid-uuid",
+                categoryId: null,
+                type: TransactionType.INCOME,
+                amount: 100,
+                description: null
+            }, util.getMockContext())).rejects.toThrowError()
+        })
+    })
+
+    describe("update", () => {
+        test("updates a transaction successfully", async () => {
+            const originalTransaction = util.getTestData().transactions.standard.income
+
+            const result = await updateTransaction({
+                id: originalTransaction.id,
+                name: "Updated Transaction",
+                accountId: originalTransaction.accountId,
+                categoryId: originalTransaction.categoryId,
+                type: originalTransaction.type,
+                amount: 250,
+                description: "Updated description"
+            }, util.getMockContext())
+
+            expect(result.name).toBe("Updated Transaction")
+            expect(result.description).toBe("Updated description")
+
+            // Check amount sign based on transaction type
+            if (result.type === TransactionType.EXPENSE) {
+                expect(result.amount).toBe(-250)
+            } else {
+                expect(result.amount).toBe(250)
+            }
+        })
+
+        test("changes transaction type from income to expense", async () => {
+            // Create income transaction first
+            const income = await createTransaction({
+                name: "Income to change",
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: util.getTestData().categories.standard.income.id,
+                type: TransactionType.INCOME,
+                amount: 100,
+                description: null
+            }, util.getMockContext())
+
+            expect(income.amount).toBe(100) // Positive for income
+
+            // Update to expense
+            const updated = await updateTransaction({
+                id: income.id,
+                name: income.name,
+                accountId: income.accountId,
+                categoryId: util.getTestData().categories.standard.livingCosts.id,
+                type: TransactionType.EXPENSE,
+                amount: 100,
+                description: null
+            }, util.getMockContext())
+
+            expect(updated.amount).toBe(-100) // Should now be negative
+        })
+
+        test("fails to update non-existing transaction", async () => {
+            await expect(async () => updateTransaction({
+                id: "non-existent-id",
+                name: "Invalid",
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: null,
+                type: TransactionType.INCOME,
+                amount: 100,
+                description: null
+            }, util.getMockContext())).rejects.toThrowError()
+        })
+    })
+
+    describe("delete", () => {
+        test("deletes a transaction successfully", async () => {
+            await deleteTransaction({ id: util.getTestData().transactions.standard.expense.id }, util.getMockContext())
+
+            await expect(async () => getTransaction(
+                { id: util.getTestData().transactions.standard.expense.id },
+                util.getMockContext()
+            )).rejects.toThrowError()
+        })
+
+        test("fails to delete non-existing transaction", async () => {
+            await expect(async () => deleteTransaction({ id: "non-existent-id" }, util.getMockContext()))
+                .rejects.toThrowError()
+        })
+    })
+})

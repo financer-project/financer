@@ -2,7 +2,7 @@
 import { Suspense } from "react"
 import updateHousehold from "@/src/lib/model/household/mutations/updateHousehold"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
-import { UpdateHouseholdSchema } from "../../../../lib/model/household/schemas"
+import { UpdateHouseholdSchema } from "@/src/lib/model/household/schemas"
 import { FORM_ERROR, HouseholdForm } from "./HouseholdForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
@@ -26,7 +26,7 @@ export const EditHousehold = ({ householdId }: { householdId: string }) => {
                     <HouseholdForm
                         submitText="Update Household"
                         schema={UpdateHouseholdSchema}
-                        initialValues={{ ...household, description: household.description ?? undefined }}
+                        initialValues={household}
                         onSubmit={async (values) => {
                             try {
                                 const updated = await updateHouseholdMutation({
@@ -39,8 +39,7 @@ export const EditHousehold = ({ householdId }: { householdId: string }) => {
                                     title: "Updated Household!",
                                     description: `Your changes to the household "${updated.name}" have been successfully applied.`
                                 })
-                            } catch (error: any) {
-                                console.error(error)
+                            } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                                 return {
                                     [FORM_ERROR]: error.toString()
                                 }

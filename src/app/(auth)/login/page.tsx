@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { LoginForm } from "../components/LoginForm"
+import { LoginForm } from "@/src/app/(auth)/components/LoginForm"
 import { ArrowLeftIcon } from "lucide-react"
 import { Button } from "@/src/lib/components/ui/button"
 

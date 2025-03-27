@@ -1,11 +1,22 @@
 import { setupBlitzServer } from "@blitzjs/next"
 import { AuthServerPlugin, PrismaStorage, simpleRolesIsAuthorized } from "@blitzjs/auth"
-import db from "db"
+import db from "src/lib/db"
 import { BlitzLogger } from "blitz"
 import { RpcServerPlugin } from "@blitzjs/rpc"
 import { authConfig } from "./blitz-auth-config"
 
-const { gSSP, gSP, api, getBlitzContext, useAuthenticatedBlitzContext, invoke, withBlitzAuth } = setupBlitzServer({
+function getLogLevel(): number {
+    switch (process.env.NODE_ENV) {
+        case "development":
+            return 2
+        case "production":
+            return 3
+        case "test":
+            return 4
+    }
+}
+
+const { api, invoke, withBlitzAuth } = setupBlitzServer({
     plugins: [
         AuthServerPlugin({
             ...authConfig,
@@ -14,7 +25,10 @@ const { gSSP, gSP, api, getBlitzContext, useAuthenticatedBlitzContext, invoke, w
         }),
         RpcServerPlugin({})
     ],
-    logger: BlitzLogger({})
+    logger: BlitzLogger({
+        type: "pretty",
+        minLevel: getLogLevel()
+    })
 })
 
-export { api, getBlitzContext, useAuthenticatedBlitzContext, invoke, withBlitzAuth }
+export { api, invoke, withBlitzAuth }

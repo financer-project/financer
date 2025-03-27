@@ -6,7 +6,7 @@ import { Account } from "@/src/app/(internal)/households/[householdId]/accounts/
 import AccountHeader from "@/src/app/(internal)/households/[householdId]/accounts/[accountId]/header"
 
 async function fetchAccount(accountId: string): Promise<AccountModel> {
-    return await invoke(getAccount, { id: accountId })
+    return invoke(getAccount, { id: accountId })
 }
 
 export async function generateMetadata(props: AccountPageProps): Promise<Metadata> {
@@ -21,7 +21,7 @@ type AccountPageProps = {
     params: Promise<{ accountId: string }>;
 };
 
-export default async function Page(props: AccountPageProps) {
+export default async function Page(props: Readonly<AccountPageProps>) {
 
 
     const params = await props.params

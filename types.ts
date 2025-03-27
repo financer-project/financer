@@ -1,8 +1,11 @@
 import { SimpleRolesIsAuthorized } from "@blitzjs/auth"
-import { User } from "@/db"
-import { Household } from "@prisma/client"
+import { User, Household } from "src/lib/db"
 
 export type Role = "ADMIN" | "USER"
+
+export interface PrivateData {
+    currentHouseholdId: Household["id"] | null
+}
 
 declare module "@blitzjs/auth" {
     export interface Session {
@@ -11,8 +14,6 @@ declare module "@blitzjs/auth" {
             userId: User["id"]
             role: Role
         },
-        PrivateData: {
-            currentHouseholdId: Household["id"]
-        }
+        PrivateData: PrivateData
     }
 }

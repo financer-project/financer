@@ -1,14 +1,10 @@
 "use client"
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/navigation"
-import deleteAccount from "@/src/lib/model/account/mutations/deleteAccount"
+import { useQuery } from "@blitzjs/rpc"
 import getAccount from "@/src/lib/model/account/queries/getAccount"
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import Section from "@/src/lib/components/common/structure/Section"
 
 export const Account = ({ accountId }: { accountId: string }) => {
-    const router = useRouter()
-    const [deleteAccountMutation] = useMutation(deleteAccount)
     const [account] = useQuery(getAccount, { id: accountId })
 
     return (

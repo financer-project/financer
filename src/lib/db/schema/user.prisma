@@ -1,0 +1,70 @@
+model User {
+    id             String   @id @default(uuid())
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    firstName      String
+    lastName       String
+    email          String   @unique
+    hashedPassword String?
+    role           Role     @default(USER)
+
+    tokens          Token[]
+    sessions        Session[]
+    householdsOwned Household[]           @relation("HouseholdOwner")
+    memberships     HouseholdMembership[]
+    settings        Settings?             @relation("UserSettings")
+}
+
+model Settings {
+    user   User   @relation(name: "UserSettings", fields: [userId], references: [id])
+    userId String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    language String @default("en-US")
+    theme    String @default("light")
+
+    @@id([userId])
+}
+
+model Session {
+    id                 Int       @id @default(autoincrement())
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+    expiresAt          DateTime?
+    handle             String    @unique
+    hashedSessionToken String?
+    antiCSRFToken      String?
+    publicData         String?
+    privateData        String?
+
+    user   User?   @relation(fields: [userId], references: [id])
+    userId String?
+}
+
+model Token {
+    id          Int      @id @default(autoincrement())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    hashedToken String
+    type        String
+    // See note below about TokenType enum
+    // type        TokenType
+    expiresAt   DateTime
+    sentTo      String
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    @@unique([hashedToken, type])
+}
+
+enum TokenType {
+    RESET_PASSWORD
+}
+
+enum Role {
+    USER
+    ADMIN
+}

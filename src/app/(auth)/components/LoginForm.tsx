@@ -1,9 +1,9 @@
 "use client"
-import { AuthenticationError, PromiseReturnType } from "blitz"
+import { AuthenticationError } from "blitz"
 import Link from "next/link"
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
-import login from "../mutations/login"
+import login from "@/src/lib/model/auth/mutations/login"
 import { Login } from "../validations"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -11,11 +11,7 @@ import type { Route } from "next"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { cn } from "@/lib/utils"
 
-type LoginFormProps = {
-    onSuccess?: (user: PromiseReturnType<typeof login>) => void
-}
-
-export const LoginForm = (props: LoginFormProps) => {
+export const LoginForm = () => {
     const [loginMutation] = useMutation(login)
     const router = useRouter()
     const next = useSearchParams()?.get("next")
@@ -40,7 +36,7 @@ export const LoginForm = (props: LoginFormProps) => {
                             } else {
                                 router.push("/")
                             }
-                        } catch (error: any) {
+                        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                             if (error instanceof AuthenticationError) {
                                 return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
                             } else {
@@ -62,7 +58,7 @@ export const LoginForm = (props: LoginFormProps) => {
                 </Form>
 
                 <small>
-                    <span className={"text-muted-foreground"}>You don't have an account? </span>
+                    <span className={"text-muted-foreground"}>You don&apos;t have an account? </span>
                     <Link href="/signup">Sign Up</Link>
                 </small>
             </CardContent>
