@@ -12,7 +12,10 @@ module.exports = {
         "src/**/*.tsx"
     ],
     "exclude": [
-        "test/**"
+        "test/**",
+        "src/app/**/page.tsx",
+        "src/app/**/layout.tsx",
+        "src/app/**/route.ts"
     ],
     "reporter": [
         "text-summary",

@@ -19,10 +19,15 @@ export default defineConfig({
             provider: "istanbul",
             reporter: [
                 ["text-summary"],
-                ["json", {file: "../../../.nyc_output/out.json"}],
+                ["json", { file: "../../../.nyc_output/out.json" }],
                 ["html"],
                 ["lcov"]],
             include: ["src/**"],
+            exclude: [
+                "src/app/**/page.tsx",
+                "src/app/**/layout.tsx",
+                "src/app/**/route.ts"
+            ],
             extension: [".ts", ".tsx"],
             reportsDirectory: ".test/unit/coverage/",
             excludeAfterRemap: true
