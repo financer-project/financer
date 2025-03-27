@@ -5,6 +5,17 @@ import { BlitzLogger } from "blitz"
 import { RpcServerPlugin } from "@blitzjs/rpc"
 import { authConfig } from "./blitz-auth-config"
 
+function getLogLevel(): number {
+    switch (process.env.NODE_ENV) {
+        case "development":
+            return 2
+        case "production":
+            return 3
+        case "test":
+            return 4
+    }
+}
+
 const { api, invoke, withBlitzAuth } = setupBlitzServer({
     plugins: [
         AuthServerPlugin({
@@ -14,7 +25,10 @@ const { api, invoke, withBlitzAuth } = setupBlitzServer({
         }),
         RpcServerPlugin({})
     ],
-    logger: BlitzLogger({})
+    logger: BlitzLogger({
+        type: "pretty",
+        minLevel: getLogLevel()
+    })
 })
 
 export { api, invoke, withBlitzAuth }

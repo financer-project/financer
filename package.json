@@ -30,9 +30,6 @@
         "cypress:component:open": "cypress open --component",
         "coverage:merge": "lcov-result-merger \".test/**/*.info\" .test/lcov.info"
     },
-    "prisma": {
-        "schema": "src/lib/db/schema/"
-    },
     "lint-staged": {
         "*.{js,ts,tsx}": [
             "eslint --fix"
