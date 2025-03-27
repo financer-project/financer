@@ -29,8 +29,7 @@ export default defineConfig({
                 "src/app/**/route.ts"
             ],
             extension: [".ts", ".tsx"],
-            reportsDirectory: ".test/unit/coverage/",
-            excludeAfterRemap: true
+            reportsDirectory: ".test/unit/coverage/"
         }
     }
 })

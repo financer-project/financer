@@ -1,7 +1,7 @@
 module.exports = {
     "extends": "@istanbuljs/nyc-config-typescript",
     "report-dir": ".test/coverage/",
-    // "all": true,
+    "all": true,
     "extension": [
         ".ts",
         ".tsx",
@@ -25,6 +25,5 @@ module.exports = {
     ],
     "instrumenter": "nyc",
     "sourceMap": true,
-    "excludeAfterRemap": true,
     "clean": false
 }
