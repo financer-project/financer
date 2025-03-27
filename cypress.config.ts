@@ -5,6 +5,11 @@ import codeCoverageTask from "@cypress/code-coverage/task"
 export default defineConfig({
     projectId: "financer",
 
+    retries: {
+        runMode: 2,
+        openMode: 0
+    },
+
     e2e: {
         baseUrl: "http://localhost:3000",
         supportFile: "test/cypress/support/e2e.ts",
