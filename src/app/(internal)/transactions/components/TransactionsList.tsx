@@ -10,7 +10,7 @@ const ITEMS_PER_PAGE = 100
 
 export const TransactionsList = withFormatters(({ formatters }: WithFormattersProps) => {
     const searchParams = useSearchParams()
-    const page = Number(searchParams?.get("page")) ?? 0
+    const page = Number(searchParams?.get("page") ?? 0)
     const [{ transactions, hasMore }] = usePaginatedQuery(getTransactions, {
         orderBy: { id: "asc" },
         skip: ITEMS_PER_PAGE * page,

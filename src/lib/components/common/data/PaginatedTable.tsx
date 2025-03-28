@@ -21,7 +21,7 @@ export const PaginatedTable = <T, >({
                                         createRoute
                                     }: PaginatedTableProps<T>) => {
     const searchParams = useSearchParams()
-    const page = Number(searchParams?.get("page")) ?? 0
+    const page = Number(searchParams?.get("page") ?? 0)
     const router = useRouter()
     const pathname = usePathname()
 
