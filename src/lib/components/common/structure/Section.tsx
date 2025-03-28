@@ -12,7 +12,7 @@ export interface SectionProps extends PropsWithChildren {
 
 const Section = ({ title, subtitle, actions, children, className }: SectionProps) => {
     return (
-        <section className={cn("flex flex-col gap-6 mt-6", className)}>
+        <section className={cn("flex flex-col gap-8 mt-6", className)}>
             <Separator />
             <div className={"flex flex-row justify-between"}>
                 <div>

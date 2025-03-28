@@ -44,6 +44,12 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                               data={transaction.type}
                               className={"basis-1/4"} />
 
+                    <DataItem label={"Value Date"}
+                              data={formatters.date.format(transaction.valueDate)}
+                              className={"basis-1/4"} />
+                </div>
+
+                <div className={"flex flex-row w-full"}>
                     <DataItem label={"Description"}
                               data={transaction.description}
                               className={"basis-1/2"} />
