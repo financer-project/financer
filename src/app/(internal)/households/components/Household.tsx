@@ -17,7 +17,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
     const [household] = useQuery(getHousehold, { id: householdId })
 
     const urlSearchParams = useSearchParams()
-    const page = Number(urlSearchParams.get("page")) || 0
+    const page = Number(urlSearchParams?.get("page")) ?? 0
     const [{ accounts, hasMore }] = usePaginatedQuery(getAccounts, {
         householdId: householdId,
         orderBy: { id: "asc" },
