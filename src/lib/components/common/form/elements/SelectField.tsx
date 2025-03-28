@@ -29,7 +29,7 @@ export const SelectField = <T, >({ options, onChange, readonly, ...props }: Sele
         if (props.value && props.value !== internalValue) {
             setInternalValue(props.value ?? null)
         }
-    }, [props.value, internalValue])
+    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleSelect = (newValue: T) => {
         if (!readonly) {

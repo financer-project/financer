@@ -19,7 +19,7 @@ export const TextField = <E, V>({ name, ...props }: LabeledTextFieldProps<E, V>)
         if (props.value && props.value !== input.value) {
             helpers.setValue(props.value)
         }
-    }, [props, helpers, input])
+    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <FormElement name={name} {...props}>

@@ -21,7 +21,7 @@ export const DatePicker = ({
         if (props.value && props.value !== date) {
             setDate(props.value ?? null)
         }
-    }, [props.value, date])
+    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleSelect = (newDate: Date | null) => {
         if (!readonly) {

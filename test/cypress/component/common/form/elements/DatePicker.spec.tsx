@@ -37,7 +37,7 @@ describe("<DatePicker />", () => {
 
         cy.get("button").should("contain.text", predefinedDate.toLocaleDateString())
 
-        cy.get("button").parent().find("button").last().click()
+        cy.get("button svg").last().parent().click()
         cy.get("@onChange").should("have.been.called")
         cy.get("button").should("contain.text", "Select date...")
     })

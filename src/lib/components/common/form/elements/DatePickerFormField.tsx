@@ -22,7 +22,7 @@ export const DatePickerFormField = <E, >({
         if (props.value && props.value !== field.value) {
             helpers.setValue(props.value)
         }
-    }, [props.value, field.value, helpers])
+    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleChange = (newValue: Date | null) => {
         if (!readonly) {
