@@ -74,7 +74,7 @@ jobs:
         with:
           args: >
             --define sonar.pullrequest.key=${{ github.event.pull_request.number }}
-            --define sonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
+            --define sonar.pullrequest.branch=${{ github.head_ref || github.ref_name }}
             --define sonar.pullrequest.base=main
 
       - name: SonarQube Scan for Main
@@ -83,3 +83,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            --define sonar.branch.name

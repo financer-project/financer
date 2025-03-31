@@ -26,12 +26,37 @@ describe("<SelectField />", () => {
                 { value: "first", label: "First" },
                 { value: "second", label: "Second" },
                 { value: "third", label: "Third" }]}
-            value="second"
-        />)
+            value="second" />)
 
         cy.get("button").should("contain.text", "Second")
     })
 
+    it("select with a value binding", () => {
+        let data: string | null = null
+        const setData = (newValue: string | null) => {
+            data = newValue
+            cy.mount(
+                <SelectField<string>
+                    options={[
+                        { value: "first", label: "First" },
+                        { value: "second", label: "Second" },
+                        { value: "third", label: "Third" }
+                    ]}
+                    value={data}
+                    onChange={(value) => setData(value)}
+                />
+            )
+        }
+
+        setData(null)
+
+        cy.get("button").should("contain.text", "Select option ...")
+
+        cy.wait(500).then(() => {
+            setData("second") // Update value dynamically
+            cy.get("button").should("contain.text", "Second")
+        })
+    })
 
     it("renders with readOnly property set to true", () => {
         cy.mount(<SelectField<string>

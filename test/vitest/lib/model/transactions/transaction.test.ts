@@ -6,6 +6,7 @@ import getTransaction from "@/src/lib/model/transactions/queries/getTransaction"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
 import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
 import { TransactionType } from "@prisma/client"
+import { DateTime } from "luxon"
 
 describe("Transaction Mutations & Queries", () => {
     const util = TestUtilityFactory.mock()
@@ -40,6 +41,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: util.getTestData().accounts.standard.id,
                 categoryId: util.getTestData().categories.standard.income.id,
                 type: TransactionType.INCOME,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 500,
                 description: "Test income transaction"
             }
@@ -57,6 +59,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: util.getTestData().accounts.standard.id,
                 categoryId: util.getTestData().categories.standard.livingCosts.id,
                 type: TransactionType.EXPENSE,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 300,
                 description: "Test expense transaction"
             }
@@ -74,6 +77,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: util.getTestData().accounts.standard.id,
                 categoryId: null,
                 type: TransactionType.INCOME,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 100,
                 description: null
             }, util.getMockContext())
@@ -88,6 +92,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: "invalid-uuid",
                 categoryId: null,
                 type: TransactionType.INCOME,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 100,
                 description: null
             }, util.getMockContext())).rejects.toThrowError()
@@ -104,6 +109,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: originalTransaction.accountId,
                 categoryId: originalTransaction.categoryId,
                 type: originalTransaction.type,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 250,
                 description: "Updated description"
             }, util.getMockContext())
@@ -126,6 +132,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: util.getTestData().accounts.standard.id,
                 categoryId: util.getTestData().categories.standard.income.id,
                 type: TransactionType.INCOME,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 100,
                 description: null
             }, util.getMockContext())
@@ -139,6 +146,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: income.accountId,
                 categoryId: util.getTestData().categories.standard.livingCosts.id,
                 type: TransactionType.EXPENSE,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 100,
                 description: null
             }, util.getMockContext())
@@ -153,6 +161,7 @@ describe("Transaction Mutations & Queries", () => {
                 accountId: util.getTestData().accounts.standard.id,
                 categoryId: null,
                 type: TransactionType.INCOME,
+                valueDate: DateTime.now().toJSDate(),
                 amount: 100,
                 description: null
             }, util.getMockContext())).rejects.toThrowError()

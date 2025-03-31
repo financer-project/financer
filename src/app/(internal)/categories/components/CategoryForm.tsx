@@ -20,13 +20,9 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
     const categories = useCategories()
 
     const handleParentChange = (parentId: string | null) => {
-        if (parentId) {
-            const selectedParent = categories.findNode((category) => category.id === parentId)
-            if (selectedParent) {
-                setParentType(selectedParent.type)
-            }
-        } else {
-            setParentType(null)
+        const selectedParent = categories.findNode((category) => category.id === parentId)
+        if (selectedParent) {
+            setParentType(selectedParent.type)
         }
     }
 
@@ -71,7 +67,11 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                                          label: color.charAt(0).toUpperCase() + color.slice(1),
                                          render: (label: string) => (<ColoredTag label={label} color={color} />)
                                      }))} />
+
+
                 </div>
+
+
             </div>
         </Form>
     )

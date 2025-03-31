@@ -1,4 +1,6 @@
-import React, { useState } from "react"
+"use client"
+
+import React, { useEffect, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/lib/components/ui/popover"
 import { Button } from "@/src/lib/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -18,25 +20,34 @@ interface SelectFieldProps<T> extends ElementProps<T> {
 }
 
 export const SelectField = <T, >({ options, onChange, readonly, ...props }: SelectFieldProps<T>) => {
-    const [isOpen, setIsOpen] = useState(false) // Dropdown-Zustand
+    const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState("")
-    const [value, setValue] = useState<T | null>(props.value ?? null)
+    const [internalValue, setInternalValue] = useState<T | null>(props.value ?? null)
+
+    // Update internal state when external value changes
+    useEffect(() => {
+        if (props.value && props.value !== internalValue) {
+            setInternalValue(props.value ?? null)
+        }
+    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleSelect = (newValue: T) => {
         if (!readonly) {
             setSearch("")
             setIsOpen(false)
             onChange?.(newValue)
-            setValue(newValue)
+            setInternalValue(newValue)
         }
     }
+
     const handleClear = () => {
         if (!readonly) {
             setSearch("")
             onChange?.(null)
-            setValue(null)
+            setInternalValue(null)
         }
     }
+
     const filteredOptions = options.filter((option) =>
         option.label.toLowerCase().includes(search.toLowerCase())
     )
@@ -55,15 +66,15 @@ export const SelectField = <T, >({ options, onChange, readonly, ...props }: Sele
                 <div className="relative w-full">
                     <Button
                         variant={"outline"}
-                        className={cn("w-full items-start justify-start font-normal", props.className, value ? "" : "text-muted-foreground")}
+                        className={cn("w-full items-start justify-start font-normal", props.className, internalValue ? "" : "text-muted-foreground")}
                         onClick={(event) => {
                             event.preventDefault()
                             if (!readonly) setIsOpen(true)
                         }}
                         disabled={readonly}>
-                        {renderValue(value ?? null)}
+                        {renderValue(internalValue)}
                     </Button>
-                    {value && !readonly && (
+                    {internalValue && !readonly && (
                         <Button
                             variant={"ghost"}
                             onClick={handleClear}

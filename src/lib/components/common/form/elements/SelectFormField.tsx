@@ -28,7 +28,7 @@ export const SelectFormField = <E, V = E[keyof E]>({
         if (value && value !== field.value) {
             helpers.setValue(value)
         }
-    }, [value, helpers, field])
+    }, [value]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleChange = (newValue: V | null) => {
         if (!readonly) {

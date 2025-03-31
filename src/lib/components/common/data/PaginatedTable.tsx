@@ -21,18 +21,18 @@ export const PaginatedTable = <T, >({
                                         createRoute
                                     }: PaginatedTableProps<T>) => {
     const searchParams = useSearchParams()
-    const page = Number(searchParams.get("page")) || 0
+    const page = Number(searchParams?.get("page") ?? 0)
     const router = useRouter()
     const pathname = usePathname()
 
     const goToPreviousPage = () => {
-        const params = new URLSearchParams(searchParams)
+        const params = new URLSearchParams(searchParams ?? {})
         params.set("page", (page - 1).toString())
         router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
     }
 
     const goToNextPage = () => {
-        const params = new URLSearchParams(searchParams)
+        const params = new URLSearchParams(searchParams ?? {})
         params.set("page", (page + 1).toString())
         router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
     }

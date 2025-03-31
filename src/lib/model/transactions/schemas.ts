@@ -6,6 +6,7 @@ export const CreateTransactionSchema = z.object({
     categoryId: z.string().uuid().nullable(),
     type: z.nativeEnum(TransactionType),
     name: z.string(),
+    valueDate: z.date(),
     description: z.string().nullable(),
     amount: z.number()
 })
