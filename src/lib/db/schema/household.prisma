@@ -12,6 +12,8 @@ model Household {
     members  HouseholdMembership[]
 
     Category Category[] @relation(name: "CategoryHousehold")
+
+    CSVImport CSVImport[]
 }
 
 model HouseholdMembership {

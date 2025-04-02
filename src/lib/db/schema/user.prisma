@@ -13,6 +13,8 @@ model User {
     householdsOwned Household[]           @relation("HouseholdOwner")
     memberships     HouseholdMembership[]
     settings        Settings?             @relation("UserSettings")
+
+    CSVImport CSVImport[]
 }
 
 model Settings {

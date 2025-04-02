@@ -40,6 +40,5 @@ next-env.d.ts
 
 .vscode
 
-# tests
-test/cypress/screenshots/
-test/cypress/downloads/
+# data
+data/

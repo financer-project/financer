@@ -1,0 +1,74 @@
+model CSVImport {
+    id               String       @id @default(uuid())
+    createdAt        DateTime     @default(now())
+    updatedAt        DateTime     @updatedAt
+    originalFileName String?
+    status           ImportStatus @default(DRAFT)
+    /**
+     * User that has triggered the import
+     */
+    user             User         @relation(fields: [userId], references: [id])
+    userId           String
+
+    /**
+     * Reference to household
+     */
+    household   Household @relation(fields: [householdId], references: [id])
+    householdId String
+
+    /**
+     * JSON String array
+     */
+    columns  Json
+    rowCount Int
+
+    CSVImportMapping CSVImportMapping[]
+}
+
+model CSVImportMapping {
+    id        String    @id @default(uuid())
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    importId  String
+    csvImport CSVImport @relation(fields: [importId], references: [id], onDelete: Cascade)
+
+    /**
+     * The column name in the CSV file
+     */
+    columnName String
+
+    /**
+     * The mapped field/attribute name in the application
+     */
+    fieldName String
+
+    format String?
+
+    // Value-level mappings for this specific column.
+    valueMappings CSVImportValueMapping[]
+}
+
+model CSVImportValueMapping {
+    id               String           @id @default(uuid())
+    createdAt        DateTime         @default(now())
+    updatedAt        DateTime         @updatedAt
+    mappingId        String
+    csvImportMapping CSVImportMapping @relation(fields: [mappingId], references: [id], onDelete: Cascade)
+
+    /**
+     * The original value in the CSV (e.g., "DE1234567890...")
+     */
+
+    originalValue String
+    /**
+     * The corresponding mapped value in the app (e.g., "1234-ACCOUNT-ID")
+     */
+    mappedValue   String
+}
+
+enum ImportStatus {
+    DRAFT
+    IN_PROGRESS
+    COMPLETED
+    FAILED
+}
