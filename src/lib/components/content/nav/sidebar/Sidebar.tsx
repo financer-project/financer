@@ -13,7 +13,7 @@ import {
 } from "@/src/lib/components/ui/sidebar"
 import { Separator } from "@/src/lib/components/ui/separator"
 import { NavUser } from "@/src/lib/components/content/nav/sidebar/nav-user"
-import { ArrowLeftRightIcon, BookmarkIcon, ChartLineIcon, CogIcon, HandCoinsIcon, HouseIcon } from "lucide-react"
+import { ArrowLeftRightIcon, BookmarkIcon, ChartLineIcon, CogIcon, FileTextIcon, HandCoinsIcon, HouseIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
 
@@ -30,6 +30,11 @@ const groups = [
                 title: "Transactions",
                 url: "/transactions",
                 icon: ArrowLeftRightIcon
+            },
+            {
+                title: "Import CSV",
+                url: "/csv-import/new",
+                icon: FileTextIcon
             }
         ]
     },
