@@ -13,6 +13,8 @@ model Transaction {
     accountId  String
     category   Category? @relation(fields: [categoryId], references: [id])
     categoryId String?
+
+    ImportJob ImportJob[]
 }
 
 enum TransactionType {
