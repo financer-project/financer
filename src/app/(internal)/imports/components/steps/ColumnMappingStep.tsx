@@ -2,10 +2,9 @@
 
 import { useEffect } from "react"
 import { useFormikContext } from "formik"
-import { Card, CardContent } from "@/src/lib/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
 import { Label } from "@/src/lib/components/ui/label"
-import { Heading2 } from "@/src/lib/components/common/typography"
 
 interface ColumnMappingStepProps {
     csvHeaders: string[]
@@ -19,8 +18,9 @@ const transactionFields = [
     { label: "Type", value: "type" },
     { label: "Value Date", value: "valueDate" },
     { label: "Description", value: "description" },
-    { label: "Account Identifier", value: "accountIdentifier" }, // For mapping to accounts
-    { label: "Category Name", value: "categoryName" } // For mapping to categories
+    { label: "Account Identifier", value: "accountIdentifier" },
+    { label: "Account Name", value: "accountName" },
+    { label: "Category Name", value: "categoryName" }
 ]
 
 interface ColumnMapping {
@@ -86,14 +86,16 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
         <div className="space-y-6">
             <div className="space-y-4">
                 {csvHeaders.map((header, index) => (
-                    <div key={index} className="flex flex-col space-y-2">
+                    <div key={`column-${header}`} className="flex flex-col space-y-2">
                         <div className="flex items-center justify-between">
                             <Label>
                                 Column: <span className="font-medium">{header}</span>
                             </Label>
                             <div className="w-1/2">
                                 <SelectField
-                                    options={transactionFields}
+                                    options={transactionFields.filter(field =>
+                                        field.value === values.columnMappings[index]?.fieldName ||
+                                        !Object.values(values.columnMappings).find(mappingField => mappingField.fieldName === field.value))}
                                     value={values.columnMappings[index]?.fieldName}
                                     onChange={(value) => handleMappingChange(index, value)}
                                     placeholder="Ignore this column"
@@ -110,22 +112,22 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
             </div>
 
             <Card>
-                <CardContent className="p-4">
-                    <Heading2>Mapping Preview</Heading2>
-                    <div className="space-y-2">
-                        {values.columnMappings
-                            .filter(mapping => mapping.fieldName !== null)
-                            .map((mapping, index) => (
-                                <div key={index} className="flex justify-between text-sm">
-                                    <span className="font-medium">{mapping.fieldName}:</span>
-                                    <span className="text-muted-foreground">
+                <CardHeader>
+                    <CardTitle>Mapping Preview</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {values.columnMappings
+                        .filter(mapping => mapping.fieldName !== null)
+                        .map((mapping) => (
+                            <div key={`column-mapping-${mapping.fieldName}`} className="flex justify-between text-sm">
+                                <span className="font-immedium">{mapping.fieldName}:</span>
+                                <span className="text-muted-foreground">
                                         {csvHeaders.indexOf(mapping.csvHeader) >= 0 && previewRow.length > 0
                                             ? previewRow[csvHeaders.indexOf(mapping.csvHeader)]
                                             : "N/A"}
                                     </span>
-                                </div>
-                            ))}
-                    </div>
+                            </div>
+                        ))}
                 </CardContent>
             </Card>
         </div>

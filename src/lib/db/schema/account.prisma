@@ -1,9 +1,9 @@
 model Account {
-    id            String   @id @default(uuid())
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
-    name          String
-    technicalName String?
+    id                  String   @id @default(uuid())
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+    name                String
+    technicalIdentifier String?
 
     household    Household     @relation(fields: [householdId], references: [id])
     householdId  String

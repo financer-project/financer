@@ -34,10 +34,11 @@ interface StepInfo {
 
 interface StepsVisualizationProps {
     steps: StepInfo[]
-    currentStep: number
+    currentStep: number,
+    onClick: (index: number) => void
 }
 
-export const StepsVisualization = ({ steps, currentStep }: StepsVisualizationProps) => {
+export const StepsVisualization = ({ steps, currentStep, onClick }: StepsVisualizationProps) => {
 
     const getClassName = (index: number) => {
         const className = "flex items-center justify-center w-8 h-8 rounded-full border-2"
@@ -54,7 +55,9 @@ export const StepsVisualization = ({ steps, currentStep }: StepsVisualizationPro
         <div className="flex w-full py-4 relative">
             <div className={"flex w-full"}>
                 {steps.map((step, index) => (
-                    <div key={`step-${step.title}`} className="flex flex-col items-center flex-1 relative">
+                    <div key={`step-${step.title}`}
+                         className={cn("flex flex-col items-center flex-1 relative", index < currentStep ? "cursor-pointer" : "cursor-default")}
+                         onClick={() => index < currentStep && onClick(index)}>
                         <div
                             className={getClassName(index)}>
                             {index + 1 < steps.length &&
@@ -189,7 +192,9 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
             {title && (
                 <div className={"flex flex-col gap-4 w-full"}>
                     <CardTitle>{title}</CardTitle>
-                    <StepsVisualization steps={stepNames} currentStep={currentStep} />
+                    <StepsVisualization steps={stepNames}
+                                        currentStep={currentStep}
+                                        onClick={index => setCurrentStep(index)} />
                 </div>
             )}
 

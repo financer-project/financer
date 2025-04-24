@@ -14,7 +14,7 @@ export function NewAccount({ householdId }: Readonly<{ householdId: string }>) {
         <AccountForm
             submitText="Create Account"
             schema={CreateAccountSchema}
-            initialValues={{ householdId: householdId, name: "", technicalName: null }}
+            initialValues={{ householdId: householdId, name: "", technicalIdentifier: null }}
             onSubmit={async (values) => {
                 try {
                     const newAccount = await createAccountMutation(values)

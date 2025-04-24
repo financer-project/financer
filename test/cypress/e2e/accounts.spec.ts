@@ -34,7 +34,7 @@ describe("Accounts", () => {
         cy.url().should("include", `/households/${testData.households.standard.id}/accounts/new`)
 
         cy.get("input[name='name']").type("A New Account")
-        cy.get("input[name='technicalName']").type("DE11 0000 0000 0000 0000 01")
+        cy.get("input[name='technicalIdentifier']").type("DE11 0000 0000 0000 0000 01")
         cy.get("button[type='submit']").click()
 
         cy.get(":nth-child(2) > .text-md").should("contain.text", "A New Account")

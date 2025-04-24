@@ -23,7 +23,7 @@ export const Account = ({ accountId }: { accountId: string }) => {
                               className={"basis-1/4"} />
 
                     <DataItem label={"Technical Name"}
-                              data={account.technicalName}
+                              data={account.technicalIdentifier}
                               className={"basis-1/4"} />
                 </div>
 

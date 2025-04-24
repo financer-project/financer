@@ -61,7 +61,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                             },
                             {
                                 name: "Technical Name",
-                                render: (account) => account.technicalName
+                                render: (account) => account.technicalIdentifier
                             }
                         ]}
                     />

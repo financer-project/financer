@@ -30,19 +30,19 @@ describe("Account Mutations & Queries", () => {
             const result = await createAccount({
                 name: "Test Account",
                 householdId: util.getTestData().households.standard.id,
-                technicalName: "test_account"
+                technicalIdentifier: "test_account"
             }, util.getMockContext())
 
             expect(result.id).not.toBeUndefined()
             expect(result.name).toBe("Test Account")
-            expect(result.technicalName).toBe("test_account")
+            expect(result.technicalIdentifier).toBe("test_account")
         })
 
         test("creates a new account with invalid data", async () => {
             await expect(async () => createAccount({
                 name: "",
                 householdId: util.getTestData().households.standard.id,
-                technicalName: null
+                technicalIdentifier: null
             }, util.getMockContext())).rejects.toThrowError()
         })
     })
@@ -53,11 +53,11 @@ describe("Account Mutations & Queries", () => {
                 id: util.getTestData().accounts.standard.id,
                 householdId: util.getTestData().households.standard.id,
                 name: "Updated Account Name",
-                technicalName: "updated_technical"
+                technicalIdentifier: "updated_technical"
             }, util.getMockContext())
 
             expect(result.name).toBe("Updated Account Name")
-            expect(result.technicalName).toBe("updated_technical")
+            expect(result.technicalIdentifier).toBe("updated_technical")
         })
 
         test("fails to update non-existing account", async () => {
@@ -65,7 +65,7 @@ describe("Account Mutations & Queries", () => {
                 id: "non-existent-id",
                 householdId: util.getTestData().households.standard.id,
                 name: "Invalid Update",
-                technicalName: null
+                technicalIdentifier: null
             }, util.getMockContext())).rejects.toThrowError()
         })
     })

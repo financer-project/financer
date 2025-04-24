@@ -25,7 +25,7 @@ export function AccountForm<S extends z.ZodType<any, any>>(props: Readonly<FormP
                            placeholder={"Name"}
                            required />
                 <TextField label={"Technical Name"}
-                           name={"technicalName"}
+                           name={"technicalIdentifier"}
                            placeholder={"Technical Name"}
                            description={"This can be an IBAN or an E-Mail Address."} />
             </div>
