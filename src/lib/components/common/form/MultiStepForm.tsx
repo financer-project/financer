@@ -14,7 +14,7 @@ export interface StepProps extends PropsWithChildren {
     name: string,
     title?: string,
     description?: string
-    validationSchema?: z.ZodSchema<any>
+    validationSchema?: z.ZodSchema<any> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export const Step = ({ children, ...props }: StepProps) => {
@@ -79,7 +79,7 @@ export const StepsVisualization = ({ steps, currentStep, onClick }: StepsVisuali
 }
 
 // MultiStepForm component
-export interface MultiStepFormProps<S extends z.ZodSchema<any>>
+export interface MultiStepFormProps<S extends z.ZodSchema<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
     extends Omit<PropsWithoutRef<React.JSX.IntrinsicElements["form"]>, "onSubmit"> {
     title?: string
     schema: S
@@ -202,8 +202,8 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
                 initialValues={initialValues}
                 validationSchema={toFormikValidationSchema(getCurrentStepSchema())}
                 onSubmit={handleSubmit}
-                validateOnMount={false}
-                validateOnChange={false}
+                validateOnMount={   false}
+                validateOnChange={true}
                 validateOnBlur={true}
             >
                 {(formikProps) => (

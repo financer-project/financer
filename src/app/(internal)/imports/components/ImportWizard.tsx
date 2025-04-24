@@ -19,7 +19,7 @@ const columnMappingSchema = z.object({
     columnMappings: z.array(
         z.object({
             csvHeader: z.string(),
-            fieldName: z.string()
+            fieldName: z.string().nullable()
         })
     )
 })
@@ -35,7 +35,7 @@ const valueMappingSchema = z.object({
 })
 
 const confirmationSchema = z.object({
-    confirmed: z.boolean().refine(val => val === true, "You must confirm to proceed")
+    confirmed: z.boolean().refine(val => val, "You must confirm to proceed")
 })
 
 // Combine all schemas

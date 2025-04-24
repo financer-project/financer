@@ -43,3 +43,6 @@ next-env.d.ts
 # tests
 test/cypress/screenshots/
 test/cypress/downloads/
+
+# data
+data
