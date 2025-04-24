@@ -14,13 +14,12 @@ export default function Page() {
             <Header title={"New Import"}
                     subtitle={"Import transactions from a CSV file."}
                     breadcrumbs={[
-                        { label: "Imports", href: "/imports" },
+                        { label: "Transactions", url: "/transactions" },
+                        { label: "Imports", url: "/imports" },
                         { label: "New Import" }
                     ]} />
             <Suspense fallback={<div>Loading...</div>}>
-                <div className="p-4">
-                    <ImportWizard />
-                </div>
+                <ImportWizard />
             </Suspense>
         </div>
     )

@@ -1,21 +1,30 @@
-import { Children, isValidElement, PropsWithoutRef, ReactNode, useState } from "react"
+import { Children, isValidElement, PropsWithChildren, PropsWithoutRef, ReactNode, useState } from "react"
 import { Form as FormikForm, Formik, FormikErrors, FormikProps } from "formik"
 import { z } from "zod"
 import { Button } from "@/src/lib/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Check } from "lucide-react"
 import { toFormikValidationSchema } from "zod-formik-adapter"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
+import { CardTitle } from "@/src/lib/components/ui/card"
+import { Heading2, SubTitle } from "@/src/lib/components/common/typography"
+import { cn } from "@/lib/utils"
 
 // Step component for use within MultiStepForm
-export interface StepProps {
-    title: string
+export interface StepProps extends PropsWithChildren {
+    name: string,
+    title?: string,
+    description?: string
     validationSchema?: z.ZodSchema<any>
-    children: ReactNode | ((formikProps: any) => ReactNode)
 }
 
-export const Step = ({ children }: StepProps) => {
-    return <>{typeof children === "function" ? children({}) : children}</>
+export const Step = ({ children, ...props }: StepProps) => {
+    return (
+        <div className={"flex flex-col gap-4 w-full"}>
+            <Heading2>{props.title}</Heading2>
+            <SubTitle>{props.description}</SubTitle>
+            {children}
+        </div>
+    )
 }
 
 // Steps visualization component
@@ -29,47 +38,36 @@ interface StepsVisualizationProps {
 }
 
 export const StepsVisualization = ({ steps, currentStep }: StepsVisualizationProps) => {
+
+    const getClassName = (index: number) => {
+        const className = "flex items-center justify-center w-8 h-8 rounded-full border-2"
+        if (index < currentStep) {
+            return cn(className, "border-primary bg-primary text-primary-foreground")
+        } else {
+            return cn(className, (index === currentStep
+                ? "border-primary bg-background text-primary"
+                : "border-muted bg-muted text-muted-foreground"))
+        }
+    }
+
     return (
         <div className="flex w-full py-4 relative">
-            <div className={"absolute h-0.5 bg-muted w-10/12 top-1/3 left-1/12"} />
-            <div className={"flex justify-between w-full"}>
+            <div className={"flex w-full"}>
                 {steps.map((step, index) => (
-                    <div key={index} className="flex relative">
-                        {/* Step circle */}
-                        <div className="flex flex-col items-center relative z-10">
-                            <div className={`
-                flex items-center justify-center w-8 h-8 rounded-full border-2 text-sm font-medium
-                ${index < currentStep
-                                ? "border-primary bg-primary text-primary-foreground"
-                                : index === currentStep
-                                    ? "border-primary bg-background text-primary"
-                                    : "border-muted bg-muted text-muted-foreground"
-                            }`}>
-                                {index < currentStep ? (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                ) : (
-                                    index + 1
-                                )}
-                            </div>
-                            <span
-                                className={`
-                  mt-2 text-xs font-medium
-                  ${index <= currentStep ? "text-primary" : "text-muted-foreground"}
-                `}>
-                {step.title}
-              </span>
+                    <div key={`step-${step.title}`} className="flex flex-col items-center flex-1 relative">
+                        <div
+                            className={getClassName(index)}>
+                            {index + 1 < steps.length &&
+                                <div className={"absolute h-0.5 bg-muted w-full left-1/2 mx-4"} />}
+
+                            {index < currentStep
+                                ? (<Check />)
+                                : (<p className={"text-sm font-medium z-10"}>{index + 1}</p>)}
                         </div>
+                        <span
+                            className={cn("mt-2 text-xs font-medium", index <= currentStep ? "text-primary" : "text-muted-foreground")}>
+                                {step.title}
+                            </span>
                     </div>
                 ))}
             </div>
@@ -95,12 +93,9 @@ interface OnSubmitResult {
     [prop: string]: any
 }
 
-export const FORM_ERROR = "FORM_ERROR"
-
 export function MultiStepForm<S extends z.ZodType<any, any>>({
                                                                  title,
                                                                  children,
-                                                                 schema,
                                                                  initialValues,
                                                                  onSubmit,
                                                                  onStepComplete,
@@ -113,8 +108,8 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
     const steps = Children.toArray(children)
         .filter(child => isValidElement(child) && child.type === Step)
         .map(step => {
-            const { title, validationSchema } = (step as React.ReactElement<StepProps>).props
-            return { title, validationSchema }
+            const { name, validationSchema } = (step as React.ReactElement<StepProps>).props
+            return { name: name, validationSchema }
         })
 
     const goToNextStep = (values: any) => {
@@ -160,7 +155,7 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
         const stepChildren = currentStepElement.props.children
 
         return typeof stepChildren === "function"
-            ? stepChildren(formikProps)
+            ? (stepChildren as (formikProps: any) => React.ReactNode)(formikProps)
             : stepChildren
     }
 
@@ -187,15 +182,15 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
         }
     }
 
-    const stepTitles = steps.map(step => ({ title: step.title }))
+    const stepNames = steps.map(step => ({ title: step.name }))
 
     return (
-        <Card className="w-full">
+        <div className="flex flex-col gap-8 w-full">
             {title && (
-                <CardHeader>
+                <div className={"flex flex-col gap-4 w-full"}>
                     <CardTitle>{title}</CardTitle>
-                    <StepsVisualization steps={stepTitles} currentStep={currentStep} />
-                </CardHeader>
+                    <StepsVisualization steps={stepNames} currentStep={currentStep} />
+                </div>
             )}
 
             <Formik
@@ -216,28 +211,26 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
                             </Alert>
                         )}
 
-                        <CardContent>
-                            {renderCurrentStepContent(formikProps)}
-                        </CardContent>
+                        {renderCurrentStepContent(formikProps)}
 
-                        <CardFooter className="flex justify-between">
+                        <div className="flex justify-between">
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={goToPreviousStep}
-                                disabled={currentStep === 0 || formikProps.isSubmitting}                            >
+                                disabled={currentStep === 0 || formikProps.isSubmitting}>
                                 Back
                             </Button>
                             <Button
                                 type="submit"
-                                disabled={formikProps.isSubmitting || !formikProps.isValid}                            >
+                                disabled={formikProps.isSubmitting || !formikProps.isValid}>
                                 {currentStep < steps.length - 1 ? "Next" : "Submit"}
                             </Button>
-                        </CardFooter>
+                        </div>
                     </FormikForm>
                 )}
             </Formik>
-        </Card>
+        </div>
     )
 }
 

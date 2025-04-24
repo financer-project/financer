@@ -19,7 +19,13 @@ interface SelectFieldProps<T> extends ElementProps<T> {
     options: SelectOption<T>[]
 }
 
-export const SelectField = <T, >({ options, onChange, readonly, ...props }: SelectFieldProps<T>) => {
+export const SelectField = <T, >({
+                                     options,
+                                     onChange,
+                                     readonly,
+                                     placeholder = "Select option ...",
+                                     ...props
+                                 }: SelectFieldProps<T>) => {
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState("")
     const [internalValue, setInternalValue] = useState<T | null>(props.value ?? null)
@@ -57,7 +63,7 @@ export const SelectField = <T, >({ options, onChange, readonly, ...props }: Sele
         if (option) {
             return option.render ? option.render(option.label) : option.label
         }
-        return "Select option ..."
+        return placeholder
     }
 
     return (

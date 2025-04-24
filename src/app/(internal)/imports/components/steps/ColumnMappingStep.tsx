@@ -5,6 +5,7 @@ import { useFormikContext } from "formik"
 import { Card, CardContent } from "@/src/lib/components/ui/card"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
 import { Label } from "@/src/lib/components/ui/label"
+import { Heading2 } from "@/src/lib/components/common/typography"
 
 interface ColumnMappingStepProps {
     csvHeaders: string[]
@@ -19,8 +20,7 @@ const transactionFields = [
     { label: "Value Date", value: "valueDate" },
     { label: "Description", value: "description" },
     { label: "Account Identifier", value: "accountIdentifier" }, // For mapping to accounts
-    { label: "Category Name", value: "categoryName" }, // For mapping to categories
-    { label: "Ignore this column", value: "ignore" }
+    { label: "Category Name", value: "categoryName" } // For mapping to categories
 ]
 
 interface ColumnMapping {
@@ -37,7 +37,7 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
             // Try to auto-map columns based on header names
             const initialMappings = csvHeaders.map(header => {
                 const lowerHeader = header.toLowerCase()
-                let fieldName = "ignore"
+                let fieldName = null
 
                 // Simple auto-mapping logic
                 if (lowerHeader.includes("name") || lowerHeader.includes("description")) {
@@ -66,13 +66,17 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
         }
     }, [csvHeaders, setFieldValue, values.columnMappings])
 
-    const handleMappingChange = (index: number, value: string) => {
-        const newMappings = [...values.columnMappings]
-        newMappings[index] = {
-            ...newMappings[index],
-            fieldName: value
+    const handleMappingChange = async (index: number, value: string | null) => {
+        let newMappings = [...values.columnMappings]
+        if (value) {
+            newMappings[index] = {
+                ...newMappings[index],
+                fieldName: value
+            }
+        } else {
+            newMappings = newMappings.splice(index, 1)
         }
-        setFieldValue("columnMappings", newMappings)
+        await setFieldValue("columnMappings", newMappings)
     }
 
     // Show a preview of the first row with the mappings
@@ -80,13 +84,6 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
 
     return (
         <div className="space-y-6">
-            <div>
-                <h3 className="text-lg font-medium mb-2">Map CSV Columns to Transaction Fields</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                    Select which transaction field each CSV column should be mapped to.
-                </p>
-            </div>
-
             <div className="space-y-4">
                 {csvHeaders.map((header, index) => (
                     <div key={index} className="flex flex-col space-y-2">
@@ -97,9 +94,9 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
                             <div className="w-1/2">
                                 <SelectField
                                     options={transactionFields}
-                                    value={values.columnMappings[index]?.fieldName || "ignore"}
-                                    onChange={(value) => handleMappingChange(index, value as string)}
-                                    placeholder="Select field"
+                                    value={values.columnMappings[index]?.fieldName}
+                                    onChange={(value) => handleMappingChange(index, value)}
+                                    placeholder="Ignore this column"
                                 />
                             </div>
                         </div>
@@ -114,18 +111,18 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
 
             <Card>
                 <CardContent className="p-4">
-                    <h3 className="text-sm font-medium mb-2">Mapping Preview</h3>
+                    <Heading2>Mapping Preview</Heading2>
                     <div className="space-y-2">
                         {values.columnMappings
-                            .filter(mapping => mapping.fieldName !== "ignore")
+                            .filter(mapping => mapping.fieldName !== null)
                             .map((mapping, index) => (
                                 <div key={index} className="flex justify-between text-sm">
                                     <span className="font-medium">{mapping.fieldName}:</span>
                                     <span className="text-muted-foreground">
-                    {csvHeaders.indexOf(mapping.csvHeader) >= 0 && previewRow.length > 0
-                        ? previewRow[csvHeaders.indexOf(mapping.csvHeader)]
-                        : "N/A"}
-                  </span>
+                                        {csvHeaders.indexOf(mapping.csvHeader) >= 0 && previewRow.length > 0
+                                            ? previewRow[csvHeaders.indexOf(mapping.csvHeader)]
+                                            : "N/A"}
+                                    </span>
                                 </div>
                             ))}
                     </div>

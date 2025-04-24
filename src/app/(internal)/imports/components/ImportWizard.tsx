@@ -89,27 +89,34 @@ export const ImportWizard = () => {
                 confirmed: false
             }}
             onSubmit={handleSubmit}>
-            <Step title="Upload File" validationSchema={uploadSchema}>
+            <Step name="Upload File"
+
+                  validationSchema={uploadSchema}>
                 <FileUploadStep
                     setCsvHeadersAction={setCsvHeaders}
                     setCsvDataAction={setCsvData}
                 />
             </Step>
 
-            <Step title="Map Columns" validationSchema={columnMappingSchema}>
+            <Step name="Map Columns"
+                  title={"Map CSV Columns to Transaction Fields"}
+                  description={"Select which transaction field each CSV column should be mapped to."}
+                  validationSchema={columnMappingSchema}>
                 <ColumnMappingStep
                     csvHeaders={csvHeaders}
                     csvData={csvData}
                 />
             </Step>
 
-            <Step title="Map Values" validationSchema={valueMappingSchema}>
+            <Step name="Map Values"
+                  validationSchema={valueMappingSchema}>
                 <ValueMappingStep
                     csvData={csvData}
                 />
             </Step>
 
-            <Step title="Confirm & Import" validationSchema={confirmationSchema}>
+            <Step name="Confirm & Import"
+                  validationSchema={confirmationSchema}>
                 <ConfirmationStep
                     csvData={csvData}
                 />
