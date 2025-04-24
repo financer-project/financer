@@ -20,7 +20,6 @@ interface ValueMapping {
 
 interface ValueMappingStepProps {
     csvData: string[][]
-    columnMappings: ColumnMapping[]
 }
 
 // Mock data for accounts and categories - in a real app, these would come from the API
@@ -37,13 +36,16 @@ const mockCategories = [
     { id: "cat4", name: "Entertainment" }
 ]
 
-export const ValueMappingStep = ({ csvData, columnMappings }: ValueMappingStepProps) => {
-    const { values, setFieldValue } = useFormikContext<{ valueMappings: ValueMapping[] }>()
+export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
+    const { values, setFieldValue } = useFormikContext<{
+        valueMappings: ValueMapping[]
+        columnMappings: ColumnMapping[]
+    }>()
     const [activeTab, setActiveTab] = useState("accounts")
 
     // Extract unique values for account identifiers and category names
-    const accountIdentifierIndex = columnMappings.findIndex(m => m.fieldName === "accountIdentifier")
-    const categoryNameIndex = columnMappings.findIndex(m => m.fieldName === "categoryName")
+    const accountIdentifierIndex = values.columnMappings.findIndex(m => m.fieldName === "accountIdentifier")
+    const categoryNameIndex = values.columnMappings.findIndex(m => m.fieldName === "categoryName")
 
     const uniqueAccountIdentifiers = accountIdentifierIndex >= 0
         ? Array.from(new Set(csvData.map(row => row[accountIdentifierIndex])))

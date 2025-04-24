@@ -52,15 +52,6 @@ export function Form<S extends z.ZodType<any, any>>({
         <Formik<z.infer<typeof schema>>
             initialValues={getInitialValues()}
             validationSchema={toFormikValidationSchema(schema)}
-            // validate={(values) => {
-            //     try {
-            //         schema.parse(values)
-            //     } catch (error) {
-            //         if (error instanceof z.ZodError) {
-            //             return error
-            //         }
-            //     }
-            // }}
             onSubmit={async (values, { setErrors }) => {
                 const { FORM_ERROR, ...otherErrors } = (await onSubmit(values)) || {}
 

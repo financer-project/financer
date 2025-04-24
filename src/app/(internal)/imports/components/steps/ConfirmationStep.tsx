@@ -19,14 +19,6 @@ interface ValueMapping {
 }
 
 interface ConfirmationStepProps {
-  values: {
-    name: string
-    file: File | null
-    separator: string
-    columnMappings: ColumnMapping[]
-    valueMappings: ValueMapping[]
-    confirmed: boolean
-  }
   csvData: string[][]
 }
 
@@ -44,8 +36,15 @@ const mockCategories = [
   { id: "cat4", name: "Entertainment" }
 ]
 
-export const ConfirmationStep = ({ values, csvData }: ConfirmationStepProps) => {
-  const { setFieldValue } = useFormikContext()
+export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
+  const { values, setFieldValue } = useFormikContext<{
+    name: string
+    file: File | null
+    separator: string
+    columnMappings: ColumnMapping[]
+    valueMappings: ValueMapping[]
+    confirmed: boolean
+  }>()
 
   const getAccountName = (id: string) => {
     return mockAccounts.find(acc => acc.id === id)?.name || "Unknown Account"

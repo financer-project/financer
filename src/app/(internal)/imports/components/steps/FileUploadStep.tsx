@@ -1,23 +1,21 @@
 "use client"
 
-import { useRef, useState, useEffect, ChangeEvent } from "react"
+import { useEffect, useState } from "react"
 import { useFormikContext } from "formik"
-import { Button } from "@/src/lib/components/ui/button"
-import { Input } from "@/src/lib/components/ui/input"
-import { Label } from "@/src/lib/components/ui/label"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
-import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
 import { Card, CardContent } from "@/src/lib/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
+import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
+import { ScrollArea, ScrollBar } from "@/src/lib/components/ui/scroll-area"
+import FileUploadField from "@/src/lib/components/common/form/elements/FileUploadField"
 
 interface FileUploadStepProps {
-    setCsvHeaders: (headers: string[]) => void
-    setCsvData: (data: string[][]) => void
+    setCsvHeadersAction: (headers: string[]) => void
+    setCsvDataAction: (data: string[][]) => void
 }
 
-export const FileUploadStep = ({ setCsvHeaders, setCsvData }: FileUploadStepProps) => {
+export const FileUploadStep = ({ setCsvHeadersAction, setCsvDataAction }: FileUploadStepProps) => {
     const { setFieldValue, values } = useFormikContext<{ name: string; file: File | null; separator: string }>()
-    const fileInputRef = useRef<HTMLInputElement>(null)
-    const [fileName, setFileName] = useState<string>("")
     const [previewData, setPreviewData] = useState<string[][]>([])
 
     // Define separator options
@@ -35,141 +33,115 @@ export const FileUploadStep = ({ setCsvHeaders, setCsvData }: FileUploadStepProp
         }
     }, [values.separator, setFieldValue])
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
+    const parseCSVContent = (content: string, separator: string) => {
+        const lines = content.split("\n").filter(line => line.trim() !== "")
+        const headers = lines[0].split(separator).map(header => header.trim())
+        const data = lines.slice(0, 5).map(line =>
+            line.split(separator).map(cell => cell.trim())
+        )
+
+        setCsvHeadersAction(headers)
+        setCsvDataAction(lines.slice(1).map(line => line.split(separator).map(cell => cell.trim())))
+        setPreviewData(data)
+    }
+
+    const handleFileChange = (file: File | null) => {
         if (!file) return
 
-        setFileName(file.name)
-        setFieldValue("file", file)
-
-        // Read the file
         const reader = new FileReader()
         reader.onload = (event) => {
             const content = event.target?.result as string
             if (!content) return
 
-            const separator = values.separator || ","
+            // Try to determine separator by checking first line
+            const firstLine = content.split("\n")[0]
+            let detectedSeparator = ","
+            const separators = [",", ";", "\t", "|"]
+            const counts = separators.map(sep => firstLine.split(sep).length - 1)
+            const maxCount = Math.max(...counts)
+            if (maxCount > 0) {
+                detectedSeparator = separators[counts.indexOf(maxCount)]
+                setFieldValue("separator", detectedSeparator)
+            }
 
-            // Parse CSV
-            const lines = content.split("\n").filter(line => line.trim() !== "")
-            const headers = lines[0].split(separator).map(header => header.trim())
+            setFieldValue("name", file.name.replace(/\.[^/.]+$/, ""))
 
-            // Get a preview of the data (first 5 rows)
-            const data = lines.slice(1, 6).map(line =>
-                line.split(separator).map(cell => cell.trim())
-            )
-
-            setCsvHeaders(headers)
-            setCsvData(lines.slice(1).map(line => line.split(separator).map(cell => cell.trim())))
-            setPreviewData(data)
+            parseCSVContent(content, detectedSeparator)
         }
         reader.readAsText(file)
     }
 
-    // Handle separator change and reparse file if needed
-    const handleSeparatorChange = (value: string) => {
+    const handleSeparatorChange = (value: string | null) => {
+        if (!value) return
         setFieldValue("separator", value)
 
-        // If a file is already loaded, reparse it with the new separator
         if (values.file) {
             const reader = new FileReader()
             reader.onload = (event) => {
                 const content = event.target?.result as string
                 if (!content) return
-
-                // Parse CSV with new separator
-                const lines = content.split("\n").filter(line => line.trim() !== "")
-                const headers = lines[0].split(value).map(header => header.trim())
-
-                // Get a preview of the data (first 5 rows)
-                const data = lines.slice(1, 6).map(line =>
-                    line.split(value).map(cell => cell.trim())
-                )
-
-                setCsvHeaders(headers)
-                setCsvData(lines.slice(1).map(line => line.split(value).map(cell => cell.trim())))
-                setPreviewData(data)
+                parseCSVContent(content, value)
             }
             reader.readAsText(values.file)
         }
     }
 
-    const handleButtonClick = () => {
-        fileInputRef.current?.click()
-    }
-
     return (
         <div className="space-y-6">
-            <TextField
-                name="name"
-                label="Import Name"
-                placeholder="Enter a name for this import"
-                required />
+            <FileUploadField
+                name={"file"}
+                label={"CSV File"}
+                accept={".csv"}
+                onChange={handleFileChange} />
 
-            <div className="space-y-2">
-                <Label>CSV Separator</Label>
-                <SelectField
+            <div className={"flex flex-row gap-4"}>
+                <TextField
+                    name="name"
+                    label="Import Name"
+                    placeholder="Enter a name for this import"
+                    required />
+
+                <SelectFormField
+                    name={"separator"}
+                    label={"CSV Separator"}
                     options={separatorOptions}
                     value={values.separator || ","}
                     onChange={handleSeparatorChange}
                     placeholder="Select separator"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                    Select the character that separates columns in your CSV file
-                </p>
-            </div>
-
-            <div className="space-y-2">
-                <Label htmlFor="file">CSV File</Label>
-                <div className="flex items-center gap-2">
-                    <Input
-                        ref={fileInputRef}
-                        id="file"
-                        type="file"
-                        accept=".csv"
-                        className="hidden"
-                        onChange={handleFileChange}
-                    />
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleButtonClick}
-                    >
-                        Choose File
-                    </Button>
-                    <span className="text-sm text-muted-foreground">
-            {fileName || "No file chosen"}
-          </span>
-                </div>
+                    description={"Select the character that separates columns in your CSV file"}
+                    required />
             </div>
 
             {previewData.length > 0 && (
                 <Card>
-                    <CardContent className="p-4">
+                    <CardContent className="flex flex-col p-4">
                         <h3 className="text-sm font-medium mb-2">Preview (first 5 rows)</h3>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm border-collapse">
-                                <thead>
-                                <tr className="bg-muted">
-                                    {previewData[0].map((_, index) => (
-                                        <th key={index} className="p-2 text-left border">
-                                            Column {index + 1}
-                                        </th>
-                                    ))}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {previewData.map((row, rowIndex) => (
-                                    <tr key={rowIndex}>
-                                        {row.map((cell, cellIndex) => (
-                                            <td key={cellIndex} className="p-2 border">
-                                                {cell}
-                                            </td>
+                        <div className={"flex"}>
+                            <ScrollArea type={"always"} className={"flex-1 w-1 overflow-x-auto"}>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            {previewData[0].map((columnName, index) => (
+                                                <TableHead key={index}>
+                                                    {columnName ?? `Column ${index + 1}`}
+                                                </TableHead>
+                                            ))}
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {previewData.slice(1).map((row, rowIndex) => (
+                                            <TableRow key={rowIndex}>
+                                                {row.map((cell, cellIndex) => (
+                                                    <TableCell key={cellIndex}>
+                                                        {cell}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
                                         ))}
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                                    </TableBody>
+                                </Table>
+                                <ScrollBar orientation={"horizontal"} className={"w-full"} />
+                            </ScrollArea>
                         </div>
                     </CardContent>
                 </Card>
