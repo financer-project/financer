@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/src/lib/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/lib/components/ui/tabs"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
 import { Label } from "@/src/lib/components/ui/label"
+import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
+import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 
 interface ColumnMapping {
     csvHeader: string
@@ -22,26 +24,15 @@ interface ValueMappingStepProps {
     csvData: string[][]
 }
 
-// Mock data for accounts and categories - in a real app, these would come from the API
-const mockAccounts = [
-    { id: "acc1", name: "Checking Account" },
-    { id: "acc2", name: "Savings Account" },
-    { id: "acc3", name: "Credit Card" }
-]
-
-const mockCategories = [
-    { id: "cat1", name: "Groceries" },
-    { id: "cat2", name: "Rent" },
-    { id: "cat3", name: "Utilities" },
-    { id: "cat4", name: "Entertainment" }
-]
-
 export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
     const { values, setFieldValue } = useFormikContext<{
         valueMappings: ValueMapping[]
         columnMappings: ColumnMapping[]
     }>()
     const [activeTab, setActiveTab] = useState("accounts")
+
+    const accounts = useAccounts()
+    const categories = useCategories()
 
     // Extract unique values for account identifiers and category names
     const accountIdentifierIndex = values.columnMappings.findIndex(m => m.fieldName === "accountIdentifier")
@@ -50,13 +41,13 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
     const uniqueAccountIdentifiers = accountIdentifierIndex >= 0
         ? Array.from(new Set(csvData.map(row => row[accountIdentifierIndex])))
             .filter(Boolean)
-            .sort()
+            .sort((a, b) => a.localeCompare(b))
         : []
 
     const uniqueCategoryNames = categoryNameIndex >= 0
         ? Array.from(new Set(csvData.map(row => row[categoryNameIndex])))
             .filter(Boolean)
-            .sort()
+            .sort((a, b) => a.localeCompare(b))
         : []
 
     // Initialize value mappings if empty
@@ -67,7 +58,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
             // Add account mappings
             uniqueAccountIdentifiers.forEach(identifier => {
                 // Try to find a matching account by name similarity
-                const matchingAccount = mockAccounts.find(acc =>
+                const matchingAccount = accounts.find(acc =>
                     acc.name.toLowerCase().includes(identifier.toLowerCase()) ||
                     identifier.toLowerCase().includes(acc.name.toLowerCase())
                 )
@@ -82,7 +73,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
             // Add category mappings
             uniqueCategoryNames.forEach(categoryName => {
                 // Try to find a matching category by name similarity
-                const matchingCategory = mockCategories.find(cat =>
+                const matchingCategory = categories.findNode(cat =>
                     cat.name.toLowerCase().includes(categoryName.toLowerCase()) ||
                     categoryName.toLowerCase().includes(cat.name.toLowerCase())
                 )
@@ -123,14 +114,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
     }
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-lg font-medium mb-2">Map Values to Entities</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                    Map values from your CSV to accounts and categories in your system.
-                </p>
-            </div>
-
+        <div className="space-y-6 grow">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="accounts" disabled={uniqueAccountIdentifiers.length === 0}>
@@ -157,7 +141,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                                         </Label>
                                         <div className="w-1/2">
                                             <SelectField
-                                                options={mockAccounts.map(acc => ({ label: acc.name, value: acc.id }))}
+                                                options={accounts.map(acc => ({ label: acc.name, value: acc.id }))}
                                                 value={getValueMapping(identifier, "account")}
                                                 onChange={(value) => handleMappingChange(identifier, "account", value as string)}
                                                 placeholder="Select account"
@@ -185,7 +169,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                                         </Label>
                                         <div className="w-1/2">
                                             <SelectField
-                                                options={mockCategories.map(cat => ({
+                                                options={categories.flatten().map(cat => ({
                                                     label: cat.name,
                                                     value: cat.id
                                                 }))}

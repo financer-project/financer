@@ -7,6 +7,8 @@ import { ColumnMappingStep } from "./steps/ColumnMappingStep"
 import { ValueMappingStep } from "./steps/ValueMappingStep"
 import { ConfirmationStep } from "./steps/ConfirmationStep"
 import { MultiStepForm, Step } from "@/src/lib/components/common/form/MultiStepForm"
+import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
+import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
 
 // Define the validation schema for each step
 const uploadSchema = z.object({
@@ -109,13 +111,16 @@ export const ImportWizard = () => {
             </Step>
 
             <Step name="Map Values"
+                  title={"Map Values to Entities"}
+                  description={"Map values from your CSV to accounts and categories in your system."}
                   validationSchema={valueMappingSchema}>
                 <ValueMappingStep
-                    csvData={csvData}
-                />
+                    csvData={csvData} />
             </Step>
 
             <Step name="Confirm & Import"
+                  title={"Confirm Import"}
+                  description={"Review your import configuration and confirm to start the import process."}
                   validationSchema={confirmationSchema}>
                 <ConfirmationStep
                     csvData={csvData}

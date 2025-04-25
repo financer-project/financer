@@ -92,7 +92,8 @@ export const FileUploadStep = ({ setCsvHeadersAction, setCsvDataAction }: FileUp
                 name={"file"}
                 label={"CSV File"}
                 accept={".csv"}
-                onChange={handleFileChange} />
+                onChange={handleFileChange}
+                required />
 
             <div className={"flex flex-row gap-4"}>
                 <TextField

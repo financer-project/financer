@@ -1,7 +1,9 @@
+"use client"
+
 import { FormikValues, useFormikContext } from "formik"
 import { Input } from "@/src/lib/components/ui/input"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
-import { ChangeEvent, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "../../../ui/button"
 
 export interface FileUploadFieldProps<E> extends FormElementProps<E, File> {
@@ -9,15 +11,22 @@ export interface FileUploadFieldProps<E> extends FormElementProps<E, File> {
 }
 
 export const FileUploadField = <E, >({ name, accept = "*", onChange, ...props }: FileUploadFieldProps<E>) => {
-    const { setFieldValue, values } = useFormikContext<{ [name]: File }>()
+    const { setFieldValue, values, initialValues } = useFormikContext<{ [name]: File }>()
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [fileName, setFileName] = useState<string>("")
     const { isSubmitting } = useFormikContext<FormikValues>()
 
+    useEffect(() => {
+        if (props.value) {
+            handleFileChange(props.value)
+        } else if (initialValues[name as string]) {
+            handleFileChange(initialValues[name as string])
+        } else if (values[name as string]) {
+            handleFileChange(values[name as string])
+        }
+    }, [props.value, initialValues, name])
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] ?? null
-
+    const handleFileChange = (file: File | null) => {
         setFileName(file?.name ?? "")
         setFieldValue(name as string, file ?? null)
 
@@ -36,7 +45,7 @@ export const FileUploadField = <E, >({ name, accept = "*", onChange, ...props }:
                     type="file"
                     accept={accept}
                     className="hidden"
-                    onChange={handleFileChange}
+                    onChange={event => handleFileChange(event.target.files?.[0] ?? null)}
                 />
                 <Button
                     type="button"

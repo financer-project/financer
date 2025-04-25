@@ -6,6 +6,9 @@ import { Card, CardContent } from "@/src/lib/components/ui/card"
 import { Checkbox } from "@/src/lib/components/ui/checkbox"
 import { Label } from "@/src/lib/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
+import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
+import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
+import { Heading3 } from "@/src/lib/components/common/typography"
 
 interface ColumnMapping {
     csvHeader: string
@@ -22,20 +25,6 @@ interface ConfirmationStepProps {
     csvData: string[][]
 }
 
-// Mock data for accounts and categories - in a real app, these would come from the API
-const mockAccounts = [
-    { id: "acc1", name: "Checking Account" },
-    { id: "acc2", name: "Savings Account" },
-    { id: "acc3", name: "Credit Card" }
-]
-
-const mockCategories = [
-    { id: "cat1", name: "Groceries" },
-    { id: "cat2", name: "Rent" },
-    { id: "cat3", name: "Utilities" },
-    { id: "cat4", name: "Entertainment" }
-]
-
 export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
     const { values, setFieldValue } = useFormikContext<{
         name: string
@@ -46,12 +35,15 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
         confirmed: boolean
     }>()
 
+    const accounts = useAccounts()
+    const categories = useCategories()
+
     const getAccountName = (id: string) => {
-        return mockAccounts.find(acc => acc.id === id)?.name || "Unknown Account"
+        return accounts.find(acc => acc.id === id)?.name ?? "Unknown Account"
     }
 
     const getCategoryName = (id: string) => {
-        return mockCategories.find(cat => cat.id === id)?.name || "Unknown Category"
+        return categories.findNode(cat => cat.id === id)?.name ?? "Unknown Category"
     }
 
     // Count how many transactions will be imported
@@ -77,17 +69,10 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
 
     return (
         <div className="space-y-6">
-            <div>
-                <h3 className="text-lg font-medium mb-2">Confirm Import</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                    Review your import configuration and confirm to start the import process.
-                </p>
-            </div>
-
             <Card>
-                <CardContent className="p-4 space-y-4">
+                <CardContent className="p-4 flex flex-col gap-8">
                     <div>
-                        <h4 className="font-medium">Import Details</h4>
+                        <Heading3>Import Details</Heading3>
                         <div className="grid grid-cols-2 gap-2 mt-2">
                             <div className="text-sm text-muted-foreground">Name:</div>
                             <div className="text-sm font-medium">{values.name}</div>
@@ -110,12 +95,12 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
                     </div>
 
                     <div>
-                        <h4 className="font-medium">Column Mappings</h4>
+                        <Heading3>Column Mappings</Heading3>
                         <div className="grid grid-cols-2 gap-2 mt-2">
                             {values.columnMappings
-                                .filter(mapping => mapping.fieldName !== "ignore")
+                                .filter(mapping => mapping.fieldName !== null)
                                 .map((mapping, index) => (
-                                    <React.Fragment key={index}>
+                                    <React.Fragment key={`column-mapping-${mapping.csvHeader}`}>
                                         <div className="text-sm text-muted-foreground">{mapping.csvHeader}:</div>
                                         <div className="text-sm font-medium">{mapping.fieldName}</div>
                                     </React.Fragment>
@@ -125,12 +110,12 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
 
                     {values.valueMappings.filter(m => m.targetType === "account" && m.targetId).length > 0 && (
                         <div>
-                            <h4 className="font-medium">Account Mappings</h4>
+                            <Heading3 className="font-medium">Account Mappings</Heading3>
                             <div className="grid grid-cols-2 gap-2 mt-2">
                                 {values.valueMappings
                                     .filter(mapping => mapping.targetType === "account" && mapping.targetId)
-                                    .map((mapping, index) => (
-                                        <React.Fragment key={index}>
+                                    .map((mapping) => (
+                                        <React.Fragment key={`account-${mapping.targetId}`}>
                                             <div className="text-sm text-muted-foreground">{mapping.sourceValue}:</div>
                                             <div
                                                 className="text-sm font-medium">{getAccountName(mapping.targetId)}</div>
@@ -142,12 +127,12 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
 
                     {values.valueMappings.filter(m => m.targetType === "category" && m.targetId).length > 0 && (
                         <div>
-                            <h4 className="font-medium">Category Mappings</h4>
+                            <Heading3 className="font-medium">Category Mappings</Heading3>
                             <div className="grid grid-cols-2 gap-2 mt-2">
                                 {values.valueMappings
                                     .filter(mapping => mapping.targetType === "category" && mapping.targetId)
-                                    .map((mapping, index) => (
-                                        <React.Fragment key={index}>
+                                    .map((mapping) => (
+                                        <React.Fragment key={`category-${mapping.targetId}`}>
                                             <div className="text-sm text-muted-foreground">{mapping.sourceValue}:</div>
                                             <div
                                                 className="text-sm font-medium">{getCategoryName(mapping.targetId)}</div>

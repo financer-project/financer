@@ -2,6 +2,8 @@ import { Metadata } from "next"
 import Header from "@/src/lib/components/content/nav/Header"
 import { Suspense } from "react"
 import { ImportWizard } from "../components/ImportWizard"
+import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
+import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
 
 export const metadata: Metadata = {
     title: "New Import",
@@ -19,7 +21,11 @@ export default function Page() {
                         { label: "New Import" }
                     ]} />
             <Suspense fallback={<div>Loading...</div>}>
-                <ImportWizard />
+                <AccountProvider>
+                    <CategoryProvider>
+                        <ImportWizard />
+                    </CategoryProvider>
+                </AccountProvider>
             </Suspense>
         </div>
     )

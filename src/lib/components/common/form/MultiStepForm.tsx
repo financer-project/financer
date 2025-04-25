@@ -4,7 +4,6 @@ import { z } from "zod"
 import { Button } from "@/src/lib/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
 import { AlertCircle, Check } from "lucide-react"
-import { toFormikValidationSchema } from "zod-formik-adapter"
 import { CardTitle } from "@/src/lib/components/ui/card"
 import { Heading2, SubTitle } from "@/src/lib/components/common/typography"
 import { cn } from "@/lib/utils"
@@ -200,12 +199,20 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
 
             <Formik
                 initialValues={initialValues}
-                validationSchema={toFormikValidationSchema(getCurrentStepSchema())}
+                validate={(values) => {
+                    try {
+                        getCurrentStepSchema().parse(values)
+                    } catch (error) {
+                        if (error instanceof z.ZodError) {
+                            return error
+                        }
+                    }
+                }}
+                // validationSchema={toFormikValidationSchema(getCurrentStepSchema())}
                 onSubmit={handleSubmit}
-                validateOnMount={   false}
-                validateOnChange={true}
-                validateOnBlur={true}
-            >
+                validateOnMount={false}
+                validateOnChange={false}
+                validateOnBlur={true}>
                 {(formikProps) => (
                     <FormikForm className="flex flex-col gap-4 w-full">
                         {formError && (
