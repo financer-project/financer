@@ -6,14 +6,15 @@ import { ImportStatus } from "@prisma/client"
 const UpdateImportJobSchema = z.object({
     id: z.string(),
     name: z.string().min(1).optional(),
-    fileContent: z.string().optional(),
+    filePath: z.string().optional(),
     fileName: z.string().optional(),
     separator: z.string().optional(),
     status: z.nativeEnum(ImportStatus).optional(),
     columnMappings: z.array(
         z.object({
             csvHeader: z.string(),
-            fieldName: z.string()
+            fieldName: z.string(),
+            format: z.string().optional()
         })
     ).optional(),
     valueMappings: z.array(
@@ -48,7 +49,7 @@ export default resolver.pipe(
             data: {
                 name: input.name,
                 status: input.status,
-                fileContent: input.fileContent,
+                filePath: input.filePath,
                 fileName: input.fileName,
                 separator: input.separator
             }
@@ -67,6 +68,7 @@ export default resolver.pipe(
                     data: input.columnMappings.map(mapping => ({
                         csvHeader: mapping.csvHeader,
                         fieldName: mapping.fieldName,
+                        format: mapping.format,
                         importJobId: input.id
                     }))
                 })

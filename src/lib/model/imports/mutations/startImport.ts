@@ -2,7 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import { z } from "zod"
 import { ImportStatus } from "@prisma/client"
-import { processImport } from "../services/importProcessor"
+import { queueImportJob } from "@/src/lib/jobs"
 
 const StartImportSchema = z.object({
     id: z.string()
@@ -32,14 +32,8 @@ export default resolver.pipe(
             data: { status: ImportStatus.PENDING }
         })
 
-        // Start the import process in the background
-        // In a production environment, this would be handled by a job queue
-        // For simplicity, we're just using a setTimeout to run it asynchronously
-        setTimeout(() => {
-            processImport(input.id).catch(error => {
-                console.error("Error processing import:", error)
-            })
-        }, 100)
+        // Start the import process in the background using the job queue
+        await queueImportJob(input.id)
 
         return updatedImportJob
     }

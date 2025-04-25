@@ -55,6 +55,8 @@
         "@radix-ui/react-toast": "1.2.6",
         "@radix-ui/react-tooltip": "^1.1.7",
         "@tailwindcss/postcss": "4.0.16",
+        "bullmq": "^5.51.0",
+        "ioredis": "^5.6.1",
         "autoprefixer": "10.4.21",
         "blitz": "^2.2.1",
         "class-variance-authority": "0.7.1",

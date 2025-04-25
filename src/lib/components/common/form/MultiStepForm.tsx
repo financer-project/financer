@@ -85,17 +85,17 @@ export interface MultiStepFormProps<S extends z.ZodSchema<any>> // eslint-disabl
     children: ReactNode
     initialValues: FormikProps<z.infer<S>>["initialValues"]
     onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
-    onStepComplete?: (stepIndex: number, values: any) => void
+    onStepComplete?: (stepIndex: number, values: z.infer<S>) => void
     onStepChange?: (newStepIndex: number) => void
 }
 
 interface OnSubmitResult {
     FORM_ERROR?: string
 
-    [prop: string]: any
+    [prop: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-export function MultiStepForm<S extends z.ZodType<any, any>>({
+export function MultiStepForm<S extends z.ZodType<any, any>>({ // eslint-disable-line @typescript-eslint/no-explicit-any
                                                                  title,
                                                                  children,
                                                                  initialValues,
@@ -114,7 +114,7 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
             return { name: name, validationSchema }
         })
 
-    const goToNextStep = (values: any) => {
+    const goToNextStep = (values: z.infer<S>) => {
         if (onStepComplete) {
             onStepComplete(currentStep, values)
         }
@@ -145,7 +145,7 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
     }
 
     // Render only the current step's children
-    const renderCurrentStepContent = (formikProps: any) => {
+    const renderCurrentStepContent = (formikProps: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         const stepArray = Children.toArray(children)
             .filter(child => isValidElement(child) && child.type === Step)
 
@@ -157,11 +157,13 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
         const stepChildren = currentStepElement.props.children
 
         return typeof stepChildren === "function"
-            ? (stepChildren as (formikProps: any) => React.ReactNode)(formikProps)
+            ? (stepChildren as (formikProps: any) => React.ReactNode)(formikProps) // eslint-disable-line @typescript-eslint/no-explicit-any
             : stepChildren
     }
 
-    const handleSubmit = async (values: any, { setErrors }: { setErrors: (errors: FormikErrors<any>) => void }) => {
+    const handleSubmit = async (values: z.infer<S>, { setErrors }: {
+        setErrors: (errors: FormikErrors<any>) => void // eslint-disable-line @typescript-eslint/no-explicit-any
+    }) => {
         if (currentStep < steps.length - 1) {
             goToNextStep(values)
             return
@@ -169,7 +171,7 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({
 
         // Final submission
         try {
-            const { FORM_ERROR, ...otherErrors } = (await onSubmit(values)) || {}
+            const { FORM_ERROR, ...otherErrors } = (await onSubmit(values)) ?? {}
 
             if (FORM_ERROR) {
                 setFormError(FORM_ERROR)

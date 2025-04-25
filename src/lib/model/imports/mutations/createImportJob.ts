@@ -5,14 +5,15 @@ import { ImportStatus } from "@prisma/client"
 
 const CreateImportJobSchema = z.object({
     name: z.string().min(1),
-    fileContent: z.string().optional(), // Base64 encoded CSV content
+    filePath: z.string().optional(), // Path to the CSV file on disk
     fileName: z.string().optional(),
     separator: z.string().default(","), // CSV separator character
     householdId: z.string(),
     columnMappings: z.array(
         z.object({
             csvHeader: z.string(),
-            fieldName: z.string()
+            fieldName: z.string(),
+            format: z.string().optional()
         })
     ),
     valueMappings: z.array(
@@ -33,7 +34,7 @@ export default resolver.pipe(
             data: {
                 name: input.name,
                 status: ImportStatus.DRAFT,
-                fileContent: input.fileContent,
+                filePath: input.filePath,
                 fileName: input.fileName,
                 separator: input.separator,
                 household: {
@@ -50,6 +51,7 @@ export default resolver.pipe(
                 data: input.columnMappings.map(mapping => ({
                     csvHeader: mapping.csvHeader,
                     fieldName: mapping.fieldName,
+                    format: mapping.format,
                     importJobId: importJob.id
                 }))
             })

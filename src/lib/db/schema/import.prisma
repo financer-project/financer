@@ -1,51 +1,52 @@
 model ImportJob {
-  id            String          @id @default(uuid())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  name          String
-  status        ImportStatus
-  fileName      String?
-  fileContent   String?         // Base64 encoded CSV content
-  separator     String          @default(",") // CSV separator character
-  totalRows     Int?
-  processedRows Int?
-  errorMessage  String?
+    id            String       @id @default(uuid())
+    createdAt     DateTime     @default(now())
+    updatedAt     DateTime     @updatedAt
+    name          String
+    status        ImportStatus
+    fileName      String?
+    filePath      String? // Path to the CSV file on disk
+    separator     String       @default(",") // CSV separator character
+    totalRows     Int?
+    processedRows Int?
+    errorMessage  String?
 
-  household     Household       @relation(fields: [householdId], references: [id])
-  householdId   String
+    household   Household @relation(fields: [householdId], references: [id])
+    householdId String
 
-  columnMappings ColumnMapping[]
-  valueMappings  ValueMapping[]
-  transactions   Transaction[]  // Imported transactions
+    columnMappings ColumnMapping[]
+    valueMappings  ValueMapping[]
+    transactions   Transaction[] // Imported transactions
 }
 
 model ColumnMapping {
-  id            String    @id @default(uuid())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  csvHeader     String    // Original CSV header
-  fieldName     String    // Transaction field name
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    csvHeader String // Original CSV header
+    fieldName String // Transaction field name
+    format    String? // Format string for date or amount fields
 
-  importJob     ImportJob @relation(fields: [importJobId], references: [id], onDelete: Cascade)
-  importJobId   String
+    importJob   ImportJob @relation(fields: [importJobId], references: [id], onDelete: Cascade)
+    importJobId String
 }
 
 model ValueMapping {
-  id            String    @id @default(uuid())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sourceValue   String    // Original value from CSV
-  targetType    String    // "account", "category", etc.
-  targetId      String    // ID of the target entity
+    id          String   @id @default(uuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    sourceValue String // Original value from CSV
+    targetType  String // "account", "category", etc.
+    targetId    String // ID of the target entity
 
-  importJob     ImportJob @relation(fields: [importJobId], references: [id], onDelete: Cascade)
-  importJobId   String
+    importJob   ImportJob @relation(fields: [importJobId], references: [id], onDelete: Cascade)
+    importJobId String
 }
 
 enum ImportStatus {
-  DRAFT
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
+    DRAFT
+    PENDING
+    PROCESSING
+    COMPLETED
+    FAILED
 }

@@ -99,7 +99,7 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
                         <div className="grid grid-cols-2 gap-2 mt-2">
                             {values.columnMappings
                                 .filter(mapping => mapping.fieldName !== null)
-                                .map((mapping, index) => (
+                                .map((mapping) => (
                                     <React.Fragment key={`column-mapping-${mapping.csvHeader}`}>
                                         <div className="text-sm text-muted-foreground">{mapping.csvHeader}:</div>
                                         <div className="text-sm font-medium">{mapping.fieldName}</div>

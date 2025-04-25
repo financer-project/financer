@@ -66,7 +66,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                 initialMappings.push({
                     sourceValue: identifier,
                     targetType: "account",
-                    targetId: matchingAccount?.id || ""
+                    targetId: matchingAccount?.id ?? ""
                 })
             })
 
@@ -81,13 +81,13 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                 initialMappings.push({
                     sourceValue: categoryName,
                     targetType: "category",
-                    targetId: matchingCategory?.id || ""
+                    targetId: matchingCategory?.id ?? ""
                 })
             })
 
             setFieldValue("valueMappings", initialMappings)
         }
-    }, [uniqueAccountIdentifiers, uniqueCategoryNames, setFieldValue, values.valueMappings])
+    }, [uniqueAccountIdentifiers, uniqueCategoryNames, setFieldValue, values.valueMappings]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleMappingChange = (sourceValue: string, targetType: string, targetId: string) => {
         const newMappings = [...values.valueMappings]
@@ -110,7 +110,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
     }
 
     const getValueMapping = (sourceValue: string, targetType: string) => {
-        return values.valueMappings?.find(m => m.sourceValue === sourceValue && m.targetType === targetType)?.targetId || ""
+        return values.valueMappings?.find(m => m.sourceValue === sourceValue && m.targetType === targetType)?.targetId ?? ""
     }
 
     return (
@@ -134,8 +134,9 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                     ) : (
                         <Card>
                             <CardContent className="p-4 space-y-4">
-                                {uniqueAccountIdentifiers.map((identifier, index) => (
-                                    <div key={index} className="flex items-center justify-between">
+                                {uniqueAccountIdentifiers.map((identifier) => (
+                                    <div key={`account-mapping-${identifier}`}
+                                         className="flex items-center justify-between">
                                         <Label className="w-1/2">
                                             <span className="font-medium">{identifier}</span>
                                         </Label>
@@ -162,8 +163,9 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                     ) : (
                         <Card>
                             <CardContent className="p-4 space-y-4">
-                                {uniqueCategoryNames.map((categoryName, index) => (
-                                    <div key={index} className="flex items-center justify-between">
+                                {uniqueCategoryNames.map((categoryName) => (
+                                    <div key={`category-mapping-${categoryName}`}
+                                         className="flex items-center justify-between">
                                         <Label className="w-1/2">
                                             <span className="font-medium">{categoryName}</span>
                                         </Label>

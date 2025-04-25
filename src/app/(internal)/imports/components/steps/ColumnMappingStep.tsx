@@ -23,9 +23,26 @@ const transactionFields = [
     { label: "Category Name", value: "categoryName" }
 ]
 
+// Format options for date fields
+const dateFormatOptions = [
+    { label: "MM/DD/YYYY", value: "MM/DD/YYYY" },
+    { label: "DD/MM/YYYY", value: "DD/MM/YYYY" },
+    { label: "YYYY-MM-DD", value: "YYYY-MM-DD" },
+    { label: "DD.MM.YYYY", value: "DD.MM.YYYY" },
+    { label: "MM-DD-YYYY", value: "MM-DD-YYYY" },
+    { label: "YYYY/MM/DD", value: "YYYY/MM/DD" }
+]
+
+// Format options for amount fields
+const amountFormatOptions = [
+    { label: "1,234.56 (comma as thousands separator)", value: "comma" },
+    { label: "1.234,56 (dot as thousands separator)", value: "dot" }
+]
+
 interface ColumnMapping {
     csvHeader: string
     fieldName: string | null
+    format: string | null
 }
 
 export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProps) => {
@@ -58,7 +75,8 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
 
                 return {
                     csvHeader: header,
-                    fieldName
+                    fieldName,
+                    format: null
                 }
             })
 
@@ -68,7 +86,14 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
 
     const handleMappingChange = async (header: string, value: string | null) => {
         const newMappings = values.columnMappings.map(mapping =>
-            mapping.csvHeader === header ? { ...mapping, fieldName: value } : mapping
+            mapping.csvHeader === header ? { ...mapping, fieldName: value, format: null } : mapping
+        )
+        await setFieldValue("columnMappings", newMappings)
+    }
+
+    const handleFormatChange = async (header: string, format: string | null) => {
+        const newMappings = values.columnMappings.map(mapping =>
+            mapping.csvHeader === header ? { ...mapping, format } : mapping
         )
         await setFieldValue("columnMappings", newMappings)
     }
@@ -98,6 +123,41 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
                                     />
                                 </div>
                             </div>
+
+                            {/* Show format options for date fields */}
+                            {currentMapping?.fieldName === "valueDate" && (
+                                <div className="flex items-center justify-between mt-2">
+                                    <Label className="text-sm text-muted-foreground">
+                                        Date Format:
+                                    </Label>
+                                    <div className="w-1/2">
+                                        <SelectField
+                                            options={dateFormatOptions}
+                                            value={currentMapping.format}
+                                            onChange={(value) => handleFormatChange(header, value)}
+                                            placeholder="Select date format"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Show format options for amount fields */}
+                            {currentMapping?.fieldName === "amount" && (
+                                <div className="flex items-center justify-between mt-2">
+                                    <Label className="text-sm text-muted-foreground">
+                                        Amount Format:
+                                    </Label>
+                                    <div className="w-1/2">
+                                        <SelectField
+                                            options={amountFormatOptions}
+                                            value={currentMapping.format}
+                                            onChange={(value) => handleFormatChange(header, value)}
+                                            placeholder="Select amount format"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
                             {previewRow[index] && (
                                 <div className="text-xs text-muted-foreground">
                                     Example value: <span className="font-mono">{previewRow[index]}</span>

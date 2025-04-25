@@ -1,22 +1,13 @@
 import db from "@/src/lib/db"
 import { ImportStatus, TransactionType } from "@prisma/client"
-
-// Define the transaction data structure
-type TransactionData = {
-    name: string;
-    amount: number;
-    type: TransactionType;
-    valueDate: Date;
-    description: string | null;
-    isTransfer: boolean;
-    importJobId: string;
-    accountId?: string;
-    categoryId?: string;
-}
+import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
+import { readImportFile } from "@/src/lib/util/fileStorage"
+import { parse, format } from "date-fns"
 
 interface ColumnMapping {
     csvHeader: string
     fieldName: string
+    format: string | null
 }
 
 interface ValueMapping {
@@ -50,14 +41,16 @@ export async function processImport(importJobId: string): Promise<void> {
         })
 
         // Parse the CSV data
-        if (!importJob.fileContent) {
-            throw new Error("No file content to process")
+        if (!importJob.filePath) {
+            throw new Error("No file path to process")
         }
 
         // Get the separator from the import job or use comma as default
         const separator = importJob.separator || ","
 
-        const lines = importJob.fileContent.split("\n").filter(line => line.trim() !== "")
+        // Read the file from the filesystem
+        const fileContent = readImportFile(importJob.filePath)
+        const lines = fileContent.split("\n").filter(line => line.trim() !== "")
         const headers = lines[0].split(separator).map(header => header.trim())
         const rows = lines.slice(1).map(line => line.split(separator).map(cell => cell.trim()))
 
@@ -89,19 +82,62 @@ export async function processImport(importJobId: string): Promise<void> {
         })
 
         // Process each row
-        const transactions: TransactionData[] = []
+        const transactions: TransactionModel[] = []
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i]
 
             // Extract transaction data from the row
-            const transaction: TransactionData = {
-                name: row[fieldToColumnIndex.get("name") || 0] || "Unnamed Transaction",
-                amount: parseFloat(row[fieldToColumnIndex.get("amount") || 0] || "0"),
-                type: TransactionType.EXPENSE, // Default to EXPENSE
-                valueDate: new Date(),
-                description: row[fieldToColumnIndex.get("description") || 0] || null,
-                isTransfer: false,
-                importJobId: importJobId
+            const transaction: TransactionModel = {
+                name: row[fieldToColumnIndex.get("name") ?? 0] || "Unnamed Transaction",
+                type: TransactionType.EXPENSE,
+                valueDate:  new Date(),
+                description: row[fieldToColumnIndex.get("description") ?? 0] || null,
+            }
+
+            // Parse the amount with the specified format
+            if (fieldToColumnIndex.has("amount")) {
+                const amountIndex = fieldToColumnIndex.get("amount")
+                if (amountIndex !== undefined) {
+                    const amountString = row[amountIndex]
+                    if (amountString) {
+                        // Find the column mapping for the amount
+                        const amountMapping = importJob.columnMappings.find(
+                            mapping => mapping.fieldName === "amount"
+                        )
+
+                        try {
+                            // Process the amount string based on the format
+                            let processedAmount = amountString
+
+                            if (amountMapping?.format === "dot") {
+                                // Format: 1.234,56 (dot as thousands separator, comma as decimal)
+                                // Convert to 1234.56 for parseFloat
+                                processedAmount = amountString.replace(/\./g, "").replace(",", ".")
+                            } else if (amountMapping?.format === "comma" || !amountMapping?.format) {
+                                // Format: 1,234.56 (comma as thousands separator, dot as decimal)
+                                // Just remove commas for parseFloat
+                                processedAmount = amountString.replace(/,/g, "")
+                            }
+
+                            transaction.amount = parseFloat(processedAmount)
+
+                            // If parsing results in NaN, use 0
+                            if (isNaN(transaction.amount)) {
+                                console.warn(`Failed to parse amount: ${amountString} with format: ${amountMapping?.format}`)
+                                transaction.amount = 0
+                            }
+                        } catch (e) {
+                            console.warn(`Error parsing amount: ${amountString}`, e)
+                            transaction.amount = 0
+                        }
+                    } else {
+                        transaction.amount = 0
+                    }
+                } else {
+                    transaction.amount = 0
+                }
+            } else {
+                transaction.amount = 0
             }
 
             // Set the value date if available
@@ -110,11 +146,23 @@ export async function processImport(importJobId: string): Promise<void> {
                 if (valueDateIndex !== undefined) {
                     const dateString = row[valueDateIndex]
                     if (dateString) {
-                        // Try to parse the date (this is a simplified version)
+                        // Find the column mapping for the value date
+                        const valueDateMapping = importJob.columnMappings.find(
+                            mapping => mapping.fieldName === "valueDate"
+                        )
+
+                        // Try to parse the date using the specified format
                         try {
-                            transaction.valueDate = new Date(dateString)
+                            if (valueDateMapping?.format) {
+                                // Use date-fns to parse the date with the specified format
+                                transaction.valueDate = parse(dateString, valueDateMapping.format, new Date())
+                            } else {
+                                // Fallback to default parsing if no format is specified
+                                transaction.valueDate = new Date(dateString)
+                            }
                         } catch (e) { // eslint-disable-line @typescript-eslint/no-unused-vars
                             // If date parsing fails, use current date
+                            console.warn(`Failed to parse date: ${dateString} with format: ${valueDateMapping?.format}`)
                             transaction.valueDate = new Date()
                         }
                     }

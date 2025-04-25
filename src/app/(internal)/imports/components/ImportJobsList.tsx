@@ -116,7 +116,8 @@ export const ImportJobsList = () => {
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => router.push(`/imports/${job.id}`)}>
+                                        // onClick={() => router.push(`/imports/${job.id}`}
+                                        >
                                         View
                                     </Button>
                                 </TableCell>

@@ -2,13 +2,17 @@
 
 import { useState } from "react"
 import * as z from "zod"
+import { useMutation } from "@blitzjs/rpc"
 import { FileUploadStep } from "./steps/FileUploadStep"
 import { ColumnMappingStep } from "./steps/ColumnMappingStep"
 import { ValueMappingStep } from "./steps/ValueMappingStep"
 import { ConfirmationStep } from "./steps/ConfirmationStep"
 import { MultiStepForm, Step } from "@/src/lib/components/common/form/MultiStepForm"
-import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
-import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
+import createImportJob from "@/src/lib/model/imports/mutations/createImportJob"
+import updateImportJob from "@/src/lib/model/imports/mutations/updateImportJob"
+import startImport from "@/src/lib/model/imports/mutations/startImport"
+import { useRouter } from "next/navigation"
+import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 
 // Define the validation schema for each step
 const uploadSchema = z.object({
@@ -21,7 +25,8 @@ const columnMappingSchema = z.object({
     columnMappings: z.array(
         z.object({
             csvHeader: z.string(),
-            fieldName: z.string().nullable()
+            fieldName: z.string().nullable(),
+            format: z.string().optional()
         })
     )
 })
@@ -48,7 +53,8 @@ const importSchema = z.object({
     columnMappings: z.array(
         z.object({
             csvHeader: z.string(),
-            fieldName: z.string()
+            fieldName: z.string(),
+            format: z.string().optional()
         })
     ),
     valueMappings: z.array(
@@ -64,13 +70,55 @@ const importSchema = z.object({
 export const ImportWizard = () => {
     const [csvHeaders, setCsvHeaders] = useState<string[]>([])
     const [csvData, setCsvData] = useState<string[][]>([])
+    const router = useRouter()
+    const currentHousehold = useCurrentHousehold()!
+    const [createImportJobMutation] = useMutation(createImportJob)
+    const [updateImportJobMutation] = useMutation(updateImportJob)
+    const [startImportMutation] = useMutation(startImport)
 
-    const handleSubmit = async (values: any) => {
+    const handleSubmit = async (values: z.infer<typeof importSchema>) => {
         // Final submission
         try {
-            // We'll implement this later
-            console.log("Submitting import job:", values)
-            // Redirect to the imports page or show success message
+            // Create the import job (without file content)
+            const importJob = await createImportJobMutation({
+                name: values.name,
+                fileName: values.file?.name,
+                separator: values.separator,
+                householdId: currentHousehold.id,
+                columnMappings: values.columnMappings.filter(mapping => mapping.fieldName !== null),
+                valueMappings: values.valueMappings
+            })
+
+            // Upload the file to the backend
+            if (values.file) {
+                // Create a FormData object to send the file
+                const formData = new FormData()
+                formData.append('file', values.file)
+
+                // Send the file to the backend
+                const response = await fetch(`/api/imports/upload?importId=${importJob.id}`, {
+                    method: 'POST',
+                    body: formData
+                })
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload file')
+                }
+
+                const data = await response.json()
+
+                // Update the import job with the file path
+                await updateImportJobMutation({
+                    id: importJob.id,
+                    filePath: data.filePath
+                })
+            }
+
+            // Start the import process
+            await startImportMutation({ id: importJob.id })
+
+            // Redirect to the imports page
+            router.push("/imports")
             return {}
         } catch (error) {
             console.error("Error submitting import job:", error)

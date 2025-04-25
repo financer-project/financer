@@ -24,7 +24,7 @@ export const FileUploadField = <E, >({ name, accept = "*", onChange, ...props }:
         } else if (values[name as string]) {
             handleFileChange(values[name as string])
         }
-    }, [props.value, initialValues, name])
+    }, [props.value, initialValues, name]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleFileChange = (file: File | null) => {
         setFileName(file?.name ?? "")
