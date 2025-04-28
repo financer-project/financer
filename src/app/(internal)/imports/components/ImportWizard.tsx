@@ -26,7 +26,7 @@ const columnMappingSchema = z.object({
         z.object({
             csvHeader: z.string(),
             fieldName: z.string().nullable(),
-            format: z.string().optional()
+            format: z.string().nullable()
         })
     )
 })
@@ -36,7 +36,7 @@ const valueMappingSchema = z.object({
         z.object({
             sourceValue: z.string(),
             targetType: z.string(),
-            targetId: z.string()
+            targetId: z.string().uuid().nullable()
         })
     )
 })
@@ -54,7 +54,7 @@ const importSchema = z.object({
         z.object({
             csvHeader: z.string(),
             fieldName: z.string(),
-            format: z.string().optional()
+            format: z.string().nullable()
         })
     ),
     valueMappings: z.array(
@@ -86,23 +86,23 @@ export const ImportWizard = () => {
                 separator: values.separator,
                 householdId: currentHousehold.id,
                 columnMappings: values.columnMappings.filter(mapping => mapping.fieldName !== null),
-                valueMappings: values.valueMappings
+                valueMappings: values.valueMappings.filter(mapping => mapping.targetId !== null)
             })
 
             // Upload the file to the backend
             if (values.file) {
                 // Create a FormData object to send the file
                 const formData = new FormData()
-                formData.append('file', values.file)
+                formData.append("file", values.file)
 
                 // Send the file to the backend
                 const response = await fetch(`/api/imports/upload?importId=${importJob.id}`, {
-                    method: 'POST',
+                    method: "POST",
                     body: formData
                 })
 
                 if (!response.ok) {
-                    throw new Error('Failed to upload file')
+                    throw new Error("Failed to upload file")
                 }
 
                 const data = await response.json()

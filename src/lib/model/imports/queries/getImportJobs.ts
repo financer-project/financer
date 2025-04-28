@@ -1,62 +1,63 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
-import { z } from "zod"
-import { ImportStatus, Prisma } from "@prisma/client"
+import { Prisma } from "@prisma/client"
+import { AuthenticatedCtx, paginate } from "blitz"
 
-const GetImportJobsSchema = z.object({
-    householdId: z.string().uuid().optional(),
-    status: z.string().optional(),
-    skip: z.number().optional(),
-    take: z.number().optional(),
-    orderBy: z.string().optional()
-})
+export type ImportJobModel = Prisma.ImportJobGetPayload<{
+    include: {
+        columnMappings: true;
+        valueMappings: true;
+        _count: {
+            select: {
+                transactions: true;
+            };
+        };
+    };
+}>
 
 export default resolver.pipe(
-    resolver.zod(GetImportJobsSchema),
     resolver.authorize(),
-    async (input) => {
-        // Prepare the where clause
-        const where: Prisma.ImportJobWhereInput = {}
+    async ({
+               where,
+               orderBy,
+               skip = 0,
+               take = 100
+           }: Pick<Prisma.ImportJobFindManyArgs, "where" | "orderBy" | "skip" | "take">, ctx: AuthenticatedCtx) => {
+        const userId = ctx.session.userId
 
-        if (input.householdId) {
-            where.householdId = input.householdId
+        if (!userId) {
+            throw new Error("User is not authenticated")
         }
 
-        if (input.status) {
-            where.status = input.status as ImportStatus
-        }
+        orderBy ??= { createdAt: "desc" }
 
-        // Prepare the orderBy clause
-        let orderBy: Prisma.ImportJobOrderByWithRelationInput = { createdAt: "desc" }
-
-        if (input.orderBy === "name") {
-            orderBy = { name: "asc" }
-        } else if (input.orderBy === "status") {
-            orderBy = { status: "asc" }
-        }
-
-        // Get the import jobs
-        const importJobs = await db.importJob.findMany({
-            where,
-            orderBy,
-            skip: input.skip || 0,
-            take: input.take || 50,
-            include: {
-                columnMappings: true,
-                valueMappings: true,
-                _count: {
-                    select: {
-                        transactions: true
+        const {
+            items: importJobs,
+            hasMore,
+            nextPage,
+            count
+        } = await paginate({
+            skip,
+            take,
+            count: () => db.importJob.count({ where }),
+            query: (paginateArgs) => db.importJob.findMany({
+                ...paginateArgs, where, orderBy,
+                include: {
+                    columnMappings: true,
+                    valueMappings: true,
+                    _count: {
+                        select: {
+                            transactions: true
+                        }
                     }
                 }
-            }
+            })
         })
-
-        // Get the total count
-        const count = await db.importJob.count({ where })
 
         return {
             importJobs,
+            nextPage,
+            hasMore,
             count
         }
     }

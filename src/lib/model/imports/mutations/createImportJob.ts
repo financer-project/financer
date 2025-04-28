@@ -13,14 +13,14 @@ const CreateImportJobSchema = z.object({
         z.object({
             csvHeader: z.string(),
             fieldName: z.string(),
-            format: z.string().optional()
+            format: z.string().nullable()
         })
     ),
     valueMappings: z.array(
         z.object({
             sourceValue: z.string(),
             targetType: z.string(),
-            targetId: z.string()
+            targetId: z.string().uuid()
         })
     )
 })

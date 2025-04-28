@@ -78,4 +78,8 @@ export abstract class TestUtilityBase implements TestUtility {
         }
         return this.testData
     }
+
+    public getDatabase(): typeof db {
+        return db
+    }
 }

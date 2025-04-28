@@ -17,7 +17,7 @@ interface ColumnMapping {
 interface ValueMapping {
     sourceValue: string
     targetType: string
-    targetId: string
+    targetId: string | null
 }
 
 interface ValueMappingStepProps {
@@ -66,7 +66,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                 initialMappings.push({
                     sourceValue: identifier,
                     targetType: "account",
-                    targetId: matchingAccount?.id ?? ""
+                    targetId: matchingAccount?.id ?? null
                 })
             })
 
@@ -81,7 +81,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                 initialMappings.push({
                     sourceValue: categoryName,
                     targetType: "category",
-                    targetId: matchingCategory?.id ?? ""
+                    targetId: matchingCategory?.id ?? null
                 })
             })
 
@@ -89,7 +89,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
         }
     }, [uniqueAccountIdentifiers, uniqueCategoryNames, setFieldValue, values.valueMappings]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleMappingChange = (sourceValue: string, targetType: string, targetId: string) => {
+    const handleMappingChange = (sourceValue: string, targetType: string, targetId: string | null) => {
         const newMappings = [...values.valueMappings]
         const index = newMappings.findIndex(m => m.sourceValue === sourceValue && m.targetType === targetType)
 
@@ -110,7 +110,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
     }
 
     const getValueMapping = (sourceValue: string, targetType: string) => {
-        return values.valueMappings?.find(m => m.sourceValue === sourceValue && m.targetType === targetType)?.targetId ?? ""
+        return values.valueMappings?.find(m => m.sourceValue === sourceValue && m.targetType === targetType)?.targetId ?? null
     }
 
     return (
@@ -144,7 +144,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                                             <SelectField
                                                 options={accounts.map(acc => ({ label: acc.name, value: acc.id }))}
                                                 value={getValueMapping(identifier, "account")}
-                                                onChange={(value) => handleMappingChange(identifier, "account", value as string)}
+                                                onChange={(value) => handleMappingChange(identifier, "account", value)}
                                                 placeholder="Select account"
                                             />
                                         </div>
@@ -176,7 +176,7 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                                                     value: cat.id
                                                 }))}
                                                 value={getValueMapping(categoryName, "category")}
-                                                onChange={(value) => handleMappingChange(categoryName, "category", value as string)}
+                                                onChange={(value) => handleMappingChange(categoryName, "category", value)}
                                                 placeholder="Select category"
                                             />
                                         </div>

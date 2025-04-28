@@ -12,7 +12,6 @@ export const TransactionsList = withFormatters(({ formatters }: WithFormattersPr
     const searchParams = useSearchParams()
     const page = Number(searchParams?.get("page") ?? 0)
     const [{ transactions, hasMore }] = usePaginatedQuery(getTransactions, {
-        orderBy: { id: "asc" },
         skip: ITEMS_PER_PAGE * page,
         take: ITEMS_PER_PAGE
     })
@@ -27,6 +26,10 @@ export const TransactionsList = withFormatters(({ formatters }: WithFormattersPr
                                         ? <ColoredTag color={transaction.category.color}
                                                       label={transaction.category.name} />
                                         : <span className={"text-muted-foreground"}>Uncategorized</span>
+                                },
+                                {
+                                    name: "Date",
+                                    render: transaction => formatters.date.format(transaction.valueDate)
                                 },
                                 { name: "Amount", render: transaction => formatters.amount.format(transaction.amount) }
                             ]}

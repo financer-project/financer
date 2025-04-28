@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useFormikContext } from "formik"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
-import { Label } from "@/src/lib/components/ui/label"
+import { Separator } from "@/src/lib/components/ui/separator"
 
 interface ColumnMappingStepProps {
     csvHeaders: string[]
@@ -107,62 +107,62 @@ export const ColumnMappingStep = ({ csvHeaders, csvData }: ColumnMappingStepProp
                 {csvHeaders.map((header, index) => {
                     const currentMapping = values.columnMappings.find(mapping => mapping.csvHeader === header)
                     return (
-                        <div key={`colum-mapping-${header}-${index}`} className="flex flex-col space-y-2">
-                            <div className="flex items-center justify-between">
-                                <Label>
-                                    Column: <span className="font-medium">{header}</span>
-                                </Label>
-                                <div className="w-1/2">
-                                    <SelectField
-                                        options={transactionFields.filter(field =>
-                                            field.value === currentMapping?.fieldName ||
-                                            !values.columnMappings.find(mapping => mapping.fieldName === field.value))}
-                                        value={currentMapping?.fieldName ?? null}
-                                        onChange={(value) => handleMappingChange(header, value)}
-                                        placeholder="Ignore this column"
-                                    />
+                        <div key={`colum-mapping-${header}-${index}`} className="flex flex-col gap-4">
+                            <Separator />
+                            <div className={"flex flex-col gap-2"}>
+                                <div className="flex items-center justify-between">
+                                    <div className={"flex flex-col gap-2"}>
+                                        <p className={"font-medium"}>
+                                            Column: <span className="font-medium">{header}</span>
+                                        </p>
+                                        {previewRow[index] && (
+                                            <p className="text-xs text-muted-foreground">
+                                                Example value: <span className="font-mono">{previewRow[index]}</span>
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="w-1/2 items-center">
+                                        <SelectField
+                                            options={transactionFields.filter(field =>
+                                                field.value === currentMapping?.fieldName ||
+                                                !values.columnMappings.find(mapping => mapping.fieldName === field.value))}
+                                            value={currentMapping?.fieldName ?? null}
+                                            onChange={(value) => handleMappingChange(header, value)}
+                                            placeholder="Ignore this column"
+                                        />
+                                    </div>
                                 </div>
+
+                                {/* Show format options for date fields */}
+                                {currentMapping?.fieldName === "valueDate" && (
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm">Date Format: </p>
+                                        <div className="w-1/2">
+                                            <SelectField
+                                                options={dateFormatOptions}
+                                                value={currentMapping.format}
+                                                onChange={(value) => handleFormatChange(header, value)}
+                                                placeholder="Select date format"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Show format options for amount fields */}
+                                {currentMapping?.fieldName === "amount" && (
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm"> Amount Format: </p>
+                                        <div className="w-1/2">
+                                            <SelectField
+                                                options={amountFormatOptions}
+                                                value={currentMapping.format}
+                                                onChange={(value) => handleFormatChange(header, value)}
+                                                placeholder="Select amount format"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-
-                            {/* Show format options for date fields */}
-                            {currentMapping?.fieldName === "valueDate" && (
-                                <div className="flex items-center justify-between mt-2">
-                                    <Label className="text-sm text-muted-foreground">
-                                        Date Format:
-                                    </Label>
-                                    <div className="w-1/2">
-                                        <SelectField
-                                            options={dateFormatOptions}
-                                            value={currentMapping.format}
-                                            onChange={(value) => handleFormatChange(header, value)}
-                                            placeholder="Select date format"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Show format options for amount fields */}
-                            {currentMapping?.fieldName === "amount" && (
-                                <div className="flex items-center justify-between mt-2">
-                                    <Label className="text-sm text-muted-foreground">
-                                        Amount Format:
-                                    </Label>
-                                    <div className="w-1/2">
-                                        <SelectField
-                                            options={amountFormatOptions}
-                                            value={currentMapping.format}
-                                            onChange={(value) => handleFormatChange(header, value)}
-                                            placeholder="Select amount format"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            {previewRow[index] && (
-                                <div className="text-xs text-muted-foreground">
-                                    Example value: <span className="font-mono">{previewRow[index]}</span>
-                                </div>
-                            )}
                         </div>
                     )
                 })}

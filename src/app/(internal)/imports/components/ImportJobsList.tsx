@@ -2,30 +2,25 @@
 
 import { useEffect, useState } from "react"
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/navigation"
-import { Card, CardContent } from "@/src/lib/components/ui/card"
-import { Button } from "@/src/lib/components/ui/button"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Badge } from "@/src/lib/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
-import { formatDistance } from "date-fns"
-import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
-import { ImportStatus, Prisma } from "@prisma/client"
+import { DateTime } from "luxon"
+import getImportJobs, { ImportJobModel } from "@/src/lib/model/imports/queries/getImportJobs"
+import { ImportStatus } from "@prisma/client"
+import { PaginatedTable, TableColumn } from "@/src/lib/components/common/data/PaginatedTable"
 
-type ImportJobWithRelations = Prisma.ImportJobGetPayload<{
-    include: {
-        columnMappings: true;
-        valueMappings: true;
-        _count: {
-            select: {
-                transactions: true;
-            };
-        };
-    };
-}>
+const ITEMS_PER_PAGE = 20
+const UPDATE_INTERVAL = 2000
 
 export const ImportJobsList = () => {
     const router = useRouter()
-    const [{ importJobs }] = useQuery(getImportJobs, {})
+    const urlSearchParams = useSearchParams()
+    const page = Number(urlSearchParams?.get("page") ?? 0)
+    const [{ importJobs, hasMore }] = useQuery(getImportJobs, {
+        skip: ITEMS_PER_PAGE * page,
+        take: ITEMS_PER_PAGE
+    })
+
     const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null)
 
     // Set up auto-refresh for jobs that are in progress
@@ -37,7 +32,7 @@ export const ImportJobsList = () => {
         if (hasJobsInProgress && !refreshInterval) {
             const interval = setInterval(() => {
                 router.refresh()
-            }, 5000) // Refresh every 5 seconds
+            }, UPDATE_INTERVAL)
             setRefreshInterval(interval)
         } else if (!hasJobsInProgress && refreshInterval) {
             clearInterval(refreshInterval)
@@ -68,7 +63,7 @@ export const ImportJobsList = () => {
         }
     }
 
-    const getProgressText = (job: ImportJobWithRelations) => {
+    const getProgressText = (job: ImportJobModel) => {
         if (job.status === ImportStatus.PROCESSING && job.totalRows && job.processedRows) {
             const percentage = Math.round((job.processedRows / job.totalRows) * 100)
             return `${job.processedRows}/${job.totalRows} (${percentage}%)`
@@ -79,54 +74,32 @@ export const ImportJobsList = () => {
         return "-"
     }
 
-    if (importJobs.length === 0) {
-        return (
-            <Card>
-                <CardContent className="p-6 text-center">
-                    <p className="text-muted-foreground mb-4">No import jobs found.</p>
-                    <Button onClick={() => router.push("/imports/new")}>Create New Import</Button>
-                </CardContent>
-            </Card>
-        )
-    }
+    const columns: TableColumn<ImportJobModel>[] = [
+        {
+            name: "Name",
+            render: (job) => <span className="font-medium">{job.name}</span>
+        },
+        {
+            name: "Status",
+            render: (job) => getStatusBadge(job.status)
+        },
+        {
+            name: "Progress",
+            render: (job) => getProgressText(job)
+        },
+        {
+            name: "Created",
+            render: (job) => DateTime.fromJSDate(new Date(job.createdAt)).toRelative()
+        }
+    ]
 
     return (
-        <Card>
-            <CardContent className="p-0">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Progress</TableHead>
-                            <TableHead>Created</TableHead>
-                            <TableHead>Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {importJobs.map((job) => (
-                            <TableRow key={job.id}>
-                                <TableCell className="font-medium">{job.name}</TableCell>
-                                <TableCell>{getStatusBadge(job.status)}</TableCell>
-                                <TableCell>{getProgressText(job)}</TableCell>
-                                <TableCell>
-                                    {formatDistance(new Date(job.createdAt), new Date(), { addSuffix: true })}
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        // onClick={() => router.push(`/imports/${job.id}`}
-                                        >
-                                        View
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
+        <PaginatedTable
+            data={importJobs}
+            columns={columns}
+            hasMore={hasMore}
+            itemRoute={(job) => `/imports/${job.id}`}
+            createRoute="/imports/new" />
     )
 }
 
