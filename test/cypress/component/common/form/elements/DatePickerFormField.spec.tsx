@@ -45,7 +45,7 @@ describe("<DatePickerFormField />", () => {
         cy.get("button").contains("Select date...").click()
 
         cy.get("[role='dialog']").should("be.visible")
-        cy.get("td button").contains("1").click()
+        cy.get("td button").contains(/^1$/).click()
 
         const selectedDate = DateTime.now().startOf("month").toJSDate().toLocaleDateString()
         cy.get("button").should("contain.text", selectedDate)
