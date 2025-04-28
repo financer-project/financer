@@ -1,10 +1,19 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 
 const GetImportJobSchema = z.object({
     id: z.string().uuid()
 })
+
+export type ImportJobModel = Prisma.ImportJobGetPayload<{
+    include: {
+        columnMappings: true,
+        valueMappings: true,
+        _count: { select: { transactions: true } }
+    };
+}>
 
 export default resolver.pipe(
     resolver.zod(GetImportJobSchema),
@@ -16,7 +25,7 @@ export default resolver.pipe(
             include: {
                 columnMappings: true,
                 valueMappings: true,
-                transactions: true
+                _count: { select: { transactions: true } }
             }
         })
 

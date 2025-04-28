@@ -3,18 +3,6 @@ import db from "@/src/lib/db"
 import { Prisma } from "@prisma/client"
 import { AuthenticatedCtx, paginate } from "blitz"
 
-export type ImportJobModel = Prisma.ImportJobGetPayload<{
-    include: {
-        columnMappings: true;
-        valueMappings: true;
-        _count: {
-            select: {
-                transactions: true;
-            };
-        };
-    };
-}>
-
 export default resolver.pipe(
     resolver.authorize(),
     async ({

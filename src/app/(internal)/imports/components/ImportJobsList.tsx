@@ -5,9 +5,10 @@ import { useQuery } from "@blitzjs/rpc"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Badge } from "@/src/lib/components/ui/badge"
 import { DateTime } from "luxon"
-import getImportJobs, { ImportJobModel } from "@/src/lib/model/imports/queries/getImportJobs"
+import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { ImportStatus } from "@prisma/client"
 import { PaginatedTable, TableColumn } from "@/src/lib/components/common/data/PaginatedTable"
+import { ImportJobModel } from "@/src/lib/model/imports/queries/getImportJob"
 
 const ITEMS_PER_PAGE = 20
 const UPDATE_INTERVAL = 2000
