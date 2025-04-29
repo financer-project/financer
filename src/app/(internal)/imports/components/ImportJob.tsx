@@ -6,7 +6,7 @@ import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/wi
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import Section from "@/src/lib/components/common/structure/Section"
 import { Badge } from "@/src/lib/components/ui/badge"
-import { ImportStatus } from "@prisma/client"
+import { ColumnMapping, ImportStatus, ValueMapping } from "@prisma/client"
 import { Progress } from "@/src/lib/components/ui/progress"
 
 export const ImportJob = withFormatters(({ importJobId, formatters }: WithFormattersProps & {
@@ -94,7 +94,7 @@ export const ImportJob = withFormatters(({ importJobId, formatters }: WithFormat
             <Section title={"Column Mappings"}
                      subtitle={"How CSV columns are mapped to transaction fields."}>
                 <div className={"grid grid-cols-3 gap-4"}>
-                    {importJob.columnMappings.map((mapping: any) => (
+                    {importJob.columnMappings.map((mapping: ColumnMapping) => (
                         <div key={mapping.id} className="border rounded p-4">
                             <div className="font-medium">{mapping.csvHeader}</div>
                             <div className="text-sm text-muted-foreground">
@@ -113,7 +113,7 @@ export const ImportJob = withFormatters(({ importJobId, formatters }: WithFormat
             <Section title={"Value Mappings"}
                      subtitle={"How values from the CSV are mapped to entities in the system."}>
                 <div className={"grid grid-cols-3 gap-4"}>
-                    {importJob.valueMappings.map((mapping: any) => (
+                    {importJob.valueMappings.map((mapping: ValueMapping) => (
                         <div key={mapping.id} className="border rounded p-4">
                             <div className="font-medium">{mapping.sourceValue}</div>
                             <div className="text-sm text-muted-foreground">
