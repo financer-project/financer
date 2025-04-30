@@ -72,6 +72,7 @@ export const SelectField = <T, >({
                 <div className="relative w-full">
                     <Button
                         variant={"outline"}
+                        role="select-field"
                         className={cn("w-full items-start justify-start font-normal", props.className, internalValue ? "" : "text-muted-foreground")}
                         onClick={(event) => {
                             event.preventDefault()

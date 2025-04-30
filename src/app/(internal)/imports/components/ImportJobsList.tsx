@@ -99,8 +99,7 @@ export const ImportJobsList = () => {
             data={importJobs}
             columns={columns}
             hasMore={hasMore}
-            itemRoute={(job) => `/imports/${job.id}`}
-            createRoute="/imports/new" />
+            itemRoute={(job) => `/imports/${job.id}`} />
     )
 }
 

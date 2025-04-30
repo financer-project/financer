@@ -17,7 +17,7 @@ import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProv
 // Define the validation schema for each step
 const uploadSchema = z.object({
     name: z.string().min(1, "Name is required"),
-    file: z.any().refine(file => file, "File is required"),
+    file: z.any().refine(file => file, "Please upload a CSV file."),
     separator: z.string().length(1).default(",")
 })
 
@@ -102,7 +102,7 @@ export const ImportWizard = () => {
                 })
 
                 if (!response.ok) {
-                    throw new Error("Failed to upload file")
+                    return { FORM_ERROR: "Failed to upload file" }
                 }
 
                 const data = await response.json()

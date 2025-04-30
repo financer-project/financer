@@ -19,7 +19,7 @@ describe("Import Mutations & Queries", () => {
 
     beforeEach(async () => {
         await util.seedDatabase()
-        
+
         // Create a test import job for use in tests
         testImportJob = await db.importJob.create({
             data: {
@@ -35,10 +35,10 @@ describe("Import Mutations & Queries", () => {
                 },
                 valueMappings: {
                     create: [
-                        { 
-                            sourceValue: "Bank Account", 
-                            targetType: "account", 
-                            targetId: util.getTestData().accounts.standard.id 
+                        {
+                            sourceValue: "Bank Account",
+                            targetType: "account",
+                            targetId: util.getTestData().accounts.standard.id
                         }
                     ]
                 }
@@ -57,7 +57,7 @@ describe("Import Mutations & Queries", () => {
     describe("get", () => {
         test("get all import jobs with pagination", async () => {
             const { importJobs, count } = await getImportJobs({
-                householdId: util.getTestData().households.standard.id
+                where: { householdId: util.getTestData().households.standard.id }
             }, util.getMockContext())
 
             expect(importJobs).toBeDefined()
@@ -93,10 +93,10 @@ describe("Import Mutations & Queries", () => {
                     { csvHeader: "Transaction Amount", fieldName: "amount", format: "comma" }
                 ],
                 valueMappings: [
-                    { 
-                        sourceValue: "Checking Account", 
-                        targetType: "account", 
-                        targetId: util.getTestData().accounts.standard.id 
+                    {
+                        sourceValue: "Checking Account",
+                        targetType: "account",
+                        targetId: util.getTestData().accounts.standard.id
                     }
                 ]
             }
@@ -170,7 +170,7 @@ describe("Import Mutations & Queries", () => {
             const result = await startImport({ id: testImportJob.id }, util.getMockContext())
 
             expect(result.status).toBe(ImportStatus.PENDING)
-            
+
             // Verify queueImportJob was called with the correct ID
             expect(queueImportJob).toHaveBeenCalledWith(testImportJob.id)
         })

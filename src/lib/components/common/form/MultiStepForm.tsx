@@ -1,3 +1,5 @@
+"use client"
+
 import { Children, isValidElement, PropsWithChildren, PropsWithoutRef, ReactNode, useState } from "react"
 import { Form as FormikForm, Formik, FormikErrors, FormikProps } from "formik"
 import { z } from "zod"
@@ -7,6 +9,7 @@ import { AlertCircle, Check } from "lucide-react"
 import { CardTitle } from "@/src/lib/components/ui/card"
 import { Heading2, SubTitle } from "@/src/lib/components/common/typography"
 import { cn } from "@/lib/utils"
+import { toFormikValidationSchema } from "zod-formik-adapter"
 
 // Step component for use within MultiStepForm
 export interface StepProps extends PropsWithChildren {
@@ -34,10 +37,10 @@ interface StepInfo {
 interface StepsVisualizationProps {
     steps: StepInfo[]
     currentStep: number,
-    onClick: (index: number) => void
+    onClickAction: (index: number) => void
 }
 
-export const StepsVisualization = ({ steps, currentStep, onClick }: StepsVisualizationProps) => {
+export const StepsVisualization = ({ steps, currentStep, onClickAction }: StepsVisualizationProps) => {
 
     const getClassName = (index: number) => {
         const className = "flex items-center justify-center w-8 h-8 rounded-full border-2"
@@ -54,22 +57,28 @@ export const StepsVisualization = ({ steps, currentStep, onClick }: StepsVisuali
         <div className="flex w-full py-4 relative">
             <div className={"flex w-full"}>
                 {steps.map((step, index) => (
-                    <div key={`step-${step.title}`}
-                         className={cn("flex flex-col items-center flex-1 relative", index < currentStep ? "cursor-pointer" : "cursor-default")}
-                         onClick={() => index < currentStep && onClick(index)}>
-                        <div
-                            className={getClassName(index)}>
-                            {index + 1 < steps.length &&
-                                <div className={"absolute h-0.5 bg-muted w-full left-1/2 mx-4"} />}
+                    <div className={"flex flex-col items-center flex-1 relative"}>
+                        <Button
+                            key={`step-${step.title}`}
+                            variant={"ghost"}
+                            className={cn("flex flex-col h-full ", index < currentStep ? "cursor-pointer" : "cursor-default")}
+                            onClick={() => index < currentStep && onClickAction(index)}
+                            disabled={index < currentStep}>
+                            <div className={getClassName(index)}>
+                                {index + 1 < steps.length &&
+                                    <div className={"absolute h-0.5 w-full left-1/2 px-6"}>
+                                        <div className={"h-full w-full bg-muted"} />
+                                    </div>}
 
-                            {index < currentStep
-                                ? (<Check />)
-                                : (<p className={"text-sm font-medium z-10"}>{index + 1}</p>)}
-                        </div>
-                        <span
-                            className={cn("mt-2 text-xs font-medium", index <= currentStep ? "text-primary" : "text-muted-foreground")}>
+                                {index < currentStep
+                                    ? (<Check />)
+                                    : (<p className={"text-sm font-medium z-10"}>{index + 1}</p>)}
+                            </div>
+                            <span
+                                className={cn("mt-2 text-xs font-medium", index <= currentStep ? "text-primary" : "text-muted-foreground")}>
                                 {step.title}
                             </span>
+                        </Button>
                     </div>
                 ))}
             </div>
@@ -195,22 +204,13 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({ // eslint-disable
                     <CardTitle>{title}</CardTitle>
                     <StepsVisualization steps={stepNames}
                                         currentStep={currentStep}
-                                        onClick={index => setCurrentStep(index)} />
+                                        onClickAction={index => setCurrentStep(index)} />
                 </div>
             )}
 
             <Formik
                 initialValues={initialValues}
-                validate={(values) => {
-                    try {
-                        getCurrentStepSchema().parse(values)
-                    } catch (error) {
-                        if (error instanceof z.ZodError) {
-                            return error
-                        }
-                    }
-                }}
-                // validationSchema={toFormikValidationSchema(getCurrentStepSchema())}
+                validationSchema={toFormikValidationSchema(getCurrentStepSchema())}
                 onSubmit={handleSubmit}
                 validateOnMount={false}
                 validateOnChange={false}
