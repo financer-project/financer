@@ -4,7 +4,8 @@ import { processImport } from "../model/imports/services/importProcessor"
 
 // Create a Redis connection
 const connection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", {
-    maxRetriesPerRequest: null
+    maxRetriesPerRequest: null,
+    lazyConnect: process.env.NODE_ENV === "test"
 })
 
 // Create a queue for import jobs
