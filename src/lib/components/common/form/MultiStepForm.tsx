@@ -57,7 +57,8 @@ export const StepsVisualization = ({ steps, currentStep, onClickAction }: StepsV
         <div className="flex w-full py-4 relative">
             <div className={"flex w-full"}>
                 {steps.map((step, index) => (
-                    <div className={"flex flex-col items-center flex-1 relative"}>
+                    <div key={`step-${step.title}`}
+                        className={"flex flex-col items-center flex-1 relative"}>
                         <Button
                             key={`step-${step.title}`}
                             variant={"ghost"}

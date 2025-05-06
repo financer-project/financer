@@ -123,7 +123,7 @@ export const FileUploadStep = ({ setCsvHeadersAction, setCsvDataAction }: FileUp
                                     <TableHeader>
                                         <TableRow>
                                             {previewData[0].map((columnName, index) => (
-                                                <TableHead key={index}>
+                                                <TableHead key={`column-${columnName}`}>
                                                     {columnName ?? `Column ${index + 1}`}
                                                 </TableHead>
                                             ))}
@@ -131,9 +131,9 @@ export const FileUploadStep = ({ setCsvHeadersAction, setCsvDataAction }: FileUp
                                     </TableHeader>
                                     <TableBody>
                                         {previewData.slice(1).map((row, rowIndex) => (
-                                            <TableRow key={rowIndex}>
+                                            <TableRow key={`row-${rowIndex}`}>
                                                 {row.map((cell, cellIndex) => (
-                                                    <TableCell key={cellIndex}>
+                                                    <TableCell key={`cell-${cellIndex}`}>
                                                         {cell}
                                                     </TableCell>
                                                 ))}

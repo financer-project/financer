@@ -67,6 +67,21 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
                 )
             )
 
+    const getSeparatorDescription = (separator: string) => {
+        switch (separator) {
+            case "," :
+                return "Comma (,)"
+            case ";" :
+                return "Semicolon (;)"
+            case "\t" :
+                return "Tab (\\t)"
+            case  "|" :
+                return "Pipe (|)"
+            default:
+                return separator
+        }
+    }
+
     return (
         <div className="space-y-6">
             <Card>
@@ -82,11 +97,7 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
 
                             <div className="text-sm text-muted-foreground">Separator:</div>
                             <div className="text-sm font-medium">
-                                {values.separator === "," ? "Comma (,)" :
-                                    values.separator === ";" ? "Semicolon (;)" :
-                                        values.separator === "\t" ? "Tab (\\t)" :
-                                            values.separator === "|" ? "Pipe (|)" :
-                                                values.separator}
+                                {getSeparatorDescription(values.separator)}
                             </div>
 
                             <div className="text-sm text-muted-foreground">Transactions:</div>
