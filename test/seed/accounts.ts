@@ -12,7 +12,7 @@ export default async function seedAccounts(households: HouseholdSeed): Promise<A
         data: {
             household: { connect: { id: households.standard.id } },
             name: "My Account",
-            technicalName: "DE11 0000 0000 0000 0000 00"
+            technicalIdentifier: "DE11 0000 0000 0000 0000 00"
         }
     })
 
@@ -20,7 +20,7 @@ export default async function seedAccounts(households: HouseholdSeed): Promise<A
         data: {
             household: { connect: { id: households.admin.id } },
             name: "My Account",
-            technicalName: "DE11 0000 0000 0000 0000 00"
+            technicalIdentifier: "DE11 0000 0000 0000 0000 00"
         }
     })
 

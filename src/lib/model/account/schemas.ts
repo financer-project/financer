@@ -3,7 +3,7 @@ import { z } from "zod"
 export const CreateAccountSchema = z.object({
     householdId: z.string().uuid(),
     name: z.string().min(3),
-    technicalName: z.string().nullable()
+    technicalIdentifier: z.string().nullable()
 })
 export const UpdateAccountSchema = CreateAccountSchema.merge(
     z.object({

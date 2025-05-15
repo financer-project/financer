@@ -10,6 +10,9 @@ export default resolver.pipe(
                skip = 0,
                take = 100
            }: Pick<Prisma.TransactionFindManyArgs, "where" | "orderBy" | "skip" | "take">) => {
+
+        orderBy ??= { valueDate: "desc" }
+
         const {
             items: transactions,
             hasMore,

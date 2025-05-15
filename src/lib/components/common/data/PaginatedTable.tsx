@@ -5,9 +5,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
 
+export interface TableColumn<T> {
+    name: string,
+    render: (item: T) => React.ReactNode
+}
+
 interface PaginatedTableProps<T> {
     data: T[]
-    columns: Array<{ name: string; render: (item: T) => React.ReactNode }>
+    columns: Array<TableColumn<T>>
     itemRoute: (item: T) => string
     hasMore: boolean
     createRoute?: string

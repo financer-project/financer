@@ -10,7 +10,7 @@ describe("<DatePicker />", () => {
 
         cy.get("button").click()
         cy.get("[role='dialog']").should("be.visible")
-        cy.get("td button").contains("1").click()
+        cy.get("td button").contains(/^1$/).click()
 
         cy.get("button").should("contain.text", DateTime.now().startOf("month").toJSDate().toLocaleDateString())
         cy.get("@onChange").should("have.been.called")

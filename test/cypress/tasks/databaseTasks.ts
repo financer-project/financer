@@ -6,6 +6,7 @@ import seedUsers, { UserSeed } from "@/test/seed/user"
 import seedHouseholds, { HouseholdSeed } from "@/test/seed/households"
 import seedAccounts, { AccountSeed } from "@/test/seed/accounts"
 import seedCategories, { CategorySeed } from "@/test/seed/categorySeed"
+import { RedisContainer } from "@testcontainers/redis"
 
 export interface TestData {
     users: UserSeed,
@@ -14,16 +15,17 @@ export interface TestData {
     categories: CategorySeed,
 }
 
-let container: StartedTestContainer
+let dbContainer: StartedTestContainer
+let redisContainer: StartedTestContainer
 
 const databaseTasks = {
     async startDatabase(): Promise<StartedTestContainer> {
-        if (container) {
+        if (dbContainer || redisContainer) {
             await this.stopDatabase()
         }
 
         console.info("Starting test database ...")
-        container = await new MySqlContainer("mysql:9")
+        dbContainer = await new MySqlContainer("mysql:9")
             .withDatabase("financer-test")
             .withRootPassword("password")
             .withUsername("financer-test")
@@ -31,22 +33,39 @@ const databaseTasks = {
             .withExposedPorts({ container: 3306, host: 3307 })
             .start()
 
-        const port = container.getFirstMappedPort()
-
-        console.info(`Started test database running on port ${port} (url: '${process.env.DATABASE_URL}')`)
+        const dbPort = dbContainer.getFirstMappedPort()
+        console.info(`Started test database running on port ${dbPort} (url: '${process.env.DATABASE_URL}')`)
 
         execSync("yarn prisma db push --skip-generate", { stdio: "inherit" })
         console.info("Updated schema for test database.")
 
+        console.info("Starting Redis container ...")
+        redisContainer = await new RedisContainer("redis:7")
+            .withExposedPorts({ container: 6379, host: 6380 })
+            .start()
+
+        const redisPort = redisContainer.getFirstMappedPort()
+        const redisUrl = `redis://localhost:${redisPort}`
+        process.env.REDIS_URL = redisUrl
+        console.info(`Started Redis container running on port ${redisPort} (url: '${redisUrl}')`)
+
         await seedUsers()
 
-        return container
+        return dbContainer
     },
 
     async stopDatabase(): Promise<void> {
-        console.info("Stopping test database ...")
-        await container.stop()
-        console.info("Test database was stopped.")
+        if (dbContainer) {
+            console.info("Stopping test database ...")
+            await dbContainer.stop()
+            console.info("Test database was stopped.")
+        }
+
+        if (redisContainer) {
+            console.info("Stopping Redis container ...")
+            await redisContainer.stop()
+            console.info("Redis container was stopped.")
+        }
     },
 
     async resetDatabase(resetUsers?: boolean) {
