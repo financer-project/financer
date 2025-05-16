@@ -1,0 +1,21 @@
+model AdminSettings {
+    id        Int      @id @default(1)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // SMTP Settings
+    smtpHost       String?
+    smtpPort       Int?
+    smtpUser       String?
+    smtpPassword   String?
+    smtpFromEmail  String?
+    smtpFromName   String?
+    smtpEncryption String?
+
+    // Registration Settings
+    allowRegistration Boolean @default(true)
+
+    // Default Settings
+    defaultLanguage String @default("en-US")
+    defaultTheme    String @default("light")
+}

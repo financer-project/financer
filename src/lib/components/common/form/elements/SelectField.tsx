@@ -73,7 +73,7 @@ export const SelectField = <T, >({
                     <Button
                         variant={"outline"}
                         role="select-field"
-                        className={cn("w-full items-start justify-start font-normal", props.className, internalValue ? "" : "text-muted-foreground")}
+                        className={cn("w-full items-start justify-start font-normal shadow-sm", props.className, internalValue ? "" : "text-muted-foreground")}
                         onClick={(event) => {
                             event.preventDefault()
                             if (!readonly) setIsOpen(true)

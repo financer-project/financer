@@ -11,7 +11,8 @@ declare module "@blitzjs/auth" {
     export interface Session {
         isAuthorized: SimpleRolesIsAuthorized<Role>
         PublicData: {
-            userId: User["id"]
+            userId: User["id"],
+            email: User["email"],
             role: Role
         },
         PrivateData: PrivateData
