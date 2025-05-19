@@ -10,13 +10,13 @@ import TextField from "@/src/lib/components/common/form/elements/TextField"
 import { Button } from "@/src/lib/components/ui/button"
 import SwitchField from "@/src/lib/components/common/form/elements/SwitchField"
 
-interface AdminSettingsFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
+interface AdminSettingsFormProps<S extends z.ZodType<any, any>> extends FormProps<S> { //eslint-disable-line @typescript-eslint/no-explicit-any
     onSendTestEmail?: (testEmailRecipient: string) => Promise<void>;
     isSendingTestEmail?: boolean;
     defaultTestEmailRecipient?: string;
 }
 
-export function AdminSettingsForm<S extends z.ZodType<any, any>>(props: Readonly<AdminSettingsFormProps<S>>) {
+export function AdminSettingsForm<S extends z.ZodType<any, any>>(props: Readonly<AdminSettingsFormProps<S>>) { //eslint-disable-line @typescript-eslint/no-explicit-any
     return (
         <Form<S> {...props}>
             <Section title={"Default Settings"}>

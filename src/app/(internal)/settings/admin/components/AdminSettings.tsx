@@ -40,7 +40,7 @@ export const AdminSettings = () => {
                 title: "Test email sent successfully!",
                 variant: "default"
             })
-        } catch (error: any) {
+        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
             toast({
                 title: `Failed to send test email`,
                 description: `Error: ${error.toString()}`,
@@ -67,7 +67,7 @@ export const AdminSettings = () => {
                             await setQueryData(updated)
                             toast({ title: "Settings updated successfully!" })
                             router.refresh()
-                        } catch (error: any) {
+                        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
                             console.error(error)
                             return {
                                 [FORM_ERROR]: error.toString()
