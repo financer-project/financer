@@ -41,7 +41,7 @@ export default resolver.pipe(
         // Send a test email
         await transporter.sendMail({
             from: `"${data.smtpFromName}" <${data.smtpFromEmail}>`,
-            to: data.testEmailRecipient || ctx.session.email || data.smtpFromEmail,
+            to: data.testEmailRecipient ?? ctx.session.email ?? data.smtpFromEmail,
             subject: "Test Email from Financer App",
             text: "This is a test email from your Financer App. If you received this, your email settings are working correctly!",
             html: "<p>This is a test email from your Financer App. If you received this, your email settings are working correctly!</p>"

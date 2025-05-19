@@ -104,7 +104,7 @@ export function AdminSettingsForm<S extends z.ZodType<any, any>>(props: Readonly
                             variant="outline"
                             onClick={() => {
                                 const recipientInput = document.querySelector("input[name=\"testEmailRecipient\"]") as HTMLInputElement
-                                const recipient = recipientInput?.value || props.defaultTestEmailRecipient || ""
+                                const recipient = recipientInput?.value ?? props.defaultTestEmailRecipient ?? ""
                                 props.onSendTestEmail?.(recipient)
                             }}
                             disabled={props.isSendingTestEmail}>
