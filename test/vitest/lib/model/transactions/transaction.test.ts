@@ -4,12 +4,12 @@ import updateTransaction from "@/src/lib/model/transactions/mutations/updateTran
 import deleteTransaction from "@/src/lib/model/transactions/mutations/deleteTransaction"
 import getTransaction from "@/src/lib/model/transactions/queries/getTransaction"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { TransactionType } from "@prisma/client"
 import { DateTime } from "luxon"
 
 describe("Transaction Mutations & Queries", () => {
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
 
     beforeEach(async () => {
         await util.seedDatabase()
@@ -18,7 +18,8 @@ describe("Transaction Mutations & Queries", () => {
     describe("get", () => {
         test("get all transactions with pagination", async () => {
             const { transactions, count } = await getTransactions({
-                where: { accountId: util.getTestData().accounts.standard.id }
+                where: { accountId: util.getTestData().accounts.standard.id },
+                householdId: util.getTestData().households.standard.id
             }, util.getMockContext())
 
             expect(transactions).toBeDefined()
@@ -31,6 +32,12 @@ describe("Transaction Mutations & Queries", () => {
             expect(transaction.id).toBe(util.getTestData().transactions.standard.income.id)
             expect(transaction.category).toBeDefined()
             expect(transaction.account).toBeDefined()
+        })
+
+        test("get only own transactions", async () => {
+            const { transactions } = await getTransactions({ householdId: util.getTestData().households.standard.id }, util.getMockContext())
+
+            expect(transactions).toHaveLength(2)
         })
     })
 

@@ -1,5 +1,5 @@
 import { User } from "@prisma/client"
-import { TestData } from "@/test/cypress/tasks/databaseTasks"
+import { TestData } from "@/test/utility/TestUtility"
 
 Cypress.Commands.add("loginWithUser", (user: User) => {
     cy.session(user.email, () => {

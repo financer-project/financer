@@ -5,15 +5,18 @@ import getTransactions from "@/src/lib/model/transactions/queries/getTransaction
 import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
+import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 
 const ITEMS_PER_PAGE = 100
 
 export const TransactionsList = withFormatters(({ formatters }: WithFormattersProps) => {
     const searchParams = useSearchParams()
+    const currentHousehold = useCurrentHousehold()!
     const page = Number(searchParams?.get("page") ?? 0)
     const [{ transactions, hasMore }] = usePaginatedQuery(getTransactions, {
         skip: ITEMS_PER_PAGE * page,
-        take: ITEMS_PER_PAGE
+        take: ITEMS_PER_PAGE,
+        householdId: currentHousehold.id
     })
 
     return (

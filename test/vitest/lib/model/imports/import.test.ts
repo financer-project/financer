@@ -4,7 +4,7 @@ import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import createImportJob from "@/src/lib/model/imports/mutations/createImportJob"
 import updateImportJob from "@/src/lib/model/imports/mutations/updateImportJob"
 import startImport from "@/src/lib/model/imports/mutations/startImport"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { ImportStatus } from "@prisma/client"
 import db from "@/src/lib/db"
 import { queueImportJob } from "@/src/lib/jobs"
@@ -14,7 +14,7 @@ vi.mock("@/src/lib/jobs", () => ({
 }))
 
 describe("Import Mutations & Queries", () => {
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
     let testImportJob: any
 
     beforeEach(async () => {

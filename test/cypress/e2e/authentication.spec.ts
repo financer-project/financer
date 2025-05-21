@@ -1,6 +1,8 @@
 describe("Authentication Spec", () => {
     beforeEach(() => {
-        cy.resetAndSeedDatabase(()=> {}, true)
+        cy.resetAndSeedDatabase(()=> {
+            cy.visit("/")
+        }, true)
     })
 
     after(() => {
@@ -8,7 +10,6 @@ describe("Authentication Spec", () => {
     })
 
     it("Create a new user", () => {
-        cy.visit("/")
 
         cy.get("a[href='/signup']").click()
 
@@ -22,8 +23,6 @@ describe("Authentication Spec", () => {
     })
 
     it("Login with existing user", () => {
-        cy.visit("/")
-
         cy.get("a[href='/login']").click()
 
         cy.get("input[name='email']").type("user@financer.com")

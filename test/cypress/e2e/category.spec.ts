@@ -1,4 +1,4 @@
-import { TestData } from "@/test/cypress/tasks/databaseTasks"
+import { TestData } from "@/test/utility/TestUtility"
 
 describe("Categories", () => {
     let testData: TestData

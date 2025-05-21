@@ -25,7 +25,8 @@ export const TextField = <E, V>({ name, ...props }: LabeledTextFieldProps<E, V>)
         <FormElement name={name} {...props}>
             <Input {...input}
                    disabled={isSubmitting || props.readonly}
-                   type={props.type} />
+                   type={props.type}
+                   placeholder={props.placeholder} />
         </FormElement>
     )
 }

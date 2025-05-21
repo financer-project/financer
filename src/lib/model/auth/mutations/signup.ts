@@ -23,10 +23,7 @@ export default async function signup(
         }
     })
 
-    await blitzContext.session.$create({
-        userId: user.id,
-        role: Role.USER
-    })
+    await blitzContext.session.$create({ userId: user.id, email: user.email, role: Role.USER })
 
     return { userId: blitzContext.session.userId, ...user, email: input.email }
 }

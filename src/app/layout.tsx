@@ -2,6 +2,7 @@ import "./globals.css"
 import { BlitzProvider } from "./blitz-client"
 import { Inter } from "next/font/google"
 import { Metadata } from "next"
+import { Toaster } from "../lib/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <body className={inter.className}>
         <BlitzProvider>
             <>{children}</>
+            <Toaster />
         </BlitzProvider>
         </body>
         </html>

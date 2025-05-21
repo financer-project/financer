@@ -20,12 +20,15 @@ import {
     CogIcon,
     HandCoinsIcon,
     HouseIcon,
-    ImportIcon
+    ImportIcon,
+    ShieldIcon
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
+import { useSession } from "@blitzjs/auth"
+import { Role } from "@prisma/client"
 
-const groups = [
+const getGroups = (isAdmin: boolean) => [
     {
         name: "Transactions",
         items: [
@@ -73,13 +76,22 @@ const groups = [
                 title: "Settings",
                 url: "/settings",
                 icon: CogIcon
-            }
+            },
+            ...(isAdmin ? [
+                {
+                    title: "Admin Settings",
+                    url: "/settings/admin",
+                    icon: ShieldIcon
+                }
+            ] : [])
         ]
     }
 ]
 
 const Sidebar = () => {
     const pathname = usePathname()
+    const session = useSession()
+    const isAdmin = session.role === Role.ADMIN
 
     return (
         <SidebarComponent
@@ -92,7 +104,7 @@ const Sidebar = () => {
             </SidebarHeader>
             <Separator />
             <SidebarContent>
-                {groups.map((group) => (
+                {getGroups(isAdmin).map((group) => (
                     <SidebarGroup key={group.name}>
                         <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
                         <SidebarMenu>

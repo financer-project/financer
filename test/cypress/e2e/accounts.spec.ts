@@ -1,4 +1,4 @@
-import { TestData } from "@/test/cypress/tasks/databaseTasks"
+import { TestData } from "@/test/utility/TestUtility"
 
 describe("Accounts", () => {
     let testData: TestData
@@ -17,9 +17,8 @@ describe("Accounts", () => {
         cy.url().should("include", `/households/${testData.households.standard.id}`)
 
         cy.get("tbody tr").should("have.length", 1)
-        cy.get("tbody tr:first-child")
-            .scrollIntoView()
-            .click()
+        cy.get("tbody tr:first-child").scrollIntoView()
+        cy.get("tbody tr:first-child").click()
 
         cy.get(":nth-child(2) > .text-md").should("contain.text", "My Account")
     })
@@ -43,8 +42,7 @@ describe("Accounts", () => {
         cy.get(".bg-primary").click()
 
         cy.url().should("include", `/households/${testData.households.standard.id}`)
-        cy.get("tbody tr")
-            .scrollIntoView()
-            .should("have.length", 1)
+        cy.get("tbody tr").scrollIntoView()
+        cy.get("tbody tr").should("have.length", 1)
     })
 })

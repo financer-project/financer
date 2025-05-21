@@ -1,6 +1,6 @@
 import "./commands"
 import { User } from "@prisma/client"
-import { TestData } from "@/test/cypress/tasks/databaseTasks"
+import { TestData } from "@/test/utility/TestUtility"
 import "@cypress/code-coverage/support"
 
 declare global {
