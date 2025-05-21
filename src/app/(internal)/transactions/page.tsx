@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import { TransactionsList } from "./components/TransactionsList"
 import Header from "@/src/lib/components/content/nav/Header"
 import { Button } from "@/src/lib/components/ui/button"
+import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 
 export const metadata: Metadata = {
     title: "Transactions",
@@ -25,7 +26,9 @@ export default function Page() {
                         </div>
                     } />
             <Suspense fallback={<div>Loading...</div>}>
-                <TransactionsList />
+                <HouseholdProvider>
+                    <TransactionsList />
+                </HouseholdProvider>
             </Suspense>
         </div>
     )

@@ -13,6 +13,8 @@ describe("Transactions", () => {
     })
 
     it("should be able to create a transaction and delete it", () => {
+        cy.get("tbody tr").should("have.length", 2)
+
         cy.get("a[href='/transactions/new']").click()
 
         cy.get("label[for='accountId'] + div").type("My Account{enter}")
@@ -28,7 +30,7 @@ describe("Transactions", () => {
         cy.get(".bg-primary").click()
         cy.url().should("satisfy", (str: string) => str.endsWith("/transactions"))
 
-        cy.get("tbody tr").should("have.length", 0)
+        cy.get("tbody tr").should("have.length", 2)
     })
 
 })
