@@ -1,6 +1,6 @@
 import { defineConfig } from "cypress"
-import databaseTasks from "@/test/cypress/tasks/databaseTasks"
 import codeCoverageTask from "@cypress/code-coverage/task"
+import TestUtilityDBContainer from "./test/utility/TestUtilityDBContainer"
 
 export default defineConfig({
     projectId: "financer",
@@ -19,15 +19,27 @@ export default defineConfig({
         specPattern: "test/cypress/e2e/**/*.spec.ts",
         setupNodeEvents(on, config) {
             codeCoverageTask(on, config)
+            const dbContainer = TestUtilityDBContainer.getInstance()
+
             on("task", {
-                ...databaseTasks
+                async resetDatabase(resetUsers) {
+                    await dbContainer.resetDatabase(resetUsers)
+                    return null
+                },
+                async seedDatabase() {
+                    await dbContainer.seedDatabase()
+                    return dbContainer.getTestData()
+                }
             })
+
             on("before:run", async () => {
-                await databaseTasks.startDatabase()
+                await dbContainer.startDatabase()
             })
+
             on("after:run", async () => {
-                await databaseTasks.stopDatabase()
+                await dbContainer.stopDatabase()
             })
+
             return config
         },
         experimentalRunAllSpecs: true,

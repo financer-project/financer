@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest"
 import createHousehold from "@/src/lib/model/household/mutations/createHousehold"
 import updateHousehold from "@/src/lib/model/household/mutations/updateHousehold"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import deleteHousehold from "@/src/lib/model/household/mutations/deleteHousehold"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import getHouseholds from "@/src/lib/model/household/queries/getHouseholds"
@@ -10,7 +10,7 @@ import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHou
 
 describe("Household Mutations & Queries", () => {
 
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
 
     beforeEach(async () => {
         await util.seedDatabase()

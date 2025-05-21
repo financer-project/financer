@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import getCategories from "@/src/lib/model/categories/queries/getCategories"
 import createCategory from "@/src/lib/model/categories/mutations/createCategory"
 import getCategory from "@/src/lib/model/categories/queries/getCategory"
@@ -9,7 +9,7 @@ import ColorType from "@/src/lib/model/common/ColorType"
 import { CategoryType } from "@prisma/client"
 
 describe("Category Mutations & Queries", () => {
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
 
     beforeEach(async () => {
         await util.seedDatabase()

@@ -26,6 +26,6 @@ const AdminSettingsPage: BlitzPage = () => {
     )
 }
 
-AdminSettingsPage.authenticate = { role: Role.ADMIN }
+AdminSettingsPage.authenticate = { role: Role.ADMIN, redirectTo: "/dashboard" }
 
 export default AdminSettingsPage

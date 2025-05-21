@@ -7,6 +7,18 @@ import { AuthenticatedSessionContext } from "@blitzjs/auth"
 import { PrivateData } from "@/types"
 
 export default class TestUtilityMock extends TestUtilityBase {
+    private static instance: TestUtilityMock
+
+    private constructor() {
+        super()
+    }
+
+    public static getInstance(): TestUtilityMock {
+        if (!TestUtilityMock.instance) {
+            TestUtilityMock.instance = new TestUtilityMock()
+        }
+        return TestUtilityMock.instance
+    }
     async startDatabase(): Promise<void> {
         throw new Error("Method not implemented")
     }
@@ -38,6 +50,7 @@ export default class TestUtilityMock extends TestUtilityBase {
         // Erstelle Closures für die dynamischen Werte
         let userId = userObject?.id ?? null
         let role = userObject?.role ?? null
+        let email = userObject?.email ?? null
 
         return {
             session: {
@@ -47,6 +60,9 @@ export default class TestUtilityMock extends TestUtilityBase {
                 get role() {
                     return role
                 },
+                get email() {
+                    return email
+                },
                 $getPrivateData(): Promise<Record<any, any>> {
                     return Promise.resolve(privateDataStorage)
                 },
@@ -54,7 +70,7 @@ export default class TestUtilityMock extends TestUtilityBase {
                     Object.assign(privateDataStorage, data)
                     return Promise.resolve()
                 },
-                $authorize(...args): asserts this is AuthenticatedSessionContext {
+                $authorize(...args: any[]): asserts this is AuthenticatedSessionContext {
                     if (user === "none" || (args[0] && args[0] !== this.role)) {
                         throw new AuthenticationError("Authorization required.")
                     }
@@ -69,7 +85,7 @@ export default class TestUtilityMock extends TestUtilityBase {
                     return Promise.resolve()
                 }
             }
-        } as AuthenticatedCtx
+        } as unknown as AuthenticatedCtx
 
     }
 

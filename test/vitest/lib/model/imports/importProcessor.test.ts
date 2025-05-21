@@ -1,6 +1,6 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vitest"
 import { processImport } from "@/src/lib/model/imports/services/importProcessor"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { ImportStatus, TransactionType } from "@prisma/client"
 import * as fileStorage from "@/src/lib/util/fileStorage"
 
@@ -10,7 +10,7 @@ vi.mock("@/src/lib/util/fileStorage", () => ({
 }))
 
 describe("Import Processor", () => {
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
 
     const mockImportId = "mock-import-id"
     const mockFilePath = "mock/file/path.csv"

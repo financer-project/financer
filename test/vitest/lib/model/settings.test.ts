@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest"
 import db from "@/src/lib/db"
 import updateSetting from "@/src/lib/model/settings/mutations/updateSetting"
 import getSetting from "@/src/lib/model/settings/queries/getSetting"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 
 describe("User Settings", () => {
-    const utils = TestUtilityFactory.mock()
+    const utils = TestUtilityMock.getInstance()
 
     beforeEach(async () => {
         await utils.seedDatabase()

@@ -1,11 +1,11 @@
-import { describe, test, expect, beforeEach, vi } from "vitest"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import { beforeEach, describe, expect, test } from "vitest"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { DateTime } from "luxon"
 import getBalanceHistory from "@/src/lib/model/transactions/queries/getBalanceHistory"
 import db from "@/src/lib/db"
 
 describe("Get Balance History", () => {
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
 
     beforeEach(async () => {
         await util.seedDatabase()

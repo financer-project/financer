@@ -4,10 +4,10 @@ import updateAccount from "@/src/lib/model/account/mutations/updateAccount"
 import deleteAccount from "@/src/lib/model/account/mutations/deleteAccount"
 import getAccount from "@/src/lib/model/account/queries/getAccount"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 
 describe("Account Mutations & Queries", () => {
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
 
     beforeEach(async () => {
         await util.seedDatabase()

@@ -12,8 +12,8 @@ const SendTestEmailSchema = z.object({
     smtpPassword: z.string(),
     smtpFromEmail: z.string().email(),
     smtpFromName: z.string(),
-    smtpEncryption: z.string().default("none"),
-    testEmailRecipient: z.string().email().optional()
+    smtpEncryption: z.string().nullable(),
+    testEmailRecipient: z.string().email().nullable()
 })
 
 export default resolver.pipe(

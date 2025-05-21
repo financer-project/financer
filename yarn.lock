@@ -1025,10 +1025,10 @@
   resolved "https://registry.npmjs.org/@csstools/css-tokenizer/-/css-tokenizer-3.0.3.tgz#a5502c8539265fecbd873c1e395a890339f119c2"
   integrity sha512-UJnjoFsmxfKUdNYdWgOB0mWUypuLvAfQPH1+pyvRJs6euowbFkFC6P13w1l8mJyi3vxYMxc9kld5jZEGRQs6bw==
 
-"@cypress/code-coverage@^3.14.0":
-  version "3.14.2"
-  resolved "https://registry.npmjs.org/@cypress/code-coverage/-/code-coverage-3.14.2.tgz#d2c82b77e1acadcd279fa2e58381797612db3b4d"
-  integrity sha512-HhdjQvUn/oIl9HCoJW1uoTgcDzipdCB6yPpWU2HNemCmMh6Ws6oQxfifue7BNlCXPX28jsnEzYzix9/eHYQ/Hw==
+"@cypress/code-coverage@^3.14.3":
+  version "3.14.3"
+  resolved "https://registry.npmjs.org/@cypress/code-coverage/-/code-coverage-3.14.3.tgz#6c821579ff2adb57748cfb83b8cbaafa28746450"
+  integrity sha512-wU7XAIgcAkj8fnFySPYejK1nR1OEYw1WicoPBRb2dHK+XQX0MfvJnyMftZrlbofymMpwr2ylTeuDRWu9Tk1jyg==
   dependencies:
     "@cypress/webpack-preprocessor" "^6.0.0"
     chalk "4.1.2"
@@ -5022,10 +5022,10 @@ currency-codes@2.2.0:
     first-match "~0.0.1"
     nub "~0.0.0"
 
-cypress@^14.3.2:
-  version "14.3.3"
-  resolved "https://registry.npmjs.org/cypress/-/cypress-14.3.3.tgz#cbf7fbc79fd139ba55ea51a6d1ee3d9018a59ce2"
-  integrity sha512-1Rz7zc9iqLww6BysaESqUhtIuaFHS7nL3wREovAKYsNhLTfX3TbcBWHWgEz70YimH2NkSOsm4oIcJJ9HYHOlew==
+cypress@^14.4.0:
+  version "14.4.0"
+  resolved "https://registry.npmjs.org/cypress/-/cypress-14.4.0.tgz#db7d108400c9481a161f047f1cc34b43b05c48f3"
+  integrity sha512-/I59Fqxo7fqdiDi3IM2QKA65gZ7+PVejXg404/I8ZSq+NOnrmw+2pnMUJzpoNyg7KABcEBmgpkfAqhV98p7wJA==
   dependencies:
     "@cypress/request" "^3.0.8"
     "@cypress/xvfb" "^1.2.4"

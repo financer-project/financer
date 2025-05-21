@@ -4,12 +4,12 @@ import updateTransaction from "@/src/lib/model/transactions/mutations/updateTran
 import deleteTransaction from "@/src/lib/model/transactions/mutations/deleteTransaction"
 import getTransaction from "@/src/lib/model/transactions/queries/getTransaction"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import TestUtilityFactory from "@/test/utility/TestUtilityFactory"
+import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { TransactionType } from "@prisma/client"
 import { DateTime } from "luxon"
 
 describe("Transaction Mutations & Queries", () => {
-    const util = TestUtilityFactory.mock()
+    const util = TestUtilityMock.getInstance()
 
     beforeEach(async () => {
         await util.seedDatabase()
