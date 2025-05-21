@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import db from "@/src/lib/db"
 import updateAdminSettings from "@/src/lib/model/settings/mutations/updateAdminSettings"
 import getAdminSettings from "@/src/lib/model/settings/queries/getAdminSettings"
@@ -93,7 +93,7 @@ describe("Admin Settings", () => {
         })
 
         it("should throw an error if not authorized", async () => {
-            await expect(async () => 
+            await expect(async () =>
                 getAdminSettings(null, utils.getMockContext("standard"))
             ).rejects.toThrow()
         })
@@ -144,7 +144,7 @@ describe("Admin Settings", () => {
         })
 
         it("should throw an error if not authorized", async () => {
-            await expect(async () => 
+            await expect(async () =>
                 updateAdminSettings({
                     smtpHost: "smtp.test.com",
                     smtpPort: 587,
@@ -188,7 +188,7 @@ describe("Admin Settings", () => {
 
             const transporter = nodemailer.createTransport()
             expect(transporter.sendMail).toHaveBeenCalledWith(expect.objectContaining({
-                from: '"Test App" <noreply@test.com>',
+                from: "\"Test App\" <noreply@test.com>",
                 to: "recipient@test.com",
                 subject: "Test Email from Financer App"
             }))
@@ -202,7 +202,8 @@ describe("Admin Settings", () => {
                 smtpPassword: "password",
                 smtpFromEmail: "noreply@test.com",
                 smtpFromName: "Test App",
-                smtpEncryption: "none"
+                smtpEncryption: null,
+                testEmailRecipient: null
             }, utils.getMockContext("admin"))
 
             expect(result).toEqual({ success: true })
@@ -214,7 +215,7 @@ describe("Admin Settings", () => {
         })
 
         it("should throw an error if not authorized", async () => {
-            await expect(async () => 
+            await expect(async () =>
                 sendTestEmail({
                     smtpHost: "smtp.test.com",
                     smtpPort: 587,
@@ -222,7 +223,8 @@ describe("Admin Settings", () => {
                     smtpPassword: "password",
                     smtpFromEmail: "noreply@test.com",
                     smtpFromName: "Test App",
-                    smtpEncryption: "tls"
+                    smtpEncryption: "tls",
+                    testEmailRecipient: null
                 }, utils.getMockContext("standard"))
             ).rejects.toThrow()
         })
