@@ -44,13 +44,11 @@ model Session {
 }
 
 model Token {
-    id          Int      @id @default(autoincrement())
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id          Int       @id @default(autoincrement())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
     hashedToken String
-    type        String
-    // See note below about TokenType enum
-    // type        TokenType
+    type        TokenType
     expiresAt   DateTime
     sentTo      String
 
@@ -62,6 +60,7 @@ model Token {
 
 enum TokenType {
     RESET_PASSWORD
+    INVITATION
 }
 
 enum Role {

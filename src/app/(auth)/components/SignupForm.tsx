@@ -3,30 +3,50 @@ import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import signup from "@/src/lib/model/auth/mutations/signup"
 import { Signup } from "../validations"
 import { useMutation } from "@blitzjs/rpc"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { cn } from "@/lib/utils"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
+import { useEffect, useState } from "react"
 
 export const SignupForm = () => {
     const [signupMutation] = useMutation(signup)
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const token = searchParams?.get("token")?.toString()
+    const [email, setEmail] = useState("")
+
+    // If there's a token, try to get the email from the token
+    useEffect(() => {
+        if (token) {
+            // We could add an API endpoint to validate the token and get the email
+            // For now, we'll just let the user enter their email
+            // This ensures the email matches the one the invitation was sent to
+        }
+    }, [token])
 
     return (
         <Card className={"w-full"}>
             <CardHeader>
                 <CardTitle>Create an Account</CardTitle>
-                <CardDescription>You can register here.</CardDescription>
+                <CardDescription>
+                    {token 
+                        ? "Complete your registration using the invitation link."
+                        : "You can register here."}
+                </CardDescription>
             </CardHeader>
 
             <CardContent>
                 <Form
                     submitText="Create Account"
                     schema={Signup}
-                    initialValues={{ email: "", password: "", firstName: "", lastName: "" }}
+                    initialValues={{ email, password: "", firstName: "", lastName: "" }}
                     onSubmit={async (values) => {
                         try {
-                            await signupMutation(values)
+                            await signupMutation({
+                                ...values,
+                                token: token || undefined
+                            })
                             router.refresh()
                             router.push("/")
                         } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any

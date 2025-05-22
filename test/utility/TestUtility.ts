@@ -4,8 +4,10 @@ import seedAccounts, { AccountSeed } from "@/test/seed/accounts"
 import seedCategories, { CategorySeed } from "@/test/seed/categorySeed"
 import db, { Prisma } from "@/src/lib/db"
 import seedTransactions, { TransactionSeed } from "@/test/seed/transactions"
+import seedAdminSettings, { AdminSettingsSeed } from "@/test/seed/adminSettings"
 
 export interface TestData {
+    adminSettings: AdminSettingsSeed,
     users: UserSeed,
     households: HouseholdSeed,
     accounts: AccountSeed,
@@ -58,17 +60,19 @@ export abstract class TestUtilityBase implements TestUtility {
             users = await seedUsers()
         }
 
+        const adminSettings = await seedAdminSettings()
         const households = await seedHouseholds(users)
         const accounts = await seedAccounts(households)
         const categories = await seedCategories(households)
         const transactions = await seedTransactions(accounts, categories)
 
         this.testData = {
+            adminSettings: adminSettings,
             users: users,
             households: households,
             accounts: accounts,
             categories: categories,
-            transactions: transactions
+            transactions: transactions,
         }
     }
 

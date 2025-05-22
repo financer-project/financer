@@ -28,7 +28,7 @@ interface HeaderProps {
 
 const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: HeaderProps) => {
     return (
-        <div className={"flex flex-col gap-4 mb-16"}>
+        <div className={"flex flex-col gap-4 mb-12"}>
             <div className={"flex flex-col h-10 justify-between"}>
                 <div className={"flex flex-row gap-4"}>
                     {!hideBackButton && (

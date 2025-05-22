@@ -26,7 +26,8 @@ export const TextField = <E, V>({ name, ...props }: LabeledTextFieldProps<E, V>)
             <Input {...input}
                    disabled={isSubmitting || props.readonly}
                    type={props.type}
-                   placeholder={props.placeholder} />
+                   placeholder={props.placeholder}
+                   onChange={event => event.target.value && props.onChange?.(event.target.value as V)} />
         </FormElement>
     )
 }

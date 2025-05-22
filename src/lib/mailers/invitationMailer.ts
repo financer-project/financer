@@ -1,0 +1,55 @@
+import { baseTemplate, createButton, createParagraph } from "./templates/baseTemplate"
+import { AdminSettings } from "@prisma/client"
+import { getEmailTransporter } from "@/src/lib/mailers/getEmailTransporter"
+
+type InvitationMailer = {
+    to: string;
+    token: string;
+    inviterName: string;
+    adminSettings: AdminSettings;
+};
+
+/**
+ * Creates and sends an invitation email
+ */
+export function invitationMailer({ to, token, inviterName, adminSettings }: InvitationMailer) {
+    // In production, set APP_ORIGIN to your production server origin
+    const origin = process.env.APP_ORIGIN ?? process.env.BLITZ_DEV_SERVER_ORIGIN
+    const signupUrl = `${origin}/signup?token=${token}`
+
+    // Create email content
+    const content = `
+    ${createParagraph(`You have been invited to join Financer App by ${inviterName}.`)}
+    ${createParagraph("Click the button below to create your account and get started.")}
+    ${createButton({
+        href: signupUrl,
+        text: "Create Your Account"
+    })}
+    ${createParagraph("If you didn't request this invitation, you can safely ignore this email.")}
+  `
+
+    // Create the email using the base template
+    const html = baseTemplate({
+        title: "You're Invited to Financer App",
+        previewText: `${inviterName} has invited you to join Financer App`,
+        content
+    })
+
+    // Create the email message
+    const msg = {
+        from: `"${adminSettings.smtpFromName ?? "Financer App"}" <${adminSettings.smtpFromEmail}>`,
+        to,
+        subject: "You're Invited to Financer App",
+        html
+    }
+
+    return {
+        async send() {
+            const transporter = await getEmailTransporter()
+            if (!transporter) {
+                throw new Error("No SMTP settings provided")
+            }
+            await transporter.sendMail(msg)
+        }
+    }
+}

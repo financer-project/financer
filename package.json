@@ -70,6 +70,7 @@
         "lucide-react": "0.484.0",
         "luxon": "3.6.0",
         "next": "^15.2.4",
+        "nodemailer": "^7.0.3",
         "postcss": "^8.5.1",
         "prisma": "^6.8.1",
         "react": "^19.0.0",
