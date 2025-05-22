@@ -1,4 +1,5 @@
 "use client"
+
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import signup from "@/src/lib/model/auth/mutations/signup"
 import { Signup } from "../validations"
@@ -14,7 +15,7 @@ export const SignupForm = () => {
     const router = useRouter()
     const searchParams = useSearchParams()
     const token = searchParams?.get("token")?.toString()
-    const [email, setEmail] = useState("")
+    const [email] = useState("")
 
     // If there's a token, try to get the email from the token
     useEffect(() => {

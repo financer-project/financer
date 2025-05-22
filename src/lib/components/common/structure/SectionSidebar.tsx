@@ -12,7 +12,7 @@ interface SectionSidebarProps {
     className?: string;
 }
 
-const SectionSidebar: React.FC<SectionSidebarProps> = ({ sections, className }) => {
+const SectionSidebar: React.FC<SectionSidebarProps> = ({ sections }) => {
     // Function to handle clicking on a section link
     const handleSectionClick = (sectionId: string) => {
         // Get the section element

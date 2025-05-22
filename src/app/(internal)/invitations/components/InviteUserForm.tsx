@@ -1,1 +1,0 @@
-// This file has been removed as part of the refactoring to move the invitation functionality to the admin settings page.
