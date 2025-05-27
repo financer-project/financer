@@ -46,7 +46,7 @@ export const SignupForm = () => {
                         try {
                             await signupMutation({
                                 ...values,
-                                token: token || undefined
+                                token: token ?? undefined
                             })
                             router.refresh()
                             router.push("/")
