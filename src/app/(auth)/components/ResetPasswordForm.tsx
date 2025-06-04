@@ -5,26 +5,23 @@ import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import { ResetPassword } from "../validations"
 import resetPassword from "@/src/lib/model/auth/mutations/resetPassword"
 import { useMutation } from "@blitzjs/rpc"
-import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
+import { toast } from "@/hooks/use-toast"
+import { Input } from "@/src/lib/components/ui/input"
 
 export function ResetPasswordForm() {
     const searchParams = useSearchParams()
     const token = searchParams?.get("token")?.toString()
-    const [resetPasswordMutation, { isSuccess }] = useMutation(resetPassword)
+    const [resetPasswordMutation] = useMutation(resetPassword)
 
     return (
-        <div>
-            <h1>Set a New Password</h1>
+        <Card className={"w-full"}>
+            <CardHeader>
+                <CardTitle>Set a new password</CardTitle>
+            </CardHeader>
 
-            {isSuccess ? (
-                <div>
-                    <h2>Password Reset Successfully</h2>
-                    <p>
-                        Go to the <Link href="/">homepage</Link>
-                    </p>
-                </div>
-            ) : (
+            <CardContent>
                 <Form submitText="Reset Password"
                       schema={ResetPassword}
                       initialValues={{
@@ -35,22 +32,28 @@ export function ResetPasswordForm() {
                       onSubmit={async (values) => {
                           try {
                               await resetPasswordMutation({ ...values, token })
+                              toast({
+                                  title: "Password Reset",
+                                  description: "Your password has been reset. You can now log in.",
+                                  variant: "success"
+                              })
                           } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
-                              if (error.name === "ResetPasswordError") {
-                                  return {
-                                      [FORM_ERROR]: error.message
-                                  }
-                              } else {
-                                  return {
-                                      [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again."
-                                  }
+                              return {
+                                  [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again."
                               }
                           }
                       }}>
-                    <TextField name="password" label="New Password" type="password" />
-                    <TextField name="passwordConfirmation" label="Confirm New Password" type="password" />
+                    <TextField name="password"
+                               label="New Password"
+                               type="password"
+                               required />
+                    <TextField name="passwordConfirmation"
+                               label="Confirm New Password"
+                               type="password"
+                               required />
+                    <Input type="hidden" name="token" value={token} />
                 </Form>
-            )}
-        </div>
+            </CardContent>
+        </Card>
     )
 }

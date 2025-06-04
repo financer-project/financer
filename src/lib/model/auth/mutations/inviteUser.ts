@@ -4,7 +4,6 @@ import { Role } from "@prisma/client"
 import { z } from "zod"
 import db from "@/src/lib/db"
 import { invitationMailer } from "@/src/lib/mailers/invitationMailer"
-import getAdminSettings from "@/src/lib/model/settings/queries/getAdminSettings"
 
 // Define a schema for the invitation input
 const InviteUserSchema = z.object({
@@ -52,15 +51,11 @@ export default resolver.pipe(
             }
         })
 
-        // Get admin settings for email configuration
-        const adminSettings = await getAdminSettings(null, ctx)
-
         // Send the invitation email
         await invitationMailer({
             to: email,
             token,
-            inviterName,
-            adminSettings
+            inviterName
         }).send()
 
         return { success: true }

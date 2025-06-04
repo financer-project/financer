@@ -1,5 +1,19 @@
 import { ForgotPasswordForm } from "@/src/app/(auth)/components/ForgotPasswordForm"
+import { Button } from "@/src/lib/components/ui/button"
+import Link from "next/link"
+import { ArrowLeftIcon } from "lucide-react"
 
 export default function ForgotPasswordPage() {
-  return <ForgotPasswordForm />
+    return (
+        <div className={"flex flex-col w-lg h-screen justify-center items-start mx-auto gap-4"}>
+            <Button variant={"ghost"}
+                    asChild>
+                <Link href={"/login"}>
+                    <ArrowLeftIcon />
+                    Back
+                </Link>
+            </Button>
+            <ForgotPasswordForm />
+        </div>
+    )
 }

@@ -83,8 +83,7 @@ describe("inviteUser mutation", () => {
         expect(invitationMailer).toHaveBeenCalledWith({
             to: "test@example.com",
             token: "test-token",
-            inviterName: expect.any(String),
-            adminSettings: expect.any(Object)
+            inviterName: expect.any(String)
         })
     })
 
