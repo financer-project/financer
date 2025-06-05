@@ -16,7 +16,7 @@ export class RecentPasswordResetError extends Error {
 
 export default resolver.pipe(
     resolver.zod(ForgotPassword),
-    async ({ email }, ctx) => {
+    async ({ email }) => {
         // 1. Get the user
         const user = await db.user.findFirst({ where: { email: email.toLowerCase() } })
 

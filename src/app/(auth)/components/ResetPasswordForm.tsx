@@ -38,8 +38,8 @@ export function ResetPasswordForm() {
                                   variant: "success"
                               })
                           } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
-                              return {
-                                  [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again."
+                              if (error) {
+                                  return { [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again." }
                               }
                           }
                       }}>

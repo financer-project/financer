@@ -2,7 +2,7 @@
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import { ForgotPassword } from "../validations"
-import forgotPassword, { RecentPasswordResetError } from "@/src/lib/model/auth/mutations/forgotPassword"
+import forgotPassword from "@/src/lib/model/auth/mutations/forgotPassword"
 import { useMutation } from "@blitzjs/rpc"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { toast } from "@/hooks/use-toast"
@@ -31,9 +31,9 @@ export function ForgotPasswordForm() {
                                 description: "If your email is in our system, you will receive instructions to reset your password shortly.",
                                 variant: "success"
                             })
-                        } catch (error: any) { // eslint-disable-line @typescript-eslint/no-unused-vars
-                            return {
-                                [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again."
+                        } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+                            if (error) {
+                                return { [FORM_ERROR]: "Sorry, we had an unexpected error. Please try again." }
                             }
                         }
                     }}>
