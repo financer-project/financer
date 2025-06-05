@@ -112,7 +112,7 @@ describe("forgotPassword mutation", () => {
     })
 
     it("should delete existing tokens before creating a new one", async () => {
-        await forgotPassword({ email: testEmail }, {})
+        await forgotPassword({ email: testEmail }, utils.getMockContext("none"))
 
         // Check that existing tokens were deleted
         expect(db.token.deleteMany).toHaveBeenCalledWith({
