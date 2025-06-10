@@ -24,7 +24,7 @@ export default resolver.pipe(
         // Create a transporter with the provided SMTP settings
         const transporter = await getEmailTransporter()
         if (transporter) {
-            const transporter = await nodemailer.createTransport({
+            const transporter = nodemailer.createTransport({
                 host: data.smtpHost,
                 port: data.smtpPort,
                 secure: data.smtpPort === 465, // true for 465, false for other ports

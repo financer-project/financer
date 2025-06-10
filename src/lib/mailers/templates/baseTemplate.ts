@@ -11,7 +11,7 @@ export function baseTemplate(params: {
         title,
         previewText = "",
         content,
-        logoUrl = `${process.env.APP_ORIGIN || process.env.BLITZ_DEV_SERVER_ORIGIN}/logo.png`
+        logoUrl = `${process.env.APP_ORIGIN ?? process.env.BLITZ_DEV_SERVER_ORIGIN}/logo.png`
     } = params
 
     return `

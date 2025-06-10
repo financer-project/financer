@@ -12,7 +12,7 @@ interface SectionSidebarProps {
     className?: string;
 }
 
-const SectionSidebar: React.FC<SectionSidebarProps> = ({ sections }) => {
+const SectionSidebar: React.FC<SectionSidebarProps> = ({ sections, className }) => {
     // Function to handle clicking on a section link
     const handleSectionClick = (sectionId: string) => {
         // Get the section element
@@ -42,7 +42,7 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({ sections }) => {
     }, [])
 
     return (
-        <Card>
+        <Card className={className}>
             <CardHeader className={"p-4"}>
                 <CardTitle className={"text-md"}>Content</CardTitle>
             </CardHeader>
