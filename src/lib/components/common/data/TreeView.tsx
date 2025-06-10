@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight, Squirrel } from "lucide-react"
 import Tree, { TreeNode } from "@/src/lib/model/categories/Tree"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { Separator } from "../../ui/separator"
 
 interface TreeViewProps<T> {
     tree: Tree<T>
@@ -24,7 +25,7 @@ export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll }: Readon
     }
 
     return (
-        <ul className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
             {rootNodes.map((node) => (
                 <TreeNodeComponent
                     key={`${node.id}`}
@@ -35,11 +36,11 @@ export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll }: Readon
                     expandedAll={expandedAll}
                 />
             ))}
-        </ul>
+        </div>
     )
 }
 
-function TreeNodeComponent<T>({ node, renderNode, childrenKey, itemRoute, expandedAll }: Readonly<{
+export function TreeNodeComponent<T>({ node, renderNode, childrenKey, itemRoute, expandedAll }: Readonly<{
     node: TreeNode<T>
     renderNode: (node: T) => React.ReactNode
     childrenKey: keyof T,
@@ -63,9 +64,8 @@ function TreeNodeComponent<T>({ node, renderNode, childrenKey, itemRoute, expand
     }
 
     return (
-        <li className="flex flex-col gap-1 ml-2">
-            <div
-                className="flex items-center space-x-2 cursor-pointer">
+        <div className="flex flex-col gap-1 ms-2">
+            <div className="flex items-center space-x-2 cursor-pointer">
                 <span
                     className={cn("text-gray-500", children ? "" : "hidden")}
                     title={isExpanded ? "Collapse" : "Expand"}
@@ -80,19 +80,22 @@ function TreeNodeComponent<T>({ node, renderNode, childrenKey, itemRoute, expand
                 </span>
             </div>
             {isExpanded && children && (
-                <ul className={cn("ml-2 border-l-1 pl-4")}>
-                    {children.map((child) => (
-                        <TreeNodeComponent
-                            key={`${child.id}`}
-                            node={child}
-                            renderNode={renderNode}
-                            itemRoute={itemRoute}
-                            childrenKey={childrenKey}
-                            expandedAll={expandedAll}
-                        />
-                    ))}
-                </ul>
+                <div className={"flex flex-row gap-4 px-2"}>
+                    <Separator orientation={"vertical"} />
+                    <div className={"flex flex-col w-full"}>
+                        {children.map((child) => (
+                            <TreeNodeComponent
+                                key={`${child.id}`}
+                                node={child}
+                                renderNode={renderNode}
+                                itemRoute={itemRoute}
+                                childrenKey={childrenKey}
+                                expandedAll={expandedAll}
+                            />
+                        ))}
+                    </div>
+                </div>
             )}
-        </li>
+        </div>
     )
 }

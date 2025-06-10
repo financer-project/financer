@@ -16,14 +16,16 @@ import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
 
-    const [parentType, setParentType] = useState<CategoryType | null>(null)
+    const [parentCategory, setParentCategory] = useState<CategoryModel | null>(null)
     const categories = useCategories()
 
     const handleParentChange = (parentId: string | null) => {
         const selectedParent = categories.findNode((category) => category.id === parentId)
-        if (selectedParent) {
-            setParentType(selectedParent.type)
-        }
+        setParentCategory(selectedParent ?? null)
+    }
+
+    if (parentCategory === null && props.initialValues?.parentId) {
+        handleParentChange(props.initialValues.parentId)
     }
 
     return (
@@ -41,7 +43,7 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                     name={"parentId"}
                     options={categories
                         .flatten()
-                        .filter(category => category.id !== props.id)
+                        .filter(category => category.id !== props.initialValues?.id)
                         .map(category => ({ label: category.name, value: category.id }))}
                     onChange={(value) => handleParentChange(value as string)} />
             </div>
@@ -55,23 +57,22 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                         label={"Type"}
                         name={"type"}
                         required
-                        value={parentType}
+                        value={parentCategory?.type}
                         options={[
                             { value: CategoryType.INCOME, label: "Income" },
                             { value: CategoryType.EXPENSE, label: "Expense" }
                         ]} />
-                    <SelectFormField label={"Color"}
-                                     name={"color"}
-                                     options={Object.values(ColorType).map(color => ({
-                                         value: color.toLowerCase(),
-                                         label: color.charAt(0).toUpperCase() + color.slice(1),
-                                         render: (label: string) => (<ColoredTag label={label} color={color} />)
-                                     }))} />
-
-
+                    <SelectFormField
+                        label={"Color"}
+                        name={"color"}
+                        value={parentCategory?.color}
+                        options={Object.values(ColorType).map(color => ({
+                            value: color.toLowerCase(),
+                            label: color.charAt(0).toUpperCase() + color.slice(1),
+                            render: (label: string) => (<ColoredTag label={label} color={color} />)
+                        }))}
+                        readonly={parentCategory !== null} />
                 </div>
-
-
             </div>
         </Form>
     )

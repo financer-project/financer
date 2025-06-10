@@ -33,9 +33,11 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                 <SelectFormField<Transaction>
                     label={"Account"}
                     name={"accountId"}
+                    value={accounts.length === 1 ? accounts[0].id : null}
                     options={accounts
                         .toSorted((a, b) => a.name.localeCompare(b.name))
-                        .map(account => ({ label: account.name, value: account.id }))} />
+                        .map(account => ({ label: account.name, value: account.id }))}
+                    required />
 
                 <SelectFormField<Transaction, string>
                     label={"Category"}

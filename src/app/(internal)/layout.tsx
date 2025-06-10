@@ -38,7 +38,7 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
     const settings = await fetchSettings()
 
     return (
-        <div className={"bg-neutral-100 dark:bg-neutral-900"}>
+        <div className={"bg-neutral-100 dark:bg-neutral-900"} dir={"ltr"}>
             <Suspense>
                 <Theme theme={settings.theme} />
                 <SidebarProvider>

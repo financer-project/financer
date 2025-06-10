@@ -7,6 +7,7 @@ import { useState } from "react"
 import { Button } from "@/src/lib/components/ui/button"
 import { ChevronsDownUp, ChevronsUpDown } from "lucide-react"
 import Link from "next/link"
+import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
 export const CategoriesList = () => {
     const [expandAllIncome, setExpandAllIncome] = useState<boolean>(true)
@@ -39,7 +40,7 @@ export const CategoriesList = () => {
                      actions={renderActions(setExpandAllIncome, CategoryType.INCOME)}>
                 <TreeView
                     tree={useCategories().filter(node => node.type === CategoryType.INCOME)}
-                    renderNode={node => node.name}
+                    renderNode={node => <ColoredTag color={node.color} label={node.name} />}
                     expandedAll={expandAllIncome}
                     itemRoute={category => `/categories/${category.id}`} />
             </Section>
@@ -48,7 +49,7 @@ export const CategoriesList = () => {
                      actions={renderActions(setExpandAllExpense, CategoryType.EXPENSE)}>
                 <TreeView
                     tree={useCategories().filter(node => node.type === CategoryType.EXPENSE)}
-                    renderNode={node => node.name}
+                    renderNode={node => <ColoredTag color={node.color} label={node.name} />}
                     expandedAll={expandAllExpense}
                     itemRoute={category => `/categories/${category.id}`} />
             </Section>

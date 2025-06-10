@@ -21,6 +21,8 @@ enum ColorType {
     FUCHSIA = "fuchsia",
     PINK = "pink",
     ROSE = "rose",
+    WHITE = "white",
+    BLACK = "black",
 }
 
 export const colors = `
@@ -46,7 +48,6 @@ export const colors = `
     bg-fuchsia-700
     bg-pink-700
     bg-rose-700
-
     bg-slate-100
     bg-gray-100
     bg-zinc-100
@@ -72,7 +73,7 @@ export const colors = `
 `
 
 export function getDefaultColor() {
-    return ColorType.GRAY
+    return ColorType.WHITE
 }
 
 export function getBackgroundColorLight(color?: ColorType | string | null) {
