@@ -14,7 +14,7 @@ type InvitationMailer = {
 export function invitationMailer({ to, token, inviterName }: InvitationMailer) {
     // In production, set APP_ORIGIN to your production server origin
     const origin = process.env.APP_ORIGIN ?? process.env.BLITZ_DEV_SERVER_ORIGIN
-    const signupUrl = `${origin}/signup?token=${token}`
+    const signupUrl = `${origin}/signup?token=${token}&email=${to}`
 
     // Create email content
     const content = `
