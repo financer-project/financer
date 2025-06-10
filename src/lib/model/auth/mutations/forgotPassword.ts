@@ -14,7 +14,7 @@ export class RecentPasswordResetError extends Error {
 
 export default resolver.pipe(
     resolver.zod(ForgotPassword),
-    async ({ email }, ctx) => {
+    async ({ email }) => {
         // Get admin settings for token expiration
         const adminSettings = (await db.adminSettings.findFirst())!
         const tokenExpirationHours = adminSettings.resetPasswordTokenExpirationHours
