@@ -15,6 +15,10 @@ model AdminSettings {
     // Registration Settings
     allowRegistration Boolean @default(true)
 
+    // Security Settings
+    invitationTokenExpirationHours Int @default(72) // 3 days
+    resetPasswordTokenExpirationHours Int @default(4) // 4 hours
+
     // Default Settings
     defaultLanguage String @default("en-US")
     defaultTheme    String @default("light")

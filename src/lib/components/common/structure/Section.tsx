@@ -8,11 +8,14 @@ export interface SectionProps extends PropsWithChildren {
     subtitle?: string,
     actions?: React.ReactNode | (() => React.ReactNode);
     className?: string;
+    id?: string;
 }
 
-const Section = ({ title, subtitle, actions, children, className }: SectionProps) => {
+const Section = ({ title, subtitle, actions, children, className, id }: SectionProps) => {
+    const sectionId = id ?? title.toLowerCase().replace(/\s+/g, "-")
+
     return (
-        <section className={cn("flex flex-col gap-8 mt-6", className)}>
+        <section id={sectionId} className={cn("flex flex-col gap-8 mb-6", className)}>
             <Separator />
             <div className={"flex flex-row justify-between"}>
                 <div>

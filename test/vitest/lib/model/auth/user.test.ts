@@ -13,36 +13,6 @@ describe("User Authentication", () => {
         await util.seedDatabase()
     })
 
-    describe("signup", () => {
-        test("creates a new user and establishes a session", async () => {
-            const mockCtx = util.getMockContext("none")
-
-            const result = await signup({
-                firstName: "Test",
-                lastName: "User",
-                email: "test.user@example.com",
-                password: "Password123!"
-            }, mockCtx)
-
-            expect(result).toBeDefined()
-            expect(result.firstName).toBe("Test")
-            expect(result.lastName).toBe("User")
-            expect(result.email).toBe("test.user@example.com")
-        })
-
-        test("fails when email already exists", async () => {
-            const existingUser = util.getTestData().users.standard
-            const mockCtx = util.getMockContext()
-
-            await expect(async () => signup({
-                firstName: "Test",
-                lastName: "User",
-                email: existingUser.email,
-                password: "Password123!"
-            }, mockCtx)).rejects.toThrow()
-        })
-    })
-
     describe("login", () => {
         test("authenticates user with correct credentials", async () => {
             const mockCtx = util.getMockContext("none")

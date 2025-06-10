@@ -1,4 +1,5 @@
 "use client"
+
 import { AuthenticationError } from "blitz"
 import Link from "next/link"
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
@@ -46,8 +47,7 @@ export const LoginForm = () => {
                                 }
                             }
                         }
-                    }}
-                >
+                    }}>
                     <TextField name="email" label={"E-Mail Address"} placeholder="Email" />
                     <TextField name="password" label={"Password"} placeholder="Password" type="password" />
 

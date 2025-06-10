@@ -5,6 +5,7 @@ import { Button } from "@/src/lib/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { useSearchParams } from "next/navigation"
+import { toFormikValidationSchema } from "zod-formik-adapter"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface FormProps<S extends z.ZodSchema<any>>
@@ -50,18 +51,18 @@ export function Form<S extends z.ZodType<any, any>>({
     return (
         <Formik<z.infer<typeof schema>>
             initialValues={getInitialValues()}
-            // validationSchema={toFormikValidationSchema(schema)}
-            validate={(values) => {
-                try {
-                    schema.parse(values)
-                } catch (error) {
-                    if (error instanceof z.ZodError) {
-                        return error
-                    }
-                }
-            }}
+            validationSchema={toFormikValidationSchema(schema)}
+            // validate={(values) => {
+            //     try {
+            //         schema.parse(values)
+            //     } catch (error) {
+            //         if (error instanceof z.ZodError) {
+            //             return error
+            //         }
+            //     }
+            // }}
             onSubmit={async (values, { setErrors }) => {
-                const { FORM_ERROR, ...otherErrors } = (await onSubmit(values)) || {}
+                const { FORM_ERROR, ...otherErrors } = (await onSubmit(values)) ?? {}
 
                 if (FORM_ERROR) {
                     setFormError(FORM_ERROR)

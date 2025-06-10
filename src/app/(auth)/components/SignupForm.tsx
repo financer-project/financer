@@ -1,9 +1,10 @@
 "use client"
+
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import signup from "@/src/lib/model/auth/mutations/signup"
 import { Signup } from "../validations"
 import { useMutation } from "@blitzjs/rpc"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { cn } from "@/lib/utils"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
@@ -11,12 +12,19 @@ import TextField from "@/src/lib/components/common/form/elements/TextField"
 export const SignupForm = () => {
     const [signupMutation] = useMutation(signup)
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const token = searchParams?.get("token")?.toString()
+    const email = searchParams?.get("email")?.toString()
 
     return (
         <Card className={"w-full"}>
             <CardHeader>
                 <CardTitle>Create an Account</CardTitle>
-                <CardDescription>You can register here.</CardDescription>
+                <CardDescription>
+                    {token
+                        ? "Complete your registration using the invitation link."
+                        : "You can register here."}
+                </CardDescription>
             </CardHeader>
 
             <CardContent>
@@ -26,7 +34,10 @@ export const SignupForm = () => {
                     initialValues={{ email: "", password: "", firstName: "", lastName: "" }}
                     onSubmit={async (values) => {
                         try {
-                            await signupMutation(values)
+                            await signupMutation({
+                                ...values,
+                                token: token ?? undefined
+                            })
                             router.refresh()
                             router.push("/")
                         } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
@@ -58,7 +69,12 @@ export const SignupForm = () => {
                     </div>
 
                     <div className={cn("flex-flex-col gap-2")}>
-                        <TextField type={"email"} label={"E-Mail Address"} name="email" placeholder="Email" />
+                        <TextField
+                            type={"email"}
+                            label={"E-Mail Address"}
+                            name="email"
+                            placeholder="Email"
+                            readonly={email !== undefined} />
                     </div>
 
                     <div className={cn("flex-flex-col gap-2")}>
