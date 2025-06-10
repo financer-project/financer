@@ -13,6 +13,10 @@ export const AdminSettingsSchema = z.object({
     // Registration Settings
     allowRegistration: z.boolean().default(true),
 
+    // Security Settings
+    invitationTokenExpirationHours: z.coerce.number().min(1).max(168).default(72), // 1 hour to 7 days, default 3 days
+    resetPasswordTokenExpirationHours: z.coerce.number().min(1).max(24).default(4), // 1 to 24 hours, default 4 hours
+
     // Default Settings
     defaultLanguage: z.string().default("en-US"),
     defaultTheme: z.string().default("light")

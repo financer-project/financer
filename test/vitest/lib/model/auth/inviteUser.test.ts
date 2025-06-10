@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import db from "@/src/lib/db"
-import inviteUser from "@/src/lib/model/auth/mutations/inviteUser"
+import inviteUser, { UserAlreadyRegisteredError } from "@/src/lib/model/auth/mutations/inviteUser"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { invitationMailer } from "@/src/lib/mailers/invitationMailer"
 import { generateToken, hash256 } from "@blitzjs/auth"
+import { User } from "@prisma/client"
 
 // Mock dependencies
 vi.mock("@/src/lib/mailers/invitationMailer", () => ({
@@ -21,7 +22,9 @@ vi.mock("@/src/lib/model/settings/queries/getAdminSettings", () => ({
         smtpFromEmail: "noreply@test.com",
         smtpFromName: "Test App",
         smtpEncryption: "tls",
-        allowRegistration: true
+        allowRegistration: true,
+        invitationTokenExpirationHours: 72,
+        resetPasswordTokenExpirationHours: 4
     })
 }))
 
@@ -96,9 +99,17 @@ describe("inviteUser mutation", () => {
         ).rejects.toThrow()
     })
 
-    it("should throw an error if the user is not found", async () => {
-        // Mock db.user.findFirst to return null
-        vi.spyOn(db.user, "findFirst").mockResolvedValueOnce(null)
+    it("should throw an error if the inviter user is not found", async () => {
+        // Mock db.user.findFirst to return null for the inviter user lookup
+        // and a mock user for the existing user check
+        vi.spyOn(db.user, "findFirst").mockImplementation((args) => {
+            // For the existing user check (first call)
+            if (args?.where?.email === "test@example.com") {
+                return Promise.resolve(null)
+            }
+            // For the inviter user lookup (second call)
+            return Promise.resolve(null)
+        })
 
         await expect(
             inviteUser(
@@ -106,6 +117,36 @@ describe("inviteUser mutation", () => {
                 utils.getMockContext("admin")
             )
         ).rejects.toThrow("User not found")
+    })
+
+    it("should throw UserAlreadyRegisteredError if the email is already registered", async () => {
+        // Mock db.user.findFirst to return an existing user for the email check
+        vi.spyOn(db.user, "findFirst").mockImplementation((args) => {
+            if (args?.where?.email === "existing@example.com") {
+                return Promise.resolve({
+                    id: "existing-user-id",
+                    email: "existing@example.com",
+                    firstName: "Existing",
+                    lastName: "User",
+                    role: "USER",
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    hashedPassword: "hashed-password"
+                })
+            }
+            // For the inviter user lookup
+            return Promise.resolve({
+                firstName: "Admin",
+                lastName: "User"
+            })
+        })
+
+        await expect(
+            inviteUser(
+                { email: "existing@example.com" },
+                utils.getMockContext("admin")
+            )
+        ).rejects.toThrow(UserAlreadyRegisteredError)
     })
 
     it("should validate the email input", async () => {
@@ -117,7 +158,14 @@ describe("inviteUser mutation", () => {
         ).rejects.toThrow()
     })
 
-    it("should generate a token with the correct expiration", async () => {
+    it("should generate a token with the correct expiration from admin settings", async () => {
+        // Mock getAdminSettings to return a custom expiration time
+        const customExpirationHours = 48 // 2 days
+        vi.mocked(db.adminSettings.findFirst).mockResolvedValueOnce({
+            invitationTokenExpirationHours: customExpirationHours,
+            resetPasswordTokenExpirationHours: 4
+        } as any)
+
         await inviteUser(
             { email: "test@example.com" },
             utils.getMockContext("admin")
@@ -140,13 +188,16 @@ describe("inviteUser mutation", () => {
         const createCall = vi.mocked(db.token.create).mock.calls[0][0]
         const expiresAt = createCall.data.expiresAt as Date
 
-        // Check that the expiration is approximately 3 days from now
+        // Check that the expiration is approximately the custom hours from now
         const now = new Date()
-        const threeDaysInMs = 72 * 60 * 60 * 1000
+        const expirationInMs = customExpirationHours * 60 * 60 * 1000
         const diff = expiresAt.getTime() - now.getTime()
 
         // Allow for a small difference due to test execution time
-        expect(diff).toBeGreaterThan(threeDaysInMs - 1000)
-        expect(diff).toBeLessThan(threeDaysInMs + 1000)
+        expect(diff).toBeGreaterThan(expirationInMs - 1000)
+        expect(diff).toBeLessThan(expirationInMs + 1000)
+
+        // Verify that getAdminSettings was called
+        expect(db.adminSettings.findFirst).toHaveBeenCalled()
     })
 })

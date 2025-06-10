@@ -7,6 +7,7 @@ import SectionContainer from "@/src/lib/components/common/structure/SectionConta
 import DefaultSettingsSection from "./sections/DefaultSettingsSection"
 import UserManagementSection from "./sections/UserManagementSection"
 import EmailSettingsSection from "./sections/EmailSettingsSection"
+import SecuritySettingsSection from "./sections/SecuritySettingsSection"
 import Section from "@/src/lib/components/common/structure/Section"
 
 interface AdminSettingsFormProps<S extends z.ZodType<any, any>> extends FormProps<S> { //eslint-disable-line @typescript-eslint/no-explicit-any
@@ -25,6 +26,10 @@ export function AdminSettingsForm<S extends z.ZodType<any, any>>(props: Readonly
 
                 <Section title={"User Management & Settings"}>
                     <UserManagementSection />
+                </Section>
+
+                <Section title={"Security"}>
+                    <SecuritySettingsSection />
                 </Section>
 
                 <Section title={"Email Settings (SMTP)"}>

@@ -2,7 +2,6 @@ import { FormElementProps } from "@/src/lib/components/common/form/FormElement"
 import { FormikValues, useField, useFormikContext } from "formik"
 import { useEffect } from "react"
 import { Card, CardContent } from "@/src/lib/components/ui/card"
-import { Label } from "@/src/lib/components/ui/label"
 import { Switch } from "@/src/lib/components/ui/switch"
 import { cn } from "@/lib/utils"
 
@@ -11,40 +10,40 @@ interface SwitchFieldProps<E> extends FormElementProps<E, boolean> {
 }
 
 const SwitchField = <E, >({ name, ...props }: SwitchFieldProps<E>) => {
-    const [input, , helpers] = useField<boolean>(name)
+    const [field, , helpers] = useField<boolean>(name)
     const { isSubmitting } = useFormikContext<FormikValues>()
 
     useEffect(() => {
-        if (input.value === undefined) {
+        if (field.value === undefined) {
             helpers.setValue(false)
         }
 
-        if (props.value && props.value !== input.value) {
+        if (props.value && props.value !== field.value) {
             helpers.setValue(props.value)
         }
     }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <Card className={cn("w-full", props.showCard ? "" : "border-0 shadow-none")}>
-            <CardContent
-                className={cn("flex flex-row items-center justify-between gap-8", props.showCard ? "p-3" : "p-0")}>
-                <input type="hidden" name={name as string} value={input.value.toString()} />
-                <div>
-                    <Label htmlFor={name as string}>
-                        {props.label}
+        <label htmlFor={name as string}>
+            <Card
+                className={cn("w-full transition-all", props.showCard ? "hover:bg-secondary/40" : "border-0 shadow-none bg-secondary hover:bg-secondary/60")}>
+                <CardContent
+                    className={cn("flex flex-row items-center justify-between gap-8 p-3")}>
+                    <input type="hidden" name={name as string} value={field.value.toString()} />
+                    <div>
+                        <p className={"text-sm font-medium"}>{props.label}</p>
                         {props.description &&
-                            <p className={"text-muted-foreground text-sm mt-1"}>{props.description}</p>}
-                    </Label>
+                            <small className={"text-muted-foreground mt-1 block"}>{props.description}</small>}
+                    </div>
+                    <Switch id={name as string}
+                            checked={field.value}
+                            onCheckedChange={helpers.setValue}
+                            onClick={(e) => e.stopPropagation()}
+                            disabled={isSubmitting || props.readonly} />
+                </CardContent>
+            </Card>
+        </label>
 
-                </div>
-                <Switch id={name as string}
-                        checked={input.value}
-                        onCheckedChange={checked => {
-                            helpers.setValue(checked)
-                        }}
-                        disabled={isSubmitting || props.readonly} />
-            </CardContent>
-        </Card>
     )
 }
 

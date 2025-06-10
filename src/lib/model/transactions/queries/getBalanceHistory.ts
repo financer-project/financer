@@ -19,7 +19,7 @@ export default resolver.pipe(
     resolver.zod(GetBalanceHistory),
     resolver.authorize(),
     async ({ startDate, endDate }): Promise<BalanceHistory[]> => {
-        if (!endDate) endDate = DateTime.now().toJSDate()
+        endDate ??= DateTime.now().toJSDate()
 
         const transactions = await db.transaction.findMany({
             where: { valueDate: { gte: startDate, lte: endDate } },

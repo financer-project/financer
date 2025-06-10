@@ -4,8 +4,6 @@ import db from "@/src/lib/db"
 import { forgotPasswordMailer } from "@/src/lib/mailers/forgotPasswordMailer"
 import { ForgotPassword } from "@/src/app/(auth)/validations"
 
-const RESET_PASSWORD_TOKEN_EXPIRATION_IN_HOURS = 4
-
 // Custom error class for rate limiting
 export class RecentPasswordResetError extends Error {
     constructor() {
@@ -16,7 +14,11 @@ export class RecentPasswordResetError extends Error {
 
 export default resolver.pipe(
     resolver.zod(ForgotPassword),
-    async ({ email }) => {
+    async ({ email }, ctx) => {
+        // Get admin settings for token expiration
+        const adminSettings = (await db.adminSettings.findFirst())!
+        const tokenExpirationHours = adminSettings.resetPasswordTokenExpirationHours
+
         // 1. Get the user
         const user = await db.user.findFirst({ where: { email: email.toLowerCase() } })
 
@@ -26,9 +28,9 @@ export default resolver.pipe(
             return
         }
 
-        // 2. Check if there's a recent token (less than 4 hours old)
+        // 2. Check if there's a recent token (less than the configured hours old)
         const cooldownDate = new Date()
-        cooldownDate.setHours(cooldownDate.getHours() - RESET_PASSWORD_TOKEN_EXPIRATION_IN_HOURS)
+        cooldownDate.setHours(cooldownDate.getHours() - tokenExpirationHours)
 
         const existingToken = await db.token.findFirst({
             where: {
@@ -52,7 +54,7 @@ export default resolver.pipe(
         const expiresAt = new Date()
 
         // 4. Set expiration date
-        expiresAt.setHours(expiresAt.getHours() + RESET_PASSWORD_TOKEN_EXPIRATION_IN_HOURS)
+        expiresAt.setHours(expiresAt.getHours() + tokenExpirationHours)
 
         // 5. Delete any existing password reset tokens
         await db.token.deleteMany({ where: { type: "RESET_PASSWORD", userId: user.id } })

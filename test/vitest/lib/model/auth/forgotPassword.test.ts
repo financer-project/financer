@@ -124,19 +124,36 @@ describe("forgotPassword mutation", () => {
     })
 
     it("should set the correct expiration date on the token", async () => {
+        // Mock getAdminSettings to return a custom expiration time
+        const customExpirationHours = 6 // 6 hours
+        vi.mocked(db.adminSettings.findFirst).mockResolvedValueOnce({
+            resetPasswordTokenExpirationHours: customExpirationHours,
+            invitationTokenExpirationHours: 72
+        } as any)
+
         await forgotPassword({ email: testEmail }, utils.getMockContext("none"))
+
+        // Check that the token was created with the correct expiration
+        expect(db.token.create).toHaveBeenCalledWith({
+            data: expect.objectContaining({
+                expiresAt: expect.any(Date)
+            })
+        })
 
         // Get the expiresAt date from the call
         const createCall = vi.mocked(db.token.create).mock.calls[0][0]
         const expiresAt = createCall.data.expiresAt as Date
 
-        // Check that the expiration is approximately 4 hours from now
+        // Check that the expiration is approximately the custom hours from now
         const now = new Date()
-        const fourHoursInMs = 4 * 60 * 60 * 1000
+        const expirationInMs = customExpirationHours * 60 * 60 * 1000
         const diff = expiresAt.getTime() - now.getTime()
 
         // Allow for a small difference due to test execution time
-        expect(diff).toBeGreaterThan(fourHoursInMs - 1000)
-        expect(diff).toBeLessThan(fourHoursInMs + 1000)
+        expect(diff).toBeGreaterThan(expirationInMs - 1000)
+        expect(diff).toBeLessThan(expirationInMs + 1000)
+
+        // Verify that getAdminSettings was called
+        expect(db.adminSettings.findFirst).toHaveBeenCalled()
     })
 })

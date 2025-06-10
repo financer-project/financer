@@ -20,7 +20,8 @@ export default resolver.pipe(
                 smtpFromName: "Financer App",
                 allowRegistration: true,
                 defaultLanguage: "en-US",
-                defaultTheme: "light"
+                defaultTheme: "light",
+
             }
         })
 

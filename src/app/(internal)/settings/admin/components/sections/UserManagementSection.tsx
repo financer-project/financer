@@ -3,13 +3,23 @@
 import React, { useState } from "react"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
 import { Button } from "@/src/lib/components/ui/button"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import inviteUser from "@/src/lib/model/auth/mutations/inviteUser"
 import { toast } from "@/hooks/use-toast"
 import SwitchField from "@/src/lib/components/common/form/elements/SwitchField"
 import { Heading3 } from "@/src/lib/components/common/typography"
+import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { useSearchParams } from "next/navigation"
+import getUsers from "@/src/lib/model/auth/queries/getUsers"
+import Link from "next/link"
+
+const ITEMS_PER_PAGE = 10
 
 const UserManagementSection = () => {
+    const searchParams = useSearchParams()
+    const page = Number(searchParams?.get("page") ?? 0)
+    const [{ users, hasMore }] = usePaginatedQuery(getUsers, { skip: ITEMS_PER_PAGE * page, take: ITEMS_PER_PAGE })
+
     const [inviteUserMutation] = useMutation(inviteUser)
     const [inviteEmail, setInviteEmail] = useState("")
     const [isInviting, setIsInviting] = useState(false)
@@ -32,10 +42,10 @@ const UserManagementSection = () => {
                 variant: "default"
             })
             setInviteEmail("")
-        } catch (error: any) { //eslint-disable-line @typescript-eslint/no-explicit-any
+        } catch (error: unknown) {
             toast({
                 title: "Failed to send invitation",
-                description: error.toString(),
+                description: (error as Error).message,
                 variant: "destructive"
             })
         } finally {
@@ -75,7 +85,22 @@ const UserManagementSection = () => {
             </div>
             <Heading3>Users</Heading3>
             <div>
-
+                <PaginatedTable
+                    data={users}
+                    hasMore={hasMore}
+                    columns={[
+                        {
+                            name: "Name",
+                            render: (user) => `${user.firstName} ${user.lastName}`
+                        },
+                        {
+                            name: "Email",
+                            render: (user) =>
+                                <Button variant={"link"} size={"sm"} asChild>
+                                    <Link href={`mailto:${user.email}`}>{user.email}</Link>
+                                </Button>
+                        }
+                    ]} />
             </div>
         </>
     )
