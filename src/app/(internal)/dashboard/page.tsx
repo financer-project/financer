@@ -20,7 +20,7 @@ const Dashboard: BlitzPage = async () => {
 
                 <div className={"flex flex-col gap-6 w-full"}>
                     <BalanceChart className={"max-h-96 w-full"} />
-                    <CategoryDistributionChart className={"max-h-96 w-1/2"} />
+                    <CategoryDistributionChart className={"max-h-96 xl:w-1/3 lg:w-1/2 w-full"} />
                 </div>
             </div>
         </DashboardClientWrapper>

@@ -7,7 +7,6 @@ import getBalanceHistory from "@/src/lib/model/transactions/queries/getBalanceHi
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Suspense } from "react"
-import { DateTime } from "luxon"
 import { cn } from "@/lib/utils"
 import { useTimeframe } from "../context/TimeframeContext"
 
@@ -25,7 +24,7 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
             <CardContent>
                 <Suspense fallback={<p>Loading ...</p>}>
                     <ChartContainer
-                        className={cn(" w-full", className)}
+                        className={cn("w-full", className)}
                         config={{
                             income: {
                                 label: "Income",

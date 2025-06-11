@@ -1,18 +1,14 @@
-export type TreeNode<T> = T & {
-    [key: string]: TreeNode<T>[] | undefined // This makes the child property dynamic
-}
+export class TreeNode<T> {
+    protected readonly _data: T | null
+    protected readonly children: TreeNode<T>[]
+    protected readonly idKey: keyof T
+    protected readonly parentKey: keyof T
 
-export default class Tree<T> {
-    public readonly nodes: TreeNode<T>[]
-    public readonly childrenKey: keyof T
-    public readonly idKey: keyof T
-    public readonly parentKey: keyof T
-
-    private constructor(items: TreeNode<T>[], idKey: keyof T, parentKey: keyof T, childrenKey: keyof T) {
-        this.nodes = items
+    protected constructor(data: T | null, children: TreeNode<T>[], idKey: keyof T, parentKey: keyof T) {
+        this._data = data
+        this.children = children
         this.idKey = idKey
         this.parentKey = parentKey
-        this.childrenKey = childrenKey
     }
 
     /**
@@ -20,135 +16,131 @@ export default class Tree<T> {
      * @param items - The flat list of nodes.
      * @param idKey - The key identifying the ID of a node.
      * @param parentKey - The key identifying the parent ID of a node.
-     * @param childrenKey - The key used to store child nodes.
      */
     static fromFlatList<T>(
         items: T[],
         idKey: keyof T,
-        parentKey: keyof T,
-        childrenKey: keyof T
+        parentKey: keyof T
     ): Tree<T> {
-        const nodes = this.buildTree(items, idKey, parentKey, childrenKey)
-        return new Tree(nodes, idKey, parentKey, childrenKey)
-    }
+        // 1) Create all TreeNode instances and index them by their ID
+        const nodeMap = new Map<T[typeof idKey], TreeNode<T>>()
+        for (const item of items) {
+            const node = new TreeNode(item, [], idKey, parentKey)
+            nodeMap.set(item[idKey], node)
+        }
 
+        // 2) Link children to parents, collect roots
+        const roots: TreeNode<T>[] = []
+        for (const item of items) {
+            const node = nodeMap.get(item[idKey])!
+            const parentId = item[parentKey]
+
+            // Explicitly check for null/undefined (accepts 0 or '')
+            if (parentId != null && nodeMap.has(parentId)) {
+                const parent = nodeMap.get(parentId)!
+                parent.children.push(node)
+            } else {
+                roots.push(node)
+            }
+        }
+
+        return new Tree(roots, idKey, parentKey)
+    }
 
     /**
-     * Factory method to create a Tree from an already structured tree.
-     * @param structuredNodes - The tree structure.
-     * @param idKey - The key identifying the ID of a node.
-     * @param parentKey - The key identifying the parent ID of a node.
-     * @param childrenKey - The key used to store child nodes.
+     * Get the ID of this node
      */
-    static fromStructuredTree<T>(
-        structuredNodes: TreeNode<T>[],
-        idKey: keyof T,
-        parentKey: keyof T,
-        childrenKey: keyof T
-    ): Tree<T> {
-        return new Tree(structuredNodes, idKey, parentKey, childrenKey)
+    get id() {
+        if (this.data) {
+            return this.data[this.idKey]
+        }
+        return null
     }
 
-    private static buildTree<T>(
-        items: T[],
-        idKey: keyof T,
-        parentKey: keyof T,
-        childrenKey: keyof T
-    ): TreeNode<T>[] {
-        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const nodeMap = new Map<any, TreeNode<T>>() // Map to store nodes by their ID
-        const tree: TreeNode<T>[] = [] // This will hold the root nodes
-
-        // Initialize all nodes with a dynamic children property
-        items.forEach((item) => {
-            const node = { ...item, [childrenKey]: [] } as TreeNode<T>
-            nodeMap.set(item[idKey], node)
-        })
-
-        // Build the tree structure
-        items.forEach((item) => {
-            const node = nodeMap.get(item[idKey])! // Current node
-            const parentId = item[parentKey] // Parent ID
-
-            // If the node has a parent, add it to its parent's children array
-            if (parentId && nodeMap.has(parentId)) {
-                const parentNode = nodeMap.get(parentId)!
-                ;(parentNode[childrenKey] as TreeNode<T>[]).push(node)
-            } else {
-                // If no parent, it's a root node, add it to the tree
-                tree.push(node)
-            }
-        })
-
-        return tree
+    /**
+     * Get the parent ID of this node
+     */
+    get parentId() {
+        if (this.data) {
+            return this.data[this.parentKey]
+        }
+        return null
     }
 
-    getRootNodes(): TreeNode<T>[] {
-        return this.nodes
+    get data(): T {
+        if (!this._data) {
+            throw new Error("Cannot access data of a null node")
+        }
+        return this._data
     }
 
-    flatten(): T[] {
-        const result: T[] = []
+    getChildren(): TreeNode<T>[] {
+        return this.children
+    }
 
-        const traverse = (node: TreeNode<T>) => {
-            // Extract the original item (without children) and add it to the result
-            const { [this.childrenKey]: _, ...data } = node  // eslint-disable-line @typescript-eslint/no-unused-vars
-            result.push(data as T)
-            // Recursively process children
-            const children = node[this.childrenKey]
-            if (children) {
-                children.forEach(traverse)
+    /**
+     * Find a node in the tree that matches the predicate
+     */
+    findNode(predicate: (node: TreeNode<T>) => boolean): TreeNode<T> | null {
+        if (predicate(this)) {
+            return this
+        }
+
+        for (const child of this.children) {
+            const found = child.findNode(predicate)
+            if (found) {
+                return found
             }
         }
 
-        this.nodes.forEach(traverse)
-        return result
+        return null
     }
 
-    findNode(predicate: (node: TreeNode<T>) => boolean): TreeNode<T> | undefined {
-        let result: TreeNode<T> | undefined = undefined
+    /**
+     * Filter the tree to only include nodes that match the predicate
+     * or have descendants that match the predicate
+     */
+    filter(predicate: (node: TreeNode<T>) => boolean): TreeNode<T> | null {
+        const filteredChildren = this.children
+            .map(child => child.filter(predicate))
+            .filter((node): node is TreeNode<T> => node !== null)
 
-        const traverse = (node: TreeNode<T>) => {
-            if (predicate(node)) {
-                result = node
-                return true // Stop searching
-            }
-            const children = node[this.childrenKey]
-            if (children) {
-                for (const child of children) {
-                    if (traverse(child)) return true
-                }
-            }
-            return false
+        if ((this._data && predicate(this)) || filteredChildren.length > 0) {
+            return new TreeNode(
+                this._data,
+                filteredChildren,
+                this.idKey,
+                this.parentKey
+            )
         }
 
-        for (const node of this.nodes) {
-            if (traverse(node)) break
-        }
-
-        return result
+        return null
     }
 
-    filter(predicate: (node: TreeNode<T>) => boolean): Tree<T> {
-        const filterNodes = (nodes: TreeNode<T>[]): TreeNode<T>[] => {
-            return nodes
-                .map((node) => {
-                    const children = node[this.childrenKey]
-                    const filteredChildren = children ? filterNodes(children) : []
+    /**
+     * Traverse all nodes in the tree and call the callback for each node
+     */
+    traverseNodes(callback: (node: TreeNode<T>) => void): void {
+        callback(this)
+        this.children.forEach(child => child.traverseNodes(callback))
+    }
 
-                    if (predicate(node) || (filteredChildren && filteredChildren.length > 0)) {
-                        return {
-                            ...node,
-                            [this.childrenKey]: filteredChildren
-                        }
-                    }
+    /**
+     * Get all nodes in the tree as a flat array
+     */
+    flatten(): TreeNode<T>[] {
+        const nodes: TreeNode<T>[] = []
+        this.traverseNodes(node => nodes.push(node))
+        return nodes
+    }
+}
 
-                    return null
-                })
-                .filter((node): node is TreeNode<T> => node !== null)
-        }
+export class Tree<T> extends TreeNode<T> {
+    constructor(rootNodes: TreeNode<T>[], idKey: keyof T, parentKey: keyof T) {
+        super(null, rootNodes, idKey, parentKey)
+    }
 
-        const filteredNodes = filterNodes(this.nodes)
-        return Tree.fromStructuredTree<T>(filteredNodes, this.idKey, this.parentKey, this.childrenKey)
+    override flatten(): TreeNode<T>[] {
+        return this.children.flatMap(child => child.flatten())
     }
 }

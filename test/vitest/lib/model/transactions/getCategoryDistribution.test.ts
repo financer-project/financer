@@ -53,7 +53,8 @@ describe("Get Category Distribution", () => {
         )
 
         expect(distribution).toBeInstanceOf(Array)
-        expect(distribution).toHaveLength(0)
+        expect(distribution).toHaveLength(4)
+        expect(distribution[0].amount).toBe(0)
     })
 
     test("returns only categories with transactions in the date range", async () => {
@@ -181,7 +182,7 @@ describe("Get Category Distribution", () => {
 
         // Verify that the parent category includes both its own amount and the child's amount
         expect(parentInDistribution).toBeDefined()
-        expect(parentInDistribution?.amount).toBeCloseTo(parentAmount + childAmount, 2)
+        expect(parentInDistribution?.amount).toBeCloseTo(-(parentAmount + childAmount), 2)
 
         // Verify that the child category is not in the distribution
         const childInDistribution = distribution.find(cat => cat.id === childCategory.id)
@@ -199,7 +200,7 @@ describe("Get Category Distribution", () => {
 
         // Get distribution with filter
         const filteredDistribution = await getCategoryDistribution(
-            { 
+            {
                 startDate,
                 categoryIds: [categoryToFilter.id]
             },

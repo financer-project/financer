@@ -1,21 +1,19 @@
 import React, { useState } from "react"
 import { ChevronDown, ChevronRight, Squirrel } from "lucide-react"
-import Tree, { TreeNode } from "@/src/lib/model/categories/Tree"
+import { Tree, TreeNode } from "@/src/lib/model/categories/Tree"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { Separator } from "../../ui/separator"
 
 interface TreeViewProps<T> {
-    tree: Tree<T>
+    tree: Tree<T> | TreeNode<T> | null
     renderNode: (node: T) => React.ReactNode
     itemRoute: (item: T) => string
     expandedAll?: boolean
 }
 
 export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll }: Readonly<TreeViewProps<T>>) {
-    const rootNodes = tree.getRootNodes()
-
-    if (!rootNodes || rootNodes.length === 0) {
+    if (!tree || tree.getChildren().length === 0) {
         return (
             <div className={"flex flex-col items-center w-full text-muted-foreground gap-2"}>
                 <Squirrel size={32} />
@@ -26,11 +24,10 @@ export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll }: Readon
 
     return (
         <div className="flex flex-col gap-2">
-            {rootNodes.map((node) => (
+            {tree.getChildren().map((node) => (
                 <TreeNodeComponent
                     key={`${node.id}`}
                     node={node}
-                    childrenKey={tree.childrenKey}
                     renderNode={renderNode}
                     itemRoute={itemRoute}
                     expandedAll={expandedAll}
@@ -40,17 +37,16 @@ export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll }: Readon
     )
 }
 
-export function TreeNodeComponent<T>({ node, renderNode, childrenKey, itemRoute, expandedAll }: Readonly<{
+export function TreeNodeComponent<T>({ node, renderNode, itemRoute, expandedAll }: Readonly<{
     node: TreeNode<T>
     renderNode: (node: T) => React.ReactNode
-    childrenKey: keyof T,
     itemRoute: (item: T) => string
     expandedAll?: boolean
 }>) {
     const [isExpanded, setIsExpanded] = useState<boolean>(expandedAll ?? false)
     const router = useRouter()
 
-    const children = node[childrenKey] && node[childrenKey].length > 0 ? node[childrenKey] : undefined
+    const children = node.getChildren() && node.getChildren().length > 0 ? node.getChildren() : undefined
 
     React.useEffect(() => {
         setIsExpanded(expandedAll ?? false)
@@ -75,8 +71,8 @@ export function TreeNodeComponent<T>({ node, renderNode, childrenKey, itemRoute,
                         : <ChevronRight size={16} />}
                 </span>
                 <span className={"hover:bg-accent rounded-md transition py-1 px-2 w-full"}
-                      onClick={() => router.push(itemRoute(node) as __next_route_internal_types__.RouteImpl<string>)}>
-                    {renderNode(node)}
+                      onClick={() => router.push(itemRoute(node.data) as __next_route_internal_types__.RouteImpl<string>)}>
+                    {renderNode(node.data)}
                 </span>
             </div>
             {isExpanded && children && (
@@ -89,7 +85,6 @@ export function TreeNodeComponent<T>({ node, renderNode, childrenKey, itemRoute,
                                 node={child}
                                 renderNode={renderNode}
                                 itemRoute={itemRoute}
-                                childrenKey={childrenKey}
                                 expandedAll={expandedAll}
                             />
                         ))}

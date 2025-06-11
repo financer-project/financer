@@ -2,9 +2,7 @@ import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "src/lib/db"
 import { z } from "zod"
-import { Prisma } from ".prisma/client"
-
-export type CategoryModel = Prisma.CategoryGetPayload<{ include: { children: true } }>;
+import { Category } from ".prisma/client"
 
 const GetCategory = z.object({
     id: z.string().uuid()
@@ -13,10 +11,9 @@ const GetCategory = z.object({
 export default resolver.pipe(
     resolver.zod(GetCategory),
     resolver.authorize(),
-    async ({ id }): Promise<CategoryModel> => {
+    async ({ id }): Promise<Category> => {
         const category = await db.category.findFirst({
-            where: { id },
-            include: { children: true }
+            where: { id }
         })
 
         if (!category) throw new NotFoundError()

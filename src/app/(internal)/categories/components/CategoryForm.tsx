@@ -44,7 +44,7 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                     options={categories
                         .flatten()
                         .filter(category => category.id !== props.initialValues?.id)
-                        .map(category => ({ label: category.name, value: category.id }))}
+                        .map(category => ({ label: category.data.name, value: category.id }))}
                     onChange={(value) => handleParentChange(value as string)} />
             </div>
             <div className={"flex flex-row gap-4"}>

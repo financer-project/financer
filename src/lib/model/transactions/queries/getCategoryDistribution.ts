@@ -1,13 +1,17 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "src/lib/db"
 import { z } from "zod"
 import { DateTime } from "luxon"
 import { CategoryType } from "@prisma/client"
+import db from "@/src/lib/db"
+import { Tree } from "@/src/lib/model/categories/Tree"
+import { Category } from ".prisma/client"
+
 
 const GetCategoryDistribution = z.object({
     startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
     endDate: z.date().max(DateTime.now().endOf("month").toJSDate()).optional(),
-    categoryIds: z.array(z.string()).optional() // Optional array of category IDs to filter by
+    categoryIds: z.array(z.string().uuid()).optional(),
+    includeUncategorized: z.boolean().default(false)
 })
 
 export interface CategoryDistribution {
@@ -21,96 +25,46 @@ export interface CategoryDistribution {
 export default resolver.pipe(
     resolver.zod(GetCategoryDistribution),
     resolver.authorize(),
-    async ({ startDate, endDate, categoryIds }): Promise<CategoryDistribution[]> => {
-        endDate ??= DateTime.now().toJSDate()
+    async ({ startDate, endDate, categoryIds, includeUncategorized }): Promise<CategoryDistribution[]> => {
+        const result: CategoryDistribution[] = []
 
-        // Get all categories to build the hierarchy map
-        const allCategories = await db.category.findMany()
+        endDate ??= DateTime.now().endOf("month").toJSDate()
 
-        // Build a map of categories by ID for quick lookup
-        const categoriesById = new Map(allCategories.map(cat => [cat.id, cat]))
+        let categoryTree: Tree<Category> = Tree.fromFlatList(await db.category.findMany(), "id", "parentId")
 
-        // Build a map of child categories to their top-level parent
-        const topLevelParentMap = new Map<string, string>()
-
-        // For each category, find its top-level parent
-        allCategories.forEach(category => {
-            let currentId = category.id
-            let parentId = category.parentId
-
-            // If this is already a top-level category (no parent), map to itself
-            if (!parentId) {
-                topLevelParentMap.set(currentId, currentId)
-                return
-            }
-
-            // Traverse up the hierarchy to find the top-level parent
-            while (parentId) {
-                currentId = parentId
-                const parent = categoriesById.get(parentId)
-                parentId = parent?.parentId
-            }
-
-            // Map this category to its top-level parent
-            topLevelParentMap.set(category.id, currentId)
-        })
-
-        // Get all transactions with their categories within the date range
-        const transactions = await db.transaction.findMany({
-            where: { 
-                valueDate: { gte: startDate, lte: endDate },
-                categoryId: { not: null }, // Only include transactions with categories
-                ...(categoryIds && categoryIds.length > 0 ? {
-                    OR: [
-                        { categoryId: { in: categoryIds } }, // Direct match
-                        { category: { parentId: { in: categoryIds } } } // Child of specified categories
-                    ]
-                } : {})
-            },
-            include: {
-                category: true
-            }
-        })
-
-        // Group transactions by top-level parent category
-        const categoryMap = new Map<string, CategoryDistribution>()
-
-        transactions.forEach(transaction => {
-            if (!transaction.category) return
-
-            // Get the top-level parent category ID
-            const categoryId = transaction.category.id
-            const topLevelParentId = topLevelParentMap.get(categoryId) || categoryId
-
-            // Get the top-level parent category
-            const topLevelCategory = categoriesById.get(topLevelParentId)
-            if (!topLevelCategory) return
-
-            if (!categoryMap.has(topLevelParentId)) {
-                categoryMap.set(topLevelParentId, {
-                    id: topLevelParentId,
-                    name: topLevelCategory.name,
-                    type: topLevelCategory.type,
-                    amount: 0,
-                    color: topLevelCategory.color
-                })
-            }
-
-            // Add the absolute amount to the top-level parent category total
-            categoryMap.get(topLevelParentId)!.amount += Math.abs(transaction.amount)
-        })
-
-        // If categoryIds is provided, filter to only include those categories
+        // if no categories are given or empty, all root categories are used.
         if (categoryIds && categoryIds.length > 0) {
-            return Array.from(categoryMap.values())
-                .filter(category => categoryIds.includes(category.id))
+            categoryTree = categoryTree.filter(category => categoryIds.includes(category.id as string))!
         }
 
-        // Otherwise, return all top-level categories
-        return Array.from(categoryMap.values())
-            .filter(category => {
-                const cat = categoriesById.get(category.id)
-                return cat && cat.parentId === null
+        const categoryIDsToSelect: string[] = []
+        categoryTree.getChildren().forEach(category => {
+            categoryIDsToSelect.push(...category.flatten().map(category => category.id as string))
+        })
+
+        const transactions = await db.transaction.findMany({
+            where: {
+                valueDate: {
+                    gte: startDate,
+                    lte: endDate
+                },
+                categoryId: {
+                    in: categoryIDsToSelect
+                }
+            }
+        })
+
+        categoryTree.getChildren().forEach(category => {
+            result.push({
+                ...category.data,
+                amount: transactions
+                    .filter(transaction =>
+                        transaction.categoryId &&
+                        category.flatten().map(category => category.id).includes(transaction.categoryId))
+                    .reduce((amount, transaction) => amount + transaction.amount, 0)
             })
+        })
+
+        return result
     }
 )

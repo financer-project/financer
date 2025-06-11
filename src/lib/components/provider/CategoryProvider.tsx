@@ -2,32 +2,31 @@
 
 import React, { createContext, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
-import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
 import getCategories from "@/src/lib/model/categories/queries/getCategories"
-import Tree from "@/src/lib/model/categories/Tree"
+import { Tree } from "@/src/lib/model/categories/Tree"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
+import { Category } from ".prisma/client"
 
-const CategoryContext = createContext<Tree<CategoryModel> | undefined>(undefined)
+const CategoryContext = createContext<Tree<Category> | undefined>(undefined)
 
 export function CategoryProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     const currentHousehold = useCurrentHousehold()
     const [categories] = useQuery(getCategories, { householdId: currentHousehold!.id })
-    const categoryTree = () =>
-        Tree.fromFlatList<CategoryModel>(
-            categories?.map((category) => ({ ...category, children: [] })) ?? [],
+    const categoryTrees = () =>
+        Tree.fromFlatList<Category>(
+            categories ?? [],
             "id",
-            "parentId",
-            "children"
+            "parentId"
         )
 
     return (
-        <CategoryContext.Provider value={categoryTree()}>
+        <CategoryContext.Provider value={categoryTrees()}>
             {children}
         </CategoryContext.Provider>
     )
 }
 
-export const useCategories = (): Tree<CategoryModel> => {
+export const useCategories = (): Tree<Category> => {
     const context = useContext(CategoryContext)
     if (context === null) {
         throw new Error("useCategories must be used within a CategoryContext")

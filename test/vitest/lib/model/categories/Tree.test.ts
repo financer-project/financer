@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import Tree, { TreeNode } from "@/src/lib/model/categories/Tree"
+import { Tree, TreeNode } from "@/src/lib/model/categories/Tree"
 import { CategoryType } from "@prisma/client"
 
 interface CategoryLike {
@@ -8,6 +8,20 @@ interface CategoryLike {
     type: CategoryType
     parentId: string | null,
     children?: CategoryLike[]
+}
+
+// Helper function to find a node in a tree by ID
+function findNodeById<T>(tree: Tree<T>, id: string): TreeNode<T> | null {
+    for (const child of tree.getChildren()) {
+        if (child.id === id) {
+            return child;
+        }
+        const found = child.findNode(node => node.id === id);
+        if (found) {
+            return found;
+        }
+    }
+    return null;
 }
 
 describe("Tree", () => {
@@ -34,134 +48,148 @@ describe("Tree", () => {
 
     describe("fromFlatList", () => {
         test("builds a tree from a flat list of categories", () => {
-            const tree = Tree.fromFlatList(flatCategories, "id", "parentId", "children")
+            const rootNodes = Tree.fromFlatList(flatCategories, "id", "parentId")
 
-            // Sollte zwei Root-Knoten haben: "food" und "income"
-            expect(tree.getRootNodes()).toHaveLength(2)
+            // Should have two root nodes: "food" and "income"
+            expect(rootNodes.getChildren()).toHaveLength(2)
 
-            // Überprüfe Food und seine Kinder
-            const foodNode = tree.getRootNodes().find(node => node.id === "food")
-            expect(foodNode).toBeDefined()
-            expect(foodNode?.name).toBe("Food")
-            expect(foodNode?.children).toHaveLength(2)
+            // Check Food and its children
+            const foodNode = findNodeById(rootNodes, "food")
+            expect(foodNode).not.toBeNull()
+            expect(foodNode?.data.name).toBe("Food")
+            expect(foodNode?.getChildren()).toHaveLength(2)
 
-            // Überprüfe Groceries und seine Kinder
-            const groceriesNode = foodNode?.children?.find(node => node.id === "groceries")
+            // Check Groceries and its children
+            const groceriesNode = foodNode?.getChildren().find(node => node.id === "groceries")
             expect(groceriesNode).toBeDefined()
-            expect(groceriesNode?.children).toHaveLength(2)
+            expect(groceriesNode?.getChildren()).toHaveLength(2)
 
-            // Überprüfe Income und seine Kinder
-            const incomeNode = tree.getRootNodes().find(node => node.id === "income")
-            expect(incomeNode).toBeDefined()
-            expect(incomeNode?.children).toHaveLength(2)
+            // Check Income and its children
+            const incomeNode = findNodeById(rootNodes, "income")
+            expect(incomeNode).not.toBeNull()
+            expect(incomeNode?.getChildren()).toHaveLength(2)
         })
 
         test("handles empty list", () => {
-            const tree = Tree.fromFlatList([], "id", "parentId", "children")
-            expect(tree.getRootNodes()).toHaveLength(0)
+            const rootNodes = Tree.fromFlatList([], "id", "parentId")
+            expect(rootNodes.getChildren()).toHaveLength(0)
         })
     })
 
     describe("flatten", () => {
         test("flattens a tree back to a list", () => {
-            const tree = Tree.fromFlatList(flatCategories, "id", "parentId", "children")
-            const flattened = tree.flatten()
+            const rootNodes = Tree.fromFlatList(flatCategories, "id", "parentId")
+            const flattened = rootNodes.flatten()
 
             expect(flattened).toHaveLength(flatCategories.length)
 
-            // Stichproben-Validierung
+            // Sample validation
             expect(flattened.some(item => item.id === "food")).toBeTruthy()
             expect(flattened.some(item => item.id === "fruits")).toBeTruthy()
             expect(flattened.some(item => item.id === "salary")).toBeTruthy()
-
-            // Flattened items should not have children property
-            const hasChildrenProperty = flattened.some(item => Object.hasOwnProperty.call(item, "children"))
-            expect(hasChildrenProperty).toBeFalsy()
         })
     })
 
     describe("findNode", () => {
         test("finds a node by predicate", () => {
-            const tree = Tree.fromFlatList(flatCategories, "id", "parentId", "children")
+            const rootNodes = Tree.fromFlatList(flatCategories, "id", "parentId")
 
-            // Nach einem Blattknoten suchen
-            const fruitsNode = tree.findNode(node => node.id === "fruits")
-            expect(fruitsNode).toBeDefined()
-            expect(fruitsNode?.name).toBe("Fruits")
+            // Search for a leaf node
+            const fruitsNode = findNodeById(rootNodes, "fruits")
+            expect(fruitsNode).not.toBeNull()
+            expect(fruitsNode?.data.name).toBe("Fruits")
 
-            // Nach einem inneren Knoten suchen
-            const groceriesNode = tree.findNode(node => node.id === "groceries")
-            expect(groceriesNode).toBeDefined()
-            expect(groceriesNode?.name).toBe("Groceries")
+            // Search for an inner node
+            const groceriesNode = findNodeById(rootNodes, "groceries")
+            expect(groceriesNode).not.toBeNull()
+            expect(groceriesNode?.data.name).toBe("Groceries")
 
-            // Nach einem Wurzelknoten suchen
-            const foodNode = tree.findNode(node => node.id === "food")
-            expect(foodNode).toBeDefined()
-            expect(foodNode?.name).toBe("Food")
+            // Search for a root node
+            const foodNode = findNodeById(rootNodes, "food")
+            expect(foodNode).not.toBeNull()
+            expect(foodNode?.data.name).toBe("Food")
         })
 
-        test("returns undefined for non-existent node", () => {
-            const tree = Tree.fromFlatList(flatCategories, "id", "parentId", "children")
-            const nonExistentNode = tree.findNode(node => node.id === "does-not-exist")
-            expect(nonExistentNode).toBeUndefined()
+        test("returns null for non-existent node", () => {
+            const rootNodes = Tree.fromFlatList(flatCategories, "id", "parentId")
+            const nonExistentNode = findNodeById(rootNodes, "does-not-exist")
+            expect(nonExistentNode).toBeNull()
         })
     })
 
-    describe("fromStructuredTree", () => {
-        test("creates a tree from an already structured tree", () => {
-            // Manuell einen strukturierten Baum erstellen
-            const manualTree: CategoryLike[] = [
-                {
-                    id: "food",
-                    name: "Food",
-                    type: CategoryType.EXPENSE,
-                    parentId: null,
-                    children: [
-                        {
-                            id: "groceries",
-                            name: "Groceries",
-                            type: CategoryType.EXPENSE,
-                            parentId: "food",
-                        }
-                    ]
-                }
+    describe("filter", () => {
+        test("filters nodes based on a predicate", () => {
+            const rootNodes = Tree.fromFlatList(flatCategories, "id", "parentId")
+
+            // Filter to only include expense categories
+            const filteredTree = rootNodes.filter(node => node.data.type === CategoryType.EXPENSE)
+
+            expect(filteredTree).not.toBeNull()
+            expect(filteredTree?.getChildren()).toHaveLength(1) // Only the "food" tree should remain
+            expect(filteredTree?.getChildren()[0].data.name).toBe("Food")
+        })
+    })
+
+    describe("traverseNodes", () => {
+        test("traverses all nodes in the tree", () => {
+            const rootNodes = Tree.fromFlatList(flatCategories, "id", "parentId")
+            const traversedNodes: string[] = []
+
+            // Only traverse the children, not the root node itself
+            rootNodes.getChildren().forEach(child => {
+                child.traverseNodes(node => {
+                    traversedNodes.push(node.id as string)
+                })
+            })
+
+            // Should have traversed all nodes
+            expect(traversedNodes.length).toBeGreaterThan(0)
+
+            // Check that all nodes were traversed
+            for (const category of flatCategories) {
+                expect(traversedNodes).toContain(category.id)
+            }
+        })
+    })
+
+    describe("creating trees from structured data", () => {
+        test("creates a tree from a flat list with parent-child relationships", () => {
+            // Create a subset of the flat categories for this test
+            const subsetCategories: CategoryLike[] = [
+                { id: "food", name: "Food", type: CategoryType.EXPENSE, parentId: null },
+                { id: "groceries", name: "Groceries", type: CategoryType.EXPENSE, parentId: "food" },
+                { id: "fruits", name: "Fruits", type: CategoryType.EXPENSE, parentId: "groceries" },
+                { id: "vegetables", name: "Vegetables", type: CategoryType.EXPENSE, parentId: "groceries" }
             ]
 
-            const tree = Tree.fromStructuredTree(manualTree as TreeNode<CategoryLike>[], "id", "parentId", "children")
+            const rootNodes = Tree.fromFlatList(subsetCategories, "id", "parentId")
 
-            expect(tree.getRootNodes()).toHaveLength(1)
-            expect(tree.getRootNodes()[0].name).toBe("Food")
-            expect(tree.getRootNodes()[0].children).toHaveLength(1)
-            expect(tree.getRootNodes()[0].children?.[0].name).toBe("Groceries")
-        })
-    })
+            // Should have one root node: "food"
+            expect(rootNodes.getChildren()).toHaveLength(1)
 
-    describe("complex operations", () => {
-        test("find and manipulate node", () => {
-            const tree = Tree.fromFlatList(flatCategories, "id", "parentId", "children")
+            // Get the food node
+            const foodNode = findNodeById(rootNodes, "food")
+            expect(foodNode).not.toBeNull()
+            expect(foodNode?.data.name).toBe("Food")
+            expect(foodNode?.getChildren()).toHaveLength(1)
 
-            // Finde einen Knoten
-            const groceriesNode = tree.findNode(node => node.id === "groceries")
-            expect(groceriesNode).toBeDefined()
+            // Get the groceries node
+            const groceriesNode = findNodeById(rootNodes, "groceries")
+            expect(groceriesNode).not.toBeNull()
+            expect(groceriesNode?.data.name).toBe("Groceries")
+            expect(groceriesNode?.getChildren()).toHaveLength(2)
 
-            // Füge einen neuen Knoten als Kind hinzu
-            if (groceriesNode) {
-                groceriesNode.children?.push({
-                    id: "dairy",
-                    name: "Dairy Products",
-                    type: CategoryType.EXPENSE,
-                    parentId: "groceries",
-                    children: []
-                })
-            }
+            // Get the fruits node
+            const fruitsNode = findNodeById(rootNodes, "fruits")
+            expect(fruitsNode).not.toBeNull()
+            expect(fruitsNode?.data.name).toBe("Fruits")
+            expect(fruitsNode?.getChildren()).toHaveLength(0)
 
-            // Überprüfe, ob der Knoten hinzugefügt wurde
-            const dairyNode = tree.findNode(node => node.id === "dairy")
-            expect(dairyNode).toBeDefined()
-            expect(dairyNode?.name).toBe("Dairy Products")
-
-            // Überprüfe die aktuelle Anzahl der Kinder unter Groceries
-            expect(groceriesNode?.children?.length).toBe(3)
+            // Get the vegetables node
+            const vegetablesNode = findNodeById(rootNodes, "vegetables")
+            expect(vegetablesNode).not.toBeNull()
+            expect(vegetablesNode?.data.name).toBe("Vegetables")
+            expect(vegetablesNode?.getChildren()).toHaveLength(0)
         })
     })
 })

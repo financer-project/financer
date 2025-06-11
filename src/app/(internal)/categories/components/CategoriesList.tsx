@@ -12,6 +12,7 @@ import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 export const CategoriesList = () => {
     const [expandAllIncome, setExpandAllIncome] = useState<boolean>(true)
     const [expandAllExpense, setExpandAllExpense] = useState<boolean>(true)
+    const categories = useCategories()
 
     const renderActions = (setter: (value: boolean) => void, type: CategoryType) => (
         <div className={"flex flex-row gap-2"}>
@@ -39,7 +40,7 @@ export const CategoriesList = () => {
                      subtitle={"All categories that are marked as income."}
                      actions={renderActions(setExpandAllIncome, CategoryType.INCOME)}>
                 <TreeView
-                    tree={useCategories().filter(node => node.type === CategoryType.INCOME)}
+                    tree={categories.filter(node => node.data.type === CategoryType.INCOME)}
                     renderNode={node => <ColoredTag color={node.color} label={node.name} />}
                     expandedAll={expandAllIncome}
                     itemRoute={category => `/categories/${category.id}`} />
@@ -48,7 +49,7 @@ export const CategoriesList = () => {
                      subtitle={"All categories that are marked as expense."}
                      actions={renderActions(setExpandAllExpense, CategoryType.EXPENSE)}>
                 <TreeView
-                    tree={useCategories().filter(node => node.type === CategoryType.EXPENSE)}
+                    tree={categories.filter(node => node.data.type === CategoryType.EXPENSE)}
                     renderNode={node => <ColoredTag color={node.color} label={node.name} />}
                     expandedAll={expandAllExpense}
                     itemRoute={category => `/categories/${category.id}`} />
