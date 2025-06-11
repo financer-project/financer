@@ -5,7 +5,8 @@ import { CategoryType } from "@prisma/client"
 import db from "@/src/lib/db"
 import { Tree } from "@/src/lib/model/categories/Tree"
 import { Category } from ".prisma/client"
-
+import ColorType from "@/src/lib/model/common/ColorType"
+import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
 const GetCategoryDistribution = z.object({
     startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
@@ -25,12 +26,23 @@ export interface CategoryDistribution {
 export default resolver.pipe(
     resolver.zod(GetCategoryDistribution),
     resolver.authorize(),
-    async ({ startDate, endDate, categoryIds, includeUncategorized }): Promise<CategoryDistribution[]> => {
+    async ({ startDate, endDate, categoryIds, includeUncategorized }, ctx): Promise<CategoryDistribution[]> => {
         const result: CategoryDistribution[] = []
 
         endDate ??= DateTime.now().endOf("month").toJSDate()
 
-        let categoryTree: Tree<Category> = Tree.fromFlatList(await db.category.findMany(), "id", "parentId")
+        // Get current household
+        const currentHousehold = await getCurrentHousehold(null, ctx)
+        if (!currentHousehold) return []
+
+        // Filter categories by household
+        let categoryTree: Tree<Category> = Tree.fromFlatList(
+            await db.category.findMany({
+                where: { householdId: currentHousehold.id }
+            }),
+            "id",
+            "parentId"
+        )
 
         // if no categories are given or empty, all root categories are used.
         if (categoryIds && categoryIds.length > 0) {
@@ -44,13 +56,17 @@ export default resolver.pipe(
 
         const transactions = await db.transaction.findMany({
             where: {
+                account: {
+                    householdId: currentHousehold.id
+                },
                 valueDate: {
                     gte: startDate,
                     lte: endDate
                 },
-                categoryId: {
-                    in: categoryIDsToSelect
-                }
+                OR: [
+                    { categoryId: { in: categoryIDsToSelect } },
+                    { categoryId: { equals: null } }
+                ]
             }
         })
 
@@ -64,6 +80,27 @@ export default resolver.pipe(
                     .reduce((amount, transaction) => amount + transaction.amount, 0)
             })
         })
+
+        if (includeUncategorized) {
+            result.push({
+                id: "uncategorized-income",
+                name: "Uncategorized",
+                type: CategoryType.INCOME,
+                color: ColorType.GRAY,
+                amount: transactions
+                    .filter(transaction => !transaction.categoryId && transaction.type === CategoryType.INCOME)
+                    .reduce((amount, transaction) => amount + transaction.amount, 0)
+            })
+            result.push({
+                id: "uncategorized-expenses",
+                name: "Uncategorized",
+                type: CategoryType.EXPENSE,
+                color: ColorType.GRAY,
+                amount: transactions
+                    .filter(transaction => !transaction.categoryId && transaction.type === CategoryType.EXPENSE)
+                    .reduce((amount, transaction) => amount + transaction.amount, 0)
+            })
+        }
 
         return result
     }

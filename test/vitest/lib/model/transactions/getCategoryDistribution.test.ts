@@ -3,13 +3,16 @@ import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { DateTime } from "luxon"
 import getCategoryDistribution from "@/src/lib/model/transactions/queries/getCategoryDistribution"
 import db from "@/src/lib/db"
-import { CategoryType } from "@prisma/client"
+import { CategoryType, TransactionType } from "@prisma/client"
 
 describe("Get Category Distribution", () => {
     const util = TestUtilityMock.getInstance()
+    let standardHouseholdId: string
 
     beforeEach(async () => {
         await util.seedDatabase()
+        // Get the standard household ID for the tests
+        standardHouseholdId = util.getTestData().households.standard.id
     })
 
     test("returns category distribution with correct structure", async () => {
@@ -17,7 +20,7 @@ describe("Get Category Distribution", () => {
 
         const distribution = await getCategoryDistribution(
             { startDate },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         expect(distribution).toBeInstanceOf(Array)
@@ -49,11 +52,11 @@ describe("Get Category Distribution", () => {
 
         const distribution = await getCategoryDistribution(
             { startDate },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         expect(distribution).toBeInstanceOf(Array)
-        expect(distribution).toHaveLength(4)
+        expect(distribution).toHaveLength(2)
         expect(distribution[0].amount).toBe(0)
     })
 
@@ -65,13 +68,13 @@ describe("Get Category Distribution", () => {
         // Get current distribution
         const currentDistribution = await getCategoryDistribution(
             { startDate },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         // Get distribution with a start date in the past
         const pastDistribution = await getCategoryDistribution(
             { startDate: pastDate },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         // Past distribution should include more or equal categories
@@ -82,7 +85,7 @@ describe("Get Category Distribution", () => {
         const invalidStartDate = DateTime.now().plus({ months: 1 }).toJSDate()
 
         await expect(() =>
-            getCategoryDistribution({ startDate: invalidStartDate }, util.getMockContext())
+            getCategoryDistribution({ startDate: invalidStartDate }, util.getMockContext("standard", { currentHouseholdId: standardHouseholdId }))
         ).rejects.toThrowError()
     })
 
@@ -91,7 +94,7 @@ describe("Get Category Distribution", () => {
 
         const distribution = await getCategoryDistribution(
             { startDate },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         // We can't directly test the endDate since it's used internally,
@@ -111,7 +114,7 @@ describe("Get Category Distribution", () => {
         // Get distribution from the API
         const distribution = await getCategoryDistribution(
             { startDate },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         // Check that only top-level categories are returned
@@ -174,7 +177,7 @@ describe("Get Category Distribution", () => {
         // Get distribution from the API
         const distribution = await getCategoryDistribution(
             { startDate },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         // Find the parent category in the distribution
@@ -204,7 +207,7 @@ describe("Get Category Distribution", () => {
                 startDate,
                 categoryIds: [categoryToFilter.id]
             },
-            util.getMockContext()
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
         )
 
         // Verify that only the specified category is returned
@@ -213,5 +216,29 @@ describe("Get Category Distribution", () => {
         if (filteredDistribution.length > 0) {
             expect(filteredDistribution[0].id).toBe(categoryToFilter.id)
         }
+    })
+
+    test("include uncategorized transactions", async () => {
+        const startDate = DateTime.now().minus({ months: 3 }).toJSDate()
+
+        await db.transaction.create({
+            data: {
+                name: "Uncategorized",
+                type: TransactionType.EXPENSE,
+                amount: -300,
+                valueDate: DateTime.now().minus({ months: 1 }).toJSDate(),
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: null
+            }
+        })
+
+        const distribution = await getCategoryDistribution(
+            { startDate, includeUncategorized: true },
+            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
+        )
+
+        const uncategorizedExpense = distribution.find(value => value.id === "uncategorized-expenses")
+        expect(uncategorizedExpense).toBeDefined()
+        expect(uncategorizedExpense?.amount).toBe(-300)
     })
 })

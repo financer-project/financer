@@ -9,19 +9,19 @@ import { CategoryType } from "@prisma/client"
 import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
-import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
 import ColorType from "@/src/lib/model/common/ColorType"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
+import { Category } from ".prisma/client"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
 
-    const [parentCategory, setParentCategory] = useState<CategoryModel | null>(null)
+    const [parentCategory, setParentCategory] = useState<Category | null>(null)
     const categories = useCategories()
 
     const handleParentChange = (parentId: string | null) => {
         const selectedParent = categories.findNode((category) => category.id === parentId)
-        setParentCategory(selectedParent ?? null)
+        setParentCategory(selectedParent?.data ?? null)
     }
 
     if (parentCategory === null && props.initialValues?.parentId) {
@@ -31,14 +31,14 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
     return (
         <Form<S> {...props}>
             <div className={"flex flex-row gap-4"}>
-                <SelectFormField<CategoryModel>
+                <SelectFormField<Category>
                     label={"Household"}
                     name={"householdId"}
                     readonly
                     value={useCurrentHousehold()?.id}
                     options={useHouseholds()?.map(household =>
                         ({ label: household.name, value: household.id })) ?? []} />
-                <SelectFormField<CategoryModel>
+                <SelectFormField<Category>
                     label={"Parent Category"}
                     name={"parentId"}
                     options={categories
@@ -48,12 +48,12 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                     onChange={(value) => handleParentChange(value as string)} />
             </div>
             <div className={"flex flex-row gap-4"}>
-                <TextField<CategoryModel, string>
+                <TextField<Category, string>
                     label={"Name"}
                     name={"name"}
                     required />
                 <div className={"flex flex-row gap-4 flex-1 "}>
-                    <SelectFormField<CategoryModel>
+                    <SelectFormField<Category>
                         label={"Type"}
                         name={"type"}
                         required
@@ -62,7 +62,7 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                             { value: CategoryType.INCOME, label: "Income" },
                             { value: CategoryType.EXPENSE, label: "Expense" }
                         ]} />
-                    <SelectFormField
+                    <SelectFormField<Category>
                         label={"Color"}
                         name={"color"}
                         value={parentCategory?.color}

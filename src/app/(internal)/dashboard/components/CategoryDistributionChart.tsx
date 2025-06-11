@@ -24,7 +24,10 @@ import { useTimeframe } from "../context/TimeframeContext"
 const CategoryDistributionChart = ({ className }: { className?: string }) => {
     const { timeframe } = useTimeframe()
     const [activeTab, setActiveTab] = useState<string>("expenses") // Default to expenses tab
-    const [categories] = useQuery(getCategoryDistribution, { startDate: timeframe.toJSDate() })
+    const [categories] = useQuery(getCategoryDistribution, {
+        startDate: timeframe.toJSDate(),
+        includeUncategorized: true
+    })
 
     // Separate income and expense categories
     const incomeCategories = categories.filter(cat => cat.type === CategoryType.INCOME)
