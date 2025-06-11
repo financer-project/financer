@@ -74,14 +74,14 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
             uniqueCategoryNames.forEach(categoryName => {
                 // Try to find a matching category by name similarity
                 const matchingCategory = categories.findNode(cat =>
-                    cat.name.toLowerCase().includes(categoryName.toLowerCase()) ||
-                    categoryName.toLowerCase().includes(cat.name.toLowerCase())
+                    cat.data.name.toLowerCase().includes(categoryName.toLowerCase()) ||
+                    categoryName.toLowerCase().includes(cat.data.name.toLowerCase())
                 )
 
                 initialMappings.push({
                     sourceValue: categoryName,
                     targetType: "category",
-                    targetId: matchingCategory?.id ?? null
+                    targetId: matchingCategory?.data.id ?? null
                 })
             })
 
@@ -172,11 +172,11 @@ export const ValueMappingStep = ({ csvData }: ValueMappingStepProps) => {
                                         <div className="w-1/2">
                                             <SelectField
                                                 options={categories.flatten().map(cat => ({
-                                                    label: cat.name,
+                                                    label: cat.data.name,
                                                     value: cat.id
                                                 }))}
                                                 value={getValueMapping(categoryName, "category")}
-                                                onChange={(value) => handleMappingChange(categoryName, "category", value)}
+                                                onChange={(value) => handleMappingChange(categoryName, "category", value as string)}
                                                 placeholder="Select category"
                                             />
                                         </div>

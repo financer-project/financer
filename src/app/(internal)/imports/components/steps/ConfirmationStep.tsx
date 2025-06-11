@@ -43,7 +43,7 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
     }
 
     const getCategoryName = (id: string) => {
-        return categories.findNode(cat => cat.id === id)?.name ?? "Unknown Category"
+        return categories.findNode(cat => cat.id === id)?.data.name ?? "Unknown Category"
     }
 
     // Count how many transactions will be imported
