@@ -149,7 +149,11 @@ export class Tree<T> extends TreeNode<T> {
     }
 
     override filter(predicate: (node: TreeNode<T>) => boolean): TreeNode<T> | null {
-        return this.children.filter(child => child.filter(predicate)).length > 0 ? this : null
+        const result = this.children.filter(child => child.filter(predicate))
+        if (result.length > 0) {
+            return new Tree(result, this.idKey, this.parentKey)
+        }
+        return null
     }
 
     override traverseNodes(callback: (node: TreeNode<T>) => void): void {
