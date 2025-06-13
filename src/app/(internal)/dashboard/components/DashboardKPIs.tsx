@@ -10,15 +10,15 @@ import { BarChart3Icon, CreditCardIcon, TrendingDownIcon, TrendingUpIcon } from 
 
 /**
  * Calculate percentage change between current and previous values
- * 
+ *
  * @param current - Current value
  * @param previous - Previous value to compare against
  * @param invertDirection - Whether to invert the direction (useful for expenses where down is good)
  * @returns Object containing the percentage change value and direction
  */
 const calculatePercentChange = (
-    current: number, 
-    previous: number | undefined, 
+    current: number,
+    previous: number | undefined,
     invertDirection: boolean = false
 ): {
     value: number,
@@ -33,20 +33,26 @@ const calculatePercentChange = (
     const change = ((current - previous) / Math.abs(previous)) * 100
 
     // Determine direction based on whether change is positive, negative, or zero
-    let direction: TrendDirection = 
-        change > 0 ? "up" : 
-        change < 0 ? "down" : 
-        "neutral";
+    let direction: TrendDirection
+    if (change > 0) {
+        direction = "up"
+    } else {
+        direction = change < 0 ? "down" : "neutral"
+    }
 
     // Invert direction if requested (e.g., for expenses where down is good)
     if (invertDirection) {
-        direction = direction === "up" ? "down" : direction === "down" ? "up" : "neutral";
+        if (direction === "up") {
+            direction = "down"
+        } else {
+            direction = direction === "down" ? "up" : "neutral"
+        }
     }
 
     // Return absolute value of change and direction
-    return { 
-        value: Math.abs(Math.round(change)), 
-        direction 
+    return {
+        value: Math.abs(Math.round(change)),
+        direction
     }
 }
 
@@ -66,7 +72,7 @@ const DashboardKPIs: React.FC<WithFormattersProps> = ({ formatters }) => {
     // For expenses, a decrease is positive (down = green), so we invert the direction
     // We use absolute values because expenses are stored as negative numbers
     const expensesTrend = calculatePercentChange(
-        Math.abs(kpis.totalExpenses), 
+        Math.abs(kpis.totalExpenses),
         kpis.previousExpenses ? Math.abs(kpis.previousExpenses) : undefined,
         true // Invert direction because lower expenses are better
     )

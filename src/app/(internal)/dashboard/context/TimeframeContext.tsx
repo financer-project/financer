@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, ReactNode, useContext, useState } from "react"
+import React, { createContext, ReactNode, useContext, useMemo, useState } from "react"
 import { DateTime } from "luxon"
 
 // Define the timeframe options
@@ -23,22 +23,34 @@ type TimeframeContextType = {
 }
 
 // Create the context with a default value
-const TimeframeContext = createContext<TimeframeContextType | undefined>(undefined)
+const TimeframeContext = createContext<TimeframeContextType | undefined>(
+    undefined
+)
 
 // Provider component
 export const TimeframeProvider: React.FC<{
     children: ReactNode
     initialTimeframe?: DateTime
     options?: TimeframeOption[]
-}> = ({ 
-    children, 
-    initialTimeframe = defaultTimeframeOptions[0].value,
-    options = defaultTimeframeOptions
-}) => {
+}> = ({
+          children,
+          initialTimeframe = defaultTimeframeOptions[0].value,
+          options = defaultTimeframeOptions
+      }) => {
     const [timeframe, setTimeframe] = useState<DateTime>(initialTimeframe)
 
+    // Memoize the context value to avoid unnecessary re-renders
+    const value = useMemo(
+        () => ({
+            timeframe,
+            setTimeframe,
+            timeframeOptions: options
+        }),
+        [timeframe, options]
+    )
+
     return (
-        <TimeframeContext.Provider value={{ timeframe, setTimeframe, timeframeOptions: options }}>
+        <TimeframeContext.Provider value={value}>
             {children}
         </TimeframeContext.Provider>
     )
