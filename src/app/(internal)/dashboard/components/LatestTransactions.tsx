@@ -13,7 +13,7 @@ import { TransactionsList } from "@/src/app/(internal)/transactions/components/T
 import { cn } from "@/lib/utils"
 import { ArrowRight } from "lucide-react"
 
-interface LatestTransactionsProps extends WithFormattersProps {
+interface LatestTransactionsProps {
     className?: string;
 }
 
