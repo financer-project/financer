@@ -105,7 +105,7 @@ export class TreeNode<T> {
             .map(child => child.filter(predicate))
             .filter((node): node is TreeNode<T> => node !== null)
 
-        if ((this._data && predicate(this)) || filteredChildren.length > 0) {
+        if (predicate(this) || filteredChildren.length > 0) {
             return new TreeNode(
                 this._data,
                 filteredChildren,
@@ -142,5 +142,17 @@ export class Tree<T> extends TreeNode<T> {
 
     override flatten(): TreeNode<T>[] {
         return this.children.flatMap(child => child.flatten())
+    }
+
+    override findNode(predicate: (node: TreeNode<T>) => boolean): TreeNode<T> | null {
+        return this.children.find(child => child.findNode(predicate)) ?? null
+    }
+
+    override filter(predicate: (node: TreeNode<T>) => boolean): TreeNode<T> | null {
+        return this.children.filter(child => child.filter(predicate)).length > 0 ? this : null
+    }
+
+    override traverseNodes(callback: (node: TreeNode<T>) => void): void {
+        this.children.forEach(child => child.traverseNodes(callback))
     }
 }
