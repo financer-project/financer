@@ -2,7 +2,6 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useTimeframe } from "../context/TimeframeContext"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
