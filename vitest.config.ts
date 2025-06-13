@@ -31,5 +31,8 @@ export default defineConfig({
             extension: [".ts", ".tsx"],
             reportsDirectory: ".test/unit/coverage/"
         }
+    },
+    esbuild: {
+        sourcemap: "linked"
     }
 })

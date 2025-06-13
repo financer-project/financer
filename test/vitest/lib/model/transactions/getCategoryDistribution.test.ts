@@ -234,7 +234,7 @@ describe("Get Category Distribution", () => {
 
         const distribution = await getCategoryDistribution(
             { startDate, includeUncategorized: true },
-            util.getMockContext("standard", { currentHouseholdId: standardHouseholdId })
+            util.getMockContext("standard", { currentHouseholdId: util.getTestData().households.standard.id })
         )
 
         const uncategorizedExpense = distribution.find(value => value.id === "uncategorized-expenses")

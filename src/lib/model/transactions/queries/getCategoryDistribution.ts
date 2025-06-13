@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { DateTime } from "luxon"
-import { CategoryType } from "@prisma/client"
+import { CategoryType, TransactionType } from "@prisma/client"
 import db from "@/src/lib/db"
 import { Tree } from "@/src/lib/model/categories/Tree"
 import { Category } from ".prisma/client"
@@ -56,16 +56,11 @@ export default resolver.pipe(
 
         const transactions = await db.transaction.findMany({
             where: {
-                account: {
-                    householdId: currentHousehold.id
-                },
-                valueDate: {
-                    gte: startDate,
-                    lte: endDate
-                },
+                account: { householdId: currentHousehold.id },
+                valueDate: { gte: startDate, lte: endDate },
                 OR: [
                     { categoryId: { in: categoryIDsToSelect } },
-                    { categoryId: { equals: null } }
+                    { categoryId: null }
                 ]
             }
         })
@@ -82,24 +77,29 @@ export default resolver.pipe(
         })
 
         if (includeUncategorized) {
+            const incomeSum = transactions
+                .filter((transaction) => !transaction.categoryId && transaction.type === TransactionType.INCOME)
+                .reduce((sum, transaction) => sum + transaction.amount, 0)
+
+            const expenseSum = transactions
+                .filter((transaction) => !transaction.categoryId && transaction.type === TransactionType.EXPENSE)
+                .reduce((sum, transaction) => sum + transaction.amount, 0)
+
             result.push({
                 id: "uncategorized-income",
                 name: "Uncategorized",
                 type: CategoryType.INCOME,
                 color: ColorType.GRAY,
-                amount: transactions
-                    .filter(transaction => !transaction.categoryId && transaction.type === CategoryType.INCOME)
-                    .reduce((amount, transaction) => amount + transaction.amount, 0)
+                amount: incomeSum
             })
             result.push({
                 id: "uncategorized-expenses",
                 name: "Uncategorized",
                 type: CategoryType.EXPENSE,
                 color: ColorType.GRAY,
-                amount: transactions
-                    .filter(transaction => !transaction.categoryId && transaction.type === CategoryType.EXPENSE)
-                    .reduce((amount, transaction) => amount + transaction.amount, 0)
+                amount: expenseSum
             })
+
         }
 
         return result
