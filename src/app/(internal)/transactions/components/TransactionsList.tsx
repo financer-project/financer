@@ -8,7 +8,7 @@ import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 
 export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
-    itemsPerPage: number
+    itemsPerPage?: number
 }) => {
     const searchParams = useSearchParams()
     const currentHousehold = useCurrentHousehold()!
