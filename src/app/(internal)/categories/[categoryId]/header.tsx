@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation"
 import Header from "@/src/lib/components/content/nav/Header"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import deleteCategory from "@/src/lib/model/categories/mutations/deleteCategory"
-import { CategoryModel } from "@/src/lib/model/categories/queries/getCategory"
+import { Category } from "@prisma/client"
 
-const CategoryHeader = ({ category }: { category: CategoryModel }) => {
+const CategoryHeader = ({ category }: { category: Category }) => {
     const [deleteCategoryMutation] = useMutation(deleteCategory)
     const router = useRouter()
 
-    const renderActions = (category: CategoryModel) => (
+    const renderActions = (category: Category) => (
         <div className={"flex flex-row gap-4"}>
             <Button variant={"outline"} asChild>
                 <Link href={`/categories/${category.id}/edit`}>Edit</Link>

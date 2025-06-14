@@ -8,7 +8,7 @@ describe("Transactions", () => {
             testData = result as TestData
             cy.loginWithUser(testData.users.standard)
             cy.visit("/dashboard")
-            cy.get("a[href='/transactions']").click()
+            cy.get("li a[href='/transactions']").click()
         })
     })
 

@@ -17,23 +17,21 @@ describe("Categories", () => {
 
         cy.get("label[for='parentId'] + div").type("living{enter}")
         cy.get("input[name='name']").type("Food")
-        cy.get("label[for='color'] + div").type("orange{enter}")
+        cy.get("button[role=select-field]").eq(3).should("contain.text", "Teal")
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
         cy.wait(2000)
         cy.reload()
-        cy.get("ul li ul li")
-            .should("have.text", "Food")
-            .click()
+        cy.get("span").contains("Food").should("exist").click()
 
         cy.get(":nth-child(1) > .text-md").should("contain.text", "Food")
-        cy.get(":nth-child(3) > .text-md").should("contain.text", "Orange")
+        cy.get(":nth-child(3) > .text-md").should("contain.text", "Teal")
 
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").click()
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
         cy.wait(1000)
-        cy.get("ul li ul li").should("not.exist")
+        cy.get("span").contains("Food").should("not.exist")
     })
 })

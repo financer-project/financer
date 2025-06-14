@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
+import { cn } from "@/lib/utils"
 
 export interface TableColumn<T> {
     name: string,
@@ -44,13 +45,13 @@ export const PaginatedTable = <T, >({
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex flex-row justify-between items-center">
-                {createRoute && (
+            {createRoute && (
+                <div className="flex flex-row justify-between items-center">
                     <Button variant="outline" asChild>
                         <Link href={{ pathname: createRoute }}>Create</Link>
                     </Button>
-                )}
-            </div>
+                </div>
+            )}
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -71,7 +72,7 @@ export const PaginatedTable = <T, >({
                     ))}
                 </TableBody>
             </Table>
-            <div className="flex flex-row gap-4 justify-end">
+            <div className={cn(hasMore ? "flex flex-row gap-4 justify-end" : "hidden")}>
                 <Button variant="ghost" disabled={page === 0} onClick={goToPreviousPage}>
                     Previous
                 </Button>

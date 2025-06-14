@@ -23,7 +23,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
     const onCategorySelect = (categoryId: string | null) => {
         const category = categories.findNode((category) => category.id === categoryId)
         if (category) {
-            setTransactionType(category.type as TransactionType)
+            setTransactionType(category.data.type as TransactionType)
         }
     }
 
@@ -33,9 +33,11 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                 <SelectFormField<Transaction>
                     label={"Account"}
                     name={"accountId"}
+                    value={accounts.length === 1 ? accounts[0].id : null}
                     options={accounts
                         .toSorted((a, b) => a.name.localeCompare(b.name))
-                        .map(account => ({ label: account.name, value: account.id }))} />
+                        .map(account => ({ label: account.name, value: account.id }))}
+                    required />
 
                 <SelectFormField<Transaction, string>
                     label={"Category"}
@@ -43,8 +45,8 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                     onChange={onCategorySelect}
                     options={categories
                         .flatten()
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map(category => ({ label: category.name, value: category.id }))} />
+                        .sort((a, b) => a.data.name.localeCompare(b.data.name))
+                        .map(category => ({ label: category.data.name, value: category.data.id }))} />
             </div>
             <div className={"flex flex-row gap-4"}>
                 <TextField<Transaction, string>

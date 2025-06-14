@@ -13,7 +13,6 @@ export default defineConfig({
         dir: "./test/vitest",
         globals: true,
         setupFiles: "test/vitest/setup/mock-prisma.ts",
-        environment: "node",
         coverage: {
             enabled: true,
             provider: "istanbul",
@@ -30,6 +29,12 @@ export default defineConfig({
             ],
             extension: [".ts", ".tsx"],
             reportsDirectory: ".test/unit/coverage/"
-        }
+        },
+    },
+    build: {
+        sourcemap: "inline"
+    },
+    esbuild: {
+        sourcemap: "inline"
     }
 })

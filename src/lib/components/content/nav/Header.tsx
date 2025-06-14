@@ -35,7 +35,7 @@ const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: Heade
                         <Button variant={"link"} asChild className={"text-default p-0 h-full"}>
                             <Link
                                 href={{
-                                    pathname: breadcrumbs.length - 2 > 0
+                                    pathname: breadcrumbs.length - 2 >= 0
                                         ? breadcrumbs[breadcrumbs.length - 2].url ?? "/dashboard"
                                         : "/dashboard"
                                 }}>
@@ -74,7 +74,7 @@ const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: Heade
                 <Separator />
             </div>
             <div className={"flex justify-between items-center"}>
-                <div>
+                <div className={"grow"}>
                     <Title className={"flex flex-row gap-4 items-center"}>
                         {title}
                     </Title>

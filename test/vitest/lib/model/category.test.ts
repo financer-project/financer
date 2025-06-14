@@ -24,7 +24,6 @@ describe("Category Mutations & Queries", () => {
         test("get specific category by ID", async () => {
             const category = await getCategory({ id: util.getTestData().categories.standard.income.id }, util.getMockContext())
             expect(category.id).toBe(util.getTestData().categories.standard.income.id)
-            expect(category.children).toBeDefined()
         })
     })
 

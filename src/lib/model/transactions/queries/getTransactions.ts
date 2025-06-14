@@ -3,9 +3,10 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "src/lib/db"
 import { z } from "zod"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
+import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
 export const GetTransactionsSchema = z.object({
-    householdId: z.string().uuid()
+    householdId: z.string().uuid().optional()
 })
 
 type GetTransactionsInput =
@@ -16,7 +17,13 @@ export default resolver.pipe(
     resolver.authorize(),
     async ({ where, orderBy, skip = 0, take = 100, householdId }: GetTransactionsInput, ctxt: AuthenticatedCtx) => {
 
-        const household = await getHousehold({ id: householdId }, ctxt)
+        let household;
+        if (householdId) {
+            household = await getHousehold({ id: householdId }, ctxt);
+        } else {
+            household = await getCurrentHousehold(null, ctxt);
+            if (!household) return { transactions: [], nextPage: null, hasMore: false, count: 0 };
+        }
 
         orderBy ??= { valueDate: "desc" }
         where = {

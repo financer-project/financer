@@ -6,47 +6,25 @@ import { useQuery } from "@blitzjs/rpc"
 import getBalanceHistory from "@/src/lib/model/transactions/queries/getBalanceHistory"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
-import { Suspense, useState } from "react"
-import { SelectField, SelectOption } from "@/src/lib/components/common/form/elements/SelectField"
-import { DateTime } from "luxon"
+import { Suspense } from "react"
 import { cn } from "@/lib/utils"
-
-// Initialize currentDate globally so it's stable across renders
-const currentDate = DateTime.now()
-
-const selectOptions: SelectOption<DateTime>[] = [
-    { label: "Last 3 Months", value: currentDate.minus({ months: 3 }) },
-    { label: "Last Year", value: currentDate.minus({ months: 12 }) }
-]
+import { useTimeframe } from "../context/TimeframeContext"
 
 const BalanceChart = ({ formatters, className }: WithFormattersProps & { className?: string }) => {
-    const [startDate, setStartDate] = useState<DateTime>(selectOptions[0].value)
-    const [balance] = useQuery(getBalanceHistory, { startDate: startDate.toJSDate() })
+    const { timeframe } = useTimeframe()
+    const [balance] = useQuery(getBalanceHistory, { startDate: timeframe.toJSDate() })
 
     return (
         <Card className={cn("w-full")}>
             <CardHeader>
-                <div className={"flex flex-row justify-between"}>
-                    <div>
-                        <CardTitle>Balance</CardTitle>
-                        <CardDescription>This is your overall balance.</CardDescription>
-                    </div>
-                    <div>
-                        <SelectField<DateTime>
-                            className={"min-w-64"}
-                            placeholder={"Timeframe"}
-                            value={startDate}
-                            onChange={value => value && setStartDate(value)}
-                            options={selectOptions} />
-                    </div>
-                </div>
-
+                <CardTitle>Balance</CardTitle>
+                <CardDescription>This is your overall balance.</CardDescription>
             </CardHeader>
 
             <CardContent>
                 <Suspense fallback={<p>Loading ...</p>}>
                     <ChartContainer
-                        className={cn(" w-full", className)}
+                        className={cn("w-full", className)}
                         config={{
                             income: {
                                 label: "Income",

@@ -7,15 +7,15 @@ import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/wi
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 
-const ITEMS_PER_PAGE = 100
-
-export const TransactionsList = withFormatters(({ formatters }: WithFormattersProps) => {
+export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
+    itemsPerPage?: number
+}) => {
     const searchParams = useSearchParams()
     const currentHousehold = useCurrentHousehold()!
     const page = Number(searchParams?.get("page") ?? 0)
     const [{ transactions, hasMore }] = usePaginatedQuery(getTransactions, {
-        skip: ITEMS_PER_PAGE * page,
-        take: ITEMS_PER_PAGE,
+        skip: itemsPerPage * page,
+        take: itemsPerPage,
         householdId: currentHousehold.id
     })
 
