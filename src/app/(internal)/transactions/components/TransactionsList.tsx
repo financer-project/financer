@@ -6,6 +6,7 @@ import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
+import { Badge } from "@/src/lib/components/ui/badge"
 
 export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
     itemsPerPage?: number
@@ -31,16 +32,17 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                                         : <span className={"text-muted-foreground"}>Uncategorized</span>
                                 },
                                 {
-                                    name: "Tags", 
+                                    name: "Tags",
                                     render: transaction => transaction.tags && transaction.tags.length > 0
                                         ? (
-                                            <div className="flex flex-wrap gap-1">
+                                            <div className="flex flex-wrap gap-2">
                                                 {transaction.tags.map((tagRelation, index) => (
-                                                    <ColoredTag 
-                                                        key={index}
-                                                        color={tagRelation.tag.color}
-                                                        label={tagRelation.tag.name} 
-                                                    />
+                                                    <Badge variant={"secondary"}>
+                                                        <ColoredTag
+                                                            color={tagRelation.tag.color}
+                                                            label={tagRelation.tag.name}
+                                                        />
+                                                    </Badge>
                                                 ))}
                                             </div>
                                         )

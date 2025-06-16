@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
 import { cn } from "@/src/lib/util/utils"
+import { Plus } from "lucide-react"
 
 export interface TableColumn<T> {
     name: string,
@@ -46,9 +47,9 @@ export const PaginatedTable = <T, >({
     return (
         <div className="flex flex-col gap-4">
             {createRoute && (
-                <div className="flex flex-row justify-between items-center">
-                    <Button variant="outline" asChild>
-                        <Link href={{ pathname: createRoute }}>Create</Link>
+                <div className="flex flex-row justify-end items-center">
+                    <Button variant={"outline"} asChild>
+                        <Link href={{ pathname: createRoute }}><Plus /> Create</Link>
                     </Button>
                 </div>
             )}
