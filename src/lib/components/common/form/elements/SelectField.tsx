@@ -50,7 +50,7 @@ export const SelectField = <T, >({
                 setInternalValue(props.value ?? null)
             }
         }
-    }, [props.value, multiple]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [props.value, multiple])
 
     const handleSelect = (newValue: T) => {
         if (!readonly) {
@@ -79,7 +79,7 @@ export const SelectField = <T, >({
                     updatedValues = [newValue]
                 }
 
-                onChange?.(updatedValues as any)
+                onChange?.(updatedValues as T)
                 setInternalValue(updatedValues)
             } else {
                 setIsOpen(false)
@@ -93,7 +93,7 @@ export const SelectField = <T, >({
         if (!readonly) {
             setSearch("")
             if (multiple) {
-                onChange?.([] as any)
+                onChange?.([] as T)
                 setInternalValue([])
             } else {
                 onChange?.(null)

@@ -36,7 +36,7 @@ export const SelectFormField = <E, V = E[keyof E]>({
         if (!readonly) {
             helpers.setValue(newValue)
         }
-        onChange?.(newValue as any)
+        onChange?.(newValue as V)
     }
     return (
         <FormElement name={name} {...props}>

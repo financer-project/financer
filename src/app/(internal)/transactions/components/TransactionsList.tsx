@@ -36,7 +36,7 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                                     render: transaction => transaction.tags && transaction.tags.length > 0
                                         ? (
                                             <div className="flex flex-wrap gap-2">
-                                                {transaction.tags.map((tagRelation, index) => (
+                                                {transaction.tags.map((tagRelation) => (
                                                     <Badge variant={"secondary"}>
                                                         <ColoredTag
                                                             color={tagRelation.tag.color}
