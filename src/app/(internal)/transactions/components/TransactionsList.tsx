@@ -31,6 +31,22 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                                         : <span className={"text-muted-foreground"}>Uncategorized</span>
                                 },
                                 {
+                                    name: "Tags", 
+                                    render: transaction => transaction.tags && transaction.tags.length > 0
+                                        ? (
+                                            <div className="flex flex-wrap gap-1">
+                                                {transaction.tags.map((tagRelation, index) => (
+                                                    <ColoredTag 
+                                                        key={index}
+                                                        color={tagRelation.tag.color}
+                                                        label={tagRelation.tag.name} 
+                                                    />
+                                                ))}
+                                            </div>
+                                        )
+                                        : <span className={"text-muted-foreground"}>No tags</span>
+                                },
+                                {
                                     name: "Date",
                                     render: transaction => formatters.date.format(transaction.valueDate)
                                 },

@@ -16,7 +16,7 @@ import getCategoryDistribution, {
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Suspense, useState } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import { CategoryType } from "@prisma/client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/lib/components/ui/tabs"
 import { useTimeframe } from "../context/TimeframeContext"

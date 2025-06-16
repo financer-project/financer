@@ -4,6 +4,7 @@ import { invoke } from "@/src/app/blitz-server"
 import getTransaction, { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
 import { Transaction } from "../components/Transaction"
 import TransactionHeader from "@/src/app/(internal)/transactions/[transactionId]/header"
+import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 
 async function fetchTransaction(id: string): Promise<TransactionModel> {
     return invoke(getTransaction, { id: id })
@@ -29,7 +30,9 @@ export default async function Page(props: Readonly<TransactionPageProps>) {
         <div>
             <TransactionHeader transaction={transaction} />
             <Suspense fallback={<div>Loading...</div>}>
-                <Transaction transactionId={transaction.id} />
+                <TagProvider>
+                    <Transaction transactionId={transaction.id} />
+                </TagProvider>
             </Suspense>
         </div>
     )

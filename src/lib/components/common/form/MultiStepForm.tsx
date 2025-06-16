@@ -8,7 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/ale
 import { AlertCircle, Check } from "lucide-react"
 import { CardTitle } from "@/src/lib/components/ui/card"
 import { Heading2, SubTitle } from "@/src/lib/components/common/typography"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import { toFormikValidationSchema } from "zod-formik-adapter"
 
 // Step component for use within MultiStepForm

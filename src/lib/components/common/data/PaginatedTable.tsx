@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/lib/components/ui/table"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 
 export interface TableColumn<T> {
     name: string,

@@ -8,7 +8,7 @@ import { AdminSettingsForm } from "./AdminSettingsForm"
 import getAdminSettings from "@/src/lib/model/settings/queries/getAdminSettings"
 import updateAdminSettings from "@/src/lib/model/settings/mutations/updateAdminSettings"
 import sendTestEmail from "@/src/lib/model/settings/mutations/sendTestEmail"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "@/src/lib/hooks/use-toast"
 import { UpdateAdminSettingsSchema } from "@/src/lib/model/settings/schemas/adminSettings"
 
 export const AdminSettings = () => {

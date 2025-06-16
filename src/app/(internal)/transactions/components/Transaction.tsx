@@ -5,6 +5,7 @@ import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/wi
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import Section from "@/src/lib/components/common/structure/Section"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
+import { Badge } from "@/src/lib/components/ui/badge"
 
 export const Transaction = withFormatters(({ transactionId, formatters }: WithFormattersProps & {
     transactionId: string
@@ -33,6 +34,19 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                                               color={transaction.category.color} />}
                               linkTo={`/categories/${transaction.category?.id}`}
                               className={"basis-1/4"} />
+
+                    <DataItem label={"Tags"}
+                              data={
+                                  <div className={"flex gap-2 py-1"}>
+                                      {transaction.tags?.map(tag => (
+                                          <Badge variant={"secondary"}>
+                                              <ColoredTag label={tag.tag.name}
+                                                          color={tag.tag.color} />
+                                          </Badge>
+                                      ))}
+                                  </div>}
+                              linkTo={`/categories/${transaction.category?.id}`}
+                              className={"basis-1/4"} />
                 </div>
 
                 <div className={"flex flex-row w-full"}>
@@ -57,7 +71,7 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
             </Section>
 
             <Section title={"Administrative Data"}
-                     subtitle={"Adminstrative data contains information about who has changed what etc."}>
+                     subtitle={"Administrative data contains information about who has changed what etc."}>
                 <div className={"flex flex-row w-full"}>
                     <DataItem label={"Created At"}
                               data={formatters.date.format(transaction.createdAt)}

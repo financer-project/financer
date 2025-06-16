@@ -3,7 +3,7 @@ import { FormikValues, useField, useFormikContext } from "formik"
 import { useEffect } from "react"
 import { Card, CardContent } from "@/src/lib/components/ui/card"
 import { Switch } from "@/src/lib/components/ui/switch"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 
 interface SwitchFieldProps<E> extends FormElementProps<E, boolean> {
     showCard?: boolean

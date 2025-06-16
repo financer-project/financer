@@ -1,6 +1,6 @@
 "use client"
 
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/src/lib/hooks/use-mobile"
 import { useRouter } from "next/navigation"
 import { useMutation } from "@blitzjs/rpc"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/src/lib/components/ui/sidebar"
@@ -14,7 +14,7 @@ import {
 import { ChevronsUpDown, HouseIcon, Sparkles } from "lucide-react"
 import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provider/HouseholdProvider"
 import changeCurrentHousehold from "@/src/lib/model/household/mutations/changeCurrentHousehold"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useState } from "react"
 import { Household } from "@prisma/client"

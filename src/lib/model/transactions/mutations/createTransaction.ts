@@ -7,7 +7,38 @@ export default resolver.pipe(
     resolver.zod(CreateTransactionSchema),
     resolver.authorize(),
     async (transaction) => {
-        transaction.amount = transaction.type === TransactionType.EXPENSE ? -Math.abs(transaction.amount) : Math.abs(transaction.amount)
-        return db.transaction.create({ data: { ...transaction } })
+        const { tagIds, ...transactionData } = transaction;
+
+        // Adjust amount based on transaction type
+        transactionData.amount = transactionData.type === TransactionType.EXPENSE ? 
+            -Math.abs(transactionData.amount) : Math.abs(transactionData.amount);
+
+        // Create transaction with tag connections if tagIds are provided
+        if (tagIds && tagIds.length > 0) {
+            return db.transaction.create({
+                data: {
+                    ...transactionData,
+                    tags: {
+                        create: tagIds.map(tagId => ({
+                            tag: {
+                                connect: { id: tagId }
+                            }
+                        }))
+                    }
+                },
+                include: {
+                    tags: {
+                        include: {
+                            tag: true
+                        }
+                    }
+                }
+            });
+        } else {
+            // Create transaction without tags
+            return db.transaction.create({ 
+                data: { ...transactionData } 
+            });
+        }
     }
 )

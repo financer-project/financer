@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { NewTransaction } from "../components/NewTransaction"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
+import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import Header from "@/src/lib/components/content/nav/Header"
 
 export const metadata: Metadata = {
@@ -22,7 +23,9 @@ export default function Page() {
             <Suspense fallback={<div>Loading...</div>}>
                 <AccountProvider>
                     <CategoryProvider>
-                        <NewTransaction />
+                        <TagProvider>
+                            <NewTransaction />
+                        </TagProvider>
                     </CategoryProvider>
                 </AccountProvider>
             </Suspense>

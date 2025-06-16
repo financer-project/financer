@@ -9,7 +9,7 @@ import { Separator } from "@/src/lib/components/ui/separator"
 import { Button } from "@/src/lib/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/src/lib/components/ui/scroll-area"
 import { TransactionsList } from "@/src/app/(internal)/transactions/components/TransactionsList"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import { ArrowRight } from "lucide-react"
 
 interface LatestTransactionsProps {

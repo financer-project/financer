@@ -7,6 +7,7 @@ import { SelectField, SelectOption } from "@/src/lib/components/common/form/elem
 
 export interface SelectFormFieldProps<TEntity, TValue> extends FormElementProps<TEntity, TValue> {
     options: SelectOption<TValue>[]
+    multiple?: boolean
 }
 
 export const SelectFormField = <E, V = E[keyof E]>({
@@ -15,26 +16,27 @@ export const SelectFormField = <E, V = E[keyof E]>({
                                                        readonly,
                                                        onChange,
                                                        value,
+                                                       multiple = false,
                                                        ...props
                                                    }: SelectFormFieldProps<E, V>) => {
-    const [field, , helpers] = useField<V | null>(name)
+    const [field, , helpers] = useField<V | V[] | null>(name)
     const { isSubmitting } = useFormikContext()
 
     useEffect(() => {
         if (field.value === undefined) {
-            helpers.setValue(null)
+            helpers.setValue(multiple ? [] : null)
         }
 
-        if (value && value !== field.value) {
+        if (value !== undefined && value !== field.value) {
             helpers.setValue(value)
         }
-    }, [value]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [value, multiple]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleChange = (newValue: V | null) => {
+    const handleChange = (newValue: V | V[] | null) => {
         if (!readonly) {
             helpers.setValue(newValue)
         }
-        onChange?.(newValue)
+        onChange?.(newValue as any)
     }
     return (
         <FormElement name={name} {...props}>
@@ -43,6 +45,7 @@ export const SelectFormField = <E, V = E[keyof E]>({
                 value={field.value}
                 onChange={handleChange}
                 readonly={readonly || isSubmitting}
+                multiple={multiple}
                 {...props} />
         </FormElement>
     )

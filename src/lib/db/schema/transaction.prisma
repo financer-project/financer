@@ -16,10 +16,21 @@ model Transaction {
 
     importJob   ImportJob? @relation(fields: [importJobId], references: [id])
     importJobId String?
+
+    tags TransactonTags[] @relation(name: "TransactionTags")
 }
 
 enum TransactionType {
     INCOME
     EXPENSE
     TRANSFER
+}
+
+model TransactonTags {
+    transactionId String
+    transaction   Transaction @relation(name: "TransactionTags", fields: [transactionId], references: [id])
+    tagId         String
+    tag           Tag         @relation(name: "TagTransactions", fields: [tagId], references: [id])
+
+    @@id([transactionId, tagId])
 }

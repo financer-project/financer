@@ -1,7 +1,7 @@
 import { Separator } from "@/src/lib/components/ui/separator"
 import { Heading1, SubTitle } from "@/src/lib/components/common/typography"
 import React, { PropsWithChildren } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 
 export interface SectionProps extends PropsWithChildren {
     title: string,

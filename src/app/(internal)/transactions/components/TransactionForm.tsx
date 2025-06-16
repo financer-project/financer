@@ -9,16 +9,19 @@ import TextAreaField from "@/src/lib/components/common/form/elements/TextAreaFie
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
+import { useTags } from "@/src/lib/components/provider/TagProvider"
 import DatePickerFormField from "@/src/lib/components/common/form/elements/DatePickerFormField"
 import { DateTime } from "luxon"
+import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
 
     const accounts = useAccounts()
     const categories = useCategories()
+    const tags = useTags()
 
-    const [transactionType, setTransactionType] = useState<TransactionType | null>(null)
+    const [transactionType, setTransactionType] = useState<TransactionType | null>(props.initialValues?.type ?? null)
 
     const onCategorySelect = (categoryId: string | null) => {
         const category = categories.findNode((category) => category.id === categoryId)
@@ -84,6 +87,20 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                 label={"Description"}
                 name={"description"}
                 required />
+
+            <SelectFormField
+                label={"Tags"}
+                name={"tagIds"}
+                multiple={true}
+                options={tags
+                    .toSorted((a, b) => a.name.localeCompare(b.name))
+                    .map(tag => ({
+                        label: tag.name,
+                        value: tag.id,
+                        render: () => (
+                            <ColoredTag label={tag.name} color={tag.color} />
+                        )
+                    }))} />
         </Form>
     )
 }

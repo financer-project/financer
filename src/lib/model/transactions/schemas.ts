@@ -8,7 +8,8 @@ export const CreateTransactionSchema = z.object({
     name: z.string(),
     valueDate: z.date(),
     description: z.string().nullable(),
-    amount: z.number()
+    amount: z.number(),
+    tagIds: z.array(z.string().uuid()).optional()
 })
 
 export const UpdateTransactionSchema = CreateTransactionSchema.merge(

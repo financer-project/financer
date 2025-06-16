@@ -21,7 +21,8 @@ import {
     HandCoinsIcon,
     HouseIcon,
     ImportIcon,
-    ShieldIcon
+    ShieldIcon,
+    TagIcon
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
@@ -61,6 +62,11 @@ const getGroups = (isAdmin: boolean) => [
                 title: "Categories",
                 url: "/categories",
                 icon: BookmarkIcon
+            },
+            {
+                title: "Tags",
+                url: "/tags",
+                icon: TagIcon
             }
         ]
     },
