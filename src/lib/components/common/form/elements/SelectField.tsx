@@ -16,7 +16,7 @@ export interface SelectOption<T> {
     render?: (label: string) => React.ReactNode
 }
 
-interface SelectFieldProps<T> extends ElementProps<T> {
+interface SelectFieldProps<T> extends ElementProps<T | T[]> {
     options: SelectOption<T>[]
     multiple?: boolean
 }
