@@ -39,7 +39,7 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                               data={
                                   <div className={"flex gap-2 py-1"}>
                                       {transaction.tags?.map(tag => (
-                                          <Badge variant={"secondary"}>
+                                          <Badge key={tag.tagId} variant={"secondary"}>
                                               <ColoredTag label={tag.tag.name}
                                                           color={tag.tag.color} />
                                           </Badge>

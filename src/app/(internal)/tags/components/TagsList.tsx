@@ -32,7 +32,7 @@ export const TagsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithF
                 },
                 {
                     name: "Description",
-                    render: tag => tag.description ||
+                    render: tag => tag.description ??
                         <span className={"text-muted-foreground"}>No description</span>
                 },
                 {

@@ -140,7 +140,7 @@ export function SelectField<T, >({
                         const option = options.find((opt) => JSON.stringify(opt.value) === JSON.stringify(val))
                         if (option) {
                             return (
-                                <Badge variant={"secondary"}>
+                                <Badge key={option.value as string} variant={"secondary"}>
                                     {option.render ? option.render(option.label) : option.label}
                                 </Badge>
                             )

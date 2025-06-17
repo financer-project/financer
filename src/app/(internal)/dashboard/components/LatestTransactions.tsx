@@ -34,7 +34,7 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
 
     if (transactions.length === 0) {
         return (
-            <div className={`rounded-lg border p-4 ${className || ""}`}>
+            <div className={`rounded-lg border p-4 ${className ?? ""}`}>
                 <h3 className="text-lg font-medium mb-2">Latest Transactions</h3>
                 <p className="text-muted-foreground">No transactions found in the selected timeframe.</p>
             </div>

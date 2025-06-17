@@ -21,7 +21,7 @@ export const Tag = withFormatters(({ tagId, formatters }: WithFormattersProps & 
 
                     <DataItem label={"Description"}
                               className={"basis-1/4"}
-                              data={tag.description || <span className="text-muted-foreground">No description</span>} />
+                              data={tag.description ?? <span className="text-muted-foreground">No description</span>} />
 
                     <DataItem label={"Color"}
                               className={"basis-1/4"}
