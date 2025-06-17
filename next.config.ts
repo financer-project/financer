@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
         typedRoutes: true,
         forceSwcTransforms: true
     },
+    serverExternalPackages: ["bullmq"],
     output: "standalone",
     webpack: (config, { isServer }) => {
         if (isServer) {

@@ -34,8 +34,8 @@ describe("<SelectField />", () => {
 
         it("select with a value binding", () => {
             let data: string | null = null
-            const setData = (newValue: string | string[] | null) => {
-                data = newValue as string
+            const setData = (newValue: string | null) => {
+                data = newValue
                 cy.mount(
                     <SelectField<string>
                         options={[

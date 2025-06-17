@@ -40,13 +40,21 @@ export const SelectFormField = <E, V = E[keyof E]>({
     }
     return (
         <FormElement name={name} {...props}>
-            <SelectField
-                options={options}
-                value={field.value}
-                onChange={handleChange}
-                readonly={readonly || isSubmitting}
-                multiple={multiple}
-                {...props} />
+            {multiple
+                ? <SelectField
+                    options={options}
+                    value={field.value as V[]}
+                    onChange={handleChange as (newValue: V[] | null) => void}
+                    readonly={readonly || isSubmitting}
+                    multiple={true}
+                    {...props} />
+                : <SelectField
+                    options={options}
+                    value={field.value as V}
+                    onChange={handleChange as (newValue: V | null) => void}
+                    readonly={readonly || isSubmitting}
+                    multiple={false}
+                    {...props} />}
         </FormElement>
     )
 }

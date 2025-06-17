@@ -16,24 +16,43 @@ export interface SelectOption<T> {
     render?: (label: string) => React.ReactNode
 }
 
-interface SelectFieldProps<T> extends ElementProps<T | T[]> {
+interface SingleSelectProps<T> extends ElementProps<T> {
+    multiple?: false
     options: SelectOption<T>[]
-    multiple?: boolean
 }
 
-export const SelectField = <T, >({
+
+interface MultiSelectProps<T>
+    extends Omit<ElementProps<T[]>, "value" | "onChange"> {
+    multiple: true
+    options: SelectOption<T>[]
+    value?: T[]
+    onChange?: (value: T[]) => void
+}
+
+
+export type SelectFieldProps<T> = SingleSelectProps<T> | MultiSelectProps<T>
+
+export function SelectField<T>(props: MultiSelectProps<T>): React.ReactElement
+export function SelectField<T>(props: SingleSelectProps<T>): React.ReactElement
+
+
+export function SelectField<T, >({
                                      options,
                                      onChange,
                                      readonly,
                                      placeholder = "Select option ...",
                                      multiple = false,
                                      ...props
-                                 }: SelectFieldProps<T>) => {
+                                 }: SelectFieldProps<T>) {
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState("")
     const [internalValue, setInternalValue] = useState<T | T[] | null>(
         multiple ? (Array.isArray(props.value) ? props.value : []) : (props.value ?? null)
     )
+
+    const onChangeMultiple = onChange as (v: T[]) => void
+    const onChangeSingle = onChange as (v: T | null) => void
 
     // Update internal state when external value changes
     useEffect(() => {
@@ -79,11 +98,11 @@ export const SelectField = <T, >({
                     updatedValues = [newValue]
                 }
 
-                onChange?.(updatedValues as T)
+                onChangeMultiple?.(updatedValues)
                 setInternalValue(updatedValues)
             } else {
                 setIsOpen(false)
-                onChange?.(newValue)
+                onChangeSingle?.(newValue)
                 setInternalValue(newValue)
             }
         }
@@ -93,10 +112,10 @@ export const SelectField = <T, >({
         if (!readonly) {
             setSearch("")
             if (multiple) {
-                onChange?.([] as T)
+                onChangeMultiple?.([])
                 setInternalValue([])
             } else {
-                onChange?.(null)
+                onChangeSingle?.(null)
                 setInternalValue(null)
             }
         }
