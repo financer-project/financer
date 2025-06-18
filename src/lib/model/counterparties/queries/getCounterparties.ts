@@ -4,7 +4,7 @@ import db, { Prisma } from "@/src/lib/db"
 import { z } from "zod"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
-const GetCounterpartiesSchema = z.object({
+export const GetCounterpartiesSchema = z.object({
     householdId: z.string().uuid()
 })
 
