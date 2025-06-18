@@ -17,11 +17,12 @@ describe("Transactions", () => {
 
         cy.get("a[href='/transactions/new']").click()
 
-        cy.get("label[for='accountId'] + div").type("My Account{enter}")
-        cy.get("label[for='categoryId'] + div").type("Income{enter}")
+        cy.get("button").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Salary")
         cy.get("label[for='type'] + div").type("Income{enter}")
         cy.get("input[name='amount']").type("100.00")
+        cy.get("label[for='categoryId'] + div").type("Income{enter}")
+        cy.get("label[for='counterpartyId'] + div").type("Test Employer{enter}")
 
         // Select tags
         cy.get("label[for='tagIds'] + div").click()
@@ -31,10 +32,11 @@ describe("Transactions", () => {
 
         cy.get("button[type='submit']").click()
 
-        // Verify transaction details including tags
+        // Verify transaction details including tags and counterparty
         cy.get(":nth-child(1) > .text-md").should("contain.text", "Salary")
         cy.get("div span").should("contain.text", "Work")
         cy.get("div span").should("contain.text", "Personal")
+        cy.get("div").contains("Counterparty").next().should("contain.text", "Test Employer")
 
         // Edit the transaction to change tags
         cy.get("a").contains("Edit").click()
@@ -59,14 +61,16 @@ describe("Transactions", () => {
     it("should be able to create a transaction without tags", () => {
         cy.get("a[href='/transactions/new']").click()
 
-        cy.get("label[for='accountId'] + div").type("My Account{enter}")
-        cy.get("label[for='categoryId'] + div").type("Income{enter}")
+        cy.get("button").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Bonus")
         cy.get("label[for='type'] + div").type("Income{enter}")
         cy.get("input[name='amount']").type("50.00")
+        cy.get("label[for='categoryId'] + div").type("Income{enter}")
+        cy.get("label[for='counterpartyId'] + div").type("Test Merchant{enter}")
         cy.get("button[type='submit']").click()
 
         cy.get(":nth-child(1) > .text-md").should("contain.text", "Bonus")
+        cy.get("div").contains("Counterparty").next().should("contain.text", "Test Merchant")
 
         // Clean up
         cy.get(".bg-destructive").click()

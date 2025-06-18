@@ -21,7 +21,7 @@ import {
     HandCoinsIcon,
     HouseIcon,
     ImportIcon,
-    ShieldIcon,
+    ShieldIcon, StoreIcon,
     TagIcon
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -67,6 +67,11 @@ const getGroups = (isAdmin: boolean) => [
                 title: "Tags",
                 url: "/tags",
                 icon: TagIcon
+            },
+            {
+                title: "Counterparties",
+                url: "/counterparties",
+                icon: StoreIcon
             }
         ]
     },

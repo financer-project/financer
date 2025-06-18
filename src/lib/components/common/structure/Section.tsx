@@ -24,7 +24,9 @@ const Section = ({ title, subtitle, actions, children, className, id }: SectionP
                 </div>
                 {actions && (typeof actions === "function" ? actions() : actions)}
             </div>
-            {children}
+            <div className={"flex flex-col gap-4"}>
+                {children}
+            </div>
         </section>
     )
 }

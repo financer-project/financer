@@ -101,9 +101,14 @@ export function SelectField<T, >({
                 onChangeMultiple?.(updatedValues)
                 setInternalValue(updatedValues)
             } else {
-                setIsOpen(false)
-                onChangeSingle?.(newValue)
-                setInternalValue(newValue)
+                if (isValueSelected(newValue)) {
+                    onChangeSingle?.(null)
+                    setInternalValue(null)
+                } else {
+                    setIsOpen(false)
+                    onChangeSingle?.(newValue)
+                    setInternalValue(newValue)
+                }
             }
         }
     }

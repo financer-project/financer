@@ -6,11 +6,14 @@ import DataItem from "@/src/lib/components/common/data/DataItem"
 import Section from "@/src/lib/components/common/structure/Section"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { Badge } from "@/src/lib/components/ui/badge"
+import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
+import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 
 export const Transaction = withFormatters(({ transactionId, formatters }: WithFormattersProps & {
     transactionId: string
 }) => {
     const [transaction] = useQuery(getTransaction, { id: transactionId })
+    const counterparties = useCounterparties()
 
     return (
         <div className={"flex flex-col gap-16"}>
@@ -33,6 +36,16 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                                   <ColoredTag label={transaction.category.name}
                                               color={transaction.category.color} />}
                               linkTo={`/categories/${transaction.category?.id}`}
+                              className={"basis-1/4"} />
+
+                    <DataItem label={"Counterparty"}
+                              data={transaction.counterpartyId && (() => {
+                                  const counterparty = counterparties.find(c => c.id === transaction.counterpartyId)
+                                  return counterparty
+                                      ? <CounterpartyIcon type={counterparty.type} name={counterparty.name} />
+                                      : null
+                              })()}
+                              linkTo={transaction.counterpartyId ? `/counterparties/${transaction.counterpartyId}` : undefined}
                               className={"basis-1/4"} />
 
                     <DataItem label={"Tags"}

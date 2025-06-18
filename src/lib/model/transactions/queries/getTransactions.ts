@@ -51,7 +51,8 @@ export default resolver.pipe(
                         include: {
                             tag: true
                         }
-                    }
+                    },
+                    counterparty: true
                 }
             })
         })

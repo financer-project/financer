@@ -7,6 +7,7 @@ import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/wi
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import { Badge } from "@/src/lib/components/ui/badge"
+import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 
 export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
     itemsPerPage?: number
@@ -47,6 +48,13 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                                             </div>
                                         )
                                         : <span className={"text-muted-foreground"}>No tags</span>
+                                },
+                                {
+                                    name: "Counterparty",
+                                    render: transaction => transaction.counterparty
+                                        ? <CounterpartyIcon name={transaction.counterparty.name}
+                                                            type={transaction.counterparty.type} />
+                                        : <span className={"text-muted-foreground"}>No counterparty</span>
                                 },
                                 {
                                     name: "Date",

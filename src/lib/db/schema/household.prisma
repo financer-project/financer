@@ -16,6 +16,8 @@ model Household {
     Tag Tag[] @relation(name: "HouseholdTag")
 
     ImportJob ImportJob[]
+
+    Counterparty Counterparty[] @relation(name: "HouseholdCounterparty")
 }
 
 model HouseholdMembership {

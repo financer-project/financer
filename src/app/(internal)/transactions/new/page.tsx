@@ -4,6 +4,7 @@ import { NewTransaction } from "../components/NewTransaction"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
+import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
 import Header from "@/src/lib/components/content/nav/Header"
 
 export const metadata: Metadata = {
@@ -24,7 +25,9 @@ export default function Page() {
                 <AccountProvider>
                     <CategoryProvider>
                         <TagProvider>
-                            <NewTransaction />
+                            <CounterpartyProvider>
+                                <NewTransaction />
+                            </CounterpartyProvider>
                         </TagProvider>
                     </CategoryProvider>
                 </AccountProvider>

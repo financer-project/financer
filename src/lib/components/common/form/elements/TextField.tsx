@@ -31,9 +31,14 @@ export const TextField = <E, V>({ name, type = "text", ...props }: LabeledTextFi
                    type={type}
                    placeholder={props.placeholder}
                    onChange={event => {
-                       input.onChange(event)
-                       if (event.target.value) {
-                           props.onChange?.(event.target.value as V)
+                       if (event.target.value === "") {
+                           helpers.setValue(null)
+                           props.onChange?.(null)
+                       } else {
+                           input.onChange(event)
+                           if (event.target.value) {
+                               props.onChange?.(event.target.value as V)
+                           }
                        }
                    }} />
         </FormElement>
