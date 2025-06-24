@@ -50,8 +50,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                 <div className={"flex flex-row gap-4"}>
                     <TextField<Transaction, string>
                         label={"Name"}
-                        name={"name"}
-                        required />
+                        name={"name"} />
 
                     <DatePickerFormField<Transaction>
                         name={"valueDate"}

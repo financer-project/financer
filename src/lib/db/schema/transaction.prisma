@@ -2,10 +2,10 @@ model Transaction {
     id          String          @id @default(uuid())
     createdAt   DateTime        @default(now())
     updatedAt   DateTime        @updatedAt
-    name        String
     type        TransactionType
     amount      Float
     valueDate   DateTime        @default(now())
+    name        String?
     description String?
     isTransfer  Boolean         @default(false)
 

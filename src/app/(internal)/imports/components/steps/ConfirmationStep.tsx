@@ -50,7 +50,7 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
     const transactionCount = csvData.length
 
     // Check if all required mappings are configured
-    const hasRequiredMappings = values.columnMappings.some(m => m.fieldName === "name") &&
+    const hasRequiredMappings = 
         values.columnMappings.some(m => m.fieldName === "amount") &&
         values.columnMappings.some(m => m.fieldName === "valueDate")
 
@@ -159,7 +159,7 @@ export const ConfirmationStep = ({ csvData }: ConfirmationStepProps) => {
                 <Alert variant="destructive">
                     <AlertTitle>Missing required mappings</AlertTitle>
                     <AlertDescription>
-                        You must map columns to the following required fields: Name, Amount, and Value Date.
+                        You must map columns to the following required fields: Amount and Value Date.
                     </AlertDescription>
                 </Alert>
             )}
