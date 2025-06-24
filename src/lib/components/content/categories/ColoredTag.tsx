@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import ColorType, { getBackgroundColor } from "@/src/lib/model/common/ColorType"
 import React from "react"
 

@@ -1,5 +1,5 @@
 import { Label } from "../../ui/label"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import Link from "next/link"
 
 type Data = string | number | React.ReactNode | null | undefined;

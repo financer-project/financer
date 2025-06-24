@@ -1,7 +1,7 @@
 import { Separator } from "@/src/lib/components/ui/separator"
 import { Heading1, SubTitle } from "@/src/lib/components/common/typography"
 import React, { PropsWithChildren } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 
 export interface SectionProps extends PropsWithChildren {
     title: string,
@@ -24,7 +24,9 @@ const Section = ({ title, subtitle, actions, children, className, id }: SectionP
                 </div>
                 {actions && (typeof actions === "function" ? actions() : actions)}
             </div>
-            {children}
+            <div className={"flex flex-col gap-4"}>
+                {children}
+            </div>
         </section>
     )
 }

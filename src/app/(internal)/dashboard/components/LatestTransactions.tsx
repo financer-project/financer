@@ -9,7 +9,7 @@ import { Separator } from "@/src/lib/components/ui/separator"
 import { Button } from "@/src/lib/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/src/lib/components/ui/scroll-area"
 import { TransactionsList } from "@/src/app/(internal)/transactions/components/TransactionsList"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import { ArrowRight } from "lucide-react"
 
 interface LatestTransactionsProps {
@@ -34,7 +34,7 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
 
     if (transactions.length === 0) {
         return (
-            <div className={`rounded-lg border p-4 ${className || ""}`}>
+            <div className={`rounded-lg border p-4 ${className ?? ""}`}>
                 <h3 className="text-lg font-medium mb-2">Latest Transactions</h3>
                 <p className="text-muted-foreground">No transactions found in the selected timeframe.</p>
             </div>

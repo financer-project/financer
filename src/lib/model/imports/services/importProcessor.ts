@@ -32,7 +32,7 @@ type FieldMappings = {
 
 // Helper type for transaction creation
 type TransactionData = {
-    name: string;
+    name: string | null;
     type: TransactionType;
     amount: number;
     valueDate: Date;
@@ -176,7 +176,7 @@ function processRow(
     const valueDateMapping = importJob.columnMappings.find(m => m.fieldName === "valueDate")
 
     // Get values from row
-    const name = getValueFromRow(row, fieldToColumnIndex, "name") ?? "Unnamed Transaction"
+    const name = getValueFromRow(row, fieldToColumnIndex, "name")
     const description = getValueFromRow(row, fieldToColumnIndex, "description")
     const amountString = getValueFromRow(row, fieldToColumnIndex, "amount")
     const dateString = getValueFromRow(row, fieldToColumnIndex, "valueDate")

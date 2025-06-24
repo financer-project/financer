@@ -13,6 +13,16 @@ export const EditTransaction = ({ transactionId }: { transactionId: string }) =>
     const [transaction] = useQuery(getTransaction, { id: transactionId }, { staleTime: Infinity })
     const [updateTransactionMutation] = useMutation(updateTransaction)
     const router = useRouter()
+
+    // Extract tagIds from transaction.tags
+    const tagIds = transaction.tags?.map(tag => tag.tag.id) || []
+
+    // Prepare initialValues with tagIds
+    const initialValues = {
+        ...transaction,
+        tagIds
+    }
+
     return (
         <div>
             <Header title="Edit Transaction"
@@ -26,7 +36,7 @@ export const EditTransaction = ({ transactionId }: { transactionId: string }) =>
                 <TransactionForm
                     submitText="Update Transaction"
                     schema={UpdateTransactionSchema}
-                    initialValues={transaction}
+                    initialValues={initialValues}
                     onSubmit={async (values) => {
                         try {
                             await updateTransactionMutation({ ...values, id: transaction.id })

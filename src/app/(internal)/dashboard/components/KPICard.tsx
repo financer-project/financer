@@ -2,7 +2,7 @@
 
 import React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react"
 
 export type TrendDirection = "up" | "down" | "neutral"

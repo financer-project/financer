@@ -7,7 +7,7 @@ import getBalanceHistory from "@/src/lib/model/transactions/queries/getBalanceHi
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Suspense } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import { useTimeframe } from "../context/TimeframeContext"
 
 const BalanceChart = ({ formatters, className }: WithFormattersProps & { className?: string }) => {

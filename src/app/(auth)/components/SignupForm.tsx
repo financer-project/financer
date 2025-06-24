@@ -6,7 +6,7 @@ import { Signup } from "../validations"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
 
 export const SignupForm = () => {

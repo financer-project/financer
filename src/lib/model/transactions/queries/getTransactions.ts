@@ -45,7 +45,15 @@ export default resolver.pipe(
                 ...paginateArgs,
                 where,
                 orderBy,
-                include: { category: true }
+                include: { 
+                    category: true,
+                    tags: {
+                        include: {
+                            tag: true
+                        }
+                    },
+                    counterparty: true
+                }
             })
         })
 

@@ -5,6 +5,7 @@ import { TransactionsList } from "./components/TransactionsList"
 import Header from "@/src/lib/components/content/nav/Header"
 import { Button } from "@/src/lib/components/ui/button"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
+import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 
 export const metadata: Metadata = {
     title: "Transactions",
@@ -27,7 +28,9 @@ export default function Page() {
                     } />
             <Suspense fallback={<div>Loading...</div>}>
                 <HouseholdProvider>
-                    <TransactionsList />
+                    <TagProvider>
+                        <TransactionsList />
+                    </TagProvider>
                 </HouseholdProvider>
             </Suspense>
         </div>

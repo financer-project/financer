@@ -1,7 +1,7 @@
 import React, { Children, isValidElement, PropsWithChildren, useEffect, useState } from "react"
 import Section, { SectionProps } from "./Section"
 import SectionSidebar, { SectionInfo } from "./SectionSidebar"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 
 interface SectionContainerProps {
     children: React.ReactNode;

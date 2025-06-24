@@ -13,7 +13,11 @@ model Household {
 
     Category Category[] @relation(name: "CategoryHousehold")
 
+    Tag Tag[] @relation(name: "HouseholdTag")
+
     ImportJob ImportJob[]
+
+    Counterparty Counterparty[] @relation(name: "HouseholdCounterparty")
 }
 
 model HouseholdMembership {

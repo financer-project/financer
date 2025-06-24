@@ -50,7 +50,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: TransactionType.INCOME,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 500,
-                description: "Test income transaction"
+                description: "Test income transaction",
+                counterpartyId: null
             }
 
             const result = await createTransaction(transactionData, util.getMockContext())
@@ -68,7 +69,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: TransactionType.EXPENSE,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 300,
-                description: "Test expense transaction"
+                description: "Test expense transaction",
+                counterpartyId: null
             }
 
             const result = await createTransaction(transactionData, util.getMockContext())
@@ -86,7 +88,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: TransactionType.INCOME,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 100,
-                description: null
+                description: null,
+                counterpartyId: null
             }, util.getMockContext())
 
             expect(result.id).not.toBeUndefined()
@@ -101,7 +104,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: TransactionType.INCOME,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 100,
-                description: null
+                description: null,
+                counterpartyId: null
             }, util.getMockContext())).rejects.toThrowError()
         })
     })
@@ -118,7 +122,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: originalTransaction.type,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 250,
-                description: "Updated description"
+                description: "Updated description",
+                counterpartyId: null
             }, util.getMockContext())
 
             expect(result.name).toBe("Updated Transaction")
@@ -141,7 +146,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: TransactionType.INCOME,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 100,
-                description: null
+                description: null,
+                counterpartyId: null
             }, util.getMockContext())
 
             expect(income.amount).toBe(100) // Positive for income
@@ -155,7 +161,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: TransactionType.EXPENSE,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 100,
-                description: null
+                description: null,
+                counterpartyId: null
             }, util.getMockContext())
 
             expect(updated.amount).toBe(-100) // Should now be negative
@@ -170,7 +177,8 @@ describe("Transaction Mutations & Queries", () => {
                 type: TransactionType.INCOME,
                 valueDate: DateTime.now().toJSDate(),
                 amount: 100,
-                description: null
+                description: null,
+                counterpartyId: null
             }, util.getMockContext())).rejects.toThrowError()
         })
     })

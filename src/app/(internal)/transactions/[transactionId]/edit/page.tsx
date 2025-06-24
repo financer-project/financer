@@ -5,6 +5,8 @@ import getTransaction from "@/src/lib/model/transactions/queries/getTransaction"
 import { EditTransaction } from "../../components/EditTransaction"
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
+import { TagProvider } from "@/src/lib/components/provider/TagProvider"
+import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
 
 type EditTransactionPageProps = {
     params: Promise<{ transactionId: string }>
@@ -25,7 +27,11 @@ export default async function Page(props: Readonly<EditTransactionPageProps>) {
             <Suspense fallback={<div>Loading...</div>}>
                 <AccountProvider>
                     <CategoryProvider>
-                        <EditTransaction transactionId={params.transactionId} />
+                        <TagProvider>
+                            <CounterpartyProvider>
+                                <EditTransaction transactionId={params.transactionId} />
+                            </CounterpartyProvider>
+                        </TagProvider>
                     </CategoryProvider>
                 </AccountProvider>
             </Suspense>

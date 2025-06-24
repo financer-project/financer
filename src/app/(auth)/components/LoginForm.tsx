@@ -10,7 +10,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { useRouter, useSearchParams } from "next/navigation"
 import type { Route } from "next"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 
 export const LoginForm = () => {
     const [loginMutation] = useMutation(login)

@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/lib/components/ui/popover"
 import { Button } from "@/src/lib/components/ui/button"
-import { cn } from "@/lib/utils"
-import { X } from "lucide-react"
+import { cn } from "@/src/lib/util/utils"
+import { Check, X } from "lucide-react"
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/src/lib/components/ui/command"
 import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
 import { ElementProps } from "@/src/lib/components/common/form/FormElement"
+import { Badge } from "@/src/lib/components/ui/badge"
 
 export interface SelectOption<T> {
     label: string;
@@ -15,42 +16,113 @@ export interface SelectOption<T> {
     render?: (label: string) => React.ReactNode
 }
 
-interface SelectFieldProps<T> extends ElementProps<T> {
+interface SingleSelectProps<T> extends ElementProps<T> {
+    multiple?: false
     options: SelectOption<T>[]
 }
 
-export const SelectField = <T, >({
+
+interface MultiSelectProps<T>
+    extends Omit<ElementProps<T[]>, "value" | "onChange"> {
+    multiple: true
+    options: SelectOption<T>[]
+    value?: T[]
+    onChange?: (value: T[]) => void
+}
+
+
+export type SelectFieldProps<T> = SingleSelectProps<T> | MultiSelectProps<T>
+
+export function SelectField<T>(props: MultiSelectProps<T>): React.ReactElement
+export function SelectField<T>(props: SingleSelectProps<T>): React.ReactElement
+
+
+export function SelectField<T, >({
                                      options,
                                      onChange,
                                      readonly,
                                      placeholder = "Select option ...",
+                                     multiple = false,
                                      ...props
-                                 }: SelectFieldProps<T>) => {
+                                 }: SelectFieldProps<T>) {
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState("")
-    const [internalValue, setInternalValue] = useState<T | null>(props.value ?? null)
+    const [internalValue, setInternalValue] = useState<T | T[] | null>(
+        multiple ? (Array.isArray(props.value) ? props.value : []) : (props.value ?? null)
+    )
+
+    const onChangeMultiple = onChange as (v: T[]) => void
+    const onChangeSingle = onChange as (v: T | null) => void
 
     // Update internal state when external value changes
     useEffect(() => {
-        if (props.value && props.value !== internalValue) {
-            setInternalValue(props.value ?? null)
+        if (props.value !== undefined) {
+            if (multiple) {
+                if (Array.isArray(props.value)) {
+                    setInternalValue(props.value)
+                } else if (props.value !== null) {
+                    setInternalValue([props.value])
+                } else {
+                    setInternalValue([])
+                }
+            } else {
+                setInternalValue(props.value ?? null)
+            }
         }
-    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [props.value, multiple])
 
     const handleSelect = (newValue: T) => {
         if (!readonly) {
             setSearch("")
-            setIsOpen(false)
-            onChange?.(newValue)
-            setInternalValue(newValue)
+
+            if (multiple) {
+                let updatedValues: T[]
+
+                if (Array.isArray(internalValue)) {
+                    // Check if value already exists in array
+                    const valueExists = internalValue.some(
+                        (val) => JSON.stringify(val) === JSON.stringify(newValue)
+                    )
+
+                    if (valueExists) {
+                        // Remove value if it already exists
+                        updatedValues = internalValue.filter(
+                            (val) => JSON.stringify(val) !== JSON.stringify(newValue)
+                        )
+                    } else {
+                        // Add value if it doesn't exist
+                        updatedValues = [...internalValue, newValue]
+                    }
+                } else {
+                    // Initialize array with new value
+                    updatedValues = [newValue]
+                }
+
+                onChangeMultiple?.(updatedValues)
+                setInternalValue(updatedValues)
+            } else {
+                if (isValueSelected(newValue)) {
+                    onChangeSingle?.(null)
+                    setInternalValue(null)
+                } else {
+                    setIsOpen(false)
+                    onChangeSingle?.(newValue)
+                    setInternalValue(newValue)
+                }
+            }
         }
     }
 
     const handleClear = () => {
         if (!readonly) {
             setSearch("")
-            onChange?.(null)
-            setInternalValue(null)
+            if (multiple) {
+                onChangeMultiple?.([])
+                setInternalValue([])
+            } else {
+                onChangeSingle?.(null)
+                setInternalValue(null)
+            }
         }
     }
 
@@ -58,10 +130,35 @@ export const SelectField = <T, >({
         option.label.toLowerCase().includes(search.toLowerCase())
     )
 
-    const renderValue = (value: T | null) => {
-        const option = options.find((option) => option.value === value)
-        if (option) {
-            return option.render ? option.render(option.label) : option.label
+    const isValueSelected = (value: T): boolean => {
+        if (multiple && Array.isArray(internalValue)) {
+            return internalValue.some(val => JSON.stringify(val) === JSON.stringify(value))
+        }
+        return JSON.stringify(internalValue) === JSON.stringify(value)
+    }
+
+    const renderValue = (value: T | T[] | null) => {
+        if (multiple && Array.isArray(value) && value.length > 0) {
+            return (
+                <div className="flex flex-wrap gap-2">
+                    {value.map((val) => {
+                        const option = options.find((opt) => JSON.stringify(opt.value) === JSON.stringify(val))
+                        if (option) {
+                            return (
+                                <Badge key={option.value as string} variant={"secondary"}>
+                                    {option.render ? option.render(option.label) : option.label}
+                                </Badge>
+                            )
+                        }
+                        return null
+                    })}
+                </div>
+            )
+        } else if (!multiple) {
+            const option = options.find((option) => JSON.stringify(option.value) === JSON.stringify(value))
+            if (option) {
+                return option.render ? option.render(option.label) : option.label
+            }
         }
         return placeholder
     }
@@ -73,7 +170,11 @@ export const SelectField = <T, >({
                     <Button
                         variant={"outline"}
                         role="select-field"
-                        className={cn("w-full items-start justify-start font-normal shadow-sm", props.className, internalValue ? "" : "text-muted-foreground")}
+                        className={cn(
+                            "w-full justify-start font-normal shadow-sm px-4 py-0",
+                            props.className,
+                            (multiple ? (Array.isArray(internalValue) && internalValue.length > 0) : internalValue) ? "" : "text-muted-foreground"
+                        )}
                         onClick={(event) => {
                             event.preventDefault()
                             if (!readonly) setIsOpen(true)
@@ -81,7 +182,8 @@ export const SelectField = <T, >({
                         disabled={readonly}>
                         {renderValue(internalValue)}
                     </Button>
-                    {internalValue && !readonly && (
+                    {((multiple && Array.isArray(internalValue) && internalValue.length > 0) ||
+                        (!multiple && internalValue !== null)) && !readonly && (
                         <Button
                             variant={"ghost"}
                             onClick={handleClear}
@@ -104,8 +206,11 @@ export const SelectField = <T, >({
                                 filteredOptions.map((option) => (
                                     <CommandItem
                                         key={option.value as string}
-                                        onSelect={() => handleSelect(option.value)}>
-                                        {renderValue(option.value)}
+                                        onSelect={() => handleSelect(option.value)}
+                                        className={cn("transition-all", isValueSelected(option.value) && "bg-accent")}>
+                                        <Check
+                                            className={cn(isValueSelected(option.value) ? "visible" : "invisible")} />
+                                        {option.render ? option.render(option.label) : option.label}
                                     </CommandItem>
                                 ))
                             ) : (

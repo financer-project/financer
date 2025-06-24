@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { ChevronDown, ChevronRight, Squirrel } from "lucide-react"
 import { Tree, TreeNode } from "@/src/lib/model/categories/Tree"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/util/utils"
 import { useRouter } from "next/navigation"
 import { Separator } from "../../ui/separator"
 

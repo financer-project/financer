@@ -1,0 +1,35 @@
+model Counterparty {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name        String
+    type        CounterpartyType
+    description String?
+    accountName String?
+    webAddress  String?
+
+    household   Household @relation(name: "HouseholdCounterparty", fields: [householdId], references: [id])
+    householdId String
+
+    transactions Transaction[] @relation("TransactionCounterparty")
+}
+
+enum CounterpartyType {
+    INDIVIDUAL
+    MERCHANT
+    EMPLOYER
+    GOVERNMENT
+    UTILITY
+    SERVICE_PROVIDER
+    LENDER
+    BORROWER
+    CHARITY
+    INSURANCE
+    HEALTHCARE
+    EDUCATION
+    LANDLORD
+    INVESTMENT_FIRM
+    PLATFORM
+    OTHER
+}

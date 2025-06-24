@@ -4,11 +4,13 @@ import { TransactionType } from "@prisma/client"
 export const CreateTransactionSchema = z.object({
     accountId: z.string().uuid(),
     categoryId: z.string().uuid().nullable(),
+    counterpartyId: z.string().uuid().nullable(),
     type: z.nativeEnum(TransactionType),
-    name: z.string(),
+    name: z.string().nullable(),
     valueDate: z.date(),
     description: z.string().nullable(),
-    amount: z.number()
+    amount: z.number(),
+    tagIds: z.array(z.string().uuid()).optional()
 })
 
 export const UpdateTransactionSchema = CreateTransactionSchema.merge(

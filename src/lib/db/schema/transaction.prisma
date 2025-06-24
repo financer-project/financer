@@ -2,10 +2,10 @@ model Transaction {
     id          String          @id @default(uuid())
     createdAt   DateTime        @default(now())
     updatedAt   DateTime        @updatedAt
-    name        String
     type        TransactionType
     amount      Float
     valueDate   DateTime        @default(now())
+    name        String?
     description String?
     isTransfer  Boolean         @default(false)
 
@@ -14,12 +14,26 @@ model Transaction {
     category   Category? @relation(fields: [categoryId], references: [id])
     categoryId String?
 
+    counterpartyId String?
+    counterparty   Counterparty? @relation("TransactionCounterparty", fields: [counterpartyId], references: [id])
+
     importJob   ImportJob? @relation(fields: [importJobId], references: [id])
     importJobId String?
+
+    tags TransactonTags[] @relation(name: "TransactionTags")
 }
 
 enum TransactionType {
     INCOME
     EXPENSE
     TRANSFER
+}
+
+model TransactonTags {
+    transactionId String
+    transaction   Transaction @relation(name: "TransactionTags", fields: [transactionId], references: [id])
+    tagId         String
+    tag           Tag         @relation(name: "TagTransactions", fields: [tagId], references: [id])
+
+    @@id([transactionId, tagId])
 }

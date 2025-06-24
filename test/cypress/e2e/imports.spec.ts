@@ -46,14 +46,12 @@ describe("CSV Import", () => {
 
         // Map values to entities
         // Map "My Account" to the standard account
-        cy.contains("My Account").parent().find("button").first().click()
-        cy.get("div[role='dialog']").contains(testData.accounts.standard.name).click()
+        cy.get("button").contains("My Account").should("exist")
 
         cy.contains("Categories (2)").click()
 
-        // Map "Income" to the income category
-        cy.contains("Income").parent().find("button").first().click()
-        cy.get("div[role='dialog']").contains(testData.categories.standard.income.name).click()
+        // Income category should be mapped automatically
+        cy.get("button").contains("Income").should("exist")
 
         // Map "Living Costs" to the living costs category
         cy.contains("Living Costs").parent().find("button").first().click()

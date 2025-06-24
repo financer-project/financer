@@ -6,6 +6,8 @@ import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
+import { Badge } from "@/src/lib/components/ui/badge"
+import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 
 export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
     itemsPerPage?: number
@@ -29,6 +31,30 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                                         ? <ColoredTag color={transaction.category.color}
                                                       label={transaction.category.name} />
                                         : <span className={"text-muted-foreground"}>Uncategorized</span>
+                                },
+                                {
+                                    name: "Tags",
+                                    render: transaction => transaction.tags && transaction.tags.length > 0
+                                        ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {transaction.tags.map((tagRelation) => (
+                                                    <Badge key={tagRelation.tagId} variant={"secondary"}>
+                                                        <ColoredTag
+                                                            color={tagRelation.tag.color}
+                                                            label={tagRelation.tag.name}
+                                                        />
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                        )
+                                        : <span className={"text-muted-foreground"}>No tags</span>
+                                },
+                                {
+                                    name: "Counterparty",
+                                    render: transaction => transaction.counterparty
+                                        ? <CounterpartyIcon name={transaction.counterparty.name}
+                                                            type={transaction.counterparty.type} />
+                                        : <span className={"text-muted-foreground"}>No counterparty</span>
                                 },
                                 {
                                     name: "Date",

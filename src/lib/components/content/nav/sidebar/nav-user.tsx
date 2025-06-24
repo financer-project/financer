@@ -14,8 +14,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useMutation } from "@blitzjs/rpc"
 import logout from "@/src/lib/model/auth/mutations/logout"
-import { useCurrentUser } from "@/src/app/users/hooks/useCurrentUser"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useCurrentUser } from "@/src/lib/hooks/useCurrentUser"
+import { useIsMobile } from "@/src/lib/hooks/use-mobile"
 
 export function NavUser() {
     const user = useCurrentUser()

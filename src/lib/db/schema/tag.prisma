@@ -1,0 +1,13 @@
+model Tag {
+    id          String   @id @default(uuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    name        String
+    description String?
+    color       String?
+
+    household   Household @relation(name: "HouseholdTag", fields: [householdId], references: [id])
+    householdId String
+
+    transactions TransactonTags[] @relation(name: "TagTransactions")
+}

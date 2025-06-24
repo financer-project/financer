@@ -7,7 +7,7 @@ import resetPassword from "@/src/lib/model/auth/mutations/resetPassword"
 import { useMutation } from "@blitzjs/rpc"
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "@/src/lib/hooks/use-toast"
 import { Input } from "@/src/lib/components/ui/input"
 
 export function ResetPasswordForm() {

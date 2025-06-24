@@ -5,7 +5,7 @@ import { ForgotPassword } from "../validations"
 import forgotPassword from "@/src/lib/model/auth/mutations/forgotPassword"
 import { useMutation } from "@blitzjs/rpc"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "@/src/lib/hooks/use-toast"
 
 export function ForgotPasswordForm() {
     const [forgotPasswordMutation] = useMutation(forgotPassword)
