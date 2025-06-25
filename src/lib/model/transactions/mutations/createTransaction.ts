@@ -2,10 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "src/lib/db"
 import { CreateTransactionSchema } from "../schemas"
 import { TransactionType } from "@prisma/client"
+import Guard from "@/src/lib/guard/ability"
 
 export default resolver.pipe(
     resolver.zod(CreateTransactionSchema),
     resolver.authorize(),
+    Guard.authorizePipe("create", "Transaction"),
     async (transaction) => {
         const { tagIds, ...transactionData } = transaction;
 

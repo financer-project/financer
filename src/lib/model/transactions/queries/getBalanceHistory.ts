@@ -18,15 +18,15 @@ export interface BalanceHistory {
 
 /**
  * Group transactions by month and calculate income and expenses for each month
- * 
+ *
  * @param transactions - List of transactions to process
  * @param startMonth - Start month for the history
  * @param endMonth - End month for the history
  * @returns Array of monthly balance history entries
  */
 function calculateMonthlyBalances(
-    transactions: Transaction[], 
-    startMonth: DateTime, 
+    transactions: Transaction[],
+    startMonth: DateTime,
     endMonth: DateTime
 ): BalanceHistory[] {
     // Pre-group transactions by month for better performance
@@ -86,7 +86,7 @@ export default resolver.pipe(
 
         // Get all transactions in the date range for the current household
         const transactions = await db.transaction.findMany({
-            where: { 
+            where: {
                 valueDate: { gte: startDate, lte: endDate },
                 account: {
                     householdId: currentHousehold.id

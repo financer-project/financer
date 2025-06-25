@@ -8,6 +8,7 @@ import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
+import { Badge } from "@/src/lib/components/ui/badge"
 
 const ITEMS_PER_PAGE = 100
 
@@ -44,6 +45,18 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                 </div>
             </Section>
 
+            <Section title={"Members"}
+                     subtitle={"Manage household members and their roles."}>
+                <Suspense fallback={<div>Loading members...</div>}>
+                    <PaginatedTable
+                        data={household.members}
+                        columns={[
+                            { name: "Name", render: (member) => formatters.user.format(member.user) },
+                            { name: "Email", render: (member) => member.user.email },
+                            { name: "Role", render: (member) => <Badge variant={"secondary"}>{member.role}</Badge> }
+                        ]} />
+                </Suspense>
+            </Section>
 
             <Section title={"Accounts"}
                      subtitle={"Please find all information to the household below."}>

@@ -72,7 +72,16 @@ describe("Household Mutations & Queries", () => {
             const household = await getCurrentHousehold(null, ctx)
 
             expect(household).not.toBeNull()
-            expect(household?.ownerId).toBe(ctx.session.userId)
+
+            // Check if the user has a membership with OWNER role
+            const membership = await util.getDatabase().householdMembership.findFirst({
+                where: {
+                    householdId: household!.id,
+                    userId: ctx.session.userId,
+                    role: "OWNER"
+                }
+            })
+            expect(membership).not.toBeNull()
         })
 
         test("throws exception when no user is authenticated", async () => {
@@ -86,7 +95,16 @@ describe("Household Mutations & Queries", () => {
             const household = await getCurrentHousehold(null, ctx)
 
             expect(household).not.toBeNull()
-            expect(household?.ownerId).toBe(ctx.session.userId)
+
+            // Check if the user has a membership with OWNER role
+            const membership = await util.getDatabase().householdMembership.findFirst({
+                where: {
+                    householdId: household!.id,
+                    userId: ctx.session.userId,
+                    role: "OWNER"
+                }
+            })
+            expect(membership).not.toBeNull()
         })
 
         test("finds next household when current household doesn't exist anymore", async () => {
@@ -94,7 +112,16 @@ describe("Household Mutations & Queries", () => {
             const household = await getCurrentHousehold(null, ctx)
 
             expect(household).not.toBeNull()
-            expect(household?.ownerId).toBe(ctx.session.userId)
+
+            // Check if the user has a membership with OWNER role
+            const membership = await util.getDatabase().householdMembership.findFirst({
+                where: {
+                    householdId: household!.id,
+                    userId: ctx.session.userId,
+                    role: "OWNER"
+                }
+            })
+            expect(membership).not.toBeNull()
         })
     })
 

@@ -5,6 +5,7 @@ import deleteAccount from "@/src/lib/model/account/mutations/deleteAccount"
 import getAccount from "@/src/lib/model/account/queries/getAccount"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
+import { AuthorizationError } from "blitz"
 
 describe("Account Mutations & Queries", () => {
     const util = TestUtilityMock.getInstance()
@@ -79,8 +80,9 @@ describe("Account Mutations & Queries", () => {
         })
 
         test("fails to delete non-existing account", async () => {
-            const result = await deleteAccount({ id: "non-existent-id" }, util.getMockContext())
-            expect(result.count).toBe(0)
+            await expect(async () => deleteAccount({ id: "non-existent-id" }, util.getMockContext()))
+                .rejects
+                .toThrowError(AuthorizationError)
         })
     })
 })

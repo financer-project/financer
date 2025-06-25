@@ -37,9 +37,10 @@
     },
     "dependencies": {
         "@blitzjs/auth": "^2.2.1",
-        "@blitzjs/next": "^2.2.1",
         "@blitzjs/rpc": "^2.2.1",
         "@prisma/client": "^6.4.1",
+        "@blitz-guard/core": "^0.4.1",
+        "@blitzjs/next": "^2.2.1",
         "@radix-ui/react-alert-dialog": "^1.1.5",
         "@radix-ui/react-avatar": "^1.1.2",
         "@radix-ui/react-checkbox": "1.2.3",

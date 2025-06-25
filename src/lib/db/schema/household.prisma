@@ -6,8 +6,6 @@ model Household {
     description String?
     currency    String
 
-    owner    User                  @relation(name: "HouseholdOwner", fields: [ownerId], references: [id])
-    ownerId  String
     accounts Account[]
     members  HouseholdMembership[]
 
@@ -21,7 +19,7 @@ model Household {
 }
 
 model HouseholdMembership {
-    id          Int           @id @default(autoincrement())
+    id          String        @id @default(uuid())
     createdAt   DateTime      @default(now())
     user        User          @relation(fields: [userId], references: [id])
     userId      String
@@ -34,6 +32,7 @@ model HouseholdMembership {
 }
 
 enum HouseholdRole {
+    OWNER
     ADMIN
     MEMBER
     GUEST

@@ -1,20 +1,13 @@
 import { resolver } from "@blitzjs/rpc"
 import { UpdateCounterpartySchema } from "../schemas"
 import db from "@/src/lib/db"
+import Guard from "@/src/lib/guard/ability"
 
 export default resolver.pipe(
     resolver.zod(UpdateCounterpartySchema),
     resolver.authorize(),
+    Guard.authorizePipe("update", "Counterparty"),
     async ({ id, householdId, ...data }) => {
-        // Ensure the counterparty belongs to the specified household
-        const counterparty = await db.counterparty.findFirst({
-            where: { id, householdId }
-        })
-
-        if (!counterparty) {
-            throw new Error("Counterparty not found in this household")
-        }
-
         return db.counterparty.update({
             where: { id },
             data: { ...data, householdId }
