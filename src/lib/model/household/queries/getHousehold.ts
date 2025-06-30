@@ -8,17 +8,22 @@ const GetHousehold = z.object({
     id: z.string().uuid()
 })
 
+export const HouseholdModelInclude = {
+    members: {
+        include: {
+            user: {
+                select: { id: true, email: true, firstName: true, lastName: true }
+            }
+        }
+    }
+}
+
 export type HouseholdModel = Prisma.HouseholdGetPayload<{
     include: {
         members: {
             include: {
                 user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        firstName: true,
-                        lastName: true
-                    }
+                    select: { id: true, email: true, firstName: true, lastName: true }
                 }
             }
         }
@@ -32,20 +37,7 @@ export default resolver.pipe(
     async ({ id }): Promise<HouseholdModel> => {
         const household = await db.household.findFirst({
             where: { id },
-            include: {
-                members: {
-                    include: {
-                        user: {
-                            select: {
-                                id: true,
-                                email: true,
-                                firstName: true,
-                                lastName: true
-                            }
-                        }
-                    }
-                }
-            }
+            include: HouseholdModelInclude
         })
         if (!household) throw new NotFoundError()
         return household
