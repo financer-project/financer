@@ -11,7 +11,7 @@ model ImportJob {
     processedRows Int?
     errorMessage  String?
 
-    household   Household @relation(fields: [householdId], references: [id])
+    household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
     householdId String
 
     columnMappings ColumnMapping[]

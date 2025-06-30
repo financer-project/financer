@@ -892,6 +892,14 @@
   resolved "https://registry.npmjs.org/@balena/dockerignore/-/dockerignore-1.0.2.tgz#9ffe4726915251e8eb69f44ef3547e0da2c03e0d"
   integrity sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==
 
+"@blitz-guard/core@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.npmjs.org/@blitz-guard/core/-/core-0.4.1.tgz#ab4e7c3dd0cff2ed9d46db89064223870c4dc827"
+  integrity sha512-4BBPIxIjamNAINKUVl2GCohXenwGcWiV16JH5goaC7YNUosvlAjPZ9EQoydWZhJ6S/dBVeInLD5FqfXzwFoKrA==
+  dependencies:
+    runtypes "^6.3.1"
+    tslib "2.3.0"
+
 "@blitzjs/auth@^2.2.1":
   version "2.2.2"
   resolved "https://registry.npmjs.org/@blitzjs/auth/-/auth-2.2.2.tgz#bd50a4a164ed58b0963d31c744a9e40ac0e93b62"
@@ -10737,6 +10745,11 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
+runtypes@^6.3.1:
+  version "6.7.0"
+  resolved "https://registry.npmjs.org/runtypes/-/runtypes-6.7.0.tgz#5ffc7e3a51142639d8a8e0155ef4bb8c2ae4c54b"
+  integrity sha512-3TLdfFX8YHNFOhwHrSJza6uxVBmBrEjnNQlNXvXCdItS0Pdskfg5vVXUTWIN+Y23QR09jWpSl99UHkA83m4uWA==
+
 rxjs@^7.5.1, rxjs@^7.8.2:
   version "7.8.2"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-7.8.2.tgz#955bc473ed8af11a002a2be52071bf475638607b"
@@ -11967,6 +11980,11 @@ tsconfig-paths@^3.15.0:
     json5 "^1.0.2"
     minimist "^1.2.6"
     strip-bom "^3.0.0"
+
+tslib@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
 tslib@^2.0.0, tslib@^2.0.1, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.8.0:
   version "2.8.1"

@@ -19,6 +19,7 @@ export default class TestUtilityMock extends TestUtilityBase {
         }
         return TestUtilityMock.instance
     }
+
     async startDatabase(): Promise<void> {
         throw new Error("Method not implemented")
     }
@@ -74,6 +75,9 @@ export default class TestUtilityMock extends TestUtilityBase {
                     if (user === "none" || (args[0] && args[0] !== this.role)) {
                         throw new AuthenticationError("Authorization required.")
                     }
+                },
+                $isAuthorized() {
+                    return user !== "none"
                 },
                 $revoke() {
                     userId = null

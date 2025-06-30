@@ -16,7 +16,7 @@ interface PaginatedTableProps<T> {
     data: T[]
     columns: Array<TableColumn<T>>
     itemRoute?: (item: T) => string
-    hasMore: boolean
+    hasMore?: boolean
     createRoute?: string
 }
 

@@ -10,7 +10,6 @@ model User {
 
     tokens          Token[]
     sessions        Session[]
-    householdsOwned Household[]           @relation("HouseholdOwner")
     memberships     HouseholdMembership[]
     settings        Settings?             @relation("UserSettings")
 }
