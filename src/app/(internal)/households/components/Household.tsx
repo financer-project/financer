@@ -45,19 +45,6 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                 </div>
             </Section>
 
-            <Section title={"Members"}
-                     subtitle={"Manage household members and their roles."}>
-                <Suspense fallback={<div>Loading members...</div>}>
-                    <PaginatedTable
-                        data={household.members}
-                        columns={[
-                            { name: "Name", render: (member) => formatters.user.format(member.user) },
-                            { name: "Email", render: (member) => member.user.email },
-                            { name: "Role", render: (member) => <Badge variant={"secondary"}>{member.role}</Badge> }
-                        ]} />
-                </Suspense>
-            </Section>
-
             <Section title={"Accounts"}
                      subtitle={"Please find all information to the household below."}>
                 <Suspense fallback={<div>Loading...</div>}>
@@ -78,6 +65,19 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                             }
                         ]}
                     />
+                </Suspense>
+            </Section>
+
+            <Section title={"Members"}
+                     subtitle={"Manage household members and their roles."}>
+                <Suspense fallback={<div>Loading members...</div>}>
+                    <PaginatedTable
+                        data={household.members}
+                        columns={[
+                            { name: "Name", render: (member) => formatters.user.format(member.user) },
+                            { name: "Email", render: (member) => member.user.email },
+                            { name: "Role", render: (member) => <Badge variant={"secondary"}>{member.role}</Badge> }
+                        ]} />
                 </Suspense>
             </Section>
         </div>

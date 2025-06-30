@@ -6,7 +6,7 @@ model Tag {
     description String?
     color       String?
 
-    household   Household @relation(name: "HouseholdTag", fields: [householdId], references: [id])
+    household   Household @relation(name: "HouseholdTag", fields: [householdId], references: [id], onDelete: Cascade)
     householdId String
 
     transactions TransactonTags[] @relation(name: "TagTransactions")

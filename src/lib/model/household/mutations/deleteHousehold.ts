@@ -8,6 +8,6 @@ export default resolver.pipe(
     resolver.authorize(),
     Guard.authorizePipe("delete", "Household"),
     async ({ id }) => {
-        return db.household.deleteMany({ where: { id } })
+        return db.household.deleteMany({ where: { id },  })
     }
 )

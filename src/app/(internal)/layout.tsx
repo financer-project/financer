@@ -10,11 +10,16 @@ import Theme from "@/src/app/(internal)/theme"
 import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
+import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
 export const dynamic = "force-dynamic"
 
 async function fetchUser() {
     return invoke(getCurrentUser, {})
+}
+
+async function fetchHousehold() {
+    return invoke(getCurrentHousehold, {})
 }
 
 async function fetchSettings() {
@@ -33,6 +38,10 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
     const currentUser = await fetchUser()
     if (!currentUser) {
         redirect("/login")
+    }
+    const currentHousehold = await fetchHousehold()
+    if (!currentHousehold) {
+        redirect("/onboarding")
     }
 
     const settings = await fetchSettings()
