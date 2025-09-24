@@ -17,6 +17,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install package manager (from package.json)
+        run: |
+          corepack enable
+          corepack install
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
