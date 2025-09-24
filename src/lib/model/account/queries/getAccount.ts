@@ -5,7 +5,7 @@ import { z } from "zod"
 import { Prisma } from ".prisma/client"
 
 const GetAccount = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export type AccountModel = Prisma.AccountGetPayload<{ include: { household: true } }>;

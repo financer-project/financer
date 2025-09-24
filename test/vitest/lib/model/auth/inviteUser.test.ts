@@ -47,7 +47,7 @@ describe("inviteUser mutation", () => {
         // Mock db.token.deleteMany and db.token.create
         vi.spyOn(db.token, "deleteMany").mockResolvedValue({ count: 0 })
         vi.spyOn(db.token, "create").mockResolvedValue({
-            id: 1,
+            id: "id",
             createdAt: new Date(),
             updatedAt: new Date(),
             hashedToken: "hashed-test-token",

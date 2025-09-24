@@ -4,7 +4,7 @@ import db from "src/lib/db"
 import { NotFoundError } from "blitz"
 
 const ChangeCurrentHouseholdSchema = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export default resolver.pipe(

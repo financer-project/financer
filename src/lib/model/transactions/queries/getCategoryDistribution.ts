@@ -11,7 +11,7 @@ import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHou
 const GetCategoryDistribution = z.object({
     startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
     endDate: z.date().max(DateTime.now().endOf("month").toJSDate()).optional(),
-    categoryIds: z.array(z.string().uuid()).optional(),
+    categoryIds: z.array(z.uuid()).optional(),
     includeUncategorized: z.boolean().default(false)
 })
 

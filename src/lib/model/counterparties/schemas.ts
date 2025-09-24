@@ -2,7 +2,7 @@ import { z } from "zod"
 import { CounterpartyType } from "@prisma/client"
 
 export const CreateCounterpartySchema = z.object({
-    householdId: z.string().uuid(),
+    householdId: z.uuid(),
     name: z.string().min(1),
     type: z.nativeEnum(CounterpartyType),
     description: z.string().nullable(),
@@ -12,10 +12,10 @@ export const CreateCounterpartySchema = z.object({
 
 export const UpdateCounterpartySchema = CreateCounterpartySchema.merge(
     z.object({
-        id: z.string().uuid()
+        id: z.uuid()
     })
 )
 
 export const DeleteCounterpartySchema = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })

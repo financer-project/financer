@@ -6,7 +6,7 @@ import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
 export const GetTransactionsSchema = z.object({
-    householdId: z.string().uuid().optional()
+    householdId: z.uuid().optional()
 })
 
 type GetTransactionsInput =

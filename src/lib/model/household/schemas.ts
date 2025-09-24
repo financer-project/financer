@@ -11,10 +11,10 @@ export const CreateHouseholdSchema = z.object({
 
 export const UpdateHouseholdSchema = CreateHouseholdSchema.merge(
     z.object({
-        id: z.string().uuid()
+        id: z.uuid()
     })
 )
 
 export const DeleteHouseholdSchema = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })

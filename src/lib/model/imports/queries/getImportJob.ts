@@ -4,7 +4,7 @@ import { z } from "zod"
 import { Prisma } from "@prisma/client"
 
 const GetImportJobSchema = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export type ImportJobModel = Prisma.ImportJobGetPayload<{

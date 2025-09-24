@@ -1,4 +1,7 @@
-FROM node:20-bullseye-slim AS base
+FROM node:22-bullseye-slim AS base
+
+# Enable Corepack to use Yarn 4 defined in package.json (packageManager)
+RUN corepack enable
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -7,9 +10,9 @@ FROM base AS deps
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* .npmrc* ./
-RUN yarn install --frozen-lockfile
-
+COPY package.json yarn.lock .yarnrc.yml ./
+RUN yarn workspaces focus --production
+RUN yarn install --immutable
 
 # Rebuild the source code only when needed
 FROM base AS builder

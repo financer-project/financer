@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const CreateAccountSchema = z.object({
-    householdId: z.string().uuid(),
+    householdId: z.uuid(),
     name: z.string().min(3),
     technicalIdentifier: z.string().nullable()
 })

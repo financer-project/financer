@@ -37,7 +37,7 @@ describe("Signup Mutation", () => {
         // Mock db.token.findFirst and db.token.delete
         vi.spyOn(db.token, "findFirst").mockResolvedValue(null)
         vi.spyOn(db.token, "delete").mockResolvedValue({
-            id: 1,
+            id: "id",
             createdAt: new Date(),
             updatedAt: new Date(),
             hashedToken: "hashed-test-token",

@@ -3,9 +3,9 @@ import { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
     experimental: {
-        typedRoutes: true,
         forceSwcTransforms: true
     },
+    typedRoutes: true,
     serverExternalPackages: ["bullmq"],
     output: "standalone",
     webpack: (config, { isServer }) => {

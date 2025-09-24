@@ -37,14 +37,15 @@ export function Form<S extends z.ZodType<any, any>>({
 
     const searchParams = useSearchParams() // Access query parameters dynamically
 
-    const getInitialValues = () => {
+    const getInitialValues = (): z.infer<S> => {
         if (searchParams) {
             const params = Object.fromEntries(searchParams.entries()) // Convert query params into an object
             return {
                 ...initialValues,
                 ...params
-            }
+            } as z.infer<S>
         }
+        return (initialValues ?? {}) as z.infer<S>
     }
 
 

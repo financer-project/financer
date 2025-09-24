@@ -35,13 +35,13 @@ export const PaginatedTable = <T, >({
     const goToPreviousPage = () => {
         const params = new URLSearchParams(searchParams ?? {})
         params.set("page", (page - 1).toString())
-        router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
+        router.push(pathname + "?" + params.toString())
     }
 
     const goToNextPage = () => {
         const params = new URLSearchParams(searchParams ?? {})
         params.set("page", (page + 1).toString())
-        router.push(pathname + "?" + params.toString() as __next_route_internal_types__.RouteImpl<string>)
+        router.push(pathname + "?" + params.toString())
     }
 
     return (
@@ -65,7 +65,7 @@ export const PaginatedTable = <T, >({
                     {data.map((item, index) => (
                         <TableRow key={`tr-${index}`}
                                   className={"cursor-pointer"}
-                                  onClick={() => itemRoute && router.push(itemRoute(item) as __next_route_internal_types__.RouteImpl<string>)}>
+                                  onClick={() => itemRoute && router.push(itemRoute(item))}>
                             {columns.map((column, colIndex) => (
                                 <TableCell key={`td-${colIndex}`}>{column.render(item)}</TableCell>
                             ))}

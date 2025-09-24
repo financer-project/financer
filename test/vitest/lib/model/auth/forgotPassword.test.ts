@@ -46,7 +46,7 @@ describe("forgotPassword mutation", () => {
         // Mock db.token.deleteMany and db.token.create
         vi.spyOn(db.token, "deleteMany").mockResolvedValue({ count: 0 })
         vi.spyOn(db.token, "create").mockResolvedValue({
-            id: 1,
+            id: "id",
             createdAt: new Date(),
             updatedAt: new Date(),
             hashedToken: "hashed-test-token",
@@ -81,7 +81,7 @@ describe("forgotPassword mutation", () => {
     it("should throw a RecentPasswordResetError when a recent token exists", async () => {
         // Mock db.token.findFirst to return a recent token
         vi.mocked(db.token.findFirst).mockResolvedValueOnce({
-            id: 1,
+            id: "id",
             createdAt: new Date(),
             updatedAt: new Date(),
             hashedToken: "existing-hashed-token",
