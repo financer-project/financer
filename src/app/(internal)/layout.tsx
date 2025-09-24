@@ -8,6 +8,7 @@ import { invoke } from "src/app/blitz-server"
 import getSetting from "@/src/lib/model/settings/queries/getSetting"
 import Theme from "@/src/app/(internal)/theme"
 import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
+import checkOnboardingStatus from "@/src/lib/model/onboarding/queries/checkOnboardingStatus"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 
@@ -19,6 +20,10 @@ async function fetchUser() {
 
 async function fetchSettings() {
     return invoke(getSetting, {})
+}
+
+async function fetchOnboardingStatus() {
+    return invoke(checkOnboardingStatus, {})
 }
 
 export const metadata: Metadata = {
@@ -33,6 +38,12 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
     const currentUser = await fetchUser()
     if (!currentUser) {
         redirect("/login")
+    }
+
+    // Check if onboarding is needed and redirect if necessary
+    const onboardingStatus = await fetchOnboardingStatus()
+    if (onboardingStatus.needsOnboarding) {
+        redirect("/onboarding")
     }
 
     const settings = await fetchSettings()
