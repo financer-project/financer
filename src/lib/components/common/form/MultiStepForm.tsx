@@ -6,7 +6,7 @@ import { z } from "zod"
 import { Button } from "@/src/lib/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
 import { AlertCircle, Check } from "lucide-react"
-import { CardTitle } from "@/src/lib/components/ui/card"
+import { CardDescription, CardTitle } from "@/src/lib/components/ui/card"
 import { Heading2, SubTitle } from "@/src/lib/components/common/typography"
 import { cn } from "@/src/lib/util/utils"
 import { toFormikValidationSchema } from "zod-formik-adapter"
@@ -58,7 +58,7 @@ export const StepsVisualization = ({ steps, currentStep, onClickAction }: StepsV
             <div className={"flex w-full"}>
                 {steps.map((step, index) => (
                     <div key={`step-${step.title}`}
-                        className={"flex flex-col items-center flex-1 relative"}>
+                         className={"flex flex-col items-center flex-1 relative"}>
                         <Button
                             key={`step-${step.title}`}
                             variant={"ghost"}
@@ -91,6 +91,7 @@ export const StepsVisualization = ({ steps, currentStep, onClickAction }: StepsV
 export interface MultiStepFormProps<S extends z.ZodSchema<any>> // eslint-disable-line @typescript-eslint/no-explicit-any
     extends Omit<PropsWithoutRef<React.JSX.IntrinsicElements["form"]>, "onSubmit"> {
     title?: string
+    description?: string
     schema: S
     children: ReactNode
     initialValues: FormikProps<z.infer<S>>["initialValues"]
@@ -107,6 +108,7 @@ interface OnSubmitResult {
 
 export function MultiStepForm<S extends z.ZodType<any, any>>({ // eslint-disable-line @typescript-eslint/no-explicit-any
                                                                  title,
+                                                                 description,
                                                                  children,
                                                                  initialValues,
                                                                  onSubmit,
@@ -202,7 +204,10 @@ export function MultiStepForm<S extends z.ZodType<any, any>>({ // eslint-disable
         <div className="flex flex-col gap-8 w-full">
             {title && (
                 <div className={"flex flex-col gap-4 w-full"}>
-                    <CardTitle>{title}</CardTitle>
+                    <div className={"flex flex-col gap-2"}>
+                        <CardTitle>{title}</CardTitle>
+                        <CardDescription>{description}</CardDescription>
+                    </div>
                     <StepsVisualization steps={stepNames}
                                         currentStep={currentStep}
                                         onClickAction={index => setCurrentStep(index)} />

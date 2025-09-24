@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
 import checkOnboardingStatus from "@/src/lib/model/onboarding/queries/checkOnboardingStatus"
 import { z } from "zod"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
+import { Card, CardContent } from "@/src/lib/components/ui/card"
 import { MultiStepForm, Step } from "@/src/lib/components/common/form/MultiStepForm"
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
 import { SelectFormField } from "@/src/lib/components/common/form/elements/SelectFormField"
@@ -87,14 +87,10 @@ export default function OnboardingPage() {
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <div className="w-full max-w-2xl">
                 <Card>
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Welcome to Financer!</CardTitle>
-                        <CardDescription>
-                            Let's get you set up with your account, household, and preferences.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                    <CardContent className={"pt-6"}>
                         <MultiStepForm
+                            title={"Onboarding"}
+                            description={"Complete your account setup and preferences"}
                             schema={OnboardingSchema}
                             onSubmit={handleOnboardingComplete}
                             initialValues={{
@@ -108,10 +104,9 @@ export default function OnboardingPage() {
                                 defaultLanguage: "en-US",
                                 defaultTheme: "light",
                                 allowRegistration: true
-                            }}
-                        >
+                            }}>
                             <Step
-                                name="account"
+                                name="Account"
                                 title="Create Your Account"
                                 description="First, let's create your user account"
                                 validationSchema={z.object({
@@ -119,8 +114,7 @@ export default function OnboardingPage() {
                                     lastName: z.string().min(1, "Last name is required"),
                                     email: z.string().email("Invalid email address"),
                                     password: z.string().min(10, "Password must be at least 10 characters")
-                                })}
-                            >
+                                })}>
                                 <div className="flex flex-row gap-4">
                                     <div className="flex-1">
                                         <TextField
@@ -160,7 +154,7 @@ export default function OnboardingPage() {
                             </Step>
 
                             <Step
-                                name="household"
+                                name="Household"
                                 title="Create Your Household"
                                 description="Set up your household for managing finances"
                                 validationSchema={z.object({
@@ -199,7 +193,7 @@ export default function OnboardingPage() {
                             </Step>
 
                             <Step
-                                name="settings"
+                                name="Settings"
                                 title="Configure Settings"
                                 description="Set your preferences and complete the setup"
                             >
