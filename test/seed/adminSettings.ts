@@ -1,5 +1,4 @@
 import { AdminSettings } from "@prisma/client"
-import { HouseholdSeed } from "@/test/seed/households"
 import db from "@/src/lib/db"
 
 export interface AdminSettingsSeed {
@@ -18,7 +17,8 @@ export default async function seedAdminSettings(): Promise<AdminSettingsSeed> {
             smtpFromName: "Financer App",
             allowRegistration: true,
             defaultLanguage: "en-US",
-            defaultTheme: "light"
+            defaultTheme: "light",
+            onboardingCompleted: true
         }
     })
     return {
