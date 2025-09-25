@@ -6,8 +6,12 @@ node_modules/
 
 # Tests
 test/
+.test/
+.nyc_output/
 cypress.config.ts
+vitest.config.ts
 .env.test
+sonar-project.properties
 
 # Tools
 .github/
@@ -16,3 +20,6 @@ docker/
 
 # Docs
 README.md
+
+# Data
+data/
