@@ -27,6 +27,7 @@ CREATE TABLE `AdminSettings` (
     `resetPasswordTokenExpirationHours` INTEGER NOT NULL DEFAULT 4,
     `defaultLanguage` VARCHAR(191) NOT NULL DEFAULT 'en-US',
     `defaultTheme` VARCHAR(191) NOT NULL DEFAULT 'light',
+    `onboardingCompleted` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
