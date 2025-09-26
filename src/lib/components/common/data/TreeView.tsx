@@ -71,7 +71,7 @@ export function TreeNodeComponent<T>({ node, renderNode, itemRoute, expandedAll 
                         : <ChevronRight size={16} />}
                 </span>
                 <span className={"hover:bg-accent rounded-md transition py-1 px-2 w-full"}
-                      onClick={() => router.push(itemRoute(node.data) as __next_route_internal_types__.RouteImpl<string>)}>
+                      onClick={() => router.push(itemRoute(node.data))}>
                     {renderNode(node.data)}
                 </span>
             </div>

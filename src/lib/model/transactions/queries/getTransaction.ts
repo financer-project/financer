@@ -17,7 +17,7 @@ export type TransactionModel = Prisma.TransactionGetPayload<{
 }>;
 
 const GetTransaction = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export default resolver.pipe(

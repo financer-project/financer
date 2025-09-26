@@ -4,7 +4,7 @@ import db from "@/src/lib/db"
 import { z } from "zod"
 
 const GetCounterparty = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export default resolver.pipe(

@@ -36,7 +36,7 @@ const valueMappingSchema = z.object({
         z.object({
             sourceValue: z.string(),
             targetType: z.string(),
-            targetId: z.string().uuid().nullable()
+            targetId: z.uuid().nullable()
         })
     )
 })

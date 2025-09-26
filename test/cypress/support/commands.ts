@@ -25,3 +25,8 @@ Cypress.Commands.add("resetAndSeedDatabase", (callback, resetUsers) => {
         callback(result as TestData)
     })
 })
+
+
+Cypress.Commands.add("resetDatabase", (callback, resetUsers) => {
+    cy.task("resetDatabase", resetUsers).then(() => callback())
+})

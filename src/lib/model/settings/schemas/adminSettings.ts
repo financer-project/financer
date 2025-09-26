@@ -19,7 +19,10 @@ export const AdminSettingsSchema = z.object({
 
     // Default Settings
     defaultLanguage: z.string().default("en-US"),
-    defaultTheme: z.string().default("light")
+    defaultTheme: z.string().default("light"),
+
+    // Onboarding Settings
+    onboardingCompleted: z.boolean().default(false)
 })
 
 export const UpdateAdminSettingsSchema = AdminSettingsSchema

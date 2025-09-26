@@ -29,7 +29,7 @@ const KPICard: React.FC<KPICardProps> = ({
     className
 }) => {
     return (
-        <Card className={cn("w-full", className)}>
+        <Card className={cn("w-full border-none shadow-none bg-secondary/50", className)}>
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-center">
                     <CardTitle className="text-sm font-medium">{title}</CardTitle>

@@ -1,16 +1,21 @@
 services:
   app:
-    image: financer:latest
+    image: ghcr.io/financer-project/financer:latest
     container_name: financer-server
-    build:
-      context: .
-      dockerfile: Dockerfile
     environment:
-      DATABASE_URL: mysql://financer:password@financer-db:3306/financer
+      DATABASE_URL: mysql://root:password@financer-db:3306/financer
+      REDIS_URL: redis://financer-redis:6379
+      SESSION_SECRET_KEY: 63f4945d921d599f27ae4fdf5bada3f1
+    volumes:
+      - ./data:/app/data
     ports:
       - "3000:3000"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_started
 
   mysql:
     image: mysql:9
@@ -27,8 +32,22 @@ services:
       interval: 10s
       timeout: 2s
       retries: 10
-#    volumes:
-#      - ./data:/var/lib/mysql
+    volumes:
+      - database:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: financer-redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+
+
+volumes:
+  redis-data:
+  database:
 
 networks:
   financer:

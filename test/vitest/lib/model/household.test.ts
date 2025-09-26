@@ -40,7 +40,7 @@ describe("Household Mutations & Queries", () => {
                 currency: "USD",
                 description: null
             }, util.getMockContext()))
-                .rejects.toThrowError("String must contain at least 3 character(s)")
+                .rejects.toThrowError("Too small: expected string to have >=3 characters")
         })
     })
 

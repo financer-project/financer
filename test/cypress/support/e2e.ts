@@ -13,6 +13,8 @@ declare global {
             loginWithUser(user: User): Chainable<void>
 
             resetAndSeedDatabase(callback: (testData: TestData) => void, resetUsers?: boolean): Chainable<void>
+
+            resetDatabase(callback: () => void, resetUsers?: boolean): Chainable<void>
         }
     }
 }

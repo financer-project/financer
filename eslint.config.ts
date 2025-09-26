@@ -59,5 +59,9 @@ export default [
             ...ts.configs["recommended"].rules,
             "ts/return-await": 2
         }
+    },
+    {
+        files: ["next-env.d.ts"],
+        rules: { "@typescript-eslint/triple-slash-reference": "off" }
     }
 ]

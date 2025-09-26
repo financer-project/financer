@@ -19,7 +19,7 @@ export const EditCategory = ({ categoryId }: { categoryId: string }) => {
                 <CategoryForm
                     submitText="Update Category"
                     schema={UpdateCategorySchema}
-                    initialValues={{ ...category, color: category.color as ColorType | null }}
+                    initialValues={{ ...category, color: category?.color as ColorType ?? null }}
                     onSubmit={async (values) => {
                         try {
                             await updateCategoryMutation({ ...values, id: category.id })

@@ -4,7 +4,7 @@ import { z } from "zod"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
 const GetCategories = z.object({
-    householdId: z.string().uuid().optional()
+    householdId: z.uuid().optional()
 })
 
 export default resolver.pipe(

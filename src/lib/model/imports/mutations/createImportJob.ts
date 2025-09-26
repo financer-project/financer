@@ -20,7 +20,7 @@ const CreateImportJobSchema = z.object({
         z.object({
             sourceValue: z.string(),
             targetType: z.string(),
-            targetId: z.string().uuid()
+            targetId: z.uuid()
         })
     )
 })

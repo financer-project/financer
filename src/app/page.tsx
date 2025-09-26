@@ -1,5 +1,6 @@
 import { invoke } from "./blitz-server"
 import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
+import checkOnboardingStatus from "@/src/lib/model/onboarding/queries/checkOnboardingStatus"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Button } from "@/src/lib/components/ui/button"
@@ -11,6 +12,11 @@ export default async function Home() {
     if (currentUser) {
         redirect("/dashboard")
     } else {
+        // Check if onboarding is needed (no users exist)
+        const onboardingStatus = await invoke(checkOnboardingStatus, {})
+        if (onboardingStatus.needsOnboarding) {
+            redirect("/onboarding")
+        }
         return (
             <main className={"flex w-lg h-screen items-center justify-center mx-auto"}>
                 <Card className={"w-md"}>

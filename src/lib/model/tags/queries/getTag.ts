@@ -4,7 +4,7 @@ import { z } from "zod"
 import db from "@/src/lib/db"
 
 const GetTag = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export default resolver.pipe(
