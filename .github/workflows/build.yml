@@ -9,6 +9,12 @@ on:
       - created
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
 jobs:
   build_and_deploy:
     name: Build and Deploy Docker Image
