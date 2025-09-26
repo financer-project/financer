@@ -11,6 +11,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn
 # Remove the --production flag since we need dev dependencies for the build
 RUN yarn install --immutable
 
@@ -18,6 +19,7 @@ RUN yarn install --immutable
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/.yarn ./.yarn
 COPY . .
 
 ENV NODE_ENV=production
@@ -29,16 +31,22 @@ RUN yarn run build
 FROM base AS runner
 WORKDIR /app
 
+# Enable Corepack in runner stage as well
+RUN corepack enable
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy the necessary files
+# Copy ALL necessary Yarn files for Berry to work
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/yarn.lock ./yarn.lock
+COPY --from=builder --chown=nextjs:nodejs /app/.yarnrc.yml ./.yarnrc.yml
+COPY --from=builder --chown=nextjs:nodejs /app/.yarn ./.yarn
 COPY --from=builder --chown=nextjs:nodejs /app/src/lib/db ./db
 
 # Copy node_modules from builder stage
@@ -50,4 +58,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=./db/schema && npx next start"]
+CMD ["sh", "-c", "yarn prisma migrate deploy --schema=./db/schema && yarn start"]
