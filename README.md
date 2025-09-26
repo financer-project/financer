@@ -51,4 +51,4 @@ SESSION_SECRET_KEY: 63f4945d921d599f27ae4fdf5bada3f1
 
 ## License
 
-See [MIT license](LICENSE.md)
+See [BSD 3-Clause License](LICENSE)
