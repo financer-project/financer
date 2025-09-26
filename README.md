@@ -1,15 +1,54 @@
-## What is Financer? 😍
+# Financer
 
-Financer is a open source application that is completely free to use. It can be deployed as a on-premise application on your server, or you can use it in the cloud.
+A comprehensive personal finance management application built with Next.js, TypeScript, and Blitz.js.
 
-With Financer helps you to ...
-- 💰 manage your expenses and revenues
-- 📈 analyze your financials
-- ⚙ customize your App
-- 🔒 secure your financials so that only you can access them
+## Features
 
-If you are interested into financer, have a look at our [website](https://financer-project.org/).
+- 🏠 **Household Management** - Create and manage multiple households with family collaboration
+- 💰 **Transaction Tracking** - Record, categorize, and analyze your income and expenses
+- 📊 **Categories & Tags** - Organize transactions with custom categories and flexible tagging
+- 👥 **Counterparties** - Manage payees, payers, and recurring transaction partners
+- 📈 **Dashboard & Analytics** - Visual reports, charts, and financial insights
+- 📥 **Import & Export** - CSV import support and data export capabilities
+- ⚙️ **Settings & Administration** - User profiles, preferences, and system configuration
+- 🔐 **Secure Authentication** - User registration, login, and session management
 
-## Getting Started 💨
+## 🚀 Deployment
 
-Financer is separated into a Spring backend application and a React frontend application. Both are part of this repository and can be independently deployed as a docker container.
+### Docker Deployment (Recommended)
+
+The easiest way to deploy Financer is using Docker Compose:
+
+1. **Download the docker-compose.yml file**:
+   ```bash
+   curl -o docker-compose.yml https://raw.githubusercontent.com/financer-project/financer/main/docker-compose.yml
+   ```
+
+1. **Start the application**:
+   ```bash
+   docker-compose up -d
+   ```
+
+1. **Access the application**:
+    - Open your browser to `http://localhost:3000`
+    - The application will be running with MySQL and Redis backends
+
+### Environment Variables
+
+The Docker setup uses the following default environment variables:
+
+```
+yaml
+# Database
+DATABASE_URL: mysql://root:password@financer-db:3306/financer
+
+# Redis (for sessions and background jobs)
+REDIS_URL: redis://financer-redis:6379
+
+# Security (Change this for production!)
+SESSION_SECRET_KEY: 63f4945d921d599f27ae4fdf5bada3f1
+```
+
+## License
+
+See [MIT license](LICENSE.md)
