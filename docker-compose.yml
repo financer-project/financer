@@ -5,6 +5,7 @@ services:
     environment:
       DATABASE_URL: mysql://root:password@financer-db:3306/financer
       REDIS_URL: redis://financer-redis:6379
+      SESSION_SECRET_KEY: 63f4945d921d599f27ae4fdf5bada3f1
     volumes:
       - ./data:/app/data
     ports:

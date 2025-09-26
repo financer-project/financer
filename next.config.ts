@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
     },
     typedRoutes: true,
     serverExternalPackages: ["bullmq"],
-    output: "standalone",
     webpack: (config, { isServer }) => {
         if (isServer) {
             // Avoid bundling native dependencies
