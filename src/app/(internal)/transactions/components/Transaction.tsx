@@ -20,7 +20,7 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
             <Section title={"Basic Information"}
                      subtitle={"Please find all information to the transaction below."}
                      actions={
-                         <span className={"font-semibold text-lg tracking-tight"}>
+                         <span className={"font-mono text-xl tracking-tight"}>
                              {formatters.amount.format(transaction.amount)}
                          </span>
                      }>

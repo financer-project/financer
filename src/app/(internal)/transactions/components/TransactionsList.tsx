@@ -60,7 +60,13 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                                     name: "Date",
                                     render: transaction => formatters.date.format(transaction.valueDate)
                                 },
-                                { name: "Amount", render: transaction => formatters.amount.format(transaction.amount) }
+                                {
+                                    name: "Amount",
+                                    render: transaction =>
+                                        <Badge variant={"secondary"} className={"font-mono"}>
+                                            {formatters.amount.format(transaction.amount)}
+                                        </Badge>
+                                }
                             ]}
                             itemRoute={transaction => `/transactions/${transaction.id}`}
                             hasMore={hasMore} />

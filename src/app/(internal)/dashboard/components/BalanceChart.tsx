@@ -45,7 +45,7 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
                                 tickFormatter={(value) => formatters.date.format(value, { onlyMonth: true })}
                             />
                             <ChartTooltip cursor={false}
-                                          content={<ChartTooltipContent indicator="dot" />} />
+                                          content={<ChartTooltipContent indicator="dot"  />} />
                             <Bar dataKey="income"
                                  fill="var(--color-income)"
                                  radius={4} />
