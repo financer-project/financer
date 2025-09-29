@@ -18,6 +18,7 @@ import { cn } from "@/src/lib/util/utils"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useState } from "react"
 import { Household } from "@prisma/client"
+import { Badge } from "@/src/lib/components/ui/badge"
 
 const NavHousehold = withFormatters(({ formatters }: WithFormattersProps) => {
     const [currentHousehold, setCurrentHousehold] = useState<Household | undefined>(useCurrentHousehold())
@@ -73,8 +74,13 @@ const NavHousehold = withFormatters(({ formatters }: WithFormattersProps) => {
                                         }
                                     }}>
                                     <Sparkles className={isActive(household.id) ? "" : "invisible"} />
-                                    <div className="flex flex-col">
-                                        <span className="font-medium">{household.name}</span>
+                                    <div className="w-full flex flex-col">
+                                        <div className={"w-full flex justify-between gap-4"}>
+                                            <span className="font-medium">{household.name}</span>
+                                            <Badge variant={"outline"} className={"font-mono"}>
+                                                {household.currency}
+                                            </Badge>
+                                        </div>
                                         <span className="text-muted-foreground">{household.description}</span>
                                     </div>
                                 </DropdownMenuItem>
