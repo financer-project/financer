@@ -1,3 +1,5 @@
+name: financer-dev
+
 services:
   mysql:
     image: mysql:9
@@ -9,6 +11,8 @@ services:
       MYSQL_DATABASE: financer
       MYSQL_USER: financer
       MYSQL_PASSWORD: financer
+    volumes:
+      - ./data/database:/var/lib/mysql
 
   redis:
     image: redis:alpine
@@ -16,7 +20,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - redis-data:/data
+      - ./data/redis:/data
     command: redis-server --appendonly yes
 
 volumes:
