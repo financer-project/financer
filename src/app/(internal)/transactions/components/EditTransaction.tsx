@@ -29,7 +29,10 @@ export const EditTransaction = ({ transactionId }: { transactionId: string }) =>
                     subtitle={`Edit transaction ${transaction.id}`}
                     breadcrumbs={[
                         { label: "Transactions", url: "/transactions" },
-                        { label: transaction.id, url: `/transactions/${transaction.id}` },
+                        {
+                            label: transaction.name ?? transaction.category?.name ?? "Transaction",
+                            url: `/transactions/${transaction.id}`
+                        },
                         { label: "Edit" }
                     ]} />
             <Suspense fallback={<div>Loading...</div>}>

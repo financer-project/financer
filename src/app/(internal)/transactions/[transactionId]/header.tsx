@@ -44,7 +44,7 @@ const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) =
         <Header title={"Transaction"}
                 breadcrumbs={[
                     { label: "Transactions", url: "/transactions" },
-                    { label: transaction.id }
+                    { label: transaction.name ?? transaction.category?.name ?? "Transaction Details" }
                 ]}
                 actions={renderActions(transaction)} />
     )
