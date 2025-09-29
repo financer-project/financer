@@ -6,6 +6,7 @@ import Header from "@/src/lib/components/content/nav/Header"
 import { Button } from "@/src/lib/components/ui/button"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
+import { CirclePlus } from "lucide-react"
 
 export const metadata: Metadata = {
     title: "Transactions",
@@ -22,7 +23,7 @@ export default function Page() {
                         <div>
                             <Button variant={"default"}
                                     asChild>
-                                <Link href={"/transactions/new"}>New</Link>
+                                <Link href={"/transactions/new"}><CirclePlus />Create</Link>
                             </Button>
                         </div>
                     } />
