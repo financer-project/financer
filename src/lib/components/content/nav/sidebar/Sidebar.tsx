@@ -19,7 +19,6 @@ import {
     ChartLineIcon,
     CirclePlus,
     CogIcon,
-    HandCoinsIcon,
     HouseIcon,
     ImportIcon,
     ShieldIcon,
