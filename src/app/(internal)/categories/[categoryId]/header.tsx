@@ -8,13 +8,19 @@ import Header from "@/src/lib/components/content/nav/Header"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import deleteCategory from "@/src/lib/model/categories/mutations/deleteCategory"
 import { Category } from "@prisma/client"
+import { CirclePlus } from "lucide-react"
 
 const CategoryHeader = ({ category }: { category: Category }) => {
     const [deleteCategoryMutation] = useMutation(deleteCategory)
     const router = useRouter()
 
     const renderActions = (category: Category) => (
-        <div className={"flex flex-row gap-4"}>
+        <div className={"flex flex-row gap-2"}>
+            <Button variant={"outline"} asChild>
+                <Link href={`/categories/new?parentId=${category.id}&type=${category.type}&color=${category.color}`}>
+                    <CirclePlus />Add Child
+                </Link>
+            </Button>
             <Button variant={"outline"} asChild>
                 <Link href={`/categories/${category.id}/edit`}>Edit</Link>
             </Button>

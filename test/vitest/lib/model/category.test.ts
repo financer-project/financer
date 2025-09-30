@@ -118,6 +118,239 @@ describe("Category Mutations & Queries", () => {
 
             }, util.getMockContext())).rejects.toThrowError()
         })
+
+        test("updates parent category color and propagates to direct children", async () => {
+            // Create parent category
+            const parentCategory = await createCategory({
+                name: "Parent Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.BLUE,
+                parentId: null
+            }, util.getMockContext())
+
+            // Create child category
+            const childCategory = await createCategory({
+                name: "Child Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.RED,
+                parentId: parentCategory.id
+            }, util.getMockContext())
+
+            // Update parent color
+            await updateCategory({
+                id: parentCategory.id,
+                householdId: util.getTestData().households.standard.id,
+                name: parentCategory.name,
+                type: parentCategory.type,
+                color: ColorType.GREEN,
+                parentId: null
+            }, util.getMockContext())
+
+            // Verify child color was updated
+            const updatedChild = await getCategory({ id: childCategory.id }, util.getMockContext())
+            expect(updatedChild.color).toBe("green")
+        })
+
+        test("updates parent category color and propagates to nested children recursively", async () => {
+            // Create parent category
+            const parentCategory = await createCategory({
+                name: "Parent Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.BLUE,
+                parentId: null
+            }, util.getMockContext())
+
+            // Create first level child
+            const childCategory = await createCategory({
+                name: "Child Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.RED,
+                parentId: parentCategory.id
+            }, util.getMockContext())
+
+            // Create second level child (grandchild)
+            const grandchildCategory = await createCategory({
+                name: "Grandchild Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.YELLOW,
+                parentId: childCategory.id
+            }, util.getMockContext())
+
+            // Update parent color
+            await updateCategory({
+                id: parentCategory.id,
+                householdId: util.getTestData().households.standard.id,
+                name: parentCategory.name,
+                type: parentCategory.type,
+                color: ColorType.PURPLE,
+                parentId: null
+            }, util.getMockContext())
+
+            // Verify both child and grandchild colors were updated
+            const updatedChild = await getCategory({ id: childCategory.id }, util.getMockContext())
+            const updatedGrandchild = await getCategory({ id: grandchildCategory.id }, util.getMockContext())
+            
+            expect(updatedChild.color).toBe("purple")
+            expect(updatedGrandchild.color).toBe("purple")
+        })
+
+        test("updates parent category color to null and propagates to children", async () => {
+            // Create parent category
+            const parentCategory = await createCategory({
+                name: "Parent Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.BLUE,
+                parentId: null
+            }, util.getMockContext())
+
+            // Create child category
+            const childCategory = await createCategory({
+                name: "Child Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.RED,
+                parentId: parentCategory.id
+            }, util.getMockContext())
+
+            // Update parent color to null
+            await updateCategory({
+                id: parentCategory.id,
+                householdId: util.getTestData().households.standard.id,
+                name: parentCategory.name,
+                type: parentCategory.type,
+                color: null,
+                parentId: null
+            }, util.getMockContext())
+
+            // Verify child color was updated to null
+            const updatedChild = await getCategory({ id: childCategory.id }, util.getMockContext())
+            expect(updatedChild.color).toBeNull()
+        })
+
+        test("updating category without color change does not affect children", async () => {
+            // Create parent category
+            const parentCategory = await createCategory({
+                name: "Parent Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.BLUE,
+                parentId: null
+            }, util.getMockContext())
+
+            // Create child category
+            const childCategory = await createCategory({
+                name: "Child Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.RED,
+                parentId: parentCategory.id
+            }, util.getMockContext())
+
+            // Update parent name only (no color change)
+            await updateCategory({
+                id: parentCategory.id,
+                householdId: util.getTestData().households.standard.id,
+                name: "Updated Parent Name",
+                type: parentCategory.type,
+                color: parentCategory.color,
+                parentId: null
+            }, util.getMockContext())
+
+            // Verify child color was not changed
+            const updatedChild = await getCategory({ id: childCategory.id }, util.getMockContext())
+            expect(updatedChild.color).toBe("red")
+        })
+
+        test("batch update optimization works with deep category hierarchy", async () => {
+            // Create a deep hierarchy: Parent -> Child1 -> Child2 -> Child3 -> Child4
+            const parentCategory = await createCategory({
+                name: "Root Category",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.BLUE,
+                parentId: null
+            }, util.getMockContext())
+
+            const child1 = await createCategory({
+                name: "Child Level 1",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.RED,
+                parentId: parentCategory.id
+            }, util.getMockContext())
+
+            const child2 = await createCategory({
+                name: "Child Level 2",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.YELLOW,
+                parentId: child1.id
+            }, util.getMockContext())
+
+            const child3 = await createCategory({
+                name: "Child Level 3",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.GREEN,
+                parentId: child2.id
+            }, util.getMockContext())
+
+            const child4 = await createCategory({
+                name: "Child Level 4",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.PINK,
+                parentId: child3.id
+            }, util.getMockContext())
+
+            // Create multiple children at level 1 to test batch update with multiple branches
+            const child1_2 = await createCategory({
+                name: "Child Level 1 Branch 2",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.ORANGE,
+                parentId: parentCategory.id
+            }, util.getMockContext())
+
+            const child1_3 = await createCategory({
+                name: "Child Level 1 Branch 3",
+                householdId: util.getTestData().households.standard.id,
+                type: CategoryType.EXPENSE,
+                color: ColorType.CYAN,
+                parentId: parentCategory.id
+            }, util.getMockContext())
+
+            // Update root category color - should propagate to all 6 descendants
+            await updateCategory({
+                id: parentCategory.id,
+                householdId: util.getTestData().households.standard.id,
+                name: parentCategory.name,
+                type: parentCategory.type,
+                color: ColorType.PURPLE,
+                parentId: null
+            }, util.getMockContext())
+
+            // Verify all descendants have the new color
+            const updatedChild1 = await getCategory({ id: child1.id }, util.getMockContext())
+            const updatedChild2 = await getCategory({ id: child2.id }, util.getMockContext())
+            const updatedChild3 = await getCategory({ id: child3.id }, util.getMockContext())
+            const updatedChild4 = await getCategory({ id: child4.id }, util.getMockContext())
+            const updatedChild1_2 = await getCategory({ id: child1_2.id }, util.getMockContext())
+            const updatedChild1_3 = await getCategory({ id: child1_3.id }, util.getMockContext())
+            
+            expect(updatedChild1.color).toBe("purple")
+            expect(updatedChild2.color).toBe("purple")
+            expect(updatedChild3.color).toBe("purple")
+            expect(updatedChild4.color).toBe("purple")
+            expect(updatedChild1_2.color).toBe("purple")
+            expect(updatedChild1_3.color).toBe("purple")
+        })
     })
 
     describe("delete", () => {
