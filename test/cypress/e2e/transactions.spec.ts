@@ -15,7 +15,7 @@ describe("Transactions", () => {
     it("should be able to create a transaction with tags and delete it", () => {
         cy.get("tbody tr").should("have.length", 2)
 
-        cy.get("a[href='/transactions/new']").click()
+        cy.get("a[href='/transactions/new']").first().click()
 
         cy.get("button").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Salary")
@@ -59,7 +59,7 @@ describe("Transactions", () => {
     })
 
     it("should be able to create a transaction without tags", () => {
-        cy.get("a[href='/transactions/new']").click()
+        cy.get("a[href='/transactions/new']").first().click()
 
         cy.get("button").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Bonus")
