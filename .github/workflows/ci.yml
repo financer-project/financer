@@ -61,7 +61,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           start: yarn test:start:app
-          wait-on: http://localhost:3000
+          wait-on: http://localhost:3000/api/health-check
         env:
           NODE_ENV: test
           DATABASE_URL: mysql://financer-test:password@localhost:3307/financer-test
