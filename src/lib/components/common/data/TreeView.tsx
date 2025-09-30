@@ -4,15 +4,17 @@ import { Tree, TreeNode } from "@/src/lib/model/categories/Tree"
 import { cn } from "@/src/lib/util/utils"
 import { useRouter } from "next/navigation"
 import { Separator } from "../../ui/separator"
+import { sort } from "d3-array"
 
 interface TreeViewProps<T> {
     tree: Tree<T> | TreeNode<T> | null
     renderNode: (node: T) => React.ReactNode
     itemRoute: (item: T) => string
-    expandedAll?: boolean
+    expandedAll?: boolean,
+    sort?: (a: T, b: T) => number
 }
 
-export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll }: Readonly<TreeViewProps<T>>) {
+export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll, sort }: Readonly<TreeViewProps<T>>) {
     if (!tree || tree.getChildren().length === 0) {
         return (
             <div className={"flex flex-col items-center w-full text-muted-foreground gap-2"}>
@@ -24,24 +26,28 @@ export function TreeView<T>({ tree, renderNode, itemRoute, expandedAll }: Readon
 
     return (
         <div className="flex flex-col gap-2">
-            {tree.getChildren().map((node) => (
-                <TreeNodeComponent
-                    key={`${node.id}`}
-                    node={node}
-                    renderNode={renderNode}
-                    itemRoute={itemRoute}
-                    expandedAll={expandedAll}
-                />
-            ))}
+            {tree.getChildren()
+                .sort((a, b) => sort ? sort(a.data, b.data) : 0)
+                .map((node) => (
+                    <TreeNodeComponent
+                        key={`${node.id}`}
+                        node={node}
+                        renderNode={renderNode}
+                        itemRoute={itemRoute}
+                        expandedAll={expandedAll}
+                        sort={sort}
+                    />
+                ))}
         </div>
     )
 }
 
-export function TreeNodeComponent<T>({ node, renderNode, itemRoute, expandedAll }: Readonly<{
+export function TreeNodeComponent<T>({ node, renderNode, itemRoute, expandedAll, sort }: Readonly<{
     node: TreeNode<T>
     renderNode: (node: T) => React.ReactNode
     itemRoute: (item: T) => string
-    expandedAll?: boolean
+    expandedAll?: boolean,
+    sort?: (a: T, b: T) => number
 }>) {
     const [isExpanded, setIsExpanded] = useState<boolean>(expandedAll ?? false)
     const router = useRouter()
@@ -63,7 +69,7 @@ export function TreeNodeComponent<T>({ node, renderNode, itemRoute, expandedAll 
         <div className="flex flex-col gap-1 ms-2">
             <div className="flex items-center space-x-2 cursor-pointer">
                 <span
-                    className={cn("text-gray-500", children ? "" : "hidden")}
+                    className={cn("text-gray-500", children ? "" : "invisible")}
                     title={isExpanded ? "Collapse" : "Expand"}
                     onClick={handleToggle}>
                     {isExpanded
@@ -79,7 +85,9 @@ export function TreeNodeComponent<T>({ node, renderNode, itemRoute, expandedAll 
                 <div className={"flex flex-row gap-4 px-2"}>
                     <Separator orientation={"vertical"} />
                     <div className={"flex flex-col w-full"}>
-                        {children.map((child) => (
+                        {children
+                            .sort((a, b) => sort ? sort(a.data, b.data) : 0)
+                            .map((child) => (
                             <TreeNodeComponent
                                 key={`${child.id}`}
                                 node={child}
