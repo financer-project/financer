@@ -18,7 +18,7 @@ const OnboardingSchema = z.object({
     // Step 1: User signup
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
-    email: z.string().email("Invalid email address"),
+    email: z.email("Invalid email address"),
     password: z.string().min(10, "Password must be at least 10 characters"),
 
     // Step 2: Household creation
@@ -219,8 +219,7 @@ export default function OnboardingPage() {
                                             placeholder="Select Theme"
                                             options={[
                                                 { value: "light", label: "Light" },
-                                                { value: "dark", label: "Dark" },
-                                                { value: "system", label: "System" }
+                                                { value: "dark", label: "Dark" }
                                             ]}
                                         />
                                     </div>

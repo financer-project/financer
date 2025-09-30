@@ -1,3 +1,5 @@
+"use client"
+
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -12,6 +14,7 @@ import { SubTitle, Title } from "@/src/lib/components/common/typography"
 import React from "react"
 import Link from "next/link"
 import { Button } from "@/src/lib/components/ui/button"
+import { SidebarTrigger } from "@/src/lib/components/ui/sidebar"
 
 interface BreadcrumbItem {
     label: string,
@@ -31,6 +34,9 @@ const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: Heade
         <div className={"flex flex-col gap-4 mb-12"}>
             <div className={"flex flex-col h-10 justify-between"}>
                 <div className={"flex flex-row gap-4"}>
+                    <SidebarTrigger />
+                    <Separator orientation={"vertical"} />
+
                     {!hideBackButton && (
                         <Button variant={"link"} asChild className={"text-default p-0 h-full"}>
                             <Link
