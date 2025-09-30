@@ -29,7 +29,7 @@ describe("Categories", () => {
         cy.get(":nth-child(3) > .text-md").should("contain.text", "Teal")
 
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
         cy.wait(1000)
         cy.get("span").contains("Food").should("not.exist")

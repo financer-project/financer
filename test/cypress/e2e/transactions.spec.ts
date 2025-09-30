@@ -51,7 +51,7 @@ describe("Transactions", () => {
 
         // Delete the transaction
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
         cy.wait(2000)
         cy.url().should("satisfy", (str: string) => str.endsWith("/transactions"))
 
@@ -74,6 +74,6 @@ describe("Transactions", () => {
 
         // Clean up
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
     })
 })

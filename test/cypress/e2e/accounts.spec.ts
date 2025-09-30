@@ -39,7 +39,7 @@ describe("Accounts", () => {
         cy.get(":nth-child(2) > .text-md").should("contain.text", "A New Account")
 
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
 
         cy.url().should("include", `/households/${testData.households.standard.id}`)
         cy.get("tbody tr").scrollIntoView()
