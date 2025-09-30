@@ -14,7 +14,7 @@ import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { Category } from ".prisma/client"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
+export const CategoryForm = <S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) => {
 
     const [parentCategory, setParentCategory] = useState<Category | null>(null)
     const categories = useCategories()
@@ -44,7 +44,12 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                     options={categories
                         .flatten()
                         .filter(category => category.id !== props.initialValues?.id)
-                        .map(category => ({ label: category.data.name, value: category.id }))}
+                        .map(category => ({
+                            label: category.data.name,
+                            value: category.id,
+                            render: label => <ColoredTag label={category.data.name}
+                                                         color={category.data.color} />
+                        }))}
                     onChange={(value) => handleParentChange(value as string)} />
             </div>
             <div className={"flex flex-row gap-4"}>
