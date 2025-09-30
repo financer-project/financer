@@ -14,17 +14,14 @@ export const Category = withFormatters(({ categoryId, formatters }: WithFormatte
             <Section title={"Basic Data"}
                      subtitle={"This is the basic data of the category."}>
 
-                <div className={"flex flex-row w-full"}>
+                <div className={"grid lg:grid-cols-4 grid-cols-1"}>
                     <DataItem label={"Name"}
-                              className={"basis-1/4"}
                               data={category.name} />
 
                     <DataItem label={"Description"}
-                              className={"basis-1/4"}
                               data={category.description} />
 
                     <DataItem label={"Color"}
-                              className={"basis-1/4"}
                               data={category.color &&
                                   <ColoredTag label={formatters.capitalize.format(category.color)}
                                               color={category.color} />} />

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { z } from "zod"
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
@@ -12,20 +12,24 @@ import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provide
 import ColorType from "@/src/lib/model/common/ColorType"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { Category } from ".prisma/client"
+import { useSearchParams } from "next/navigation"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const CategoryForm = <S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) => {
 
+    const searchParams = useSearchParams()
     const [parentCategory, setParentCategory] = useState<Category | null>(null)
     const categories = useCategories()
+
+    useEffect(() => {
+        if (parentCategory === null && (props.initialValues?.parentId || searchParams?.get("parentId"))) {
+            handleParentChange(props.initialValues?.parentId || searchParams?.get("parentId"))
+        }
+    }, [props])
 
     const handleParentChange = (parentId: string | null) => {
         const selectedParent = categories.findNode((category) => category.id === parentId)
         setParentCategory(selectedParent?.data ?? null)
-    }
-
-    if (parentCategory === null && props.initialValues?.parentId) {
-        handleParentChange(props.initialValues.parentId)
     }
 
     return (
