@@ -15,6 +15,7 @@ import React from "react"
 import Link from "next/link"
 import { Button } from "@/src/lib/components/ui/button"
 import { SidebarTrigger } from "@/src/lib/components/ui/sidebar"
+import { useIsMobile } from "@/src/lib/hooks/use-mobile"
 
 interface BreadcrumbItem {
     label: string,
@@ -30,6 +31,8 @@ interface HeaderProps {
 }
 
 const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: HeaderProps) => {
+    const isMobile = useIsMobile()
+
     return (
         <div className={"flex flex-col gap-4 mb-12"}>
             <div className={"flex flex-col h-10 justify-between"}>
@@ -37,7 +40,7 @@ const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: Heade
                     <SidebarTrigger />
                     <Separator orientation={"vertical"} />
 
-                    {!hideBackButton && (
+                    {!isMobile && !hideBackButton && (
                         <Button variant={"link"} asChild className={"text-default p-0 h-full"}>
                             <Link
                                 href={{
