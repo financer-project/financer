@@ -30,7 +30,7 @@ describe("Tags", () => {
         cy.get(":nth-child(3) > .text-md").should("contain.text", "Blue")
 
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
         cy.url().should("satisfy", (str: string) => str.endsWith("/tags"))
         cy.get("td").contains("Shopping").should("not.exist")
     })
@@ -64,6 +64,6 @@ describe("Tags", () => {
 
         // Clean up
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
     })
 })

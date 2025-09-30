@@ -17,11 +17,12 @@ import {
     ArrowLeftRightIcon,
     BookmarkIcon,
     ChartLineIcon,
+    CirclePlus,
     CogIcon,
-    HandCoinsIcon,
     HouseIcon,
     ImportIcon,
-    ShieldIcon, StoreIcon,
+    ShieldIcon,
+    StoreIcon,
     TagIcon
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -29,7 +30,19 @@ import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
 import { useSession } from "@blitzjs/auth"
 import { Role } from "@prisma/client"
 
-const getGroups = (isAdmin: boolean) => [
+interface MenuGroup {
+    name: string
+    items: MenuItem[]
+}
+
+interface MenuItem {
+    title: string
+    url: string
+    icon: React.ComponentType<{ className?: string }>
+    variant?: "default" | "primary" | "outline"
+}
+
+const getGroups = (isAdmin: boolean): MenuGroup[] => [
     {
         name: "Transactions",
         items: [
@@ -47,17 +60,23 @@ const getGroups = (isAdmin: boolean) => [
                 title: "Imports",
                 url: "/imports",
                 icon: ImportIcon
+            },
+            {
+                title: "Create Transaction",
+                url: "/transactions/new",
+                icon: CirclePlus,
+                variant: "primary"
             }
         ]
     },
     {
-        name: "Budgets",
+        name: "Organization",
         items: [
-            {
-                title: "Budgets",
-                url: "",
-                icon: HandCoinsIcon
-            },
+            // {
+            //     title: "Budgets",
+            //     url: "/budgets",
+            //     icon: HandCoinsIcon
+            // },
             {
                 title: "Categories",
                 url: "/categories",
@@ -109,8 +128,8 @@ const Sidebar = () => {
             variant={"inset"}
             collapsible="none"
             side={"left"}
-            className={"h-screen "}>
-            <SidebarHeader className={"flex flex-col justify-center items-center py-4 h-20 max-h-20"}>
+            className={"h-screen px-4"}>
+            <SidebarHeader className={"flex flex-col justify-center items-center py-4 h-18 max-h-20"}>
                 <NavHousehold />
             </SidebarHeader>
             <Separator />
@@ -122,7 +141,8 @@ const Sidebar = () => {
                             {group.items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild
-                                                       isActive={pathname?.includes(item.url)}>
+                                                       isActive={pathname?.includes(item.url)}
+                                                       variant={item.variant ?? "default"}>
                                         <a href={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>

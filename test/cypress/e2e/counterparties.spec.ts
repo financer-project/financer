@@ -36,7 +36,7 @@ describe("Counterparties", () => {
 
         // Delete the counterparty
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
         cy.url().should("satisfy", (str: string) => str.endsWith("/counterparties"))
         cy.get("td").contains("Test Shop").should("not.exist")
     })
@@ -74,7 +74,7 @@ describe("Counterparties", () => {
 
         // Clean up
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
     })
 
     it("should display the list of seeded counterparties", () => {

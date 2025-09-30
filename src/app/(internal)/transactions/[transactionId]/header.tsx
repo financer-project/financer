@@ -8,13 +8,17 @@ import { useRouter } from "next/navigation"
 import Header from "@/src/lib/components/content/nav/Header"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
+import { CirclePlus } from "lucide-react"
 
 const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) => {
     const [deleteTransactionMutation] = useMutation(deleteTransaction)
     const router = useRouter()
 
     const renderActions = (transaction: TransactionModel) => (
-        <div className={"flex flex-row gap-4"}>
+        <div className={"flex flex-row gap-2"}>
+            <Button variant={"outline"} asChild>
+                <Link href={`/transactions/new`}><CirclePlus />Create more</Link>
+            </Button>
             <Button variant={"outline"} asChild>
                 <Link href={`/transactions/${transaction.id}/edit`}>Edit</Link>
             </Button>
@@ -40,7 +44,7 @@ const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) =
         <Header title={"Transaction"}
                 breadcrumbs={[
                     { label: "Transactions", url: "/transactions" },
-                    { label: transaction.id }
+                    { label: transaction.name ?? transaction.category?.name ?? "Transaction Details" }
                 ]}
                 actions={renderActions(transaction)} />
     )

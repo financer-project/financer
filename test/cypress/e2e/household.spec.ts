@@ -38,7 +38,7 @@ describe("Households", () => {
         cy.get(":nth-child(2) > .text-md").should("contain.text", "Euro (EUR)")
 
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
 
         cy.get("tbody tr").should("have.length", 1)
     })

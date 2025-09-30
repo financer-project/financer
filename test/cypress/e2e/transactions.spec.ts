@@ -15,7 +15,7 @@ describe("Transactions", () => {
     it("should be able to create a transaction with tags and delete it", () => {
         cy.get("tbody tr").should("have.length", 2)
 
-        cy.get("a[href='/transactions/new']").click()
+        cy.get("a[href='/transactions/new']").first().click()
 
         cy.get("button").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Salary")
@@ -51,7 +51,7 @@ describe("Transactions", () => {
 
         // Delete the transaction
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
         cy.wait(2000)
         cy.url().should("satisfy", (str: string) => str.endsWith("/transactions"))
 
@@ -59,7 +59,7 @@ describe("Transactions", () => {
     })
 
     it("should be able to create a transaction without tags", () => {
-        cy.get("a[href='/transactions/new']").click()
+        cy.get("a[href='/transactions/new']").first().click()
 
         cy.get("button").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Bonus")
@@ -74,6 +74,6 @@ describe("Transactions", () => {
 
         // Clean up
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
     })
 })
