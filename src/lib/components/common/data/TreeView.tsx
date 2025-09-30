@@ -4,7 +4,6 @@ import { Tree, TreeNode } from "@/src/lib/model/categories/Tree"
 import { cn } from "@/src/lib/util/utils"
 import { useRouter } from "next/navigation"
 import { Separator } from "../../ui/separator"
-import { sort } from "d3-array"
 
 interface TreeViewProps<T> {
     tree: Tree<T> | TreeNode<T> | null

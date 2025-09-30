@@ -100,15 +100,13 @@ export function SelectField<T, >({
 
                 onChangeMultiple?.(updatedValues)
                 setInternalValue(updatedValues)
+            } else if (isValueSelected(newValue)) {
+                onChangeSingle?.(null)
+                setInternalValue(null)
             } else {
-                if (isValueSelected(newValue)) {
-                    onChangeSingle?.(null)
-                    setInternalValue(null)
-                } else {
-                    setIsOpen(false)
-                    onChangeSingle?.(newValue)
-                    setInternalValue(newValue)
-                }
+                setIsOpen(false)
+                onChangeSingle?.(newValue)
+                setInternalValue(newValue)
             }
         }
     }
@@ -125,10 +123,6 @@ export function SelectField<T, >({
             }
         }
     }
-
-    const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(search.toLowerCase())
-    )
 
     const isValueSelected = (value: T): boolean => {
         if (multiple && Array.isArray(internalValue)) {
@@ -202,20 +196,18 @@ export function SelectField<T, >({
                         disabled={readonly} />
                     <ScrollArea>
                         <CommandList>
-                            {filteredOptions.length > 0 ? (
-                                filteredOptions.map((option) => (
-                                    <CommandItem
-                                        key={option.value as string}
-                                        onSelect={() => handleSelect(option.value)}
-                                        className={cn("transition-all", isValueSelected(option.value) && "bg-accent")}>
-                                        <Check
-                                            className={cn(isValueSelected(option.value) ? "visible" : "invisible")} />
-                                        {option.render ? option.render(option.label) : option.label}
-                                    </CommandItem>
-                                ))
-                            ) : (
-                                <CommandEmpty>Keine Optionen gefunden</CommandEmpty>
-                            )}
+                            <CommandEmpty>No options found</CommandEmpty>
+                            {options.map((option) => (
+                                <CommandItem
+                                    key={option.value as string}
+                                    keywords={[option.label]}
+                                    onSelect={() => handleSelect(option.value)}
+                                    className={cn("transition-all", isValueSelected(option.value) && "bg-accent")}>
+                                    <Check
+                                        className={cn(isValueSelected(option.value) ? "visible" : "invisible")} />
+                                    {option.render ? option.render(option.label) : option.label}
+                                </CommandItem>
+                            ))}
                         </CommandList>
                     </ScrollArea>
                 </Command>

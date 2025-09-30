@@ -21,7 +21,8 @@ import {
     HandCoinsIcon,
     HouseIcon,
     ImportIcon,
-    ShieldIcon, StoreIcon,
+    ShieldIcon,
+    StoreIcon,
     TagIcon
 } from "lucide-react"
 import { usePathname } from "next/navigation"
