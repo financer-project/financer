@@ -43,12 +43,12 @@ export const CategoryForm = <S extends z.ZodType<any, any>>(props: Readonly<Form
                     name={"parentId"}
                     options={categories
                         .flatten()
+                        .sort((a, b) => a.data.name.localeCompare(b.data.name))
                         .filter(category => category.id !== props.initialValues?.id)
                         .map(category => ({
                             label: category.data.name,
                             value: category.id,
-                            render: label => <ColoredTag label={category.data.name}
-                                                         color={category.data.color} />
+                            render: () => <ColoredTag label={category.data.name} color={category.data.color} />
                         }))}
                     onChange={(value) => handleParentChange(value as string)} />
             </div>
