@@ -5,33 +5,42 @@ import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
-import Header from "@/src/lib/components/content/nav/Header"
+import {
+    Page,
+    PageHeader,
+    PageTitle,
+    PageDescription,
+    PageContent
+} from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
-    title: "New Project",
-    description: "Create a new project"
+    title: "New Transaction",
+    description: "Create a new transaction"
 }
 
-export default function Page() {
+export default function NewTransactionPage() {
     return (
-        <div>
-            <Header title={"Create new Transaction"}
-                    subtitle={"Here can you create a new transaction"}
-                    breadcrumbs={[
-                        { label: "Transactions", url: "/transactions" },
-                        { label: "New" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <AccountProvider>
-                    <CategoryProvider>
-                        <TagProvider>
-                            <CounterpartyProvider>
-                                <NewTransaction />
-                            </CounterpartyProvider>
-                        </TagProvider>
-                    </CategoryProvider>
-                </AccountProvider>
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[
+                { label: "Transactions", url: "/transactions" },
+                { label: "New" }
+            ]}>
+                <PageTitle>Create new Transaction</PageTitle>
+                <PageDescription>Here can you create a new transaction</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <AccountProvider>
+                        <CategoryProvider>
+                            <TagProvider>
+                                <CounterpartyProvider>
+                                    <NewTransaction />
+                                </CounterpartyProvider>
+                            </TagProvider>
+                        </CategoryProvider>
+                    </AccountProvider>
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

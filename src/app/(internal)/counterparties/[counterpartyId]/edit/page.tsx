@@ -3,7 +3,13 @@ import { Suspense } from "react"
 import { invoke } from "@/src/app/blitz-server"
 import getCounterparty from "@/src/lib/model/counterparties/queries/getCounterparty"
 import { EditCounterparty } from "@/src/app/(internal)/counterparties/components/EditCounterparty"
-import Header from "@/src/lib/components/content/nav/Header"
+import {
+    Page,
+    PageHeader,
+    PageTitle,
+    PageDescription,
+    PageContent
+} from "@/src/lib/components/content/page"
 
 async function fetchCounterparty(id: string) {
     return invoke(getCounterparty, { id: id })
@@ -21,22 +27,25 @@ export async function generateMetadata(props: EditCounterpartyPageProps): Promis
     }
 }
 
-export default async function Page(props: Readonly<EditCounterpartyPageProps>) {
+export default async function EditCounterpartyPage(props: Readonly<EditCounterpartyPageProps>) {
     const params = await props.params
     const counterparty = await fetchCounterparty(params.counterpartyId)
 
     return (
-        <div>
-            <Header title={"Edit Counterparty"}
-                    subtitle={"Here you can edit your counterparty."}
-                    breadcrumbs={[
-                        { label: "Counterparties", url: "/counterparties" },
-                        { label: counterparty.name, url: `/counterparties/${counterparty.id}` },
-                        { label: "Edit" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <EditCounterparty counterpartyId={params.counterpartyId} />
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[
+                { label: "Counterparties", url: "/counterparties" },
+                { label: counterparty.name, url: `/counterparties/${counterparty.id}` },
+                { label: "Edit" }
+            ]}>
+                <PageTitle>Edit Counterparty</PageTitle>
+                <PageDescription>Here can you edit your counterparty.</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <EditCounterparty counterpartyId={params.counterpartyId} />
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

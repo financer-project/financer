@@ -6,6 +6,7 @@ import { Transaction } from "../components/Transaction"
 import TransactionHeader from "@/src/app/(internal)/transactions/[transactionId]/header"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
+import { Page, PageContent } from "@/src/lib/components/content/page"
 
 async function fetchTransaction(id: string): Promise<TransactionModel> {
     return invoke(getTransaction, { id: id })
@@ -23,20 +24,22 @@ type TransactionPageProps = {
     params: Promise<{ transactionId: string }>
 }
 
-export default async function Page(props: Readonly<TransactionPageProps>) {
+export default async function TransactionPage(props: Readonly<TransactionPageProps>) {
     const params = await props.params
     const transaction = await fetchTransaction(params.transactionId)
 
     return (
-        <div>
+        <Page>
             <TransactionHeader transaction={transaction} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <TagProvider>
-                    <CounterpartyProvider>
-                        <Transaction transactionId={transaction.id} />
-                    </CounterpartyProvider>
-                </TagProvider>
-            </Suspense>
-        </div>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <TagProvider>
+                        <CounterpartyProvider>
+                            <Transaction transactionId={transaction.id} />
+                        </CounterpartyProvider>
+                    </TagProvider>
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

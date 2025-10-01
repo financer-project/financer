@@ -4,6 +4,7 @@ import { invoke } from "@/src/app/blitz-server"
 import getTag from "@/src/lib/model/tags/queries/getTag"
 import { Tag } from "@/src/app/(internal)/tags/components/Tag"
 import TagHeader from "@/src/app/(internal)/tags/[tagId]/header"
+import { Page, PageContent } from "@/src/lib/components/content/page"
 
 async function fetchTag(id: string) {
     return invoke(getTag, { id: id })
@@ -26,11 +27,13 @@ export default async function Page(props: Readonly<TagPageProps>) {
     const tag = await fetchTag(params.tagId)
 
     return (
-        <div>
+        <Page>
             <TagHeader tag={tag} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <Tag tagId={params.tagId} />
-            </Suspense>
-        </div>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Tag tagId={params.tagId} />
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

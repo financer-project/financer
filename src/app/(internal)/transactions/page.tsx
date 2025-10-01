@@ -2,38 +2,45 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
 import { TransactionsList } from "./components/TransactionsList"
-import Header from "@/src/lib/components/content/nav/Header"
 import { Button } from "@/src/lib/components/ui/button"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { CirclePlus } from "lucide-react"
+import {
+    Page,
+    PageHeader,
+    PageTitle,
+    PageDescription,
+    PageActions,
+    PageContent
+} from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Transactions",
     description: "List of transactions"
 }
 
-export default function Page() {
+export default function TransactionsPage() {
     return (
-        <div>
-            <Header title={"Transactions"}
-                    subtitle={"Here is a list of all transactions."}
-                    breadcrumbs={[{ label: "Transactions" }]}
-                    actions={
-                        <div>
-                            <Button variant={"default"}
-                                    asChild>
-                                <Link href={"/transactions/new"}><CirclePlus />Create</Link>
-                            </Button>
-                        </div>
-                    } />
-            <Suspense fallback={<div>Loading...</div>}>
-                <HouseholdProvider>
-                    <TagProvider>
-                        <TransactionsList />
-                    </TagProvider>
-                </HouseholdProvider>
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[{ label: "Transactions" }]}>
+                <PageTitle>Transactions</PageTitle>
+                <PageDescription>Here is a list of all transactions.</PageDescription>
+                <PageActions>
+                    <Button variant={"default"} asChild>
+                        <Link href={"/transactions/new"}><CirclePlus />Create</Link>
+                    </Button>
+                </PageActions>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <HouseholdProvider>
+                        <TagProvider>
+                            <TransactionsList />
+                        </TagProvider>
+                    </HouseholdProvider>
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

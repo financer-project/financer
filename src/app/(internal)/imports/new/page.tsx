@@ -1,5 +1,11 @@
 import { Metadata } from "next"
-import Header from "@/src/lib/components/content/nav/Header"
+import {
+    Page,
+    PageHeader,
+    PageTitle,
+    PageDescription,
+    PageContent
+} from "@/src/lib/components/content/page"
 import { Suspense } from "react"
 import { ImportWizard } from "../components/ImportWizard"
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
@@ -12,21 +18,24 @@ export const metadata: Metadata = {
 
 export default function Page() {
     return (
-        <div>
-            <Header title={"New Import"}
-                    subtitle={"Import transactions from a CSV file."}
-                    breadcrumbs={[
-                        { label: "Transactions", url: "/transactions" },
-                        { label: "Imports", url: "/imports" },
-                        { label: "New Import" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <AccountProvider>
-                    <CategoryProvider>
-                        <ImportWizard />
-                    </CategoryProvider>
-                </AccountProvider>
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[
+                { label: "Transactions", url: "/transactions" },
+                { label: "Imports", url: "/imports" },
+                { label: "New Import" }
+            ]}>
+                <PageTitle>New Import</PageTitle>
+                <PageDescription>Import transactions from a CSV file.</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <AccountProvider>
+                        <CategoryProvider>
+                            <ImportWizard />
+                        </CategoryProvider>
+                    </AccountProvider>
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

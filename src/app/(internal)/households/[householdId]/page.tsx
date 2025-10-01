@@ -3,8 +3,9 @@ import React, { Suspense } from "react"
 import { invoke } from "src/app/blitz-server"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { Household } from "../components/Household"
-import Header from "./header"
+import HouseholdHeader from "./header"
 import { Household as HouseholdModel } from "@prisma/client"
+import { Page as PageWrapper, PageContent } from "@/src/lib/components/content/page"
 
 export const dynamic = "force-dynamic"
 
@@ -29,12 +30,13 @@ export default async function Page(props: Readonly<HouseholdPageProps>) {
     const household = await fetchHousehold(params.householdId)
 
     return (
-        <div>
-            <Header household={household} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <Household householdId={params.householdId} />
-            </Suspense>
-
-        </div>
+        <PageWrapper>
+            <HouseholdHeader household={household} />
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Household householdId={params.householdId} />
+                </Suspense>
+            </PageContent>
+        </PageWrapper>
     )
 }

@@ -1,7 +1,12 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewHouseholdForm } from "../components/NewHousehold"
-import Header from "@/src/lib/components/content/nav/Header"
+import {
+    Page as PageWrapper,
+    PageHeader,
+    PageTitle,
+    PageContent
+} from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "New Household",
@@ -10,15 +15,18 @@ export const metadata: Metadata = {
 
 export default function Page() {
     return (
-        <div>
-            <Header title={"Create a new Household"}
-                    breadcrumbs={[
-                        { label: "Households", url: "/households" },
-                        { label: "New" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <NewHouseholdForm />
-            </Suspense>
-        </div>
+        <PageWrapper>
+            <PageHeader items={[
+                { label: "Households", url: "/households" },
+                { label: "New" }
+            ]}>
+                <PageTitle>Create a new Household</PageTitle>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <NewHouseholdForm />
+                </Suspense>
+            </PageContent>
+        </PageWrapper>
     )
 }

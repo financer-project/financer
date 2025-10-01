@@ -3,7 +3,13 @@ import { Suspense } from "react"
 import { invoke } from "src/app/blitz-server"
 import getAccount, { AccountModel } from "@/src/lib/model/account/queries/getAccount"
 import { EditAccount } from "../../components/EditAccount"
-import Header from "@/src/lib/components/content/nav/Header"
+import {
+    Page as PageWrapper,
+    PageHeader,
+    PageTitle,
+    PageDescription,
+    PageContent
+} from "@/src/lib/components/content/page"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 
 async function fetchAccount(accountId: string): Promise<AccountModel> {
@@ -28,20 +34,23 @@ export default async function Page(props: Readonly<EditAccountPageProps>) {
     const params = await props.params
     const account = await fetchAccount(params.accountId)
     return (
-        <div>
-            <Header title={"Edit Account"}
-                    subtitle={"Here can you edit your account."}
-                    breadcrumbs={[
-                        { label: "Households", url: "/households" },
-                        { label: account.household.name, url: `/households/${account.householdId}` },
-                        { label: account.name, url: `/households/${account.householdId}/accounts/${account.id}` },
-                        { label: "Edit" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <HouseholdProvider>
-                    <EditAccount accountId={params.accountId} />
-                </HouseholdProvider>
-            </Suspense>
-        </div>
+        <PageWrapper>
+            <PageHeader items={[
+                { label: "Households", url: "/households" },
+                { label: account.household.name, url: `/households/${account.householdId}` },
+                { label: account.name, url: `/households/${account.householdId}/accounts/${account.id}` },
+                { label: "Edit" }
+            ]}>
+                <PageTitle>Edit Account</PageTitle>
+                <PageDescription>Here can you edit your account.</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <HouseholdProvider>
+                        <EditAccount accountId={params.accountId} />
+                    </HouseholdProvider>
+                </Suspense>
+            </PageContent>
+        </PageWrapper>
     )
 }

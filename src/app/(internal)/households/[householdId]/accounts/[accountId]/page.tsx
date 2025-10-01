@@ -4,6 +4,7 @@ import { invoke } from "src/app/blitz-server"
 import getAccount, { AccountModel } from "@/src/lib/model/account/queries/getAccount"
 import { Account } from "@/src/app/(internal)/households/[householdId]/accounts/components/Account"
 import AccountHeader from "@/src/app/(internal)/households/[householdId]/accounts/[accountId]/header"
+import { Page as PageWrapper, PageContent } from "@/src/lib/components/content/page"
 
 async function fetchAccount(accountId: string): Promise<AccountModel> {
     return invoke(getAccount, { id: accountId })
@@ -28,11 +29,13 @@ export default async function Page(props: Readonly<AccountPageProps>) {
     const account = await fetchAccount(params.accountId)
 
     return (
-        <div>
+        <PageWrapper>
             <AccountHeader account={account} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <Account accountId={params.accountId} />
-            </Suspense>
-        </div>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Account accountId={params.accountId} />
+                </Suspense>
+            </PageContent>
+        </PageWrapper>
     )
 }

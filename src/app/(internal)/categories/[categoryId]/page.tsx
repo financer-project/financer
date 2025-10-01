@@ -4,6 +4,7 @@ import { invoke } from "@/src/app/blitz-server"
 import getCategory from "@/src/lib/model/categories/queries/getCategory"
 import { Category } from "@/src/app/(internal)/categories/components/Category"
 import CategoryHeader from "@/src/app/(internal)/categories/[categoryId]/header"
+import { Page, PageContent } from "@/src/lib/components/content/page"
 
 async function fetchCategory(id: string) {
     return invoke(getCategory, { id: id })
@@ -21,16 +22,18 @@ type CategoryPageProps = {
     params: Promise<{ categoryId: string }>
 }
 
-export default async function Page(props: Readonly<CategoryPageProps>) {
+export default async function CategoryPage(props: Readonly<CategoryPageProps>) {
     const params = await props.params
     const category = await fetchCategory(params.categoryId)
 
     return (
-        <div>
+        <Page>
             <CategoryHeader category={category} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <Category categoryId={params.categoryId} />
-            </Suspense>
-        </div>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Category categoryId={params.categoryId} />
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

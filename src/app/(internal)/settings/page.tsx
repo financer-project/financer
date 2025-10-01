@@ -1,7 +1,13 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { EditSetting } from "@/src/app/(internal)/settings/components/EditSetting"
-import Header from "@/src/lib/components/content/nav/Header"
+import {
+    Page,
+    PageHeader,
+    PageTitle,
+    PageDescription,
+    PageContent
+} from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Settings",
@@ -10,13 +16,16 @@ export const metadata: Metadata = {
 
 export default function Page() {
     return (
-        <div>
-            <Header title={"Settings"}
-                    subtitle={"Here is a list of all settings."}
-                    breadcrumbs={[{ label: "Settings" }]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <EditSetting />
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[{ label: "Settings" }]}>
+                <PageTitle>Settings</PageTitle>
+                <PageDescription>Here is a list of all settings.</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <EditSetting />
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

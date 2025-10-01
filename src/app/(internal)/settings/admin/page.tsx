@@ -1,9 +1,15 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
-import Header from "@/src/lib/components/content/nav/Header"
 import { AdminSettings } from "@/src/app/(internal)/settings/admin/components/AdminSettings"
 import { BlitzPage } from "@blitzjs/next"
 import { Role } from "@prisma/client"
+import {
+    Page,
+    PageHeader,
+    PageTitle,
+    PageDescription,
+    PageContent
+} from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Admin Settings",
@@ -12,17 +18,20 @@ export const metadata: Metadata = {
 
 const AdminSettingsPage: BlitzPage = () => {
     return (
-        <>
-            <Header title={"Admin Settings"}
-                    subtitle={"Configure system-wide settings."}
-                    breadcrumbs={[
-                        { label: "Settings", url: "/settings" },
-                        { label: "Admin Settings" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <AdminSettings />
-            </Suspense>
-        </>
+        <Page>
+            <PageHeader items={[
+                { label: "Settings", url: "/settings" },
+                { label: "Admin Settings" }
+            ]}>
+                <PageTitle>Admin Settings</PageTitle>
+                <PageDescription>Configure system-wide settings.</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <AdminSettings />
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }
 

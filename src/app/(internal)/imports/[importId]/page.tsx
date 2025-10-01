@@ -4,6 +4,7 @@ import { invoke } from "@/src/app/blitz-server"
 import getImportJob, { ImportJobModel } from "@/src/lib/model/imports/queries/getImportJob"
 import { ImportJob } from "../components/ImportJob"
 import ImportJobHeader from "@/src/app/(internal)/imports/[importId]/header"
+import { Page as PageWrapper, PageContent } from "@/src/lib/components/content/page"
 
 async function fetchImportJob(id: string): Promise<ImportJobModel> {
     return invoke(getImportJob, { id: id })
@@ -26,11 +27,13 @@ export default async function Page(props: Readonly<ImportJobPageProps>) {
     const importJob = await fetchImportJob(params.importId)
 
     return (
-        <div>
+        <Page>
             <ImportJobHeader importJob={importJob} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <ImportJob importJobId={importJob.id} />
-            </Suspense>
-        </div>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <ImportJob importJobId={importJob.id} />
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

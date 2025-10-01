@@ -125,11 +125,11 @@ const AppSidebar = () => {
 
     return (
         <Sidebar>
-            <SidebarHeader className={"flex flex-col justify-center items-center py-4 h-18 max-h-20 pl-4 md:pr-0 pr-4"}>
+            <SidebarHeader className={"flex flex-col justify-center items-center max-h-20 h-20 py-4 pl-4 md:pr-0 pr-4"}>
                 <NavHousehold />
+                <Separator />
             </SidebarHeader>
             <SidebarContent className={"pl-4 md:pr-0 pr-4"}>
-                <Separator />
                 {getGroups(isAdmin).map((group) => (
                     <SidebarGroup key={group.name} className={"px-0"}>
                         <SidebarGroupLabel>{group.name}</SidebarGroupLabel>

@@ -54,9 +54,9 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
                 <SidebarProvider>
                     <AppSidebar />
                     <main className={"flex flex-col w-full h-screen bg-sidebar md:p-4 p-0"}>
-                        <div className={"bg-background md:rounded-xl h-full max-h-full md:p-2"}>
+                        <div className={"bg-background md:rounded-xl h-full max-h-full"}>
                             <ScrollArea
-                                className={"h-full overflow-y-auto md:rounded-xl md:px-4 md:py-2 py-4 flex flex-col justify-start"}>
+                                className={"h-full overflow-y-auto md:rounded-xl flex flex-col justify-start"}>
                                 {children}
                                 <ScrollBar orientation="vertical" className={"pl-2"} />
                             </ScrollArea>
