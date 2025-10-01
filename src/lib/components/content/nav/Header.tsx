@@ -41,20 +41,22 @@ const Header = ({ title, subtitle, breadcrumbs, actions, hideBackButton }: Heade
                     <Separator orientation={"vertical"} />
 
                     {!isMobile && !hideBackButton && (
-                        <Button variant={"link"} asChild className={"text-default p-0 h-full"}>
-                            <Link
-                                href={{
-                                    pathname: breadcrumbs.length - 2 >= 0
-                                        ? breadcrumbs[breadcrumbs.length - 2].url ?? "/dashboard"
-                                        : "/dashboard"
-                                }}>
-                                <ArrowLeftIcon />
-                                Back
-                            </Link>
-                        </Button>
+                        <>
+                            <Button variant={"link"} asChild className={"text-default p-0 h-full"}>
+                                <Link
+                                    href={{
+                                        pathname: breadcrumbs.length - 2 >= 0
+                                            ? breadcrumbs[breadcrumbs.length - 2].url ?? "/dashboard"
+                                            : "/dashboard"
+                                    }}>
+                                    <ArrowLeftIcon />
+                                    Back
+                                </Link>
+                            </Button>
+                            <Separator orientation={"vertical"} />
+                        </>
                     )}
 
-                    <Separator orientation={"vertical"} />
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem key={"/dashboard"}>
