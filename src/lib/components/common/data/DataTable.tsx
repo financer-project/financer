@@ -76,7 +76,7 @@ export const DataTable = <T, >({
 
 const TableContent = <T, >({ columns, data, itemRoute }: {
     columns: TableColumn<T>[],
-    data: any[],
+    data: T[],
     itemRoute?: (item: T) => string
 }) => {
     const isMobile = useIsMobile()
