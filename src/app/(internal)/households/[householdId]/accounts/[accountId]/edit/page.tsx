@@ -4,7 +4,7 @@ import { invoke } from "src/app/blitz-server"
 import getAccount, { AccountModel } from "@/src/lib/model/account/queries/getAccount"
 import { EditAccount } from "../../components/EditAccount"
 import {
-    Page as PageWrapper,
+    Page ,
     PageHeader,
     PageTitle,
     PageDescription,
@@ -30,11 +30,11 @@ export async function generateMetadata(
     }
 }
 
-export default async function Page(props: Readonly<EditAccountPageProps>) {
+export default async function EditAccountPage(props: Readonly<EditAccountPageProps>) {
     const params = await props.params
     const account = await fetchAccount(params.accountId)
     return (
-        <PageWrapper>
+        <Page>
             <PageHeader items={[
                 { label: "Households", url: "/households" },
                 { label: account.household.name, url: `/households/${account.householdId}` },
@@ -51,6 +51,6 @@ export default async function Page(props: Readonly<EditAccountPageProps>) {
                     </HouseholdProvider>
                 </Suspense>
             </PageContent>
-        </PageWrapper>
+        </Page>
     )
 }

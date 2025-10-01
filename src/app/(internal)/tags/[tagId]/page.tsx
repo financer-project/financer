@@ -22,7 +22,7 @@ type TagPageProps = {
     params: Promise<{ tagId: string }>
 }
 
-export default async function Page(props: Readonly<TagPageProps>) {
+export default async function TagDetailsPage(props: Readonly<TagPageProps>) {
     const params = await props.params
     const tag = await fetchTag(params.tagId)
 

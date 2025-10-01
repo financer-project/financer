@@ -28,7 +28,7 @@ export async function generateMetadata(props: EditTagPageProps): Promise<Metadat
     }
 }
 
-export default async function Page(props: Readonly<EditTagPageProps>) {
+export default async function EditTagPage(props: Readonly<EditTagPageProps>) {
     const params = await props.params
     const tag = await fetchTag(params.tagId)
 

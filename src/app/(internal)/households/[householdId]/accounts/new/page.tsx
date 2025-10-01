@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewAccount } from "../components/NewAccount"
 import {
-    Page as PageWrapper,
+    Page,
     PageHeader,
     PageTitle,
     PageContent
@@ -27,12 +27,12 @@ type HouseholdPageProps = {
     params: Promise<{ householdId: string }>
 }
 
-export default async function Page(props: Readonly<HouseholdPageProps>) {
+export default async function NewHouseholdPage(props: Readonly<HouseholdPageProps>) {
     const params = await props.params
     const household = await fetchHousehold(params.householdId)
 
     return (
-        <PageWrapper>
+        <Page>
             <PageHeader items={[
                 { label: "Households", url: "/households" },
                 { label: household.name, url: `/households/${params.householdId}` },
@@ -45,6 +45,6 @@ export default async function Page(props: Readonly<HouseholdPageProps>) {
                     <NewAccount householdId={params.householdId} />
                 </Suspense>
             </PageContent>
-        </PageWrapper>
+        </Page>
     )
 }

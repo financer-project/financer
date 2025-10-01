@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     description: "List of settings"
 }
 
-export default function Page() {
+export default function SettingsPage() {
     return (
         <Page>
             <PageHeader items={[{ label: "Settings" }]}>

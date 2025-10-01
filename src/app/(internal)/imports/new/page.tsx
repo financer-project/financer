@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: "Import transactions from a CSV file"
 }
 
-export default function Page() {
+export default function NewImportPage() {
     return (
         <Page>
             <PageHeader items={[

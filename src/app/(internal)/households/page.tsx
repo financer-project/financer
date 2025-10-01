@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 import { HouseholdsList } from "./components/HouseholdsList"
 import {
-    Page as PageWrapper,
+    Page,
     PageHeader,
     PageTitle,
     PageDescription,
@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     description: "List of households"
 }
 
-export default function Page() {
+export default function HouseholdListPage() {
     return (
-        <PageWrapper>
+        <Page>
             <PageHeader items={[{ label: "Households" }]}>
                 <PageTitle>Households</PageTitle>
                 <PageDescription>Here is a list of all households.</PageDescription>
@@ -26,6 +26,6 @@ export default function Page() {
                     <HouseholdsList />
                 </Suspense>
             </PageContent>
-        </PageWrapper>
+        </Page>
     )
 }

@@ -4,7 +4,7 @@ import { invoke } from "src/app/blitz-server"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { EditHousehold } from "../../components/EditHousehold"
 import {
-    Page as PageWrapper,
+    Page ,
     PageHeader,
     PageTitle,
     PageDescription,
@@ -28,11 +28,11 @@ export async function generateMetadata(props: EditHouseholdPageProps): Promise<M
     }
 }
 
-export default async function Page(props: Readonly<EditHouseholdPageProps>) {
+export default async function EditHouseholdPage(props: Readonly<EditHouseholdPageProps>) {
     const params = await props.params
     const household = await fetchHousehold(params.householdId)
     return (
-        <PageWrapper>
+        <Page>
             <PageHeader items={[
                 { url: "/households", label: "Households" },
                 { url: `/households/${household.id}`, label: household.name },
@@ -46,6 +46,6 @@ export default async function Page(props: Readonly<EditHouseholdPageProps>) {
                     <EditHousehold householdId={params.householdId} />
                 </Suspense>
             </PageContent>
-        </PageWrapper>
+        </Page>
     )
 }

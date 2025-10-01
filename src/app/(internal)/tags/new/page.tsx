@@ -2,20 +2,14 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewTag } from "@/src/app/(internal)/tags/components/NewTag"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "New Tag",
     description: "Create a new tag"
 }
 
-export default function Page() {
+export default function NewTagPage() {
     return (
         <Page>
             <PageHeader items={[

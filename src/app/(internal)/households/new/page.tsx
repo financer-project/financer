@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewHouseholdForm } from "../components/NewHousehold"
 import {
-    Page as PageWrapper,
+    Page ,
     PageHeader,
     PageTitle,
     PageContent
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
     description: "Create a new Household"
 }
 
-export default function Page() {
+export default function NewHouseholdPage() {
     return (
-        <PageWrapper>
+        <Page>
             <PageHeader items={[
                 { label: "Households", url: "/households" },
                 { label: "New" }
@@ -27,6 +27,6 @@ export default function Page() {
                     <NewHouseholdForm />
                 </Suspense>
             </PageContent>
-        </PageWrapper>
+        </Page>
     )
 }
