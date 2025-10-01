@@ -4,7 +4,7 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import getHouseholds from "@/src/lib/model/household/queries/getHouseholds"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable } from "@/src/lib/components/common/data/DataTable"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import { Household } from "@prisma/client"
@@ -25,7 +25,7 @@ export const HouseholdsList = withFormatters(({ formatters }: WithFormattersProp
     })
 
     return (
-        <PaginatedTable
+        <DataTable
             data={households}
             hasMore={hasMore}
             itemRoute={(household) => `/households/${household.id}`}

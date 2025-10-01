@@ -2,7 +2,7 @@
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useSearchParams } from "next/navigation"
 import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable } from "@/src/lib/components/common/data/DataTable"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
@@ -20,7 +20,7 @@ export const CounterpartiesList = withFormatters(({ formatters, itemsPerPage = 2
     })
 
     return (
-        <PaginatedTable
+        <DataTable
             data={counterparties}
             columns={[
                 { name: "Name", render: counterparty => counterparty.name },

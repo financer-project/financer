@@ -2,7 +2,7 @@
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useSearchParams } from "next/navigation"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable } from "@/src/lib/components/common/data/DataTable"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
@@ -23,53 +23,58 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
 
     return (
         <div>
-            <PaginatedTable data={transactions}
-                            columns={[
-                                { name: "Name", render: transaction => transaction.name },
-                                {
-                                    name: "Category", render: transaction => transaction.category
-                                        ? <ColoredTag color={transaction.category.color}
-                                                      label={transaction.category.name} />
-                                        : <span className={"text-muted-foreground"}>Uncategorized</span>
-                                },
-                                {
-                                    name: "Tags",
-                                    render: transaction => transaction.tags && transaction.tags.length > 0
-                                        ? (
-                                            <div className="flex flex-wrap gap-2">
-                                                {transaction.tags.map((tagRelation) => (
-                                                    <Badge key={tagRelation.tagId} variant={"secondary"}>
-                                                        <ColoredTag
-                                                            color={tagRelation.tag.color}
-                                                            label={tagRelation.tag.name}
-                                                        />
-                                                    </Badge>
-                                                ))}
-                                            </div>
-                                        )
-                                        : <span className={"text-muted-foreground"}>No tags</span>
-                                },
-                                {
-                                    name: "Counterparty",
-                                    render: transaction => transaction.counterparty
-                                        ? <CounterpartyIcon name={transaction.counterparty.name}
-                                                            type={transaction.counterparty.type} />
-                                        : <span className={"text-muted-foreground"}>No counterparty</span>
-                                },
-                                {
-                                    name: "Date",
-                                    render: transaction => formatters.date.format(transaction.valueDate)
-                                },
-                                {
-                                    name: "Amount",
-                                    render: transaction =>
-                                        <Badge variant={"secondary"} className={"font-mono"}>
-                                            {formatters.amount.format(transaction.amount)}
-                                        </Badge>
-                                }
-                            ]}
-                            itemRoute={transaction => `/transactions/${transaction.id}`}
-                            hasMore={hasMore} />
+            <DataTable data={transactions}
+                       columns={[
+                           {
+                               name: "Name",
+                               render: transaction => transaction.name,
+                               key: true
+                           },
+                           {
+                               name: "Category",
+                               render: transaction => transaction.category
+                                   ? <ColoredTag color={transaction.category.color}
+                                                 label={transaction.category.name} />
+                                   : <span className={"text-muted-foreground"}>Uncategorized</span>
+                           },
+                           {
+                               name: "Tags",
+                               render: transaction => transaction.tags && transaction.tags.length > 0
+                                   ? (
+                                       <div className="flex flex-wrap gap-2">
+                                           {transaction.tags.map((tagRelation) => (
+                                               <Badge key={tagRelation.tagId} variant={"secondary"}>
+                                                   <ColoredTag
+                                                       color={tagRelation.tag.color}
+                                                       label={tagRelation.tag.name}
+                                                   />
+                                               </Badge>
+                                           ))}
+                                       </div>
+                                   )
+                                   : <span className={"text-muted-foreground"}>No tags</span>
+                           },
+                           {
+                               name: "Counterparty",
+                               render: transaction => transaction.counterparty
+                                   ? <CounterpartyIcon name={transaction.counterparty.name}
+                                                       type={transaction.counterparty.type} />
+                                   : <span className={"text-muted-foreground"}>No counterparty</span>
+                           },
+                           {
+                               name: "Date",
+                               render: transaction => formatters.date.format(transaction.valueDate)
+                           },
+                           {
+                               name: "Amount",
+                               render: transaction =>
+                                   <Badge variant={"secondary"} className={"font-mono"}>
+                                       {formatters.amount.format(transaction.amount)}
+                                   </Badge>
+                           }
+                       ]}
+                       itemRoute={transaction => `/transactions/${transaction.id}`}
+                       hasMore={hasMore} />
         </div>
     )
 })

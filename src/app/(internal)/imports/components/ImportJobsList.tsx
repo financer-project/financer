@@ -7,7 +7,7 @@ import { Badge } from "@/src/lib/components/ui/badge"
 import { DateTime } from "luxon"
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { ImportStatus } from "@prisma/client"
-import { PaginatedTable, TableColumn } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable, TableColumn } from "@/src/lib/components/common/data/DataTable"
 import { ImportJobModel } from "@/src/lib/model/imports/queries/getImportJob"
 
 const ITEMS_PER_PAGE = 20
@@ -95,7 +95,7 @@ export const ImportJobsList = () => {
     ]
 
     return (
-        <PaginatedTable
+        <DataTable
             data={importJobs}
             columns={columns}
             hasMore={hasMore}

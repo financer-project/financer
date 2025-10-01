@@ -4,7 +4,7 @@ import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable } from "@/src/lib/components/common/data/DataTable"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
@@ -48,7 +48,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
             <Section title={"Accounts"}
                      subtitle={"Please find all information to the household below."}>
                 <Suspense fallback={<div>Loading...</div>}>
-                    <PaginatedTable
+                    <DataTable
                         data={accounts}
                         hasMore={hasMore}
                         itemRoute={(account) => `/households/${account.householdId}/accounts/${account.id}`}

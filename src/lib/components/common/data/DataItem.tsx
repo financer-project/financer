@@ -13,12 +13,12 @@ interface DataItemProps {
 
 const DataItem = ({ label, data, className, linkTo }: DataItemProps) => {
     const renderData = (data: Data) => (
-        <span className={"text-md"}>{data ?? "-"}</span>
+        <span className={"text-sm"}>{data ?? "-"}</span>
     )
 
     return (
         <div className={cn("flex flex-col", className)}>
-            <Label className={"text-sm text-muted-foreground"}>{label}</Label>
+            <Label className={"text-xs text-muted-foreground"}>{label}</Label>
             {linkTo && data
                 ? <Link href={{ pathname: linkTo }}
                         className={"underline underline-offset-5 font-medium"}>
