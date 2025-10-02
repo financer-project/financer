@@ -27,6 +27,8 @@ declare global {
 
 export interface Selectors {
     dataItem(options?: {}): Chainable<JQuery>,
+
+    select(options: {name: string}): Chainable<JQuery>,
 }
 
 Cypress.on("uncaught:exception", (err) => {

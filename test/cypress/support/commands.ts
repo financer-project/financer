@@ -36,8 +36,12 @@ Cypress.Commands.add("component", (name, ...args) => {
     const selectors: Selectors = {
         dataItem: () => {
             return cy.get("label + span.text-sm")
+        },
+        select(options: { name: string }): Cypress.Chainable<JQuery> {
+            return cy.get(`label[for="${options.name}"] + div`)
         }
     }
 
-    return selectors[name](args as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+    console.log(args)
+    return selectors[name](args[0] as any) // eslint-disable-line @typescript-eslint/no-explicit-any
 })

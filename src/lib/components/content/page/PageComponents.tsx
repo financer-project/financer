@@ -2,6 +2,7 @@
 
 import {
     Breadcrumb,
+    BreadcrumbEllipsis,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
@@ -56,37 +57,50 @@ export const Page = ({ children }: PropsWithChildren) => {
     )
 }
 
-export const PageBreadcrumbs = ({ items }: PageBreadcrumbsProps) => {
+const PageBreadcrumbs = ({ items }: PageBreadcrumbsProps) => {
+    const isMobile = useIsMobile()
+
+    // On mobile, show max 2 items + ellipsis if there are more
+    const maxMobileItems = 1
+    const shouldTruncate = isMobile && items.length > maxMobileItems
+    const visibleItems = shouldTruncate ? items.slice(-maxMobileItems) : items
+
     return (
-        <div data-slot={"page-breadcrumbs"}>
-            <Breadcrumb>
-                <BreadcrumbList>
-                    <BreadcrumbItem key={"/dashboard"}>
-                        <BreadcrumbLink href={"/dashboard"}>
-                            <HomeIcon className={"w-4"} />
-                            Home
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    {items.map((item, index) => (
-                        <React.Fragment key={item.url || item.label}>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                {index === items.length - 1
-                                    ? <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                                    : <BreadcrumbLink href={item.url ?? "#"}>
-                                        {item.label}
-                                    </BreadcrumbLink>
-                                }
-                            </BreadcrumbItem>
-                        </React.Fragment>
-                    ))}
-                </BreadcrumbList>
-            </Breadcrumb>
-        </div>
+        <Breadcrumb>
+            <BreadcrumbList>
+                <BreadcrumbItem key={"/dashboard"}>
+                    <BreadcrumbLink href={"/dashboard"}>
+                        <HomeIcon className={"w-4"} />
+                        {!isMobile && "Home"}
+                    </BreadcrumbLink>
+                </BreadcrumbItem>
+
+                {shouldTruncate && (
+                    <>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbEllipsis className="size-4" />
+                        </BreadcrumbItem>
+                    </>
+                )}
+
+                {visibleItems.map((item, index) => (
+                    <React.Fragment key={item.url || item.label}>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            {index === visibleItems.length - 1
+                                ? <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                                : <BreadcrumbLink href={item.url ?? "#"}>
+                                    {item.label}
+                                </BreadcrumbLink>
+                            }
+                        </BreadcrumbItem>
+                    </React.Fragment>
+                ))}
+            </BreadcrumbList>
+        </Breadcrumb>
     )
 }
-PageBreadcrumbs.displayName = "PageBreadcrumbs"
-
 
 export const PageHeader = ({ children, hideBackButton, backUrl, items }: PageHeaderProps) => {
     const isMobile = useIsMobile()
