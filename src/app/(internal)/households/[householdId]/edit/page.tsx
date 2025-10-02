@@ -3,13 +3,7 @@ import { Suspense } from "react"
 import { invoke } from "src/app/blitz-server"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { EditHousehold } from "../../components/EditHousehold"
-import {
-    Page ,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { Household as HouseholdModel } from ".prisma/client"
 
 async function fetchHousehold(householdId: string): Promise<HouseholdModel> {

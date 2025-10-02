@@ -6,7 +6,7 @@ import { UpdateTransactionSchema } from "@/src/lib/model/transactions/schemas"
 import { TransactionForm } from "./TransactionForm"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
-import { PageHeader, PageTitle, PageDescription, PageContent } from "@/src/lib/components/content/page"
+import { PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 
 export const EditTransaction = ({ transactionId }: { transactionId: string }) => {

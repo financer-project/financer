@@ -1,12 +1,7 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewAccount } from "../components/NewAccount"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { invoke } from "@/src/app/blitz-server"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import { Household } from "@prisma/client"

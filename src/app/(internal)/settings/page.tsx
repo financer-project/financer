@@ -1,13 +1,7 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { EditSetting } from "@/src/app/(internal)/settings/components/EditSetting"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Settings",

@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import React from "react"
 import deleteAccount from "@/src/lib/model/account/mutations/deleteAccount"
-import { PageHeader, PageTitle, PageDescription, PageActions } from "@/src/lib/components/content/page"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { AccountModel } from "@/src/lib/model/account/queries/getAccount"
 
 const AccountHeader = ({ account }: { account: AccountModel }) => {

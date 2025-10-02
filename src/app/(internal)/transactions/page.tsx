@@ -8,11 +8,11 @@ import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { CirclePlus } from "lucide-react"
 import {
     Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
     PageActions,
-    PageContent
+    PageContent,
+    PageDescription,
+    PageHeader,
+    PageTitle
 } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {

@@ -5,13 +5,7 @@ import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "New Transaction",

@@ -3,13 +3,7 @@ import { Suspense } from "react"
 import { AdminSettings } from "@/src/app/(internal)/settings/admin/components/AdminSettings"
 import { BlitzPage } from "@blitzjs/next"
 import { Role } from "@prisma/client"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Admin Settings",

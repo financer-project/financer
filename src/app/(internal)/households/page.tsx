@@ -1,13 +1,7 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { HouseholdsList } from "./components/HouseholdsList"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Households",

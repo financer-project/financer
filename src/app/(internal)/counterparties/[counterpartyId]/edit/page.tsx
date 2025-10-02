@@ -3,13 +3,7 @@ import { Suspense } from "react"
 import { invoke } from "@/src/app/blitz-server"
 import getCounterparty from "@/src/lib/model/counterparties/queries/getCounterparty"
 import { EditCounterparty } from "@/src/app/(internal)/counterparties/components/EditCounterparty"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 async function fetchCounterparty(id: string) {
     return invoke(getCounterparty, { id: id })

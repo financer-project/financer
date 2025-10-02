@@ -1,12 +1,7 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewHouseholdForm } from "../components/NewHousehold"
-import {
-    Page ,
-    PageHeader,
-    PageTitle,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "New Household",

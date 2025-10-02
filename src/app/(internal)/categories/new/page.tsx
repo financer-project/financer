@@ -2,13 +2,7 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewCategory } from "@/src/app/(internal)/categories/components/NewCategory"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "New Category",

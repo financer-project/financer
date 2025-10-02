@@ -1,11 +1,5 @@
 import { Metadata } from "next"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { Suspense } from "react"
 import { ImportWizard } from "../components/ImportWizard"
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"

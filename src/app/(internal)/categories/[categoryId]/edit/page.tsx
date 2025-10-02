@@ -4,13 +4,7 @@ import { invoke } from "@/src/app/blitz-server"
 import getCategory from "@/src/lib/model/categories/queries/getCategory"
 import { EditCategory } from "@/src/app/(internal)/categories/components/EditCategory"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 async function fetchCategory(id: string) {
     return invoke(getCategory, { id: id })

@@ -3,13 +3,7 @@ import { Suspense } from "react"
 import { invoke } from "src/app/blitz-server"
 import getAccount, { AccountModel } from "@/src/lib/model/account/queries/getAccount"
 import { EditAccount } from "../../components/EditAccount"
-import {
-    Page ,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 
 async function fetchAccount(accountId: string): Promise<AccountModel> {

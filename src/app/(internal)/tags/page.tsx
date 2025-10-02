@@ -2,13 +2,7 @@ import { TagsList } from "@/src/app/(internal)/tags/components/TagsList"
 import { Metadata } from "next"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { Suspense } from "react"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Tags",

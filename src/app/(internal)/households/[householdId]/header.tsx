@@ -1,6 +1,6 @@
 "use client"
 
-import { PageHeader, PageTitle, PageDescription, PageActions } from "@/src/lib/components/content/page"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import React from "react"
 import { Button } from "@/src/lib/components/ui/button"
 import Link from "next/link"

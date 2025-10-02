@@ -1,13 +1,7 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewCounterparty } from "@/src/app/(internal)/counterparties/components/NewCounterparty"
-import {
-    Page,
-    PageHeader,
-    PageTitle,
-    PageDescription,
-    PageContent
-} from "@/src/lib/components/content/page"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "New Counterparty",
