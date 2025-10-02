@@ -2,6 +2,7 @@ import "./commands"
 import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
 import "@cypress/code-coverage/support"
+import Chainable = Cypress.Chainable
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,8 +16,17 @@ declare global {
             resetAndSeedDatabase(callback: (testData: TestData) => void, resetUsers?: boolean): Chainable<void>
 
             resetDatabase(callback: () => void, resetUsers?: boolean): Chainable<void>
+
+            /**
+             * Provides access to custom selector commands
+             */
+            component<T extends keyof Selectors>(name: T, ...args: Parameters<Selectors[T]>): Chainable<JQuery>
         }
     }
+}
+
+export interface Selectors {
+    dataItem(options?: {}): Chainable<JQuery>,
 }
 
 Cypress.on("uncaught:exception", (err) => {

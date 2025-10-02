@@ -28,7 +28,7 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                            {
                                name: "Name",
                                render: transaction => transaction.name,
-                               key: true
+                               isKey: true
                            },
                            {
                                name: "Category",

@@ -20,7 +20,7 @@ describe("Accounts", () => {
         cy.get("tbody tr:first-child").scrollIntoView()
         cy.get("tbody tr:first-child").click()
 
-        cy.get(":nth-child(2) > .text-md").should("contain.text", "My Account")
+        cy.component("dataItem").should("contain.text", "My Account")
     })
 
     it("should be able to create a new account and delete it", () => {
@@ -36,7 +36,7 @@ describe("Accounts", () => {
         cy.get("input[name='technicalIdentifier']").type("DE11 0000 0000 0000 0000 01")
         cy.get("button[type='submit']").click()
 
-        cy.get(":nth-child(2) > .text-md").should("contain.text", "A New Account")
+        cy.component("dataItem").should("contain.text", "A New Account")
 
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()

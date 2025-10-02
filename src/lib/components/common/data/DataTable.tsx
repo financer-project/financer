@@ -12,10 +12,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/u
 import DataItem from "@/src/lib/components/common/data/DataItem"
 
 export interface TableColumn<T> {
+    key?: string
     name: string,
     render: (item: T) => React.ReactNode,
-    key?: boolean,
-
+    isKey?: boolean,
 }
 
 interface DataTable<T> {
@@ -113,12 +113,12 @@ const TableContent = <T, >({ columns, data, itemRoute }: {
                         onClick={() => itemRoute && router.push(itemRoute(item))}>
                         <CardHeader>
                             <CardTitle className={"text-lg"}>
-                                {columns.find((column) => column.key)?.render(item)}
+                                {columns.find((column) => column.isKey)?.render(item)}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className={"grid grid-cols-2 gap-2"}>
                             {columns
-                                .filter((column) => !column.key)
+                                .filter((column) => !column.isKey)
                                 .map((column) => (
                                     <DataItem label={column.name} data={column.render(item)} />
                                 ))}

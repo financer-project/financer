@@ -1,5 +1,6 @@
 import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
+import { Selectors } from "@/test/cypress/support/e2e"
 
 Cypress.Commands.add("loginWithUser", (user: User) => {
     cy.session(user.email, () => {
@@ -29,4 +30,14 @@ Cypress.Commands.add("resetAndSeedDatabase", (callback, resetUsers) => {
 
 Cypress.Commands.add("resetDatabase", (callback, resetUsers) => {
     cy.task("resetDatabase", resetUsers).then(() => callback())
+})
+
+Cypress.Commands.add("component", (name, ...args) => {
+    const selectors: Selectors = {
+        dataItem: () => {
+            return cy.get("label > span.text-sm")
+        }
+    }
+
+    return selectors[name](args as any) // eslint-disable-line @typescript-eslint/no-explicit-any
 })
