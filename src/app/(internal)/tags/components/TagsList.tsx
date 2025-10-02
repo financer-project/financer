@@ -23,7 +23,7 @@ export const TagsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithF
         <DataTable
             data={tags}
             columns={[
-                { name: "Name", render: tag => tag.name },
+                { name: "Name", render: tag => tag.name, isKey: true },
                 {
                     name: "Color",
                     render: tag => tag.color ?

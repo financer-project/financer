@@ -91,7 +91,8 @@ const UserManagementSection = () => {
                     columns={[
                         {
                             name: "Name",
-                            render: (user) => `${user.firstName} ${user.lastName}`
+                            render: (user) => `${user.firstName} ${user.lastName}`,
+                            isKey: true
                         },
                         {
                             name: "Email",

@@ -23,7 +23,7 @@ export const CounterpartiesList = withFormatters(({ formatters, itemsPerPage = 2
         <DataTable
             data={counterparties}
             columns={[
-                { name: "Name", render: counterparty => counterparty.name },
+                { name: "Name", render: counterparty => counterparty.name, isKey: true },
                 {
                     name: "Type",
                     render: counterparty =>

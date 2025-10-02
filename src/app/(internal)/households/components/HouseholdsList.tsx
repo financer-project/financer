@@ -32,7 +32,8 @@ export const HouseholdsList = withFormatters(({ formatters }: WithFormattersProp
             columns={[
                 {
                     name: "Name",
-                    render: (household) => <Link href={`/households/${household.id}`}>{household.name}</Link>
+                    render: (household) => <Link href={`/households/${household.id}`}>{household.name}</Link>,
+                    isKey: true
                 },
                 {
                     name: "Status", render: (household) =>

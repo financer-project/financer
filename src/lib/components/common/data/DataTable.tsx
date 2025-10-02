@@ -10,6 +10,7 @@ import { Plus } from "lucide-react"
 import { useIsMobile } from "@/src/lib/hooks/use-mobile"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import DataItem from "@/src/lib/components/common/data/DataItem"
+import { DataItemContainer } from "@/src/lib/components/common/data/DataItemContainer"
 
 export interface TableColumn<T> {
     key?: string
@@ -116,12 +117,14 @@ const TableContent = <T, >({ columns, data, itemRoute }: {
                                 {columns.find((column) => column.isKey)?.render(item)}
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className={"grid grid-cols-2 gap-2"}>
-                            {columns
-                                .filter((column) => !column.isKey)
-                                .map((column) => (
-                                    <DataItem label={column.name} data={column.render(item)} />
-                                ))}
+                        <CardContent>
+                            <DataItemContainer>
+                                {columns
+                                    .filter((column) => !column.isKey)
+                                    .map((column) => (
+                                        <DataItem key={column.key || column.name} label={column.name} data={column.render(item)} />
+                                    ))}
+                            </DataItemContainer>
                         </CardContent>
                     </Card>
                 ))

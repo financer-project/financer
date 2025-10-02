@@ -57,7 +57,7 @@ export const Page = ({ children }: PropsWithChildren) => {
     )
 }
 
-const PageBreadcrumbs = ({ items }: PageBreadcrumbsProps) => {
+export const PageBreadcrumbs = ({ items }: PageBreadcrumbsProps) => {
     const isMobile = useIsMobile()
 
     // On mobile, show max 2 items + ellipsis if there are more

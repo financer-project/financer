@@ -3,6 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import getCategory from "@/src/lib/model/categories/queries/getCategory"
 import Section from "@/src/lib/components/common/structure/Section"
 import DataItem from "@/src/lib/components/common/data/DataItem"
+import { DataItemContainer } from "@/src/lib/components/common/data/DataItemContainer"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 
@@ -14,7 +15,7 @@ export const Category = withFormatters(({ categoryId, formatters }: WithFormatte
             <Section title={"Basic Data"}
                      subtitle={"This is the basic data of the category."}>
 
-                <div className={"grid lg:grid-cols-4 grid-cols-1"}>
+                <DataItemContainer>
                     <DataItem label={"Name"}
                               data={category.name} />
 
@@ -25,7 +26,7 @@ export const Category = withFormatters(({ categoryId, formatters }: WithFormatte
                               data={category.color &&
                                   <ColoredTag label={formatters.capitalize.format(category.color)}
                                               color={category.color} />} />
-                </div>
+                </DataItemContainer>
 
             </Section>
         </div>
