@@ -35,7 +35,7 @@ Cypress.Commands.add("resetDatabase", (callback, resetUsers) => {
 Cypress.Commands.add("component", (name, ...args) => {
     const selectors: Selectors = {
         dataItem: () => {
-            return cy.get("label > span.text-sm")
+            return cy.get("label + span.text-sm")
         }
     }
 
