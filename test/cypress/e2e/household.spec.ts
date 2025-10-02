@@ -48,7 +48,7 @@ describe("Households", () => {
         cy.get("tbody tr:nth-child(1) td:nth-child(2) div").should("have.text", "Active")
 
         createNewHousehold()
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "A New Household")
+        cy.component("dataItem").should("contain.text", "A New Household")
 
         // navigate to /households
         cy.get("a[href='/households'][data-sidebar='menu-button']").click()

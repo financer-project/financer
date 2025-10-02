@@ -58,9 +58,9 @@ describe("Tags", () => {
         cy.reload()
         cy.get("td").contains("Food").should("exist").click()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "Food")
-        cy.get(":nth-child(2) > .text-md").should("contain.text", "Food expenses")
-        cy.get(":nth-child(3) > .text-md").should("contain.text", "Red")
+        cy.component("dataItem").should("contain.text", "Food")
+        cy.component("dataItem").should("contain.text", "Food expenses")
+        cy.component("dataItem").should("contain.text", "Red")
 
         // Clean up
         cy.get(".bg-destructive").click()
