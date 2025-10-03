@@ -25,7 +25,7 @@ export const CategoryForm = <S extends z.ZodType<any, any>>(props: Readonly<Form
         if (parentCategory === null && (props.initialValues?.parentId || searchParams?.get("parentId"))) {
             handleParentChange(props.initialValues?.parentId || searchParams?.get("parentId"))
         }
-    }, [props])
+    }, [props]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleParentChange = (parentId: string | null) => {
         const selectedParent = categories.findNode((category) => category.id === parentId)

@@ -33,7 +33,7 @@ describe("Transactions", () => {
         cy.get("button[type='submit']").click()
 
         // Verify transaction details including tags and counterparty
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "Salary")
+        cy.component("dataItem").should("contain.text", "Salary")
         cy.get("div span").should("contain.text", "Work")
         cy.get("div span").should("contain.text", "Personal")
         cy.get("div").contains("Counterparty").next().should("contain.text", "Test Employer")
@@ -69,7 +69,7 @@ describe("Transactions", () => {
         cy.get("label[for='counterpartyId'] + div").type("Test Merchant{enter}")
         cy.get("button[type='submit']").click()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "Bonus")
+        cy.component("dataItem").should("contain.text", "Bonus")
         cy.get("div").contains("Counterparty").next().should("contain.text", "Test Merchant")
 
         // Clean up

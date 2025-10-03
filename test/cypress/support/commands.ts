@@ -1,5 +1,6 @@
 import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
+import { Selectors } from "@/test/cypress/support/e2e"
 
 Cypress.Commands.add("loginWithUser", (user: User) => {
     cy.session(user.email, () => {
@@ -29,4 +30,18 @@ Cypress.Commands.add("resetAndSeedDatabase", (callback, resetUsers) => {
 
 Cypress.Commands.add("resetDatabase", (callback, resetUsers) => {
     cy.task("resetDatabase", resetUsers).then(() => callback())
+})
+
+Cypress.Commands.add("component", (name, ...args) => {
+    const selectors: Selectors = {
+        dataItem: () => {
+            return cy.get("label + span.text-sm")
+        },
+        select(options: { name: string }): Cypress.Chainable<JQuery> {
+            return cy.get(`label[for="${options.name}"] + div`)
+        }
+    }
+
+    console.log(args)
+    return selectors[name](args[0] as any) // eslint-disable-line @typescript-eslint/no-explicit-any
 })

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useMutation } from "@blitzjs/rpc"
 import deleteTransaction from "@/src/lib/model/transactions/mutations/deleteTransaction"
 import { useRouter } from "next/navigation"
-import Header from "@/src/lib/components/content/nav/Header"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
 import { CirclePlus } from "lucide-react"
@@ -41,12 +41,14 @@ const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) =
     )
 
     return (
-        <Header title={"Transaction"}
-                breadcrumbs={[
-                    { label: "Transactions", url: "/transactions" },
-                    { label: transaction.name ?? transaction.category?.name ?? "Transaction Details" }
-                ]}
-                actions={renderActions(transaction)} />
+        <PageHeader items={[
+            { label: "Transactions", url: "/transactions" },
+            { label: transaction.name ?? transaction.category?.name ?? "Transaction Details" }
+        ]}>
+            <PageTitle>Transaction</PageTitle>
+            <PageDescription>Here you can see all details of your transaction.</PageDescription>
+            <PageActions>{renderActions(transaction)}</PageActions>
+        </PageHeader>
     )
 }
 export default TransactionHeader

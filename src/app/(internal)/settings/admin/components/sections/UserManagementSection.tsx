@@ -8,7 +8,7 @@ import inviteUser from "@/src/lib/model/auth/mutations/inviteUser"
 import { toast } from "@/src/lib/hooks/use-toast"
 import SwitchField from "@/src/lib/components/common/form/elements/SwitchField"
 import { Heading3 } from "@/src/lib/components/common/typography"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable } from "@/src/lib/components/common/data/DataTable"
 import { useSearchParams } from "next/navigation"
 import getUsers from "@/src/lib/model/auth/queries/getUsers"
 import Link from "next/link"
@@ -85,13 +85,14 @@ const UserManagementSection = () => {
             </div>
             <Heading3>Users</Heading3>
             <div>
-                <PaginatedTable
+                <DataTable
                     data={users}
                     hasMore={hasMore}
                     columns={[
                         {
                             name: "Name",
-                            render: (user) => `${user.firstName} ${user.lastName}`
+                            render: (user) => `${user.firstName} ${user.lastName}`,
+                            isKey: true
                         },
                         {
                             name: "Email",

@@ -8,6 +8,7 @@ import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { Badge } from "@/src/lib/components/ui/badge"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
+import { DataItemContainer, DataItemGroup } from "@/src/lib/components/common/data/DataItemContainer"
 
 export const Transaction = withFormatters(({ transactionId, formatters }: WithFormattersProps & {
     transactionId: string
@@ -25,75 +26,66 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                          </span>
                      }>
 
-                <div className={"flex flex-row w-full"}>
-                    <DataItem label={"Account"}
-                              data={transaction.account.name}
-                              linkTo={`/households/${transaction.account.householdId}/accounts/${transaction.account.id}`}
-                              className={"basis-1/4"} />
+                <DataItemContainer>
+                    <DataItemGroup>
+                        <DataItem label={"Name"}
+                                  data={transaction.name} />
 
-                    <DataItem label={"Category"}
-                              data={transaction.category &&
-                                  <ColoredTag label={transaction.category.name}
-                                              color={transaction.category.color} />}
-                              linkTo={`/categories/${transaction.category?.id}`}
-                              className={"basis-1/4"} />
+                        <DataItem label={"Type"}
+                                  data={transaction.type} />
 
-                    <DataItem label={"Counterparty"}
-                              data={transaction.counterpartyId && (() => {
-                                  const counterparty = counterparties.find(c => c.id === transaction.counterpartyId)
-                                  return counterparty
-                                      ? <CounterpartyIcon type={counterparty.type} name={counterparty.name} />
-                                      : null
-                              })()}
-                              linkTo={transaction.counterpartyId ? `/counterparties/${transaction.counterpartyId}` : undefined}
-                              className={"basis-1/4"} />
+                        <DataItem label={"Value Date"}
+                                  data={formatters.date.format(transaction.valueDate)} />
+                    </DataItemGroup>
 
-                    <DataItem label={"Tags"}
-                              data={
-                                  <div className={"flex gap-2 py-1"}>
-                                      {transaction.tags?.map(tag => (
-                                          <Badge key={tag.tagId} variant={"secondary"}>
-                                              <ColoredTag label={tag.tag.name}
-                                                          color={tag.tag.color} />
-                                          </Badge>
-                                      ))}
-                                  </div>}
-                              linkTo={`/categories/${transaction.category?.id}`}
-                              className={"basis-1/4"} />
-                </div>
+                    <DataItemGroup>
+                        <DataItem label={"Account"}
+                                  data={transaction.account.name}
+                                  linkTo={`/households/${transaction.account.householdId}/accounts/${transaction.account.id}`} />
 
-                <div className={"flex flex-row w-full"}>
-                    <DataItem label={"Name"}
-                              data={transaction.name}
-                              className={"basis-1/4"} />
+                        <DataItem label={"Category"}
+                                  data={transaction.category &&
+                                      <ColoredTag label={transaction.category.name}
+                                                  color={transaction.category.color} />}
+                                  linkTo={`/categories/${transaction.category?.id}`} />
 
-                    <DataItem label={"Type"}
-                              data={transaction.type}
-                              className={"basis-1/4"} />
+                        <DataItem label={"Counterparty"}
+                                  data={transaction.counterpartyId && (() => {
+                                      const counterparty = counterparties.find(c => c.id === transaction.counterpartyId)
+                                      return counterparty
+                                          ? <CounterpartyIcon type={counterparty.type} name={counterparty.name} />
+                                          : null
+                                  })()}
+                                  linkTo={transaction.counterpartyId ? `/counterparties/${transaction.counterpartyId}` : undefined} />
 
-                    <DataItem label={"Value Date"}
-                              data={formatters.date.format(transaction.valueDate)}
-                              className={"basis-1/4"} />
-                </div>
+                        <DataItem label={"Tags"}
+                                  data={
+                                      <div className={"flex gap-2 py-1"}>
+                                          {transaction.tags?.map(tag => (
+                                              <Badge key={tag.tagId} variant={"secondary"}>
+                                                  <ColoredTag label={tag.tag.name}
+                                                              color={tag.tag.color} />
+                                              </Badge>
+                                          ))}
+                                      </div>}
+                                  linkTo={`/categories/${transaction.category?.id}`} />
+                    </DataItemGroup>
 
-                <div className={"flex flex-row w-full"}>
                     <DataItem label={"Description"}
                               data={transaction.description}
-                              className={"basis-1/2"} />
-                </div>
+                              className={"col-span-2"} />
+                </DataItemContainer>
             </Section>
 
             <Section title={"Administrative Data"}
                      subtitle={"Administrative data contains information about who has changed what etc."}>
-                <div className={"flex flex-row w-full"}>
+                <DataItemContainer>
                     <DataItem label={"Created At"}
-                              data={formatters.date.format(transaction.createdAt)}
-                              className={"basis-1/4"} />
+                              data={formatters.date.format(transaction.createdAt)} />
 
                     <DataItem label={"Updated At"}
-                              data={formatters.date.format(transaction.updatedAt)}
-                              className={"basis-1/2"} />
-                </div>
+                              data={formatters.date.format(transaction.updatedAt)} />
+                </DataItemContainer>
             </Section>
         </div>
     )

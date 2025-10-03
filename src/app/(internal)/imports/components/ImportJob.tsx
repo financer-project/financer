@@ -4,6 +4,7 @@ import { useQuery } from "@blitzjs/rpc"
 import getImportJob from "@/src/lib/model/imports/queries/getImportJob"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import DataItem from "@/src/lib/components/common/data/DataItem"
+import { DataItemContainer } from "@/src/lib/components/common/data/DataItemContainer"
 import Section from "@/src/lib/components/common/structure/Section"
 import { Badge } from "@/src/lib/components/ui/badge"
 import { ColumnMapping, ImportStatus, ValueMapping } from "@prisma/client"
@@ -44,19 +45,16 @@ export const ImportJob = withFormatters(({ importJobId, formatters }: WithFormat
                      subtitle={"Details about this import job."}
                      actions={<div>{getStatusBadge(importJob.status)}</div>}>
 
-                <div className={"flex flex-row w-full"}>
+                <DataItemContainer>
                     <DataItem label={"Name"}
-                              data={importJob.name}
-                              className={"basis-1/4"} />
+                              data={importJob.name} />
 
                     <DataItem label={"File Name"}
-                              data={importJob.fileName ?? "N/A"}
-                              className={"basis-1/4"} />
+                              data={importJob.fileName ?? "N/A"} />
 
                     <DataItem label={"Transaction Count"}
-                              data={importJob._count.transactions}
-                              className={"basis-1/4"} />
-                </div>
+                              data={importJob._count.transactions} />
+                </DataItemContainer>
 
                 {(importJob.status === ImportStatus.PROCESSING || importJob.status === ImportStatus.COMPLETED) && (
                     <div className={"flex flex-col gap-2"}>
@@ -83,11 +81,11 @@ export const ImportJob = withFormatters(({ importJobId, formatters }: WithFormat
                 )}
 
                 {importJob.status === ImportStatus.FAILED && importJob.errorMessage && (
-                    <div className={"flex flex-row w-full mt-4"}>
+                    <DataItemContainer>
                         <DataItem label={"Error Message"}
                                   data={<span className="text-red-500">{importJob.errorMessage}</span>}
-                                  className={"basis-full"} />
-                    </div>
+                                  className={"col-span-2"} />
+                    </DataItemContainer>
                 )}
             </Section>
 
@@ -129,19 +127,16 @@ export const ImportJob = withFormatters(({ importJobId, formatters }: WithFormat
 
             <Section title={"Administrative Data"}
                      subtitle={"Administrative data contains information about when this import was created and updated."}>
-                <div className={"flex flex-row w-full"}>
+                <DataItemContainer>
                     <DataItem label={"Created At"}
-                              data={formatters.date.format(importJob.createdAt)}
-                              className={"basis-1/4"} />
+                              data={formatters.date.format(importJob.createdAt)} />
 
                     <DataItem label={"Updated At"}
-                              data={formatters.date.format(importJob.updatedAt)}
-                              className={"basis-1/4"} />
+                              data={formatters.date.format(importJob.updatedAt)} />
 
                     <DataItem label={"Household"}
-                              data={importJob.householdId}
-                              className={"basis-1/4"} />
-                </div>
+                              data={importJob.householdId} />
+                </DataItemContainer>
             </Section>
         </div>
     )

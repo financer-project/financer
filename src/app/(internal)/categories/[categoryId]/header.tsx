@@ -4,7 +4,7 @@ import { Button } from "@/src/lib/components/ui/button"
 import Link from "next/link"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
-import Header from "@/src/lib/components/content/nav/Header"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import deleteCategory from "@/src/lib/model/categories/mutations/deleteCategory"
 import { Category } from "@prisma/client"
@@ -43,13 +43,14 @@ const CategoryHeader = ({ category }: { category: Category }) => {
     )
 
     return (
-        <Header title="Categories"
-                subtitle={"Here you can see all details of your category."}
-                breadcrumbs={[
-                    { label: "Categories", url: "/categories" },
-                    { label: category.name }
-                ]}
-                actions={renderActions(category)} />
+        <PageHeader items={[
+            { label: "Categories", url: "/categories" },
+            { label: category.name }
+        ]}>
+            <PageTitle>Categories</PageTitle>
+            <PageDescription>Here you can see all details of your category.</PageDescription>
+            <PageActions>{renderActions(category)}</PageActions>
+        </PageHeader>
     )
 }
 export default CategoryHeader

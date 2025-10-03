@@ -3,6 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import getCounterparty from "@/src/lib/model/counterparties/queries/getCounterparty"
 import Section from "@/src/lib/components/common/structure/Section"
 import DataItem from "@/src/lib/components/common/data/DataItem"
+import { DataItemContainer, DataItemGroup } from "@/src/lib/components/common/data/DataItemContainer"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 
@@ -16,46 +17,38 @@ export const Counterparty = withFormatters(({ counterpartyId, formatters }: With
             <Section title={"Basic Data"}
                      subtitle={"This is the basic data of the counterparty."}>
 
-                <div className={"flex flex-row w-full flex-wrap"}>
-                    <DataItem label={"Name"}
-                              className={"basis-1/4"}
-                              data={counterparty.name} />
+                <DataItemContainer>
+                    <DataItemGroup>
+                        <DataItem label={"Name"}
+                                  data={counterparty.name} />
 
-                    <DataItem label={"Type"}
-                              className={"basis-1/4"}
-                              data={<CounterpartyIcon type={counterparty.type}
-                                                      name={formatters.capitalize.format(counterparty.type.toLowerCase().replace("_", " "))} />
-                              } />
+                        <DataItem label={"Type"}
+                                  data={<CounterpartyIcon type={counterparty.type}
+                                                          name={formatters.capitalize.format(counterparty.type.toLowerCase().replace("_", " "))} />
+                                  } />
+                    </DataItemGroup>
 
+                    <DataItemGroup>
+                        <DataItem label={"Description"}
+                                  data={counterparty.description} />
 
-                </div>
-                <div className={"flex flex-row w-full flex-wrap"}>
-                    <DataItem label={"Description"}
-                              className={"basis-1/4"}
-                              data={counterparty.description} />
+                        <DataItem label={"Account Name"}
+                                  data={counterparty.accountName} />
 
-                    <DataItem label={"Account Name"}
-                              className={"basis-1/4"}
-                              data={counterparty.accountName} />
-
-                    <DataItem label={"Web Address"}
-                              className={"basis-1/4"}
-                              data={counterparty.webAddress} />
-
-                </div>
+                        <DataItem label={"Web Address"}
+                                  data={counterparty.webAddress} />
+                    </DataItemGroup>
+                </DataItemContainer>
 
             </Section>
             <Section title={"Administrative Data"}>
-                <div className={"flex flex-row w-full flex-wrap"}>
-
+                <DataItemContainer>
                     <DataItem label={"Updated At"}
-                              className={"basis-1/4"}
                               data={formatters.date.format(counterparty.updatedAt)} />
 
                     <DataItem label={"Created At"}
-                              className={"basis-1/4"}
                               data={formatters.date.format(counterparty.createdAt)} />
-                </div>
+                </DataItemContainer>
             </Section>
         </div>
     )

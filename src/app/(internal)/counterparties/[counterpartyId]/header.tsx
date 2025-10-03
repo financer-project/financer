@@ -4,7 +4,7 @@ import { Button } from "@/src/lib/components/ui/button"
 import Link from "next/link"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
-import Header from "@/src/lib/components/content/nav/Header"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import deleteCounterparty from "@/src/lib/model/counterparties/mutations/deleteCounterparty"
 import { Counterparty } from "@prisma/client"
@@ -14,7 +14,7 @@ const CounterpartyHeader = ({ counterparty }: { counterparty: Counterparty }) =>
     const router = useRouter()
 
     const renderActions = (counterparty: Counterparty) => (
-        <div className={"flex flex-row gap-4"}>
+        <div className={"flex flex-row gap-2"}>
             <Button variant={"outline"} asChild>
                 <Link href={`/counterparties/${counterparty.id}/edit`}>Edit</Link>
             </Button>
@@ -37,13 +37,14 @@ const CounterpartyHeader = ({ counterparty }: { counterparty: Counterparty }) =>
     )
 
     return (
-        <Header title="Counterparties"
-                subtitle={"Here you can see all details of your counterparty."}
-                breadcrumbs={[
-                    { label: "Counterparties", url: "/counterparties" },
-                    { label: counterparty.name }
-                ]}
-                actions={renderActions(counterparty)} />
+        <PageHeader items={[
+            { label: "Counterparties", url: "/counterparties" },
+            { label: counterparty.name }
+        ]}>
+            <PageTitle>Counterparty</PageTitle>
+            <PageDescription>Here you can see all details of your counterparty.</PageDescription>
+            <PageActions>{renderActions(counterparty)}</PageActions>
+        </PageHeader>
     )
 }
 export default CounterpartyHeader

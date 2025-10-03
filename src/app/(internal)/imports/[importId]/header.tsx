@@ -3,7 +3,7 @@
 import { Button } from "@/src/lib/components/ui/button"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
-import Header from "@/src/lib/components/content/nav/Header"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import { ImportStatus } from "@prisma/client"
 import startImport from "@/src/lib/model/imports/mutations/startImport"
@@ -36,13 +36,14 @@ const ImportJobHeader = ({ importJob }: { importJob: ImportJobModel }) => {
     )
 
     return (
-        <Header title={"Import Job Details"}
-                subtitle={"Here can you edit, delete and view the import job details."}
-                breadcrumbs={[
-                    { label: "Imports", url: "/imports" },
-                    { label: importJob.name }
-                ]}
-                actions={renderActions(importJob)} />
+        <PageHeader items={[
+            { label: "Imports", url: "/imports" },
+            { label: importJob.name }
+        ]}>
+            <PageTitle>Import Job Details</PageTitle>
+            <PageDescription>Here can you edit, delete and view the import job details.</PageDescription>
+            <PageActions>{renderActions(importJob)}</PageActions>
+        </PageHeader>
     )
 }
 export default ImportJobHeader

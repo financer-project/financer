@@ -1,7 +1,7 @@
 "use client"
 
 import {
-    Sidebar as SidebarComponent,
+    Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
@@ -118,24 +118,20 @@ const getGroups = (isAdmin: boolean): MenuGroup[] => [
     }
 ]
 
-const Sidebar = () => {
+const AppSidebar = () => {
     const pathname = usePathname()
     const session = useSession()
     const isAdmin = session.role === Role.ADMIN
 
     return (
-        <SidebarComponent
-            variant={"inset"}
-            collapsible="none"
-            side={"left"}
-            className={"h-screen px-4"}>
-            <SidebarHeader className={"flex flex-col justify-center items-center py-4 h-18 max-h-20"}>
+        <Sidebar>
+            <SidebarHeader className={"flex flex-col justify-center items-center max-h-20 h-20 py-4 pl-4 md:pr-0 pr-4"}>
                 <NavHousehold />
+                <Separator />
             </SidebarHeader>
-            <Separator />
-            <SidebarContent>
+            <SidebarContent className={"pl-4 md:pr-0 pr-4"}>
                 {getGroups(isAdmin).map((group) => (
-                    <SidebarGroup key={group.name}>
+                    <SidebarGroup key={group.name} className={"px-0"}>
                         <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
                         <SidebarMenu>
                             {group.items.map((item) => (
@@ -154,12 +150,12 @@ const Sidebar = () => {
                     </SidebarGroup>
                 ))}
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className={"pl-4 md:pr-0 pr-4"}>
                 <Separator />
                 <NavUser />
             </SidebarFooter>
-        </SidebarComponent>
+        </Sidebar>
     )
 }
 
-export default Sidebar
+export default AppSidebar

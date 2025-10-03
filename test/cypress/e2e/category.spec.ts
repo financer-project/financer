@@ -25,8 +25,8 @@ describe("Categories", () => {
         cy.reload()
         cy.get("span").contains("Food").should("exist").click()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "Food")
-        cy.get(":nth-child(3) > .text-md").should("contain.text", "Teal")
+        cy.component("dataItem").should("contain.text", "Food")
+        cy.component("dataItem").should("contain.text", "Teal")
 
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()

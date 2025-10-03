@@ -2,6 +2,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import getAccount from "@/src/lib/model/account/queries/getAccount"
 import DataItem from "@/src/lib/components/common/data/DataItem"
+import { DataItemContainer } from "@/src/lib/components/common/data/DataItemContainer"
 import Section from "@/src/lib/components/common/structure/Section"
 
 export const Account = ({ accountId }: { accountId: string }) => {
@@ -12,20 +13,17 @@ export const Account = ({ accountId }: { accountId: string }) => {
             <Section title={"Basic Information"}
                      subtitle={"Please find all information to the account below."}>
 
-                <div className={"flex flex-row w-full"}>
-                    <DataItem label={"Name"}
+                <DataItemContainer>
+                    <DataItem label={"Household"}
                               data={account.household.name}
-                              linkTo={`/households/${account.household.id}`}
-                              className={"basis-1/4"} />
+                              linkTo={`/households/${account.household.id}`} />
 
                     <DataItem label={"Name"}
-                              data={account.name}
-                              className={"basis-1/4"} />
+                              data={account.name} />
 
                     <DataItem label={"Technical Name"}
-                              data={account.technicalIdentifier}
-                              className={"basis-1/4"} />
-                </div>
+                              data={account.technicalIdentifier} />
+                </DataItemContainer>
 
             </Section>
         </div>

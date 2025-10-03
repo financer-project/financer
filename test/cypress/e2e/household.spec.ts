@@ -34,8 +34,8 @@ describe("Households", () => {
     it("should create a household and delete", () => {
         createNewHousehold()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "A New Household")
-        cy.get(":nth-child(2) > .text-md").should("contain.text", "Euro (EUR)")
+        cy.component("dataItem").should("contain.text", "A New Household")
+        cy.component("dataItem").should("contain.text", "Euro (EUR)")
 
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
@@ -48,7 +48,7 @@ describe("Households", () => {
         cy.get("tbody tr:nth-child(1) td:nth-child(2) div").should("have.text", "Active")
 
         createNewHousehold()
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "A New Household")
+        cy.component("dataItem").should("contain.text", "A New Household")
 
         // navigate to /households
         cy.get("a[href='/households'][data-sidebar='menu-button']").click()

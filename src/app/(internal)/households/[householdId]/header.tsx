@@ -1,6 +1,6 @@
 "use client"
 
-import Header from "@/src/lib/components/content/nav/Header"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import React from "react"
 import { Button } from "@/src/lib/components/ui/button"
 import Link from "next/link"
@@ -36,12 +36,13 @@ export default function HouseholdHeader({ household }: Readonly<{ household: Hou
     )
 
     return (
-        <Header title={"Household Details"}
-                subtitle={"Here can you edit, delete and view the household details."}
-                breadcrumbs={[
-                    { label: "Households", url: "/households" },
-                    { label: household.name, url: "" }
-                ]}
-                actions={renderHeaderButtons} />
+        <PageHeader items={[
+            { label: "Households", url: "/households" },
+            { label: household.name }
+        ]}>
+            <PageTitle>Household Details</PageTitle>
+            <PageDescription>Here can you edit, delete and view the household details.</PageDescription>
+            <PageActions>{renderHeaderButtons()}</PageActions>
+        </PageHeader>
     )
 }
