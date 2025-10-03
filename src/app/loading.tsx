@@ -6,37 +6,37 @@ export default function Loading() {
         <div className={"flex bg-sidebar w-screen h-screen"}>
             <div className={"md:flex hidden flex-col w-64 p-4"}>
                 <div className={"pb-2"}>
-                    <Skeleton className={"h-10 w-full bg-background"} />
+                    <Skeleton className={"h-10 w-full bg-border"} />
                 </div>
                 <Separator className={"mt-1"} />
                 <div className={"flex flex-col grow gap-2 mt-6"}>
                     <div className={"flex flex-col gap-2 "}>
-                        <Skeleton className={"h-4 w-32 bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
+                        <Skeleton className={"h-4 w-32 bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
                     </div>
 
                     <div className={"flex flex-col gap-2 mt-6"}>
-                        <Skeleton className={"h-4 w-32 bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
+                        <Skeleton className={"h-4 w-32 bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
                     </div>
 
                     <div className={"flex flex-col gap-2 mt-6"}>
-                        <Skeleton className={"h-4 w-32 bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
-                        <Skeleton className={"h-6 w-full bg-background"} />
+                        <Skeleton className={"h-4 w-32 bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
+                        <Skeleton className={"h-6 w-full bg-border"} />
                     </div>
                 </div>
 
                 <div className={"place-self-end"}>
                     <Separator className={"mb-2"} />
                     <div className={"flex gap-2"}>
-                        <Skeleton className={"h-10 w-10 bg-background"} />
-                        <Skeleton className={"h-10 w-full bg-background"} />
+                        <Skeleton className={"h-10 w-10 bg-border"} />
+                        <Skeleton className={"h-10 w-full bg-border"} />
                     </div>
                 </div>
             </div>
