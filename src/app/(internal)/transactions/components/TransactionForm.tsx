@@ -55,7 +55,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                     <DatePickerFormField<Transaction>
                         name={"valueDate"}
                         label={"Value Date"}
-                        value={DateTime.now().toJSDate()}
+                        value={props.initialValues?.valueDate ?? DateTime.now().toJSDate()}
                         required />
                 </div>
 
