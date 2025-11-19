@@ -21,16 +21,16 @@ export const CategoryForm = <S extends z.ZodType<any, any>>(props: Readonly<Form
     const [parentCategory, setParentCategory] = useState<Category | null>(null)
     const categories = useCategories()
 
-    useEffect(() => {
-        if (parentCategory === null && (props.initialValues?.parentId || searchParams?.get("parentId"))) {
-            handleParentChange(props.initialValues?.parentId || searchParams?.get("parentId"))
-        }
-    }, [props]) // eslint-disable-line react-hooks/exhaustive-deps
-
     const handleParentChange = (parentId: string | null) => {
         const selectedParent = categories.findNode((category) => category.id === parentId)
         setParentCategory(selectedParent?.data ?? null)
     }
+
+    useEffect(() => {
+        if (parentCategory === null && (props.initialValues?.parentId || searchParams?.get("parentId"))) {
+            handleParentChange(props.initialValues?.parentId || searchParams?.get("parentId")) // eslint-disable-line react-hooks/set-state-in-effect
+        }
+    }, [props]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Form<S> {...props}>
