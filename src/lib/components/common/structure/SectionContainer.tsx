@@ -47,7 +47,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
         }
 
         extractSections(children)
-        setSections(sectionInfos)
+        setSections(sectionInfos) // eslint-disable-line react-hooks/set-state-in-effect
     }, [children])
 
     return (

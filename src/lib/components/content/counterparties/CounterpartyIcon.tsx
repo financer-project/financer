@@ -71,7 +71,7 @@ const CounterpartyIcon: React.FC<CounterpartyIconProps> = ({ type, name, classNa
 
     return (
         <span className={"flex items-center gap-2"}>
-            <Icon className={cn("inline-block", className)} size={size} />
+            {React.createElement(Icon, { className: cn("inline-block", className), size })}
             {name}
         </span>
     )

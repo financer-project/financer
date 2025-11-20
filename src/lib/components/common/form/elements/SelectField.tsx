@@ -59,7 +59,7 @@ export function SelectField<T, >({
         if (props.value !== undefined) {
             if (multiple) {
                 if (Array.isArray(props.value)) {
-                    setInternalValue(props.value)
+                    setInternalValue(props.value) // eslint-disable-line react-hooks/set-state-in-effect
                 } else if (props.value !== null) {
                     setInternalValue([props.value])
                 } else {

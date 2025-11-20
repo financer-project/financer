@@ -19,7 +19,7 @@ export const DatePicker = ({
 
     useEffect(() => {
         if (props.value && props.value !== date) {
-            setDate(props.value ?? null)
+            setDate(props.value ?? null)  // eslint-disable-line react-hooks/set-state-in-effect
         }
     }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
 

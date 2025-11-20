@@ -34,7 +34,7 @@ export const ImportJobsList = () => {
             const interval = setInterval(() => {
                 router.refresh()
             }, UPDATE_INTERVAL)
-            setRefreshInterval(interval)
+            setRefreshInterval(interval) // eslint-disable-line react-hooks/set-state-in-effect
         } else if (!hasJobsInProgress && refreshInterval) {
             clearInterval(refreshInterval)
             setRefreshInterval(null)
