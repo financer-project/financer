@@ -18,6 +18,18 @@ export interface DataTableProps<T> {
     hasMore: boolean
     createRoute?: string
     filters?: FilterConfig<T>[]
+    /**
+     * Fuzzy search configuration. When provided, a search input is rendered in the toolbar
+     * and the value is exposed via URL query param (default key: "q").
+     */
+    search?: {
+        /** List of fields to search across. Supports dotted paths for relations, e.g. "account.name" */
+        fields: string[]
+        /** Optional placeholder for the search input */
+        placeholder?: string
+        /** Optional URL param key; defaults to "q" */
+        paramKey?: string
+    }
 }
 
 export const DataTable = <T,>({
@@ -26,14 +38,15 @@ export const DataTable = <T,>({
                                    itemRoute,
                                    hasMore,
                                    createRoute,
-                                   filters
+                                   filters,
+                                   search
                                }: DataTableProps<T>) => {
 
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                 {/* 1. Dynamic Filter Toolbar */}
-                <TableToolbar filters={filters} />
+                <TableToolbar filters={filters} search={search} />
 
                 {createRoute && (
                     <div className="flex flex-row justify-end items-center">

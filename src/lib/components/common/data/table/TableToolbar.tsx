@@ -4,13 +4,20 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { X } from "lucide-react"
 import { FilterConfig } from "./filters/types"
+import { Input } from "@/src/lib/components/ui/input"
+import { useDebounce } from "@/src/lib/hooks/use-debounce"
 import { getFilterStrategy } from "./filters/registry"
 
 interface TableToolbarProps<T> {
     filters?: FilterConfig<T>[]
+    search?: {
+        fields: string[]
+        placeholder?: string
+        paramKey?: string
+    }
 }
 
-export const TableToolbar = <T, >({ filters = [] }: TableToolbarProps<T>) => {
+export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>) => {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -25,11 +32,38 @@ export const TableToolbar = <T, >({ filters = [] }: TableToolbarProps<T>) => {
 
     const clearAll = () => router.push(pathname || "/")
 
-    if (filters.length === 0) return null
+    const searchKey = search?.paramKey ?? "q"
+    const searchValueFromUrl = searchParams?.get(searchKey) ?? ""
+    const [searchTerm, setSearchTerm] = React.useState<string>(searchValueFromUrl)
+    const debouncedSearch = useDebounce(searchTerm, 400)
+
+    React.useEffect(() => {
+        // Push debounced search term to URL
+        if (search) {
+            updateQuery(searchKey, debouncedSearch?.trim() ? debouncedSearch.trim() : null)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedSearch])
+
+    React.useEffect(() => {
+        // keep local state in sync when URL changes externally
+        setSearchTerm(searchValueFromUrl)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchValueFromUrl])
+
+    if (!search && filters.length === 0) return null
 
     return (
         <div className="flex flex-wrap gap-2 items-center">
-            {}
+            {search && (
+                <div className="w-[240px]">
+                    <Input
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder={search.placeholder ?? "Search"}
+                    />
+                </div>
+            )}
 
             {filters.map((filter) => {
                 const strategy = getFilterStrategy(filter.type)

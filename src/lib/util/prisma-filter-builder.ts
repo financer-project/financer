@@ -4,11 +4,48 @@ import { getFilterStrategy } from "@/src/lib/components/common/data/table/filter
 interface BuildWhereParams<T> {
   searchParams: URLSearchParams | Record<string, string | string[] | undefined>
   filters?: FilterConfig<T>[]
+  search?: {
+    fields: string[]
+    paramKey?: string
+  }
 }
 
-export function buildPrismaWhere<T>({ searchParams, filters = [] }: BuildWhereParams<T>): any {
+export function buildPrismaWhere<T>({ searchParams, filters = [], search }: BuildWhereParams<T>): any {
   const where: any = { AND: [] }
   const params = new URLSearchParams(searchParams as any)
+
+  // 1) Fuzzy search across fields
+  if (search && Array.isArray(search.fields) && search.fields.length > 0) {
+    const key = search.paramKey ?? "q"
+    const term = (params.get(key) ?? "").trim()
+    if (term) {
+      const or: any[] = []
+
+      const makeContains = () => ({ contains: term, mode: "insensitive" as const })
+
+      // Convert dotted paths like "account.name" to nested where object
+      const pathToWhere = (path: string) => {
+        const parts = path.split(".")
+        const field = parts.pop()!
+        // Reduce from last relation inward using { is: { ... } }
+        let node: any = { [field]: makeContains() }
+        for (let i = parts.length - 1; i >= 0; i--) {
+          const rel = parts[i]
+          // By default, use `is` for to-one relations; if your schema uses to-many here,
+          // you may switch to `{ some: node }`.
+          node = { [rel]: { is: node } }
+        }
+        return node
+      }
+
+      for (const f of search.fields) {
+        if (f.includes(".")) or.push(pathToWhere(f))
+        else or.push({ [f]: makeContains() })
+      }
+
+      if (or.length > 0) where.AND.push({ OR: or })
+    }
+  }
 
   filters.forEach((filter) => {
     const key = filter.property as string
