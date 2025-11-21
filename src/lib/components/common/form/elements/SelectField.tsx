@@ -9,6 +9,8 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@
 import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
 import { ElementProps } from "@/src/lib/components/common/form/FormElement"
 import { Badge } from "@/src/lib/components/ui/badge"
+import { Checkbox } from "@/src/lib/components/ui/checkbox"
+import { Separator } from "@/src/lib/components/ui/separator"
 
 export interface SelectOption<T> {
     label: string;
@@ -16,18 +18,22 @@ export interface SelectOption<T> {
     render?: (label: string) => React.ReactNode
 }
 
-interface SingleSelectProps<T> extends ElementProps<T> {
+interface BaseSelectProps<T> extends ElementProps<T> {
+    keepPlaceholder?: boolean,
+    disableClearButton?: true
+}
+
+interface SingleSelectProps<T> extends BaseSelectProps<T> {
     multiple?: false
-    options: SelectOption<T>[]
+    options: SelectOption<T>[],
 }
 
 
-interface MultiSelectProps<T>
-    extends Omit<ElementProps<T[]>, "value" | "onChange"> {
+interface MultiSelectProps<T> extends Omit<BaseSelectProps<T[]>, "value" | "onChange"> {
     multiple: true
-    options: SelectOption<T>[]
+    options: SelectOption<T>[],
     value?: T[]
-    onChange?: (value: T[]) => void
+    onChange?: (value: T[]) => void,
 }
 
 
@@ -124,6 +130,11 @@ export function SelectField<T, >({
         }
     }
 
+    const hasValuesSelected = () => {
+        return (multiple && Array.isArray(internalValue) && internalValue.length > 0) ||
+            (!multiple && internalValue !== null)
+    }
+
     const isValueSelected = (value: T): boolean => {
         if (multiple && Array.isArray(internalValue)) {
             return internalValue.some(val => JSON.stringify(val) === JSON.stringify(value))
@@ -131,21 +142,41 @@ export function SelectField<T, >({
         return JSON.stringify(internalValue) === JSON.stringify(value)
     }
 
+    const renderButtonContent = (value: T | T[] | null) => {
+        if (props.keepPlaceholder) {
+            return (
+                <div className={"flex gap-2"}>
+                    <span>{placeholder}</span>
+                    {renderValue(value) && (
+                        <>
+                            <Separator orientation={"vertical"} />
+                            {renderValue(value)}
+                        </>
+                    )}
+                </div>
+            )
+        } else {
+            return renderValue(value) ?? placeholder
+        }
+    }
+
     const renderValue = (value: T | T[] | null) => {
         if (multiple && Array.isArray(value) && value.length > 0) {
             return (
                 <div className="flex flex-wrap gap-2">
-                    {value.map((val) => {
-                        const option = options.find((opt) => JSON.stringify(opt.value) === JSON.stringify(val))
-                        if (option) {
-                            return (
-                                <Badge key={option.value as string} variant={"secondary"}>
-                                    {option.render ? option.render(option.label) : option.label}
-                                </Badge>
-                            )
-                        }
-                        return null
-                    })}
+                    {value.length > 3
+                        ? <Badge variant={"secondary"}>{value.length} selected</Badge>
+                        : value.map((val) => {
+                            const option = options.find((opt) => JSON.stringify(opt.value) === JSON.stringify(val))
+                            if (option) {
+                                return (
+                                    <Badge key={option.value as string} variant={"secondary"}>
+                                        {option.render ? option.render(option.label) : option.label}
+                                    </Badge>
+                                )
+                            }
+                            return null
+                        })}
                 </div>
             )
         } else if (!multiple) {
@@ -154,7 +185,6 @@ export function SelectField<T, >({
                 return option.render ? option.render(option.label) : option.label
             }
         }
-        return placeholder
     }
 
     return (
@@ -166,18 +196,17 @@ export function SelectField<T, >({
                         role="select-field"
                         className={cn(
                             "w-full justify-start font-normal shadow-sm px-4 py-0",
-                            props.className,
-                            (multiple ? (Array.isArray(internalValue) && internalValue.length > 0) : internalValue) ? "" : "text-muted-foreground"
+                            (multiple ? (Array.isArray(internalValue) && internalValue.length > 0) : internalValue) ? "" : "text-muted-foreground",
+                            props.className
                         )}
                         onClick={(event) => {
                             event.preventDefault()
                             if (!readonly) setIsOpen(true)
                         }}
                         disabled={readonly}>
-                        {renderValue(internalValue)}
+                        {renderButtonContent(internalValue)}
                     </Button>
-                    {((multiple && Array.isArray(internalValue) && internalValue.length > 0) ||
-                        (!multiple && internalValue !== null)) && !readonly && (
+                    {hasValuesSelected() && !props.disableClearButton && !readonly && (
                         <Button
                             variant={"ghost"}
                             onClick={handleClear}
@@ -203,8 +232,10 @@ export function SelectField<T, >({
                                     keywords={[option.label]}
                                     onSelect={() => handleSelect(option.value)}
                                     className={cn("transition-all", isValueSelected(option.value) && "bg-accent")}>
-                                    <Check
-                                        className={cn(isValueSelected(option.value) ? "visible" : "invisible")} />
+                                    {multiple
+                                        ? <Checkbox checked={isValueSelected(option.value)} />
+                                        : <Check
+                                            className={cn(isValueSelected(option.value) ? "visible" : "invisible")} />}
                                     {option.render ? option.render(option.label) : option.label}
                                 </CommandItem>
                             ))}

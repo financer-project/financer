@@ -8,11 +8,12 @@ export type TransactionModel = Prisma.TransactionGetPayload<{
     include: {
         category: true,
         account: true,
+        counterparty: true,
         tags: {
             include: {
                 tag: true
             }
-        }
+        },
     }
 }>;
 
@@ -29,6 +30,7 @@ export default resolver.pipe(
             include: {
                 category: true,
                 account: true,
+                counterparty: true,
                 tags: {
                     include: {
                         tag: true
