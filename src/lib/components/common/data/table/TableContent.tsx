@@ -25,7 +25,7 @@ export const TableContent = <T,>({ columns, data, itemRoute }: {
     return (
         <>
             {!isMobile
-                ? <Table>
+                ? <Table className={"mt-0"}>
                     <TableHeader>
                         <TableRow>
                             {columns.map((column, index) => (

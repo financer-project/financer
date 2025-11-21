@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FilterStrategy, SelectFilterConfig } from "./types"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
 
-const SelectFilterComponent = <T,>({ config, currentValue, onChange }: {
+const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
     config: SelectFilterConfig<T>,
     currentValue: string | null,
     onChange: (val: string | null) => void
@@ -20,6 +20,9 @@ const SelectFilterComponent = <T,>({ config, currentValue, onChange }: {
                     options={config.options}
                     value={selectedValues}
                     onChange={(vals) => onChange(vals.length > 0 ? vals.join(",") : null)}
+                    className={"border border-dashed shadow-none text-foreground font-medium"}
+                    keepPlaceholder={true}
+                    disableClearButton={true}
                 />
             </div>
         )

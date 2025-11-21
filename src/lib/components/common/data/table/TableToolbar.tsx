@@ -1,6 +1,6 @@
 "use client"
 import React from "react"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { X } from "lucide-react"
 import { FilterConfig } from "./filters/types"
@@ -10,7 +10,7 @@ interface TableToolbarProps<T> {
     filters?: FilterConfig<T>[]
 }
 
-export const TableToolbar = <T,>({ filters = [] }: TableToolbarProps<T>) => {
+export const TableToolbar = <T, >({ filters = [] }: TableToolbarProps<T>) => {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -28,7 +28,9 @@ export const TableToolbar = <T,>({ filters = [] }: TableToolbarProps<T>) => {
     if (filters.length === 0) return null
 
     return (
-        <div className="flex flex-wrap gap-2 items-center mb-4">
+        <div className="flex flex-wrap gap-2 items-center">
+            {}
+
             {filters.map((filter) => {
                 const strategy = getFilterStrategy(filter.type)
                 const key = filter.property as string
@@ -39,14 +41,13 @@ export const TableToolbar = <T,>({ filters = [] }: TableToolbarProps<T>) => {
                         key={key}
                         config={filter as any}
                         currentValue={searchParams?.get(key) ?? null}
-                        onChange={(val: string | null) => updateQuery(key, val)}
-                    />
+                        onChange={(val: string | null) => updateQuery(key, val)} />
                 )
             })}
 
             {(searchParams?.toString().length ?? 0) > 0 && (
                 <Button variant="ghost" onClick={clearAll} size="sm">
-                    Reset <X className="ml-2 h-4 w-4" />
+                    Reset<X />
                 </Button>
             )}
         </div>
