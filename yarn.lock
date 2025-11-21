@@ -10342,7 +10342,7 @@ __metadata:
     lucide-react: "npm:^0.544.0"
     luxon: "npm:3.6.0"
     next: "npm:^15.5.6"
-    nodemailer: "npm:^7.0.6"
+    nodemailer: "npm:^7.0.10"
     nyc: "npm:^17.1.0"
     postcss: "npm:^8.5.1"
     prisma: "npm:^6.19.0"
@@ -13503,10 +13503,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^7.0.6":
-  version: 7.0.6
-  resolution: "nodemailer@npm:7.0.6"
-  checksum: 10c0/84d3bdca7baa048df538506726a3e63a116276b9ee1ad1e3cd55a8ccbdbf3dea34af0d9bfbe2fdb63cc83f9abe2dbab1737cd58562955e42cbf6cd46e82da49a
+"nodemailer@npm:^7.0.10":
+  version: 7.0.10
+  resolution: "nodemailer@npm:7.0.10"
+  checksum: 10c0/9bb39bde904397879a6394e5202146167cabc3bd4089c1b0255ce16875e721d1cf132afde25a570fc4cf38f159ba6b6b5411d3b9371775543d38343fbd505101
   languageName: node
   linkType: hard
 

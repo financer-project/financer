@@ -1,5 +1,5 @@
 "use client"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useSearchParams } from "next/navigation"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
 import { DataTable } from "@/src/lib/components/common/data/DataTable"
@@ -8,6 +8,13 @@ import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import { Badge } from "@/src/lib/components/ui/badge"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
+import getAccounts from "@/src/lib/model/account/queries/getAccounts"
+import getCategories from "@/src/lib/model/categories/queries/getCategories"
+import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
+import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
+import { buildPrismaWhere } from "@/src/lib/util/prisma-filter-builder"
+import { FilterConfig } from "@/src/lib/components/common/data/table/filters/types"
+import { format as formatDate } from "date-fns"
 
 export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
     itemsPerPage?: number
@@ -15,15 +22,72 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
     const searchParams = useSearchParams()
     const currentHousehold = useCurrentHousehold()!
     const page = Number(searchParams?.get("page") ?? 0)
+
+    // Load options for filters
+    const [{ accounts }] = useQuery(getAccounts, { householdId: currentHousehold.id, take: 200 })
+    const [categories] = useQuery(getCategories, { householdId: currentHousehold.id })
+    const [{ counterparties }] = useQuery(getCounterparties, { householdId: currentHousehold.id, take: 200 })
+    const [{ importJobs }] = useQuery(getImportJobs, { take: 200, orderBy: { createdAt: "desc" } })
+
+    // Define dynamic filters
+    const filters: FilterConfig<any>[] = [
+        {
+            type: "select",
+            label: "Account",
+            property: "accountId",
+            multiSelect: true,
+            options: accounts.map((a: any) => ({ label: a.name, value: a.id }))
+        },
+        {
+            type: "select",
+            label: "Category",
+            property: "categoryId",
+            multiSelect: true,
+            options: categories.map((c: any) => ({ label: c.name, value: c.id }))
+        },
+        {
+            type: "select",
+            label: "Counterparty",
+            property: "counterpartyId",
+            multiSelect: true,
+            options: counterparties.map((cp: any) => ({ label: cp.name, value: cp.id }))
+        },
+        {
+            type: "select",
+            label: "CSV Import",
+            property: "importJobId",
+            multiSelect: true,
+            options: importJobs.map((job: any) => ({
+                label: job.name ?? `Import ${formatDate(new Date(job.createdAt), "yyyy-MM-dd HH:mm")}`,
+                value: job.id,
+                render: (label: string) => (
+                    <div className="flex flex-col leading-tight">
+                        <span>{label}</span>
+                        <span className="text-xs text-muted-foreground">{formatDate(new Date(job.createdAt), "yyyy-MM-dd HH:mm")}</span>
+                    </div>
+                )
+            }))
+        },
+        {
+            type: "date",
+            label: "Date",
+            property: "valueDate"
+        }
+    ]
+
+    const where = buildPrismaWhere({ searchParams: searchParams as any, filters })
+
     const [{ transactions, hasMore }] = usePaginatedQuery(getTransactions, {
         skip: itemsPerPage * page,
         take: itemsPerPage,
-        householdId: currentHousehold.id
+        householdId: currentHousehold.id,
+        where
     })
 
     return (
         <div>
             <DataTable data={transactions}
+                       filters={filters}
                        columns={[
                            {
                                name: "Name",

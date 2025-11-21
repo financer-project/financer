@@ -1,0 +1,54 @@
+"use client"
+import React from "react"
+import Link from "next/link"
+import { Button } from "@/src/lib/components/ui/button"
+import { Plus } from "lucide-react"
+import { TableContent, TableColumn } from "./TableContent"
+import { TablePagination } from "./TablePagination"
+import { TableToolbar } from "./TableToolbar"
+import { FilterConfig } from "./filters/types"
+
+// Re-export types for consumers
+export type { TableColumn }
+
+export interface DataTableProps<T> {
+    data: T[]
+    columns: Array<TableColumn<T>>
+    itemRoute?: (item: T) => string
+    hasMore: boolean
+    createRoute?: string
+    filters?: FilterConfig<T>[]
+}
+
+export const DataTable = <T,>({
+                                   data,
+                                   columns,
+                                   itemRoute,
+                                   hasMore,
+                                   createRoute,
+                                   filters
+                               }: DataTableProps<T>) => {
+
+    return (
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                {/* 1. Dynamic Filter Toolbar */}
+                <TableToolbar filters={filters} />
+
+                {createRoute && (
+                    <div className="flex flex-row justify-end items-center">
+                        <Button variant={"outline"} asChild>
+                            <Link href={{ pathname: createRoute }}><Plus /> Create</Link>
+                        </Button>
+                    </div>
+                )}
+            </div>
+
+            {/* 2. Main Content */}
+            <TableContent columns={columns} data={data} itemRoute={itemRoute} />
+
+            {/* 3. Pagination */}
+            <TablePagination hasMore={hasMore} />
+        </div>
+    )
+}
