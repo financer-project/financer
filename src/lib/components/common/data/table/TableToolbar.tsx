@@ -41,7 +41,6 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
         for (const f of filters) set.add(String(f.property))
         if (search) set.add(searchKey)
         return set
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, search, searchKey])
 
     // Clear only managed keys (filters + search). Keep other params intact, reset page to 0.
@@ -65,7 +64,6 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
     React.useEffect(() => {
         // keep local state in sync when URL changes externally
         setSearchTerm(searchValueFromUrl)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchValueFromUrl])
 
     if (!search && filters.length === 0) return null
@@ -88,11 +86,11 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
                 const strategy = getFilterStrategy(filter.type)
                 const key = filter.property as string
 
-                const Comp = strategy.Component as any
+                const Comp = strategy.Component
                 return (
                     <Comp
                         key={key}
-                        config={filter as any}
+                        config={filter}
                         currentValue={searchParams?.get(key) ?? null}
                         onChange={(val: string | null) => updateQuery(key, val)} />
                 )

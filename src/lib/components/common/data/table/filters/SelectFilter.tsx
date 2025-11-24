@@ -8,8 +8,9 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
     currentValue: string | null,
     onChange: (val: string | null) => void
 }) => {
+    const selectedValues = React.useMemo(() => (currentValue ? currentValue.split(",") : []), [currentValue])
+
     if (config.multiSelect) {
-        const selectedValues = React.useMemo(() => (currentValue ? currentValue.split(",") : []), [currentValue])
         return (
             <div>
                 <SelectField<string>

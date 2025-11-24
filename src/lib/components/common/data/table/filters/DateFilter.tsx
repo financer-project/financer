@@ -125,8 +125,8 @@ const DateFilterComponent = <T, >({
                         <Calendar
                             mode="range"
                             numberOfMonths={2}
-                            selected={{ from: range.from, to: range.to } as any}
-                            onSelect={(r: any) => {
+                            selected={{ from: range.from, to: range.to }}
+                            onSelect={(r) => {
                                 const next: Range = { from: r?.from, to: r?.to }
                                 setRange(next)
                             }}
@@ -150,7 +150,7 @@ const DateFilterComponent = <T, >({
 
 export const DateFilterStrategy: FilterStrategy<any, DateFilterConfig<any>> = {
     // Wrap the component with formatter context so dates are displayed using the app's formatter
-    Component: withFormatters(DateFilterComponent) as any,
+    Component: withFormatters(DateFilterComponent),
     getWhereClause: (config, value) => {
         const { from, to } = parseRange(value)
         const clause: any = {}
