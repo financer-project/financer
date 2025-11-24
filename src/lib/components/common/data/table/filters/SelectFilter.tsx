@@ -1,6 +1,5 @@
 "use client"
 import React from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/lib/components/ui/select"
 import { FilterStrategy, SelectFilterConfig } from "./types"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
 
@@ -9,11 +8,10 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
     currentValue: string | null,
     onChange: (val: string | null) => void
 }) => {
-    // Multi-select branch uses the shared SelectField component
     if (config.multiSelect) {
         const selectedValues = React.useMemo(() => (currentValue ? currentValue.split(",") : []), [currentValue])
         return (
-            <div className="min-w-[220px]">
+            <div>
                 <SelectField<string>
                     multiple
                     placeholder={config.label}
@@ -22,28 +20,23 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
                     onChange={(vals) => onChange(vals.length > 0 ? vals.join(",") : null)}
                     className={"border border-dashed shadow-none text-foreground font-medium"}
                     keepPlaceholder={true}
-                    disableClearButton={true}
-                />
+                    disableClearButton={true} />
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <SelectField<string>
+                    placeholder={config.label}
+                    options={config.options}
+                    value={currentValue}
+                    onChange={(newValue) => onChange(newValue)}
+                    className={"border border-dashed shadow-none text-foreground font-medium"}
+                    keepPlaceholder={true}
+                    disableClearButton={true} />
             </div>
         )
     }
-
-    // Single-select fallback uses Radix Select
-    return (
-        <Select value={currentValue ?? "ALL"} onValueChange={(val) => onChange(val === "ALL" ? null : val)}>
-            <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder={config.label} />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="ALL">All</SelectItem>
-                {config.options.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                        {opt.render ? opt.render(opt.label) : opt.label}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
-    )
 }
 
 export const SelectFilterStrategy: FilterStrategy<any, SelectFilterConfig<any>> = {

@@ -4,7 +4,7 @@ import { Input } from "@/src/lib/components/ui/input"
 import { FilterStrategy, StringFilterConfig } from "./types"
 import { useDebounce } from "@/src/lib/hooks/use-debounce"
 
-const StringFilterComponent = <T,>({ config, currentValue, onChange }: {
+const StringFilterComponent = <T, >({ config, currentValue, onChange }: {
     config: StringFilterConfig<T>,
     currentValue: string | null,
     onChange: (val: string | null) => void
@@ -38,6 +38,6 @@ const StringFilterComponent = <T,>({ config, currentValue, onChange }: {
 export const StringFilterStrategy: FilterStrategy<any, StringFilterConfig<any>> = {
     Component: StringFilterComponent,
     getWhereClause: (config, value) => ({
-        [config.property]: { contains: value, mode: "insensitive" }
+        [config.property]: { contains: value }
     })
 }

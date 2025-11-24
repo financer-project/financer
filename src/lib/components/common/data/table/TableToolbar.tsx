@@ -2,11 +2,11 @@
 import React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
-import { X } from "lucide-react"
+import { SearchIcon, X } from "lucide-react"
 import { FilterConfig } from "./filters/types"
-import { Input } from "@/src/lib/components/ui/input"
 import { useDebounce } from "@/src/lib/hooks/use-debounce"
 import { getFilterStrategy } from "./filters/registry"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/src/lib/components/ui/input-group"
 
 interface TableToolbarProps<T> {
     filters?: FilterConfig<T>[]
@@ -30,12 +30,29 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
         router.push(`${pathname}?${params.toString()}`)
     }
 
-    const clearAll = () => router.push(pathname || "/")
-
     const searchKey = search?.paramKey ?? "q"
     const searchValueFromUrl = searchParams?.get(searchKey) ?? ""
     const [searchTerm, setSearchTerm] = React.useState<string>(searchValueFromUrl)
     const debouncedSearch = useDebounce(searchTerm, 400)
+
+    // Determine which query keys are controlled by the toolbar (filters + search)
+    const managedKeys = React.useMemo(() => {
+        const set = new Set<string>()
+        for (const f of filters) set.add(String(f.property))
+        if (search) set.add(searchKey)
+        return set
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filters, search, searchKey])
+
+    // Clear only managed keys (filters + search). Keep other params intact, reset page to 0.
+    const clearAll = () => {
+        const params = new URLSearchParams(searchParams?.toString())
+        managedKeys.forEach((key) => params.delete(key))
+        params.set("page", "0")
+        const query = params.toString()
+        if (query) router.push(`${pathname}?${query}`)
+        else router.push(pathname || "/")
+    }
 
     React.useEffect(() => {
         // Push debounced search term to URL
@@ -56,13 +73,15 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
     return (
         <div className="flex flex-wrap gap-2 items-center">
             {search && (
-                <div className="w-[240px]">
-                    <Input
+                <InputGroup className={"w-128"}>
+                    <InputGroupAddon>
+                        <SearchIcon/>
+                    </InputGroupAddon>
+                    <InputGroupInput
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder={search.placeholder ?? "Search"}
-                    />
-                </div>
+                        placeholder={search.placeholder ?? "Search"} />
+                </InputGroup>
             )}
 
             {filters.map((filter) => {
@@ -79,7 +98,15 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
                 )
             })}
 
-            {(searchParams?.toString().length ?? 0) > 0 && (
+            {(() => {
+                // Show reset only when at least one managed param has a value
+                if (!searchParams) return false
+                for (const key of managedKeys) {
+                    const v = searchParams.get(key)
+                    if (v && v.length > 0) return true
+                }
+                return false
+            })() && (
                 <Button variant="ghost" onClick={clearAll} size="sm">
                     Reset<X />
                 </Button>
