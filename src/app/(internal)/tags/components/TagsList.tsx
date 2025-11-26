@@ -2,7 +2,7 @@
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useSearchParams } from "next/navigation"
 import getTags from "@/src/lib/model/tags/queries/getTags"
-import { DataTable } from "@/src/lib/components/common/data/DataTable"
+import { DataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"

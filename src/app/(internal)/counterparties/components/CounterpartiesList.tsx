@@ -2,7 +2,7 @@
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useSearchParams } from "next/navigation"
 import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
-import { DataTable } from "@/src/lib/components/common/data/DataTable"
+import { DataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"

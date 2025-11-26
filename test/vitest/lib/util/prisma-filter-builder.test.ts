@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest"
-import { buildPrismaWhere } from "@/src/lib/components/common/data/table/filters/prisma-filter-builder"
 import {
+    buildPrismaWhere,
     DateFilterConfig,
     SelectFilterConfig,
     StringFilterConfig
-} from "@/src/lib/components/common/data/table/filters/types"
+} from "@/src/lib/components/common/data/table"
 
 describe("buildPrismaWhere", () => {
     it("returns empty object when no filters or search provided", () => {

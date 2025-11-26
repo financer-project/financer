@@ -7,7 +7,7 @@ import { Badge } from "@/src/lib/components/ui/badge"
 import { DateTime } from "luxon"
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { ImportStatus } from "@prisma/client"
-import { DataTable, TableColumn } from "@/src/lib/components/common/data/DataTable"
+import { DataTable, TableColumn } from "@/src/lib/components/common/data/table"
 import { ImportJobModel } from "@/src/lib/model/imports/queries/getImportJob"
 
 const ITEMS_PER_PAGE = 20
