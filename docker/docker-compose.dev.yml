@@ -12,7 +12,7 @@ services:
       MYSQL_USER: financer
       MYSQL_PASSWORD: financer
     volumes:
-      - ./data/database:/var/lib/mysql
+      - ./.data/database:/var/lib/mysql
 
   redis:
     image: redis:alpine

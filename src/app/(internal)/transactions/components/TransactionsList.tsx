@@ -2,7 +2,7 @@
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useSearchParams } from "next/navigation"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import { DataTable, TableColumn, FilterConfig, buildPrismaWhere } from "@/src/lib/components/common/data/table"
+import { buildPrismaWhere, DataTable, FilterConfig, TableColumn } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
