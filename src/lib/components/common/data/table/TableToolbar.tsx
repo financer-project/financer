@@ -3,7 +3,7 @@ import React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { SearchIcon, X } from "lucide-react"
-import { FilterConfig } from "./filters/types"
+import { DateFilterConfig, FilterConfig, SelectFilterConfig, StringFilterConfig } from "./filters/types"
 import { useDebounce } from "@/src/lib/hooks/use-debounce"
 import { getFilterStrategy } from "./filters/registry"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/src/lib/components/ui/input-group"
@@ -83,17 +83,47 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
             )}
 
             {filters.map((filter) => {
-                const strategy = getFilterStrategy(filter.type)
                 const key = filter.property as string
+                const currentValue = searchParams?.get(key) ?? null
+                const onChange = (val: string | null) => updateQuery(key, val)
 
-                const Comp = strategy.Component
-                return (
-                    <Comp
-                        key={key}
-                        config={filter}
-                        currentValue={searchParams?.get(key) ?? null}
-                        onChange={(val: string | null) => updateQuery(key, val)} />
-                )
+                switch (filter.type) {
+                    case "string": {
+                        const { Component } = getFilterStrategy<T, "string">("string")
+                        return (
+                            <Component
+                                key={key}
+                                config={filter as StringFilterConfig<T>}
+                                currentValue={currentValue}
+                                onChange={onChange}
+                            />
+                        )
+                    }
+                    case "select": {
+                        const { Component } = getFilterStrategy<T, "select">("select")
+                        return (
+                            <Component
+                                key={key}
+                                config={filter as SelectFilterConfig<T>}
+                                currentValue={currentValue}
+                                onChange={onChange}
+                            />
+                        )
+                    }
+                    case "date": {
+                        const { Component } = getFilterStrategy<T, "date">("date")
+                        return (
+                            <Component
+                                key={key}
+                                config={filter as DateFilterConfig<T>}
+                                currentValue={currentValue}
+                                onChange={onChange}
+                            />
+                        )
+                    }
+                    default:
+                        return null
+                }
             })}
 
             {(() => {

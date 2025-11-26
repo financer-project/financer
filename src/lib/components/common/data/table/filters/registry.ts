@@ -1,4 +1,4 @@
-import { FilterType, FilterStrategy, StringFilterConfig, SelectFilterConfig, DateFilterConfig } from "./types"
+import { DateFilterConfig, FilterStrategy, FilterType, SelectFilterConfig, StringFilterConfig } from "./types"
 import { StringFilterStrategy } from "./StringFilter"
 import { SelectFilterStrategy } from "./SelectFilter"
 import { DateFilterStrategy } from "./DateFilter"

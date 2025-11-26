@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { buildPrismaWhere } from "@/src/lib/util/prisma-filter-builder"
+import { buildPrismaWhere } from "@/src/lib/components/common/data/table/filters/prisma-filter-builder"
 import {
     DateFilterConfig,
     SelectFilterConfig,
