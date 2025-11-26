@@ -11,7 +11,7 @@ export const DatePickerFormField = <E, >({
                                              onChange,
                                              ...props
                                          }: FormElementProps<E, Date>) => {
-    const [field, , helpers] = useField<Date | null>(name)
+    const [field, , helpers] = useField<Date | null>(name as string)
     const { isSubmitting } = useFormikContext()
 
     useEffect(() => {

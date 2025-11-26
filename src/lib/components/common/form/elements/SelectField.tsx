@@ -146,7 +146,7 @@ export function SelectField<T, >({
         if (props.keepPlaceholder) {
             return (
                 <div className="flex gap-2 items-center">
-                    <span className="text-muted-foreground">{placeholder}</span>
+                    <span>{placeholder}</span>
                     {renderValue(value) && (
                         <>
                             <Separator orientation="vertical" className="h-4" />
@@ -156,7 +156,7 @@ export function SelectField<T, >({
                 </div>
             )
         } else {
-            return renderValue(value) ?? placeholder
+            return renderValue(value) ?? (<span className={"text-muted-foreground"}>{placeholder}</span>)
         }
     }
 
@@ -194,9 +194,8 @@ export function SelectField<T, >({
                     <InputGroup
                         role="select-field"
                         className={cn(
-                            "cursor-pointer shadow-sm",
+                            "cursor-pointer shadow-sm text-sm",
                             readonly ? "opacity-50 pointer-events-none" : "",
-                            (!props.keepPlaceholder && !hasValuesSelected()) ? "text-muted-foreground" : "",
                             props.className
                         )}
                         onClick={(event) => {

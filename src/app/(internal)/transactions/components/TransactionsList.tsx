@@ -1,8 +1,7 @@
 "use client"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import { useSearchParams } from "next/navigation"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import { buildPrismaWhere, DataTable, FilterConfig, TableColumn } from "@/src/lib/components/common/data/table"
+import { DataTable, FilterConfig, TableColumn, useDataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
@@ -14,13 +13,11 @@ import getCounterparties from "@/src/lib/model/counterparties/queries/getCounter
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { format as formatDate } from "date-fns"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
+import { Prisma } from ".prisma/client"
+import TransactionWhereInput = Prisma.TransactionWhereInput
 
-export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
-    itemsPerPage?: number
-}) => {
-    const searchParams = useSearchParams()
+export const TransactionsList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
-    const page = Number(searchParams?.get("page") ?? 0)
 
     // Load options for filters
     const [{ accounts }] = useQuery(getAccounts, { householdId: currentHousehold.id, take: 200 })
@@ -136,15 +133,15 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
         paramKey: "q"
     }
 
-    const where = buildPrismaWhere<TransactionModel, import("@/src/lib/db").Prisma.TransactionWhereInput>({
-        searchParams: searchParams,
+    const { page, pageSize, where } = useDataTable<TransactionModel, TransactionWhereInput>({
         filters,
-        search: searchConfig
+        search: searchConfig,
+        defaultPageSize: 25
     })
 
-    const [{ transactions, hasMore }] = usePaginatedQuery(getTransactions, {
-        skip: itemsPerPage * page,
-        take: itemsPerPage,
+    const [{ transactions, hasMore, count }] = usePaginatedQuery(getTransactions, {
+        skip: pageSize * page,
+        take: pageSize,
         householdId: currentHousehold.id,
         where
     })
@@ -160,7 +157,8 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
                        }}
                        columns={columns}
                        itemRoute={transaction => `/transactions/${transaction.id}`}
-                       hasMore={hasMore} />
+                       hasMore={hasMore}
+                       count={count} />
         </div>
     )
 })

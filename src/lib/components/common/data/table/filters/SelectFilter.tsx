@@ -19,7 +19,7 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
                     options={config.options}
                     value={selectedValues}
                     onChange={(vals) => onChange(vals.length > 0 ? vals.join(",") : null)}
-                    className={"border border-dashed shadow-none text-foreground font-medium"}
+                    className={"border border-dashed shadow-xs"}
                     keepPlaceholder={true}
                     disableClearButton={true} />
             </div>
@@ -32,7 +32,7 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
                     options={config.options}
                     value={currentValue}
                     onChange={(newValue) => onChange(newValue)}
-                    className={"border border-dashed shadow-none text-foreground font-medium"}
+                    className={"border border-dashed shadow-xs"}
                     keepPlaceholder={true}
                     disableClearButton={true} />
             </div>

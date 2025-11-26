@@ -4,26 +4,22 @@ import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import { DataItemContainer } from "@/src/lib/components/common/data/DataItemContainer"
 import { Suspense } from "react"
-import { useSearchParams } from "next/navigation"
-import { DataTable } from "@/src/lib/components/common/data/table"
+import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
-
-const ITEMS_PER_PAGE = 100
 
 export const Household = withFormatters(({ formatters, householdId }: WithFormattersProps & {
     householdId: string
 }) => {
     const [household] = useQuery(getHousehold, { id: householdId })
 
-    const urlSearchParams = useSearchParams()
-    const page = Number(urlSearchParams?.get("page") ?? 0)
-    const [{ accounts, hasMore }] = usePaginatedQuery(getAccounts, {
+    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+    const [{ accounts, hasMore, count }] = usePaginatedQuery(getAccounts, {
         householdId: householdId,
         orderBy: { id: "asc" },
-        skip: ITEMS_PER_PAGE * page,
-        take: ITEMS_PER_PAGE
+        skip: pageSize * page,
+        take: pageSize
     })
 
     return (
@@ -49,6 +45,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                     <DataTable
                         data={accounts}
                         hasMore={hasMore}
+                        count={count}
                         itemRoute={(account) => `/households/${account.householdId}/accounts/${account.id}`}
                         createRoute={`/households/${household.id}/accounts/new`}
                         columns={[

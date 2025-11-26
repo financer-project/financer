@@ -2,24 +2,22 @@
 
 import { useEffect, useState } from "react"
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Badge } from "@/src/lib/components/ui/badge"
 import { DateTime } from "luxon"
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { ImportStatus } from "@prisma/client"
-import { DataTable, TableColumn } from "@/src/lib/components/common/data/table"
+import { DataTable, TableColumn, useDataTable } from "@/src/lib/components/common/data/table"
 import { ImportJobModel } from "@/src/lib/model/imports/queries/getImportJob"
 
-const ITEMS_PER_PAGE = 20
 const UPDATE_INTERVAL = 2000
 
 export const ImportJobsList = () => {
     const router = useRouter()
-    const urlSearchParams = useSearchParams()
-    const page = Number(urlSearchParams?.get("page") ?? 0)
-    const [{ importJobs, hasMore }] = useQuery(getImportJobs, {
-        skip: ITEMS_PER_PAGE * page,
-        take: ITEMS_PER_PAGE
+    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+    const [{ importJobs, hasMore, count }] = useQuery(getImportJobs, {
+        skip: pageSize * page,
+        take: pageSize
     })
 
     const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null)
@@ -99,6 +97,7 @@ export const ImportJobsList = () => {
             data={importJobs}
             columns={columns}
             hasMore={hasMore}
+            count={count}
             itemRoute={(job) => `/imports/${job.id}`} />
     )
 }

@@ -18,6 +18,8 @@ export interface DataTableProps<T> {
     hasMore: boolean
     createRoute?: string
     filters?: FilterConfig<T>[]
+    /** Total item count across all pages (for pagination). If omitted, falls back to data.length */
+    count: number
     /**
      * Fuzzy search configuration. When provided, a search input is rendered in the toolbar
      * and the value is exposed via URL query param (default key: "q").
@@ -39,7 +41,8 @@ export const DataTable = <T,>({
                                    hasMore,
                                    createRoute,
                                    filters,
-                                   search
+                                   search,
+                                   count
                                }: DataTableProps<T>) => {
 
     return (
@@ -61,7 +64,7 @@ export const DataTable = <T,>({
             <TableContent columns={columns} data={data} itemRoute={itemRoute} />
 
             {/* 3. Pagination */}
-            <TablePagination hasMore={hasMore} />
+            <TablePagination hasMore={hasMore} count={count} />
         </div>
     )
 }
