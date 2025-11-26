@@ -11,14 +11,14 @@ describe("<SelectField />", () => {
                     { value: "second", label: "Second" },
                     { value: "third", label: "Third" }]} />)
 
-            cy.get("button").should("contain.text", "Select option ...")
+            cy.get("[role='select-field']").should("contain.text", "Select option ...")
 
-            cy.get("button").click()
+            cy.get("[role='select-field']").click()
             cy.get("div[role='dialog']").should("be.visible")
             cy.get("div[role='listbox']").find("div[role='option']").should("have.length", 3)
 
             cy.get("div[role='listbox'] div div:first-child").click()
-            cy.get("button").should("contain.text", "First")
+            cy.get("[role='select-field']").should("contain.text", "First")
         })
 
         it("select a predefined value", () => {
@@ -29,7 +29,7 @@ describe("<SelectField />", () => {
                     { value: "third", label: "Third" }]}
                 value="second" />)
 
-            cy.get("button").should("contain.text", "Second")
+            cy.get("[role='select-field']").should("contain.text", "Second")
         })
 
         it("select with a value binding", () => {
@@ -51,11 +51,11 @@ describe("<SelectField />", () => {
 
             setData(null)
 
-            cy.get("button").should("contain.text", "Select option ...")
+            cy.get("[role='select-field']").should("contain.text", "Select option ...")
 
             cy.wait(500).then(() => {
                 setData("second") // Update value dynamically
-                cy.get("button").should("contain.text", "Second")
+                cy.get("[role='select-field']").should("contain.text", "Second")
             })
         })
 
@@ -69,8 +69,8 @@ describe("<SelectField />", () => {
                 readonly={true}
             />)
 
-            cy.get("button").should("contain.text", "Third")
-            cy.get("button").should("have.attr", "disabled")
+            cy.get("[role='select-field']").should("contain.text", "Third")
+            cy.get("[role='select-field']").should("have.class", "pointer-events-none")
         })
 
         it("clears the selected value when the clear button is pressed", () => {
@@ -81,12 +81,12 @@ describe("<SelectField />", () => {
                     { value: "third", label: "Third" }]}
             />)
 
-            cy.get("button").click()
+            cy.get("[role='select-field']").click()
             cy.get("div[role='listbox'] div div:first-child").click()
-            cy.get("button").should("contain.text", "First")
+            cy.get("[role='select-field']").should("contain.text", "First")
 
-            cy.get("button svg").parent().click()
-            cy.get("button").should("contain.text", "Select option ...")
+            cy.get("[role='select-field'] button").click()
+            cy.get("[role='select-field']").should("contain.text", "Select option ...")
         })
     })
 
@@ -104,10 +104,10 @@ describe("<SelectField />", () => {
                 onChange={handleChange}
             />)
 
-            cy.get("button").should("contain.text", "Select option ...")
+            cy.get("[role='select-field']").should("contain.text", "Select option ...")
 
             // Select first option
-            cy.get("button").click()
+            cy.get("[role='select-field']").click()
             cy.get("div[role='listbox'] div div:first-child").click()
             cy.get("@handleChange").should("have.been.calledWith", ["first"])
 
@@ -116,8 +116,8 @@ describe("<SelectField />", () => {
             cy.get("@handleChange").should("have.been.calledWith", ["first", "second"])
 
             // Verify both options are displayed
-            cy.get("button").should("contain.text", "First")
-            cy.get("button").should("contain.text", "Second")
+            cy.get("[role='select-field']").should("contain.text", "First")
+            cy.get("[role='select-field']").should("contain.text", "Second")
         })
 
         it("deselects an option from multiple selections", () => {
@@ -134,11 +134,11 @@ describe("<SelectField />", () => {
             />)
 
             // Verify initial state
-            cy.get("button").should("contain.text", "First")
-            cy.get("button").should("contain.text", "Second")
+            cy.get("[role='select-field']").should("contain.text", "First")
+            cy.get("[role='select-field']").should("contain.text", "Second")
 
             // Deselect first option
-            cy.get("button").eq(0).click()
+            cy.get("[role='select-field']").eq(0).click()
             cy.get("div[role='listbox'] div div:first-child").click()
             cy.get("@handleChange").should("have.been.calledWith", ["second"])
         })
@@ -153,9 +153,9 @@ describe("<SelectField />", () => {
                 value={["first", "third"]}
             />)
 
-            cy.get("button").should("contain.text", "First")
-            cy.get("button").should("contain.text", "Third")
-            cy.get("button").should("not.contain.text", "Second")
+            cy.get("[role='select-field']").should("contain.text", "First")
+            cy.get("[role='select-field']").should("contain.text", "Third")
+            cy.get("[role='select-field']").should("not.contain.text", "Second")
         })
 
         it("clears all selected values when the clear button is pressed", () => {
@@ -171,12 +171,46 @@ describe("<SelectField />", () => {
                 onChange={handleChange}
             />)
 
-            cy.get("button").should("contain.text", "First")
-            cy.get("button").should("contain.text", "Second")
+            cy.get("[role='select-field']").should("contain.text", "First")
+            cy.get("[role='select-field']").should("contain.text", "Second")
 
-            cy.get("button svg").parent().click()
+            cy.get("[role='select-field'] button").click()
             cy.get("@handleChange").should("have.been.calledWith", [])
-            cy.get("button").should("contain.text", "Select option ...")
+            cy.get("[role='select-field']").should("contain.text", "Select option ...")
+        })
+
+        it.only("respects keepPlaceholder property", () => {
+            cy.mount(<SelectField<string>
+                options={[{ value: "first", label: "First" },
+                    { value: "second", label: "Second" },
+                    { value: "third", label: "Third" },
+                    { value: "fourth", label: "Fourth" }
+                ]}
+                multiple
+                keepPlaceholder
+                value={["first"]}
+            />)
+
+            cy.get("[role='select-field']").should("contain.text", "Select option ...")
+            cy.get("[role='select-field']").should("contain.text", "First")
+
+            cy.get("[role='select-field']").eq(0).click()
+            cy.get("div[role='listbox'] div div:nth-child(2)").click()
+            cy.get("div[role='listbox'] div div:nth-child(3)").click()
+            cy.get("div[role='listbox'] div div:nth-child(4)").click()
+
+            cy.get("[role='select-field']").should("contain.text", "4 selected")
+        })
+
+        it("respects disableClearButton property", () => {
+            cy.mount(<SelectField<string>
+                options={[{ value: "first", label: "First" }]}
+                disableClearButton={true}
+                value="first"
+            />)
+
+            cy.get("[role='select-field']").should("contain.text", "First")
+            cy.get("[role='select-field'] button").should("not.exist")
         })
     })
 })

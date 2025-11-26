@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/lib/components/ui/popover"
-import { Button } from "@/src/lib/components/ui/button"
 import { cn } from "@/src/lib/util/utils"
 import { Check, X } from "lucide-react"
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/src/lib/components/ui/command"
@@ -11,6 +10,7 @@ import { ElementProps } from "@/src/lib/components/common/form/FormElement"
 import { Badge } from "@/src/lib/components/ui/badge"
 import { Checkbox } from "@/src/lib/components/ui/checkbox"
 import { Separator } from "@/src/lib/components/ui/separator"
+import { InputGroup, InputGroupAddon, InputGroupButton } from "@/src/lib/components/ui/input-group"
 
 export interface SelectOption<T> {
     label: string;
@@ -145,11 +145,11 @@ export function SelectField<T, >({
     const renderButtonContent = (value: T | T[] | null) => {
         if (props.keepPlaceholder) {
             return (
-                <div className={"flex gap-2"}>
-                    <span>{placeholder}</span>
+                <div className="flex gap-2 items-center">
+                    <span className="text-muted-foreground">{placeholder}</span>
                     {renderValue(value) && (
                         <>
-                            <Separator orientation={"vertical"} />
+                            <Separator orientation="vertical" className="h-4" />
                             {renderValue(value)}
                         </>
                     )}
@@ -191,29 +191,34 @@ export function SelectField<T, >({
         <Popover open={isOpen} onOpenChange={setIsOpen} modal={false}>
             <PopoverTrigger asChild>
                 <div className="relative w-full">
-                    <Button
-                        variant={"outline"}
+                    <InputGroup
                         role="select-field"
                         className={cn(
-                            "w-full justify-start font-normal shadow-sm px-4 py-0",
-                            (multiple ? (Array.isArray(internalValue) && internalValue.length > 0) : internalValue) ? "" : "text-muted-foreground",
+                            "cursor-pointer shadow-sm",
+                            readonly ? "opacity-50 pointer-events-none" : "",
+                            (!props.keepPlaceholder && !hasValuesSelected()) ? "text-muted-foreground" : "",
                             props.className
                         )}
                         onClick={(event) => {
                             event.preventDefault()
                             if (!readonly) setIsOpen(true)
                         }}
-                        disabled={readonly}>
-                        {renderButtonContent(internalValue)}
-                    </Button>
-                    {hasValuesSelected() && !props.disableClearButton && !readonly && (
-                        <Button
-                            variant={"ghost"}
-                            onClick={handleClear}
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                            <X />
-                        </Button>
-                    )}
+                    >
+                        <div className="flex items-center flex-1 px-3 min-w-0">
+                            {renderButtonContent(internalValue)}
+                        </div>
+                        {hasValuesSelected() && !props.disableClearButton && !readonly && (
+                            <InputGroupAddon align="inline-end">
+                                <InputGroupButton
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleClear()
+                                    }}>
+                                    <X />
+                                </InputGroupButton>
+                            </InputGroupAddon>
+                        )}
+                    </InputGroup>
                 </div>
             </PopoverTrigger>
             <PopoverContent className="p-2 w-full max-w-sm">
