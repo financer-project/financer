@@ -35,5 +35,5 @@ export interface FilterStrategy<T, C extends BaseFilterConfig<T>> {
     /**
      * Generates the Prisma Where clause fragment.
      */
-    getWhereClause: (config: C, value: string) => any
+    getWhereClause: (config: C, value: string) => Record<string, unknown>
 }

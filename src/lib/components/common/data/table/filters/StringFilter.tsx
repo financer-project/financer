@@ -35,8 +35,11 @@ const StringFilterComponent = <T, >({ config, currentValue, onChange }: {
     )
 }
 
-export const StringFilterStrategy: FilterStrategy<any, StringFilterConfig<any>> = {
-    Component: StringFilterComponent,
+type StrategyComponent<C> = React.FC<{ config: C; currentValue: string | null; onChange: (val: string | null) => void }>
+
+export const StringFilterStrategy: FilterStrategy<unknown, StringFilterConfig<unknown>> = {
+    // Assign the generic component with a concrete props shape using `unknown` to avoid `any`.
+    Component: StringFilterComponent as unknown as StrategyComponent<StringFilterConfig<unknown>>,
     getWhereClause: (config, value) => ({
         [config.property]: { contains: value }
     })

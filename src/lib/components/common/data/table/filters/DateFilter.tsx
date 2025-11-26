@@ -148,12 +148,14 @@ const DateFilterComponent = <T, >({
     )
 }
 
-export const DateFilterStrategy: FilterStrategy<any, DateFilterConfig<any>> = {
+type StrategyComponent<C> = React.FC<{ config: C; currentValue: string | null; onChange: (val: string | null) => void }>
+
+export const DateFilterStrategy: FilterStrategy<unknown, DateFilterConfig<unknown>> = {
     // Wrap the component with formatter context so dates are displayed using the app's formatter
-    Component: withFormatters(DateFilterComponent),
+    Component: withFormatters(DateFilterComponent) as unknown as StrategyComponent<DateFilterConfig<unknown>>,
     getWhereClause: (config, value) => {
         const { from, to } = parseRange(value)
-        const clause: any = {}
+        const clause: { gte?: Date; lte?: Date } = {}
         if (from) clause.gte = from
         if (to) clause.lte = to
         return Object.keys(clause).length > 0 ? { [config.property]: clause } : {}

@@ -138,7 +138,11 @@ export const TransactionsList = withFormatters(({ formatters, itemsPerPage = 25 
         paramKey: "q"
     }
 
-    const where = buildPrismaWhere({ searchParams: searchParams, filters, search: searchConfig })
+    const where = buildPrismaWhere<TransactionModel, import("@/src/lib/db").Prisma.TransactionWhereInput>({
+        searchParams: searchParams,
+        filters,
+        search: searchConfig
+    })
 
     const [{ transactions, hasMore }] = usePaginatedQuery(getTransactions, {
         skip: itemsPerPage * page,

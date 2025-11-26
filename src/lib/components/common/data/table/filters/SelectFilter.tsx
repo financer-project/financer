@@ -40,8 +40,10 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
     }
 }
 
-export const SelectFilterStrategy: FilterStrategy<any, SelectFilterConfig<any>> = {
-    Component: SelectFilterComponent,
+type StrategyComponent<C> = React.FC<{ config: C; currentValue: string | null; onChange: (val: string | null) => void }>
+
+export const SelectFilterStrategy: FilterStrategy<unknown, SelectFilterConfig<unknown>> = {
+    Component: SelectFilterComponent as unknown as StrategyComponent<SelectFilterConfig<unknown>>,
     getWhereClause: (config, value) => {
         const values = value.split(",").filter(Boolean)
         if ((config.multiSelect && values.length >= 0) || values.length > 1) {
