@@ -55,7 +55,7 @@ export default defineConfig({
     component: {
         supportFolder: "test/cypress/support",
         indexHtmlFile: "test/cypress/support/component-index.html",
-        supportFile: "test/cypress/support/component.ts",
+        supportFile: "test/cypress/support/component.tsx",
         specPattern: "test/cypress/component/**/*.spec.tsx",
         screenshotsFolder: ".test/component/screenshots",
         videosFolder: ".test/component/videos",
