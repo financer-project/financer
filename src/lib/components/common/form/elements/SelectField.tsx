@@ -190,35 +190,32 @@ export function SelectField<T, >({
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen} modal={false}>
             <PopoverTrigger asChild>
-                <div className="relative w-full">
-                    <InputGroup
-                        role="select-field"
-                        className={cn(
-                            "cursor-pointer shadow-sm text-sm",
-                            readonly ? "opacity-50 pointer-events-none" : "",
-                            props.className
-                        )}
-                        onClick={(event) => {
-                            event.preventDefault()
-                            if (!readonly) setIsOpen(true)
-                        }}
-                    >
-                        <div className="flex items-center flex-1 px-3 min-w-0">
-                            {renderButtonContent(internalValue)}
-                        </div>
-                        {hasValuesSelected() && !props.disableClearButton && !readonly && (
-                            <InputGroupAddon align="inline-end">
-                                <InputGroupButton
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleClear()
-                                    }}>
-                                    <X />
-                                </InputGroupButton>
-                            </InputGroupAddon>
-                        )}
-                    </InputGroup>
-                </div>
+                <InputGroup
+                    role="select-field"
+                    className={cn(
+                        "cursor-pointer shadow-sm text-sm",
+                        readonly && "opacity-50 pointer-events-none",
+                        props.className
+                    )}
+                    onClick={(event) => {
+                        event.preventDefault()
+                        if (!readonly) setIsOpen(true)
+                    }}>
+                    <div className="flex items-center flex-1 px-3 min-w-0">
+                        {renderButtonContent(internalValue)}
+                    </div>
+                    {hasValuesSelected() && !props.disableClearButton && !readonly && (
+                        <InputGroupAddon align="inline-end">
+                            <InputGroupButton
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleClear()
+                                }}>
+                                <X />
+                            </InputGroupButton>
+                        </InputGroupAddon>
+                    )}
+                </InputGroup>
             </PopoverTrigger>
             <PopoverContent className="p-2 w-full max-w-sm">
                 <Command>
