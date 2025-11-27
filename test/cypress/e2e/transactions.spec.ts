@@ -17,18 +17,15 @@ describe("Transactions", () => {
 
         cy.get("a[href='/transactions/new']").first().click()
 
-        cy.get("div[role=select-field]").contains("My Account").should("exist")
+        cy.findSelectField({ contains: "My Account" }).should("exist")
         cy.get("input[name='name']").type("Salary")
-        cy.get("label[for='type'] + div").type("Income{enter}")
+        cy.selectField({ for: "type", value: "Income" })
         cy.get("input[name='amount']").type("100.00")
-        cy.get("label[for='categoryId'] + div").type("Income{enter}")
-        cy.get("label[for='counterpartyId'] + div").type("Test Employer{enter}")
+        cy.selectField({ for: "categoryId", value: "Income" })
+        cy.selectField({ for: "counterpartyId", value: "Test Employer" })
 
-        // Select tags
-        cy.get("label[for='tagIds'] + div").click()
-        cy.get("div[role='option']").contains("Work").click()
-        cy.get("div[role='option']").contains("Personal").click()
-        cy.get("body").click() // Close the dropdown
+        // Select tags (multi select)
+        cy.selectField({ for: "tagIds", values: ["Work", "Personal"], close: true })
 
         cy.get("button[type='submit']").click()
 
@@ -40,9 +37,7 @@ describe("Transactions", () => {
 
         // Edit the transaction to change tags
         cy.get("a").contains("Edit").click()
-        cy.get("label[for='tagIds'] + div").click()
-        cy.get("div[role='option']").contains("Work").click() // Deselect Work tag
-        cy.get("body").click() // Close the dropdown
+        cy.selectField({ for: "tagIds", values: ["Work"], close: true }) // toggles selection (deselect Work)
         cy.get("button[type='submit']").click()
 
         // Verify updated tags
@@ -61,12 +56,12 @@ describe("Transactions", () => {
     it("should be able to create a transaction without tags", () => {
         cy.get("a[href='/transactions/new']").first().click()
 
-        cy.get("div[role=select-field]").contains("My Account").should("exist")
+        cy.findSelectField({ contains: "My Account" }).should("exist")
         cy.get("input[name='name']").type("Bonus")
-        cy.get("label[for='type'] + div").type("Income{enter}")
+        cy.selectField({ for: "type", value: "Income" })
         cy.get("input[name='amount']").type("50.00")
-        cy.get("label[for='categoryId'] + div").type("Income{enter}")
-        cy.get("label[for='counterpartyId'] + div").type("Test Merchant{enter}")
+        cy.selectField({ for: "categoryId", value: "Income" })
+        cy.selectField({ for: "counterpartyId", value: "Test Merchant" })
         cy.get("button[type='submit']").click()
 
         cy.component("dataItem").should("contain.text", "Bonus")

@@ -35,7 +35,7 @@ describe("Mobile Tests", () => {
         cy.get("tbody tr").should("have.length", 2) // Should have seeded transactions
     })
 
-    it.only("should create transaction and show it in list on mobile", () => {
+    it("should create transaction and show it in list on mobile", () => {
         // Navigate to transactions page first
         cy.get("button[data-sidebar='trigger']").click()
         cy.get("li a[href='/transactions']").click()
@@ -49,11 +49,11 @@ describe("Mobile Tests", () => {
         cy.url().should("include", "/transactions/new")
 
         // Fill transaction form
-        cy.get("div[role=select-field]").contains("My Account").should("exist")
+        cy.findSelectField({ contains: "My Account" }).should("exist")
         cy.get("input[name='name']").type("Mobile Test Transaction")
-        cy.component("select", { name: "type" }).type("Income{enter}")
+        cy.selectField({ for: "type", value: "Income" })
         cy.get("input[name='amount']").type("250.00")
-        cy.component("select", { name: "categoryId" }).type("Income{enter}")
+        cy.selectField({ for: "categoryId", value: "Income" })
 
         // Submit the form
         cy.get("button[type='submit']").click()

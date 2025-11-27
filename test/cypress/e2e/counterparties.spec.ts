@@ -16,7 +16,7 @@ describe("Counterparties", () => {
         cy.get("a[href='/counterparties/new']").click()
 
         cy.get("input[name='name']").type("Test Shop")
-        cy.get("label[for='type'] + div").type("Merchant{enter}")
+        cy.selectField({ for: "type", value: "Merchant" })
         cy.get("input[name='description']").type("My test shop")
         cy.get("input[name='accountName']").type("Shop Account")
         cy.get("input[name='webAddress']").type("https://testshop.com")
@@ -45,7 +45,7 @@ describe("Counterparties", () => {
         // First create a counterparty
         cy.get("a[href='/counterparties/new']").click()
         cy.get("input[name='name']").type("Old Company")
-        cy.get("label[for='type'] + div").type("Employer{enter}")
+        cy.selectField({ for: "type", value: "Employer" })
         cy.get("input[name='description']").type("Old employer")
         cy.get("button[type='submit']").click()
 
@@ -54,8 +54,7 @@ describe("Counterparties", () => {
         cy.get("a").contains("Edit").click()
 
         cy.get("input[name='name']").clear().type("New Company")
-        cy.get("label[for='type'] + div").click()
-        cy.get("div[role='option']").contains("Service provider").click()
+        cy.selectField({ for: "type", value: "Service provider" })
         cy.get("input[name='description']").clear().type("New service provider")
         cy.get("input[name='accountName']").type("Service Account")
         cy.get("input[name='webAddress']").type("https://newcompany.com")

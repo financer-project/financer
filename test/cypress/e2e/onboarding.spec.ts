@@ -30,7 +30,7 @@ describe("Onboarding Flow", () => {
 
         // Fill in household form
         cy.get("input[name='householdName']").type("My Test Household")
-        cy.get("label[for='currency'] + div").type("Euro{enter}")
+        cy.selectField({ for: "currency", value: "Euro" })
         cy.get("textarea[name='description']").type("This is a test household for onboarding")
 
         // Click Next to go to step 3
@@ -38,8 +38,8 @@ describe("Onboarding Flow", () => {
 
         // Configure admin settings - using patterns from adminSettings tests
         // Default language dropdown
-        cy.get("label[for='defaultLanguage'] + div").type("German{enter}")
-        cy.get("label[for='defaultTheme'] + div").type("Dark{enter}")
+        cy.selectField({ for: "defaultLanguage", value: "German" })
+        cy.selectField({ for: "defaultTheme", value: "Dark" })
 
         // Allow registration checkbox - should be checked by default
         cy.get("input[name='allowRegistration']").click()
@@ -94,7 +94,7 @@ describe("Onboarding Flow", () => {
         cy.get("button").contains("Next").click()
 
         cy.get("input[name='householdName']").type("Test Household")
-        cy.get("label[for='currency'] + div").type("United States Dollar (USD){enter}")
+        cy.selectField({ for: "currency", value: "United States Dollar (USD)" })
         cy.get("button").contains("Next").click()
 
         cy.get("button").contains("Submit").click()

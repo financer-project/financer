@@ -6,8 +6,7 @@ describe("Households", () => {
     const createNewHousehold = () => {
         cy.get("a[href='/households/new']").click()
         cy.get("input[name='name']").type("A New Household")
-        cy.get("div[type='button']").click()
-        cy.get("input[role='combobox']").type("Euro{enter}")
+        cy.selectField({ for: "currency", value: "Euro" })
         cy.get("textarea[name='description']").type("My Household")
         cy.get("button[type='submit']").click()
     }

@@ -15,9 +15,9 @@ describe("Categories", () => {
     it("should be able to create a new sub category and delete it afterwards", () => {
         cy.get("a[href='/categories/new?type=EXPENSE']").click()
 
-        cy.get("label[for='parentId'] + div").type("living{enter}")
+        cy.selectField({ for: "parentId", search: "living" })
         cy.get("input[name='name']").type("Food")
-        cy.get("div[role=select-field]").eq(3).should("contain.text", "Teal")
+        cy.findSelectField({ label: "Color" }).should("contain.text", "Teal")
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
