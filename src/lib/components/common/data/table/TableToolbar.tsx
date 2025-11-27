@@ -72,7 +72,7 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
     return (
         <div className="flex flex-wrap gap-2 items-center">
             {search && (
-                <InputGroup className={"w-128"}>
+                <InputGroup className={"max-w-64 min-w-32"}>
                     <InputGroupAddon>
                         <SearchIcon/>
                     </InputGroupAddon>

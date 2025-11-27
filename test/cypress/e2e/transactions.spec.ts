@@ -17,7 +17,7 @@ describe("Transactions", () => {
 
         cy.get("a[href='/transactions/new']").first().click()
 
-        cy.get("button").contains("My Account").should("exist")
+        cy.get("div[role=select-field]").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Salary")
         cy.get("label[for='type'] + div").type("Income{enter}")
         cy.get("input[name='amount']").type("100.00")
@@ -53,7 +53,7 @@ describe("Transactions", () => {
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
         cy.wait(2000)
-        cy.url().should("satisfy", (str: string) => str.endsWith("/transactions"))
+        cy.url().should("satisfy", (str: string) => str.includes("/transactions?"))
 
         cy.get("tbody tr").should("have.length", 2)
     })
@@ -61,7 +61,7 @@ describe("Transactions", () => {
     it("should be able to create a transaction without tags", () => {
         cy.get("a[href='/transactions/new']").first().click()
 
-        cy.get("button").contains("My Account").should("exist")
+        cy.get("div[role=select-field]").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Bonus")
         cy.get("label[for='type'] + div").type("Income{enter}")
         cy.get("input[name='amount']").type("50.00")

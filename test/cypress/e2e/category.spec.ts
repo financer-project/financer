@@ -17,7 +17,7 @@ describe("Categories", () => {
 
         cy.get("label[for='parentId'] + div").type("living{enter}")
         cy.get("input[name='name']").type("Food")
-        cy.get("button[role=select-field]").eq(3).should("contain.text", "Teal")
+        cy.get("div[role=select-field]").eq(3).should("contain.text", "Teal")
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))

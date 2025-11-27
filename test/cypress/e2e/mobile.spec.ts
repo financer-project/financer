@@ -49,7 +49,7 @@ describe("Mobile Tests", () => {
         cy.url().should("include", "/transactions/new")
 
         // Fill transaction form
-        cy.get("button").contains("My Account").should("exist")
+        cy.get("div[role=select-field]").contains("My Account").should("exist")
         cy.get("input[name='name']").type("Mobile Test Transaction")
         cy.component("select", { name: "type" }).type("Income{enter}")
         cy.get("input[name='amount']").type("250.00")

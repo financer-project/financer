@@ -39,18 +39,18 @@ describe("Admin Settings Page", () => {
         cy.get("input[name='smtpFromName']").clear().type("Updated App")
 
         // Change encryption type
-        cy.get("button[role=select-field]").eq(2).click()
+        cy.get("div[role=select-field]").eq(2).click()
         cy.get("div[role='listbox'] div div").contains("SSL").click()
 
         // Toggle allowRegistration
         cy.get("input[name='allowRegistration']").parent().click()
 
         // Change default language
-        cy.get("button[role=select-field]").contains("English (American)").click()
+        cy.get("div[role=select-field]").contains("English (American)").click()
         cy.get("div[role='listbox'] div div").contains("German").click()
 
         // Change default theme
-        cy.get("button[role=select-field]").contains("Light").click()
+        cy.get("div[role=select-field]").contains("Light").click()
         cy.get("div[role='listbox'] div div").contains("Dark").click()
 
         // Submit the form
@@ -69,10 +69,10 @@ describe("Admin Settings Page", () => {
         cy.get("input[name='smtpPassword']").should("have.value", "newpassword")
         cy.get("input[name='smtpFromEmail']").should("have.value", "updated@example.com")
         cy.get("input[name='smtpFromName']").should("have.value", "Updated App")
-        cy.get("button").contains("SSL").should("exist")
+        cy.get("div[role=select-field]").contains("SSL").should("exist")
         cy.get("input[name='allowRegistration']").should("not.be.checked")
-        cy.get("button").contains("German").should("be.visible")
-        cy.get("button").contains("Dark").should("be.visible")
+        cy.get("div[role=select-field]").contains("German").should("be.visible")
+        cy.get("div[role=select-field]").contains("Dark").should( "be.visible")
     })
 
     it("sends a test email", () => {
@@ -91,7 +91,7 @@ describe("Admin Settings Page", () => {
         cy.get("input[name='smtpFromName']").clear().type("Financer App")
 
         // Change encryption type
-        cy.get("button[role=select-field]").eq(2).click()
+        cy.get("div[role=select-field]").eq(2).click()
         cy.get("div[role='listbox'] div div").contains("TLS").click()
 
         cy.get("button[type='submit']").click()

@@ -27,18 +27,18 @@ describe("CSV Import", () => {
 
         // Map columns to transaction fields
         // SelectField uses buttons instead of select elements
-        cy.get("button[role=select-field]").eq(0).should("contain.text", "Value Date") // Date column
-        cy.get("button[role=select-field]").eq(2).should("contain.text", "Name") // Description column
-        cy.get("button[role=select-field]").eq(3).first().should("contain.text", "Amount") // Amount column
-        cy.get("button[role=select-field]").eq(5).first().should("contain.text", "Account Identifier") // Account column
-        cy.get("button[role=select-field]").eq(6).first().should("contain.text", "Category Name") // Category column
+        cy.get("div[role=select-field]").eq(0).should("contain.text", "Value Date") // Date column
+        cy.get("div[role=select-field]").eq(2).should("contain.text", "Name") // Description column
+        cy.get("div[role=select-field]").eq(3).first().should("contain.text", "Amount") // Amount column
+        cy.get("div[role=select-field]").eq(5).first().should("contain.text", "Account Identifier") // Account column
+        cy.get("div[role=select-field]").eq(6).first().should("contain.text", "Category Name") // Category column
 
         // Select date format for the Date column
-        cy.contains("Date Format").parent().find("button").first().click()
+        cy.get("div[role=select-field]").contains("Select date format").click()
         cy.get("div[role='dialog']").contains("YYYY-MM-DD").click()
 
         // Select amount format for the Amount column
-        cy.contains("Amount Format").parent().find("button").first().click()
+        cy.get("div[role=select-field]").contains("Select amount format").click()
         cy.get("div[role='dialog']").contains("comma").click()
 
         // Click the "Next" button to proceed to value mapping
@@ -46,15 +46,15 @@ describe("CSV Import", () => {
 
         // Map values to entities
         // Map "My Account" to the standard account
-        cy.get("button").contains("My Account").should("exist")
+        cy.get("div[role=select-field]").contains("My Account").should("exist")
 
         cy.contains("Categories (2)").click()
 
         // Income category should be mapped automatically
-        cy.get("button").contains("Income").should("exist")
+        cy.get("div[role=select-field]").contains("Income").should("exist")
 
         // Map "Living Costs" to the living costs category
-        cy.contains("Living Costs").parent().find("button").first().click()
+        cy.get("div[role=select-field]").contains("Select category").click()
         cy.get("div[role='dialog']").contains(testData.categories.standard.livingCosts.name).click()
 
         cy.get("button").contains("Next").click()
