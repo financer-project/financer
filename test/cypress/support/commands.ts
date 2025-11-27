@@ -1,6 +1,7 @@
 import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
 import { FindSelectFieldOptions, SelectFieldOptions, Selectors } from "@/test/cypress/support/e2e"
+import Chainable = Cypress.Chainable
 
 Cypress.Commands.add("loginWithUser", (user: User) => {
     cy.session(user.email, () => {
@@ -48,7 +49,7 @@ Cypress.Commands.add("component", (name, ...args) => {
 
 
 // Unified helper to interact with SelectField / SelectFormField components
-Cypress.Commands.add("selectField", (opts: SelectFieldOptions) => {
+Cypress.Commands.add("selectField", (opts) => {
     const options: Required<Pick<SelectFieldOptions, "strategy" | "close">> & SelectFieldOptions = {
         strategy: opts.strategy ?? "auto",
         close: opts.close ?? false,
@@ -130,7 +131,7 @@ Cypress.Commands.add("selectField", (opts: SelectFieldOptions) => {
         })
     }
 
-    return getTarget()
+    getTarget()
         .click()
         .then(() => ensureOpen())
         .then(() => {
