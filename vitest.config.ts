@@ -10,7 +10,7 @@ export default defineConfig({
     test: {
         dir: "./test/vitest",
         globals: true,
-        setupFiles: ["test/vitest/setup/mock-prisma.ts", "test/vitest/setup/components.ts"],
+        setupFiles: ["test/vitest/setup/mock-prisma.ts"],
         coverage: {
             enabled: true,
             provider: "istanbul",
