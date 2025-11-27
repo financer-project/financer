@@ -41,6 +41,8 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
         )
     }
 
+    // Let TransactionsList manage its own page size via URL (default 25).
+
     return (
         <Card className={cn("flex flex-col gap-0", className)}>
             <CardHeader className={"flex flex-row justify-between items-center gap-4"}>
@@ -60,7 +62,7 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
 
             <ScrollArea className={"flex-col max-h-full overflow-y-auto"}>
                 <CardContent className={"flex flex-col max-h-full grow p-0"}>
-                    <TransactionsList itemsPerPage={5} />
+                    <TransactionsList hideFilters={true} />
                     <ScrollBar orientation={"vertical"} className={"pl-2"} />
                 </CardContent>
             </ScrollArea>

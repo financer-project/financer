@@ -13,10 +13,10 @@ import getCounterparties from "@/src/lib/model/counterparties/queries/getCounter
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { format as formatDate } from "date-fns"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
-import { Prisma } from ".prisma/client"
-import TransactionWhereInput = Prisma.TransactionWhereInput
 
-export const TransactionsList = withFormatters(({ formatters }: WithFormattersProps) => {
+export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
+    hideFilters?: boolean
+}) => {
     const currentHousehold = useCurrentHousehold()!
 
     // Load options for filters
@@ -133,13 +133,13 @@ export const TransactionsList = withFormatters(({ formatters }: WithFormattersPr
         paramKey: "q"
     }
 
-    const { page, pageSize, where } = useDataTable<TransactionModel, TransactionWhereInput>({
+    const { page, pageSize, where } = useDataTable<TransactionModel, import("@/src/lib/db").Prisma.TransactionWhereInput>({
         filters,
         search: searchConfig,
         defaultPageSize: 25
     })
 
-    const [{ transactions, hasMore, count }] = usePaginatedQuery(getTransactions, {
+    const [{ transactions, count }] = usePaginatedQuery(getTransactions, {
         skip: pageSize * page,
         take: pageSize,
         householdId: currentHousehold.id,
@@ -149,15 +149,14 @@ export const TransactionsList = withFormatters(({ formatters }: WithFormattersPr
     return (
         <div>
             <DataTable data={transactions}
-                       filters={filters}
-                       search={{
+                       filters={!hideFilters ? filters : undefined}
+                       search={!hideFilters ? {
                            fields: searchConfig.fields,
                            paramKey: searchConfig.paramKey,
                            placeholder: "Search transactions"
-                       }}
+                       } : undefined}
                        columns={columns}
                        itemRoute={transaction => `/transactions/${transaction.id}`}
-                       hasMore={hasMore}
                        count={count} />
         </div>
     )

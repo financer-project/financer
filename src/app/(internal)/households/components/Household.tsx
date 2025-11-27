@@ -15,7 +15,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
     const [household] = useQuery(getHousehold, { id: householdId })
 
     const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
-    const [{ accounts, hasMore, count }] = usePaginatedQuery(getAccounts, {
+    const [{ accounts, count }] = usePaginatedQuery(getAccounts, {
         householdId: householdId,
         orderBy: { id: "asc" },
         skip: pageSize * page,
@@ -44,7 +44,6 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                 <Suspense fallback={<div>Loading...</div>}>
                     <DataTable
                         data={accounts}
-                        hasMore={hasMore}
                         count={count}
                         itemRoute={(account) => `/households/${account.householdId}/accounts/${account.id}`}
                         createRoute={`/households/${household.id}/accounts/new`}

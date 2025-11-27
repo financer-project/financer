@@ -6,8 +6,7 @@ import { cn } from "@/src/lib/util/utils"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/lib/components/ui/select"
 
-export const TablePagination = ({ hasMore, pageSize = 25, count }: {
-    hasMore: boolean,
+export const TablePagination = ({ pageSize = 25, count }: {
     pageSize?: number,
     count: number
 }) => {
@@ -17,6 +16,13 @@ export const TablePagination = ({ hasMore, pageSize = 25, count }: {
     const pathname = usePathname()
     const currentPageSize = Number(searchParams?.get("pageSize") ?? pageSize)
     const totalPages = Math.ceil(count / currentPageSize)
+    const isOnFirstPage = page === 0
+    const lastIndex = Math.max(totalPages - 1, 0)
+    const isOnLastPage = page >= lastIndex
+
+    if (totalPages <= 1) {
+        return null
+    }
 
     const goToPreviousPage = () => {
         const params = new URLSearchParams(searchParams ?? {})
@@ -38,8 +44,8 @@ export const TablePagination = ({ hasMore, pageSize = 25, count }: {
 
     const goToLastPage = () => {
         const params = new URLSearchParams(searchParams ?? {})
-        const lastIndex = Math.max(Math.ceil(count / currentPageSize) - 1, 0)
-        params.set("page", lastIndex.toString())
+        const lastIndexLocal = Math.max(Math.ceil(count / currentPageSize) - 1, 0)
+        params.set("page", lastIndexLocal.toString())
         router.push(pathname + "?" + params.toString())
     }
 
@@ -52,7 +58,7 @@ export const TablePagination = ({ hasMore, pageSize = 25, count }: {
     }
 
     return (
-        <div className={cn("flex flex-row gap-4 justify-between")}>
+        <div className={cn("flex flex-row gap-4 justify-between") }>
             <div>
                 <span></span>
             </div>
@@ -75,16 +81,16 @@ export const TablePagination = ({ hasMore, pageSize = 25, count }: {
                 <span className={"text-sm"}>Page {page + 1} of {totalPages}</span>
 
                 <div className={"flex gap-2"}>
-                    <Button variant="outline" size={"sm"} disabled={page === 0} onClick={goToFirstPage}>
+                    <Button aria-label="first-page" variant="outline" size={"sm"} disabled={isOnFirstPage} onClick={goToFirstPage}>
                         <ChevronsLeft />
                     </Button>
-                    <Button variant="outline" size={"sm"} disabled={page === 0} onClick={goToPreviousPage}>
+                    <Button aria-label="previous-page" variant="outline" size={"sm"} disabled={isOnFirstPage} onClick={goToPreviousPage}>
                         <ChevronLeft />
                     </Button>
-                    <Button variant="outline" size={"sm"} disabled={!hasMore} onClick={goToNextPage}>
+                    <Button aria-label="next-page" variant="outline" size={"sm"} disabled={isOnLastPage} onClick={goToNextPage}>
                         <ChevronRight />
                     </Button>
-                    <Button variant="outline" size={"sm"} disabled={!hasMore} onClick={goToLastPage}>
+                    <Button aria-label="last-page" variant="outline" size={"sm"} disabled={isOnLastPage} onClick={goToLastPage}>
                         <ChevronsRight />
                     </Button>
                 </div>

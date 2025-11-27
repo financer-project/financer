@@ -1,9 +1,10 @@
 "use client"
+
 import React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { SearchIcon, X } from "lucide-react"
-import { DateFilterConfig, FilterConfig, SelectFilterConfig, StringFilterConfig } from "./filters/types"
+import { FilterConfig } from "./filters/types"
 import { useDebounce } from "@/src/lib/hooks/use-debounce"
 import { getFilterStrategy } from "./filters/registry"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/src/lib/components/ui/input-group"
@@ -66,7 +67,7 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
         setSearchTerm(searchValueFromUrl)
     }, [searchValueFromUrl])
 
-    if (!search && filters.length === 0) return null
+    if (!search && (!filters || filters.length === 0)) return null
 
     return (
         <div className="flex flex-wrap gap-2 items-center">
@@ -93,7 +94,7 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
                         return (
                             <Component
                                 key={key}
-                                config={filter as StringFilterConfig<T>}
+                                config={filter}
                                 currentValue={currentValue}
                                 onChange={onChange}
                             />
@@ -104,7 +105,7 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
                         return (
                             <Component
                                 key={key}
-                                config={filter as SelectFilterConfig<T>}
+                                config={filter}
                                 currentValue={currentValue}
                                 onChange={onChange}
                             />
@@ -115,7 +116,7 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
                         return (
                             <Component
                                 key={key}
-                                config={filter as DateFilterConfig<T>}
+                                config={filter}
                                 currentValue={currentValue}
                                 onChange={onChange}
                             />

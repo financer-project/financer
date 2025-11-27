@@ -8,17 +8,16 @@ import inviteUser from "@/src/lib/model/auth/mutations/inviteUser"
 import { toast } from "@/src/lib/hooks/use-toast"
 import SwitchField from "@/src/lib/components/common/form/elements/SwitchField"
 import { Heading3 } from "@/src/lib/components/common/typography"
-import { DataTable } from "@/src/lib/components/common/data/table"
-import { useSearchParams } from "next/navigation"
+import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import getUsers from "@/src/lib/model/auth/queries/getUsers"
 import Link from "next/link"
 
-const ITEMS_PER_PAGE = 10
-
 const UserManagementSection = () => {
-    const searchParams = useSearchParams()
-    const page = Number(searchParams?.get("page") ?? 0)
-    const [{ users, hasMore }] = usePaginatedQuery(getUsers, { skip: ITEMS_PER_PAGE * page, take: ITEMS_PER_PAGE })
+    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+    const [{ users, count }] = usePaginatedQuery(getUsers, {
+        skip: pageSize * page,
+        take: pageSize
+    })
 
     const [inviteUserMutation] = useMutation(inviteUser)
     const [inviteEmail, setInviteEmail] = useState("")
@@ -87,7 +86,7 @@ const UserManagementSection = () => {
             <div>
                 <DataTable
                     data={users}
-                    hasMore={hasMore}
+                    count={count}
                     columns={[
                         {
                             name: "Name",

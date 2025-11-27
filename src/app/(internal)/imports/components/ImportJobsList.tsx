@@ -15,7 +15,7 @@ const UPDATE_INTERVAL = 2000
 export const ImportJobsList = () => {
     const router = useRouter()
     const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
-    const [{ importJobs, hasMore, count }] = useQuery(getImportJobs, {
+    const [{ importJobs, count }] = useQuery(getImportJobs, {
         skip: pageSize * page,
         take: pageSize
     })
@@ -96,7 +96,6 @@ export const ImportJobsList = () => {
         <DataTable
             data={importJobs}
             columns={columns}
-            hasMore={hasMore}
             count={count}
             itemRoute={(job) => `/imports/${job.id}`} />
     )

@@ -47,7 +47,6 @@ describe("<DataTable />", () => {
                 <DataTable<Row>
                     data={sampleData}
                     columns={columns}
-                    hasMore={false}
                     filters={filters}
                 />
             )
@@ -77,7 +76,6 @@ describe("<DataTable />", () => {
                     <DataTable<Row>
                         data={sampleData}
                         columns={columns}
-                        hasMore={false}
                         filters={stringFilters}
                     />
                 )
@@ -95,7 +93,6 @@ describe("<DataTable />", () => {
                     <DataTable<Row>
                         data={sampleData}
                         columns={columns}
-                        hasMore={false}
                         filters={filters}
                     />
                 )
@@ -113,7 +110,6 @@ describe("<DataTable />", () => {
                     <DataTable<Row>
                         data={sampleData}
                         columns={columns}
-                        hasMore={false}
                         filters={filters}
                     />
                 )
@@ -134,7 +130,6 @@ describe("<DataTable />", () => {
                     <DataTable<Row>
                         data={sampleData}
                         columns={columns}
-                        hasMore={false}
                         filters={filters}
                     />
                 )
@@ -156,33 +151,34 @@ describe("<DataTable />", () => {
 
     describe("Pagination", () => {
         describe("Visibility and state", () => {
-            it("hides pagination when hasMore=false and page=0 (default)", () => {
+            it("hides pagination when only one page is available", () => {
                 cy.mount(
                     <DataTable<Row>
                         data={sampleData}
                         columns={columns}
-                        hasMore={false}
                         filters={filters}
+                        // count defaults to data.length (2) and pageSize defaults to 25 => totalPages=1
                     />
                 )
 
-                // Container is rendered but hidden; buttons should not be visible
-                cy.contains("button", "Previous").should("not.be.visible")
-                cy.contains("button", "Next").should("not.be.visible")
+                // Buttons should not exist when pagination is hidden
+                cy.get('button[aria-label="next-page"]').should("not.exist")
+                cy.contains("Page ").should("not.exist")
             })
 
-            it("shows pagination with Next enabled when hasMore=true and page=0", () => {
+            it("shows pagination with Next enabled when more than one page exists", () => {
                 cy.mount(
                     <DataTable<Row>
                         data={sampleData}
                         columns={columns}
-                        hasMore={true}
                         filters={filters}
+                        count={30} // 30 items with default pageSize 25 => 2 pages
                     />
                 )
 
-                cy.contains("button", "Previous").should("be.visible").and("be.disabled")
-                cy.contains("button", "Next").should("be.visible").and("not.be.disabled")
+                cy.get('button[aria-label="previous-page"]').should("be.visible").and("be.disabled")
+                cy.get('button[aria-label="next-page"]').should("be.visible").and("not.be.disabled")
+                cy.contains("Page 1 of 2").should("be.visible")
             })
         })
     })

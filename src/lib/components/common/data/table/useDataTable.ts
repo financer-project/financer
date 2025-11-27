@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { buildPrismaWhere } from "./filters/prisma-filter-builder"
 import { FilterConfig } from "./filters/types"
 
-export type UseDataTableOptions<T, W> = {
+export type UseDataTableOptions<T> = {
     /** Optional dynamic filters configuration (used to build `where`) */
     filters?: FilterConfig<T>[]
     /** Optional search config (used to build `where`) */
@@ -18,7 +18,7 @@ export type UseDataTableOptions<T, W> = {
 }
 
 export function useDataTable<T, W extends Record<string, unknown> = Record<string, unknown>>(
-    options: UseDataTableOptions<T, W> = {}
+    options: UseDataTableOptions<T> = {}
 ) {
     const { filters, search, defaultPageSize = 25 } = options
 
@@ -27,20 +27,24 @@ export function useDataTable<T, W extends Record<string, unknown> = Record<strin
     const pathname = usePathname()
 
     const page = Number(searchParams?.get("page") ?? 0)
-    const pageSize = Number(searchParams?.get("pageSize") ?? defaultPageSize)
+    const pageSize = Number(searchParams?.get("size") ?? defaultPageSize)
 
     const setPage = (newPage: number) => {
-        const params = new URLSearchParams(searchParams ?? {})
-        params.set("page", String(Math.max(0, newPage)))
-        router.push(pathname + "?" + params.toString())
+        if (newPage !== page) {
+            const params = new URLSearchParams(searchParams ?? {})
+            params.set("page", String(Math.max(0, newPage)))
+            router.push(pathname + "?" + params.toString())
+        }
     }
 
     const setPageSize = (newSize: number) => {
-        const params = new URLSearchParams(searchParams ?? {})
-        params.set("pageSize", String(newSize))
-        // Reset to first page when page size changes
-        params.set("page", "0")
-        router.push(pathname + "?" + params.toString())
+        if (newSize != pageSize) {
+            const params = new URLSearchParams(searchParams ?? {})
+            params.set("size", String(newSize))
+            // Reset to first page when page size changes
+            params.set("page", "0")
+            router.push(pathname + "?" + params.toString())
+        }
     }
 
     const where = useMemo(() => {

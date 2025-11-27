@@ -9,7 +9,7 @@ import CounterpartyIcon from "@/src/lib/components/content/counterparties/Counte
 export const CounterpartiesList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
     const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
-    const [{ counterparties, hasMore, count }] = usePaginatedQuery(getCounterparties, {
+    const [{ counterparties, count }] = usePaginatedQuery(getCounterparties, {
         skip: pageSize * page,
         take: pageSize,
         householdId: currentHousehold.id
@@ -48,7 +48,6 @@ export const CounterpartiesList = withFormatters(({ formatters }: WithFormatters
                 }
             ]}
             itemRoute={counterparty => `/counterparties/${counterparty.id}`}
-            hasMore={hasMore}
             count={count}
             createRoute="/counterparties/new" />
     )

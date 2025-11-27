@@ -1,9 +1,4 @@
-import {
-    DateFilterConfig,
-    FilterConfig,
-    SelectFilterConfig,
-    StringFilterConfig
-} from "@/src/lib/components/common/data/table/filters/types"
+import { FilterConfig } from "@/src/lib/components/common/data/table/filters/types"
 import { getFilterStrategy } from "@/src/lib/components/common/data/table/filters/registry"
 
 interface BuildWhereParams<T> {
@@ -76,17 +71,17 @@ export function buildPrismaWhere<T, W extends Record<string, unknown> = Record<s
             switch (filter.type) {
                 case "string": {
                     const strategy = getFilterStrategy<T, "string">("string")
-                    clause = strategy.getWhereClause(filter as StringFilterConfig<T>, value)
+                    clause = strategy.getWhereClause(filter, value)
                     break
                 }
                 case "select": {
                     const strategy = getFilterStrategy<T, "select">("select")
-                    clause = strategy.getWhereClause(filter as SelectFilterConfig<T>, value)
+                    clause = strategy.getWhereClause(filter, value)
                     break
                 }
                 case "date": {
                     const strategy = getFilterStrategy<T, "date">("date")
-                    clause = strategy.getWhereClause(filter as DateFilterConfig<T>, value)
+                    clause = strategy.getWhereClause(filter, value)
                     break
                 }
             }

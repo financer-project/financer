@@ -9,7 +9,7 @@ import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProv
 export const TagsList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
     const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
-    const [{ tags, hasMore, count }] = usePaginatedQuery(getTags, {
+    const [{ tags, count }] = usePaginatedQuery(getTags, {
         skip: pageSize * page,
         take: pageSize,
         householdId: currentHousehold.id
@@ -37,7 +37,6 @@ export const TagsList = withFormatters(({ formatters }: WithFormattersProps) => 
                 }
             ]}
             itemRoute={tag => `/tags/${tag.id}`}
-            hasMore={hasMore}
             count={count}
             createRoute="/tags/new" />
     )
