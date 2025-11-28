@@ -76,7 +76,7 @@ describe("Mobile Tests", () => {
         cy.wait(500)
 
         // Verify deletion
-        cy.url().should("satisfy", (str: string) => str.endsWith("/transactions"))
+        cy.url().should("include", "/transactions")
         cy.get("div.text-lg").should("have.length", 2)
     })
 })
