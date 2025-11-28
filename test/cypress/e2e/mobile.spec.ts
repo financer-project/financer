@@ -17,7 +17,7 @@ describe("Mobile Tests", () => {
     it("should authenticate user and redirect to dashboard on mobile", () => {
         // Verify we're logged in and on dashboard
         cy.url().should("include", "/dashboard")
-        cy.get("div[data-slot='page-breadcrumbs']").should("contain.text", "Home")
+        cy.get("li").contains("Dashboard").should("exist")
     })
 
     it("should navigate using sidebar by pressing trigger button", () => {
@@ -32,7 +32,7 @@ describe("Mobile Tests", () => {
 
         // Verify navigation worked
         cy.url().should("include", "/transactions")
-        cy.get("tbody tr").should("have.length", 2) // Should have seeded transactions
+        cy.get(".bg-card").should("have.length", 2) // Should have seeded transactions
     })
 
     it("should create transaction and show it in list on mobile", () => {
