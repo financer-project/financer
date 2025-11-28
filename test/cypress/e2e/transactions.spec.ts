@@ -71,4 +71,23 @@ describe("Transactions", () => {
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
     })
+
+    it("should filter transactions by category (multi-select) and reset", () => {
+        // Initially seeded with 2 transactions for standard user
+        cy.get("tbody tr").should("have.length", 2)
+
+        // Apply Category filter: Income -> expect only the Income transaction to remain
+        cy.selectField({ contains: "Category", value: "Income" })
+        cy.url().should("include", "categoryId=")
+        cy.get("tbody tr").should("have.length", 1)
+        cy.get("tbody tr td").first().should("contain.text", "Income")
+
+        // Add second Category to multi-select: Cost of Living -> expect 2 rows again
+        cy.selectField({ contains: "Category", value: "Cost of Living", close: true })
+        cy.get("tbody tr").should("have.length", 2)
+
+        // Reset filters using toolbar button
+        cy.contains("button", "Reset").click()
+        cy.get("tbody tr").should("have.length", 2)
+    })
 })
