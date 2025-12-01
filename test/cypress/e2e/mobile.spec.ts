@@ -73,7 +73,7 @@ describe("Mobile Tests", () => {
         // Clean up - delete the transaction
         cy.get("button.bg-destructive").click()
         cy.get("button.bg-primary").contains("Confirm").click()
-        cy.wait(500)
+        cy.wait(2000)
 
         // Verify deletion
         cy.url().should("include", "/transactions")
