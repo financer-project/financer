@@ -8340,7 +8340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^15.7.0":
+"cypress@npm:^15.6.0":
   version: 15.7.0
   resolution: "cypress@npm:15.7.0"
   dependencies:
@@ -10329,7 +10329,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     cmdk: "npm:1.1.1"
     currency-codes: "npm:2.2.0"
-    cypress: "npm:^15.7.0"
+    cypress: "npm:^15.6.0"
     date-fns: "npm:^4.1.0"
     dotenv-cli: "npm:10.0.0"
     eslint: "npm:^9.39.1"
