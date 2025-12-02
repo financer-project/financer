@@ -29,7 +29,7 @@ declare global {
              *  - cy.selectField({ for: 'type', value: 'Income' })
              *  - cy.selectField({ label: 'Default Language', value: 'German' })
              *  - cy.selectField({ contains: 'Select date format', value: 'YYYY-MM-DD' })
-             *  - cy.selectField({ for: 'tagIds', values: ['Work', 'Personal'], close: true })
+             *  - cy.selectField({ for: 'tagIds', values: ['Work', 'Personal'] })
              */
             selectField(options: SelectFieldOptions): Chainable<void>
 

@@ -151,9 +151,7 @@ Cypress.Commands.add("selectField", (opts) => {
             throw new Error("selectField: Provide either 'value', 'values', or 'search' to select.")
         })
         .then(() => {
-            if (options.values?.length) {
-                cy.get("body").click(0, 0)
-            }
+            cy.get("body").type("{esc}")
             ensureClosed()
         })
 })

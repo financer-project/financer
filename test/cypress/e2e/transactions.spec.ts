@@ -25,7 +25,7 @@ describe("Transactions", () => {
         cy.selectField({ for: "counterpartyId", value: "Test Employer" })
 
         // Select tags (multi select)
-        cy.selectField({ for: "tagIds", values: ["Work", "Personal"], close: true })
+        cy.selectField({ for: "tagIds", values: ["Work", "Personal"] })
 
         cy.get("button[type='submit']").click()
 
@@ -37,7 +37,7 @@ describe("Transactions", () => {
 
         // Edit the transaction to change tags
         cy.get("a").contains("Edit").click()
-        cy.selectField({ for: "tagIds", values: ["Work"], close: true }) // toggles selection (deselect Work)
+        cy.selectField({ for: "tagIds", values: ["Work"] }) // toggles selection (deselect Work)
         cy.get("button[type='submit']").click()
 
         // Verify updated tags
@@ -83,7 +83,7 @@ describe("Transactions", () => {
         cy.get("tbody tr td").first().should("contain.text", "Income")
 
         // Add second Category to multi-select: Cost of Living -> expect 2 rows again
-        cy.selectField({ contains: "Category", value: "Cost of Living", close: true })
+        cy.selectField({ contains: "Category", value: "Cost of Living" })
         cy.get("tbody tr").should("have.length", 2)
 
         // Reset filters using toolbar button
