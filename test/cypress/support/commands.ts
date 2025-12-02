@@ -1,7 +1,6 @@
 import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
 import { FindSelectFieldOptions, SelectFieldOptions, Selectors } from "@/test/cypress/support/e2e"
-import Chainable = Cypress.Chainable
 
 Cypress.Commands.add("loginWithUser", (user: User) => {
     cy.session(user.email, () => {
@@ -50,9 +49,8 @@ Cypress.Commands.add("component", (name, ...args) => {
 
 // Unified helper to interact with SelectField / SelectFormField components
 Cypress.Commands.add("selectField", (opts) => {
-    const options: Required<Pick<SelectFieldOptions, "strategy" | "close">> & SelectFieldOptions = {
+    const options: Required<Pick<SelectFieldOptions, "strategy">> & SelectFieldOptions = {
         strategy: opts.strategy ?? "auto",
-        close: opts.close ?? false,
         ...opts
     }
 
@@ -76,9 +74,14 @@ Cypress.Commands.add("selectField", (opts) => {
         return cy.get("div[role='listbox'], div[role='dialog']").should("be.visible")
     }
 
+    const ensureClosed = () => {
+        return cy.get("div[role='listbox'], div[role='dialog']").should("not.exist")
+    }
+
     const selectByTyping = (text: string) => {
         // Try to type into the CommandInput (search input). It has placeholder "Search ..."
-        return cy.get("input[placeholder='Search ...']").should("be.visible").type(`${text}{enter}`)
+        cy.get("input[placeholder='Search ...']").should("be.visible")
+        return cy.get("input[placeholder='Search ...']").type(`${text}{enter}`)
     }
 
     const selectByClicking = (text: string) => {
@@ -148,9 +151,10 @@ Cypress.Commands.add("selectField", (opts) => {
             throw new Error("selectField: Provide either 'value', 'values', or 'search' to select.")
         })
         .then(() => {
-            if (options.close) {
+            if (options.values?.length) {
                 cy.get("body").click(0, 0)
             }
+            ensureClosed()
         })
 })
 

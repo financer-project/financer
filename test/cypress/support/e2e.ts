@@ -67,8 +67,6 @@ export interface SelectFieldOptions {
 
     /** Provide a separate search text to type before confirming with Enter; defaults to the option text */
     search?: string
-    /** Click the body to close the popover afterwards (recommended for multi-select) */
-    close?: boolean
     /** Force a selection strategy: 'type' (type + enter) or 'click' (click list item). Default is auto-choose. */
     strategy?: "type" | "click" | "auto"
 }
