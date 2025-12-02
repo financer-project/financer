@@ -94,7 +94,7 @@ describe("Onboarding Flow", () => {
         cy.get("button").contains("Next").click()
 
         cy.get("input[name='householdName']").type("Test Household")
-        cy.selectField({ for: "currency", value: "United States Dollar (USD)" })
+        cy.get("div[role='select-field']").contains("US Dollar (USD)").should("exist")
         cy.get("button").contains("Next").click()
 
         cy.get("button").contains("Submit").click()
