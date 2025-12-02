@@ -2,7 +2,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useTimeframe } from "../context/TimeframeContext"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
+import { HouseholdProvider, useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Separator } from "@/src/lib/components/ui/separator"
@@ -11,6 +11,9 @@ import { ScrollArea, ScrollBar } from "@/src/lib/components/ui/scroll-area"
 import { TransactionsList } from "@/src/app/(internal)/transactions/components/TransactionsList"
 import { cn } from "@/src/lib/util/utils"
 import { ArrowRight } from "lucide-react"
+import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
+import { TagProvider } from "@/src/lib/components/provider/TagProvider"
+import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
 
 interface LatestTransactionsProps {
     className?: string;
@@ -62,7 +65,15 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
 
             <ScrollArea className={"flex-col max-h-full overflow-y-auto"}>
                 <CardContent className={"flex flex-col max-h-full grow p-0"}>
-                    <TransactionsList hideFilters={true} />
+                    <HouseholdProvider>
+                        <CategoryProvider>
+                            <TagProvider>
+                                <CounterpartyProvider>
+                                    <TransactionsList hideFilters={true} />
+                                </CounterpartyProvider>
+                            </TagProvider>
+                        </CategoryProvider>
+                    </HouseholdProvider>
                     <ScrollBar orientation={"vertical"} className={"pl-2"} />
                 </CardContent>
             </ScrollArea>

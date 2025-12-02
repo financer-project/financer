@@ -7,12 +7,12 @@ import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import { Badge } from "@/src/lib/components/ui/badge"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
-import getAccounts from "@/src/lib/model/account/queries/getAccounts"
-import getCategories from "@/src/lib/model/categories/queries/getCategories"
-import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { format as formatDate } from "date-fns"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
+import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
+import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
+import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
 
 export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
     hideFilters?: boolean
@@ -20,9 +20,9 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
     const currentHousehold = useCurrentHousehold()!
 
     // Load options for filters
-    const [{ accounts }] = useQuery(getAccounts, { householdId: currentHousehold.id, take: 200 })
-    const [categories] = useQuery(getCategories, { householdId: currentHousehold.id })
-    const [{ counterparties }] = useQuery(getCounterparties, { householdId: currentHousehold.id, take: 200 })
+    const accounts = useAccounts()
+    const categories = useCategories()
+    const counterparties = useCounterparties()
     const [{ importJobs }] = useQuery(getImportJobs, { take: 200, orderBy: { createdAt: "desc" } })
 
     const columns: TableColumn<TransactionModel>[] = [
@@ -47,8 +47,7 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
                             <Badge key={tagRelation.tagId} variant={"secondary"}>
                                 <ColoredTag
                                     color={tagRelation.tag.color}
-                                    label={tagRelation.tag.name}
-                                />
+                                    label={tagRelation.tag.name} />
                             </Badge>
                         ))}
                     </div>
@@ -89,7 +88,14 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
             label: "Category",
             property: "categoryId",
             multiSelect: true,
-            options: categories.map((c) => ({ label: c.name, value: c.id }))
+            options: [
+                { label: "Uncategorized", value: "null", render: label => (<ColoredTag label={label} />) },
+                ...categories.flatten().map((c) => ({
+                    label: c.data.name,
+                    value: c.data.id,
+                    render: (label: string) => (<ColoredTag color={c.data.color} label={label} />)
+                })),
+            ]
         },
         {
             type: "select",
@@ -133,7 +139,11 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
         paramKey: "q"
     }
 
-    const { page, pageSize, where } = useDataTable<TransactionModel, import("@/src/lib/db").Prisma.TransactionWhereInput>({
+    const {
+        page,
+        pageSize,
+        where
+    } = useDataTable<TransactionModel, import("@/src/lib/db").Prisma.TransactionWhereInput>({
         filters,
         search: searchConfig,
         defaultPageSize: 25
@@ -149,12 +159,12 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
     return (
         <div>
             <DataTable data={transactions}
-                       filters={!hideFilters ? filters : undefined}
-                       search={!hideFilters ? {
+                       filters={hideFilters ? undefined : filters}
+                       search={hideFilters ? undefined : {
                            fields: searchConfig.fields,
                            paramKey: searchConfig.paramKey,
                            placeholder: "Search transactions"
-                       } : undefined}
+                       }}
                        columns={columns}
                        itemRoute={transaction => `/transactions/${transaction.id}`}
                        count={count} />

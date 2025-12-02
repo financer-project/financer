@@ -8,6 +8,7 @@ import { FilterConfig } from "./filters/types"
 import { useDebounce } from "@/src/lib/hooks/use-debounce"
 import { getFilterStrategy } from "./filters/registry"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/src/lib/components/ui/input-group"
+import { useIsMobile } from "@/src/lib/hooks/use-mobile"
 
 interface TableToolbarProps<T> {
     filters?: FilterConfig<T>[]
@@ -22,6 +23,7 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
+    const isMobile = useIsMobile()
 
     const updateQuery = (key: string, value: string | null) => {
         const params = new URLSearchParams(searchParams?.toString())
@@ -70,11 +72,11 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
     if (!search && (!filters || filters.length === 0)) return null
 
     return (
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center w-full">
             {search && (
-                <InputGroup className={"max-w-64 min-w-32"}>
+                <InputGroup className={isMobile ? "w-full" : "w-md"}>
                     <InputGroupAddon>
-                        <SearchIcon/>
+                        <SearchIcon />
                     </InputGroupAddon>
                     <InputGroupInput
                         value={searchTerm}

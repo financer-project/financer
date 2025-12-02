@@ -19,7 +19,7 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
                     options={config.options}
                     value={selectedValues}
                     onChange={(vals) => onChange(vals.length > 0 ? vals.join(",") : null)}
-                    className={"border border-dashed shadow-xs"}
+                    className={"border border-dashed shadow-xs font-medium"}
                     keepPlaceholder={true}
                     disableClearButton={true} />
             </div>
@@ -45,10 +45,34 @@ type StrategyComponent<C> = React.FC<{ config: C; currentValue: string | null; o
 export const SelectFilterStrategy: FilterStrategy<unknown, SelectFilterConfig<unknown>> = {
     Component: SelectFilterComponent as unknown as StrategyComponent<SelectFilterConfig<unknown>>,
     getWhereClause: (config, value) => {
-        const values = value.split(",").filter(Boolean)
-        if ((config.multiSelect && values.length >= 0) || values.length > 1) {
-            // If multi-select, even a single value is fine inside `in: [...]`
-            return values.length > 0 ? { [config.property]: { in: values } } : {}
+        // Handle multi and single select, with special support for string "null" meaning actual NULL
+        const values = value.split(",").filter((v) => v !== "")
+
+        if (config.multiSelect) {
+            // Map the special token "null" to a real null and build appropriate clause
+            const mapped = values.map((v) => (v === "null" ? null : v))
+            const nonNullValues = mapped.filter((v): v is string => v !== null)
+            const hasNull = mapped.some((v) => v === null)
+
+            if (hasNull && nonNullValues.length > 0) {
+                return {
+                    OR: [
+                        { [config.property]: { in: nonNullValues } },
+                        { [config.property]: { equals: null } }
+                    ]
+                }
+            }
+
+            if (hasNull) {
+                return { [config.property]: { equals: null } }
+            }
+
+            return nonNullValues.length > 0 ? { [config.property]: { in: nonNullValues } } : {}
+        }
+
+        // single-select
+        if (value === "null") {
+            return { [config.property]: { equals: null } }
         }
         return { [config.property]: { equals: value } }
     }

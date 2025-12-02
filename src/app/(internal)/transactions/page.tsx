@@ -14,6 +14,8 @@ import {
     PageHeader,
     PageTitle
 } from "@/src/lib/components/content/page"
+import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
+import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
 
 export const metadata: Metadata = {
     title: "Transactions",
@@ -35,9 +37,13 @@ export default function TransactionsPage() {
             <PageContent>
                 <Suspense fallback={<div>Loading...</div>}>
                     <HouseholdProvider>
-                        <TagProvider>
-                            <TransactionsList />
-                        </TagProvider>
+                        <CategoryProvider>
+                            <TagProvider>
+                                <CounterpartyProvider>
+                                    <TransactionsList />
+                                </CounterpartyProvider>
+                            </TagProvider>
+                        </CategoryProvider>
                     </HouseholdProvider>
                 </Suspense>
             </PageContent>
