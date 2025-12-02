@@ -99,7 +99,7 @@ describe("buildPrismaWhere", () => {
 
             expect(result).toEqual({
                 AND: [
-                    { status: { in: ["ACTIVE", "PENDING"] } }
+                    { status: { equals: "ACTIVE,PENDING" } }
                 ]
             })
         })

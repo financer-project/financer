@@ -32,7 +32,7 @@ const SelectFilterComponent = <T, >({ config, currentValue, onChange }: {
                     options={config.options}
                     value={currentValue}
                     onChange={(newValue) => onChange(newValue)}
-                    className={"border border-dashed shadow-xs"}
+                    className={"border border-dashed shadow-xs font-medium"}
                     keepPlaceholder={true}
                     disableClearButton={true} />
             </div>
