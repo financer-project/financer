@@ -62,6 +62,7 @@ jobs:
         with:
           start: yarn test:start:app
           wait-on: http://localhost:3000/api/health-check
+          browser: chrome
         env:
           NODE_ENV: test
           DATABASE_URL: mysql://financer-test:password@localhost:3307/financer-test
@@ -91,3 +92,10 @@ jobs:
         with:
           args: >
             --define sonar.branch.name
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@latest
+        if: failure()
+        with:
+          name: cypress-snapshots
+          path: cypress/snapshots
