@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-        <body className={cn(inter.className, "md:px-0 px-4")}>
+        <body className={cn(inter.className)}>
         <BlitzProvider>
             <>{children}</>
             <Toaster />

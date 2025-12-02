@@ -32,7 +32,7 @@ export default function Loading() {
                     </div>
                 </div>
 
-                <div className={"place-self-end"}>
+                <div className={"place-self-end w-full"}>
                     <Separator className={"mb-2"} />
                     <div className={"flex gap-2"}>
                         <Skeleton className={"h-10 w-10 bg-border"} />
