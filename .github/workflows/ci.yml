@@ -94,7 +94,7 @@ jobs:
             --define sonar.branch.name
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: cypress-snapshots
