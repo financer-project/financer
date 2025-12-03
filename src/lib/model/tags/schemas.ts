@@ -7,11 +7,9 @@ export const CreateTagSchema = z.object({
     description: z.string().nullable(),
     color: z.enum(ColorType).nullable()
 })
-export const UpdateTagSchema = CreateTagSchema.extend(
-    z.object({
-        id: z.uuid()
-    })
-)
+export const UpdateTagSchema = CreateTagSchema.extend({
+    id: z.uuid()
+})
 
 export const DeleteTagSchema = z.object({
     id: z.uuid()
