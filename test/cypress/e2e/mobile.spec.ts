@@ -35,7 +35,7 @@ describe("Mobile Tests", () => {
         cy.get(".bg-card").should("have.length", 2) // Should have seeded transactions
     })
 
-    it.only("should create transaction and show it in list on mobile", () => {
+    it("should create transaction and show it in list on mobile", () => {
         // Navigate to transactions page first
         cy.get("button[data-sidebar='trigger']").click()
         cy.get("li a[href='/transactions']").click()
