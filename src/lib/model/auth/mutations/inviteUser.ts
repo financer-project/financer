@@ -15,7 +15,7 @@ export class UserAlreadyRegisteredError extends Error {
 
 // Define a schema for the invitation input
 const InviteUserSchema = z.object({
-    email: z.string().email()
+    email: z.email()
 })
 
 export default resolver.pipe(

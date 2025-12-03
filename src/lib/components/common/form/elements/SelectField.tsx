@@ -39,9 +39,10 @@ interface MultiSelectProps<T> extends Omit<BaseSelectProps<T[]>, "value" | "onCh
 
 export type SelectFieldProps<T> = SingleSelectProps<T> | MultiSelectProps<T>
 
+type SelectFieldValue<T> = T | T[] | null
+
 export function SelectField<T>(props: MultiSelectProps<T>): React.ReactElement
 export function SelectField<T>(props: SingleSelectProps<T>): React.ReactElement
-
 
 export function SelectField<T, >({
                                      options,
@@ -53,8 +54,8 @@ export function SelectField<T, >({
                                  }: SelectFieldProps<T>) {
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState("")
-    const [internalValue, setInternalValue] = useState<T | T[] | null>(
-        multiple ? (Array.isArray(props.value) ? props.value : []) : (props.value ?? null)
+    const [internalValue, setInternalValue] = useState<SelectFieldValue<T>>(
+        multiple ? (props.value ?? []) : (props.value ?? null)
     )
 
     const onChangeMultiple = onChange as (v: T[]) => void
@@ -66,10 +67,10 @@ export function SelectField<T, >({
             if (multiple) {
                 if (Array.isArray(props.value)) {
                     setInternalValue(props.value) // eslint-disable-line react-hooks/set-state-in-effect
-                } else if (props.value !== null) {
-                    setInternalValue([props.value])
-                } else {
+                } else if (props.value === null) {
                     setInternalValue([])
+                } else {
+                    setInternalValue([props.value])
                 }
             } else {
                 setInternalValue(props.value ?? null)
@@ -142,7 +143,7 @@ export function SelectField<T, >({
         return JSON.stringify(internalValue) === JSON.stringify(value)
     }
 
-    const renderButtonContent = (value: T | T[] | null) => {
+    const renderButtonContent = (value: SelectFieldValue<T>) => {
         if (props.keepPlaceholder) {
             return (
                 <div className="flex gap-2 items-center">
@@ -160,7 +161,7 @@ export function SelectField<T, >({
         }
     }
 
-    const renderValue = (value: T | T[] | null) => {
+    const renderValue = (value: SelectFieldValue<T>) => {
         if (multiple && Array.isArray(value) && value.length > 0) {
             return (
                 <div className="flex flex-wrap gap-2">
