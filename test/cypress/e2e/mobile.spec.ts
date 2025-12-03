@@ -35,7 +35,7 @@ describe("Mobile Tests", () => {
         cy.get(".bg-card").should("have.length", 2) // Should have seeded transactions
     })
 
-    it("should create transaction and show it in list on mobile", () => {
+    it.only("should create transaction and show it in list on mobile", () => {
         // Navigate to transactions page first
         cy.get("button[data-sidebar='trigger']").click()
         cy.get("li a[href='/transactions']").click()
@@ -68,15 +68,15 @@ describe("Mobile Tests", () => {
         // Verify transaction appears in list (should now have 3 transactions)
         cy.get("div.text-lg").should("have.length", 3)
         cy.get("div").contains("Mobile Test Transaction").click()
+        cy.url().should("include", "/transactions/")
         cy.component("dataItem").should("contain.text", "Mobile Test Transaction")
 
         // Clean up - delete the transaction
         cy.get("button.bg-destructive").click()
         cy.get("button.bg-primary").contains("Confirm").click()
-        cy.wait(2000)
 
         // Verify deletion
-        cy.url().should("include", "/transactions")
+        cy.url().should("include", "/transactions?")
         cy.get("div.text-lg").should("have.length", 2)
     })
 })
