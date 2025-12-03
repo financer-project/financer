@@ -78,6 +78,7 @@ describe("Mobile Tests", () => {
 
         // Verify deletion
         cy.url().should("include", "/transactions?")
+        cy.reload()
         cy.get("div.text-lg").should("have.length", 2)
     })
 })
