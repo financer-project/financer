@@ -39,6 +39,9 @@ Cypress.Commands.add("component", (name, ...args) => {
         },
         select(options: { name: string }): Cypress.Chainable<JQuery> {
             return cy.get(`label[for="${options.name}"] + div`)
+        },
+        breadcrumb() {
+            return cy.get("li span[role='link'], li a")
         }
     }
 

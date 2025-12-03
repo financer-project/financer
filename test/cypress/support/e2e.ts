@@ -49,7 +49,9 @@ declare global {
 export interface Selectors {
     dataItem(options?: {}): Chainable<JQuery>,
 
-    select(options: {name: string}): Chainable<JQuery>,
+    select(options: { name: string }): Chainable<JQuery>,
+
+    breadcrumb(options?: {}): Chainable<JQuery>
 }
 
 export interface SelectFieldOptions {

@@ -64,11 +64,12 @@ describe("Mobile Tests", () => {
         // Navigate back to transactions list
         cy.get("button[data-sidebar='trigger']").click()
         cy.get("li[data-sidebar='menu-item'] a[href='/transactions']").click()
-
-        // Verify transaction appears in list (should now have 3 transactions)
         cy.get("div.text-lg").should("have.length", 3)
+
+        // Navigate to details
         cy.get("div").contains("Mobile Test Transaction").click()
         cy.url().should("include", "/transactions/")
+        cy.component("breadcrumb").should("contain.text", "Mobile Test Transaction")
         cy.component("dataItem").should("contain.text", "Mobile Test Transaction")
 
         // Clean up - delete the transaction
