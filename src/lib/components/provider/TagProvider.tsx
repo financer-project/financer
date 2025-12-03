@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext } from "react"
+import React, { createContext, useContext, useMemo } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTags from "@/src/lib/model/tags/queries/getTags"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
@@ -11,9 +11,10 @@ const TagContext = createContext<Tag[] | undefined>(undefined)
 export function TagProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     const currentHousehold = useCurrentHousehold()
     const [tagsResult] = useQuery(getTags, { householdId: currentHousehold!.id })
+    const tags = useMemo(() => tagsResult?.tags ?? [], [tagsResult])
     
     return (
-        <TagContext.Provider value={tagsResult?.tags ?? []}>
+        <TagContext.Provider value={tags}>
             {children}
         </TagContext.Provider>
     )

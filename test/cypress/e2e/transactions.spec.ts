@@ -17,18 +17,15 @@ describe("Transactions", () => {
 
         cy.get("a[href='/transactions/new']").first().click()
 
-        cy.get("button").contains("My Account").should("exist")
+        cy.findSelectField({ contains: "My Account" }).should("exist")
         cy.get("input[name='name']").type("Salary")
-        cy.get("label[for='type'] + div").type("Income{enter}")
+        cy.selectField({ for: "type", value: "Income" })
         cy.get("input[name='amount']").type("100.00")
-        cy.get("label[for='categoryId'] + div").type("Income{enter}")
-        cy.get("label[for='counterpartyId'] + div").type("Test Employer{enter}")
+        cy.selectField({ for: "categoryId", value: "Income" })
+        cy.selectField({ for: "counterpartyId", value: "Test Employer" })
 
-        // Select tags
-        cy.get("label[for='tagIds'] + div").click()
-        cy.get("div[role='option']").contains("Work").click()
-        cy.get("div[role='option']").contains("Personal").click()
-        cy.get("body").click() // Close the dropdown
+        // Select tags (multi select)
+        cy.selectField({ for: "tagIds", values: ["Work", "Personal"] })
 
         cy.get("button[type='submit']").click()
 
@@ -40,9 +37,7 @@ describe("Transactions", () => {
 
         // Edit the transaction to change tags
         cy.get("a").contains("Edit").click()
-        cy.get("label[for='tagIds'] + div").click()
-        cy.get("div[role='option']").contains("Work").click() // Deselect Work tag
-        cy.get("body").click() // Close the dropdown
+        cy.selectField({ for: "tagIds", values: ["Work"] }) // toggles selection (deselect Work)
         cy.get("button[type='submit']").click()
 
         // Verify updated tags
@@ -53,7 +48,7 @@ describe("Transactions", () => {
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
         cy.wait(2000)
-        cy.url().should("satisfy", (str: string) => str.endsWith("/transactions"))
+        cy.url().should("satisfy", (str: string) => str.includes("/transactions?"))
 
         cy.get("tbody tr").should("have.length", 2)
     })
@@ -61,12 +56,12 @@ describe("Transactions", () => {
     it("should be able to create a transaction without tags", () => {
         cy.get("a[href='/transactions/new']").first().click()
 
-        cy.get("button").contains("My Account").should("exist")
+        cy.findSelectField({ contains: "My Account" }).should("exist")
         cy.get("input[name='name']").type("Bonus")
-        cy.get("label[for='type'] + div").type("Income{enter}")
+        cy.selectField({ for: "type", value: "Income" })
         cy.get("input[name='amount']").type("50.00")
-        cy.get("label[for='categoryId'] + div").type("Income{enter}")
-        cy.get("label[for='counterpartyId'] + div").type("Test Merchant{enter}")
+        cy.selectField({ for: "categoryId", value: "Income" })
+        cy.selectField({ for: "counterpartyId", value: "Test Merchant" })
         cy.get("button[type='submit']").click()
 
         cy.component("dataItem").should("contain.text", "Bonus")
@@ -75,5 +70,24 @@ describe("Transactions", () => {
         // Clean up
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
+    })
+
+    it("should filter transactions by category (multi-select) and reset", () => {
+        // Initially seeded with 2 transactions for standard user
+        cy.get("tbody tr").should("have.length", 2)
+
+        // Apply Category filter: Income -> expect only the Income transaction to remain
+        cy.selectField({ contains: "Category", value: "Income" })
+        cy.url().should("include", "categoryId=")
+        cy.get("tbody tr").should("have.length", 1)
+        cy.get("tbody tr td").first().should("contain.text", "Income")
+
+        // Add second Category to multi-select: Cost of Living -> expect 2 rows again
+        cy.selectField({ contains: "Category", value: "Cost of Living" })
+        cy.get("tbody tr").should("have.length", 2)
+
+        // Reset filters using toolbar button
+        cy.contains("button", "Reset").click()
+        cy.get("tbody tr").should("have.length", 2)
     })
 })

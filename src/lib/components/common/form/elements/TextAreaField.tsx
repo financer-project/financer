@@ -4,7 +4,7 @@ import { Textarea } from "@/src/lib/components/ui/textarea"
 import { useEffect } from "react"
 
 export const TextAreaField = <E, >({ name, label, ...props }: FormElementProps<E, string>) => {
-    const [input, , helpers] = useField(name)
+    const [input, , helpers] = useField(name as string)
     const { isSubmitting } = useFormikContext()
 
     useEffect(() => {

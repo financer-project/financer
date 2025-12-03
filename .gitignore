@@ -46,7 +46,8 @@ test/cypress/screenshots/
 test/cypress/downloads/
 
 # data
-data
+.data/
+data/
 
 # generated coding
 .generated/

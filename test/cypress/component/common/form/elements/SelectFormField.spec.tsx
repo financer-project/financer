@@ -52,13 +52,13 @@ describe("<SelectFormField />", () => {
                 />
             )
 
-            cy.get("button").contains("Select option ...").should("be.visible")
+            cy.get("div[role='select-field']").contains("Select option ...").should("be.visible")
 
-            cy.get("button").contains("Select option ...").click()
+            cy.get("div[role='select-field']").contains("Select option ...").click()
             cy.get("div[role='listbox']").find("div[role='option']").should("have.length", 3)
 
             cy.get("div[role='listbox'] div div:nth-child(2)").click()
-            cy.get("button").should("contain.text", "Option 2")
+            cy.get("div[role='select-field']").should("contain.text", "Option 2")
             cy.get("@handleChange").should("have.been.calledWith", "option2")
 
             cy.get("button").contains("Submit").click()
@@ -78,7 +78,7 @@ describe("<SelectFormField />", () => {
                 />
             )
 
-            cy.get("button").should("contain.text", "Option 3")
+            cy.get("div[role='select-field']").should("contain.text", "Option 3")
         })
 
         it("renders with readOnly property set to true", () => {
@@ -94,7 +94,7 @@ describe("<SelectFormField />", () => {
                 />
             )
 
-            cy.get("button").should("be.disabled")
+            cy.get("div[role='select-field']").should("have.css", "pointer-events", "none")
         })
 
         it("clears the selected option when the clear button is pressed", () => {
@@ -114,11 +114,11 @@ describe("<SelectFormField />", () => {
                 />
             )
 
-            cy.get("button").should("contain.text", "Option 1")
+            cy.get("div[role='select-field']").should("contain.text", "Option 1")
 
             cy.get("button svg").last().parent().click()
             cy.get("@handleChange").should("have.been.calledWith", null)
-            cy.get("button").should("contain.text", "Select option ...")
+            cy.get("div[role='select-field']").should("contain.text", "Select option ...")
 
             cy.get("button").contains("Submit").click()
             cy.get("@handleSubmit").should("have.been.calledWith")
@@ -144,10 +144,10 @@ describe("<SelectFormField />", () => {
                 />
             )
 
-            cy.get("button").contains("Select option ...").should("be.visible")
+            cy.get("div[role='select-field']").contains("Select option ...").should("be.visible")
 
             // Select first option
-            cy.get("button").contains("Select option ...").click()
+            cy.get("div[role='select-field']").contains("Select option ...").click()
             cy.get("div[role='listbox'] div div:nth-child(1)").click()
             cy.get("@handleChange").should("have.been.calledWith", ["option1"])
 
@@ -156,8 +156,8 @@ describe("<SelectFormField />", () => {
             cy.get("@handleChange").should("have.been.calledWith", ["option1", "option2"])
 
             // Verify both options are displayed
-            cy.get("button").should("contain.text", "Option 1")
-            cy.get("button").should("contain.text", "Option 2")
+            cy.get("div[role='select-field']").should("contain.text", "Option 1")
+            cy.get("div[role='select-field']").should("contain.text", "Option 2")
 
             // Submit the form
             cy.get("button").contains("Submit").click()
@@ -183,11 +183,11 @@ describe("<SelectFormField />", () => {
             )
 
             // Verify initial state
-            cy.get("button").should("contain.text", "Option 1")
-            cy.get("button").should("contain.text", "Option 2")
+            cy.get("div[role='select-field']").should("contain.text", "Option 1")
+            cy.get("div[role='select-field']").should("contain.text", "Option 2")
 
             // Deselect first option
-            cy.get("button").eq(0).click()
+            cy.get("div[role='select-field']").eq(0).click()
             cy.get("div[role='listbox'] div div:nth-child(1)").click()
             cy.get("@handleChange").should("have.been.calledWith", ["option2"])
 
@@ -209,9 +209,9 @@ describe("<SelectFormField />", () => {
                 />
             )
 
-            cy.get("button").should("contain.text", "Option 1")
-            cy.get("button").should("contain.text", "Option 3")
-            cy.get("button").should("not.contain.text", "Option 2")
+            cy.get("div[role='select-field']").should("contain.text", "Option 1")
+            cy.get("div[role='select-field']").should("contain.text", "Option 3")
+            cy.get("div[role='select-field']").should("not.contain.text", "Option 2")
         })
 
         it("clears all selected values when the clear button is pressed", () => {
@@ -232,12 +232,12 @@ describe("<SelectFormField />", () => {
                 />
             )
 
-            cy.get("button").should("contain.text", "Option 1")
-            cy.get("button").should("contain.text", "Option 2")
+            cy.get("div[role='select-field']").should("contain.text", "Option 1")
+            cy.get("div[role='select-field']").should("contain.text", "Option 2")
 
             cy.get("button svg").last().parent().click()
             cy.get("@handleChange").should("have.been.calledWith", [])
-            cy.get("button").should("contain.text", "Select option ...")
+            cy.get("div[role='select-field']").should("contain.text", "Select option ...")
 
             cy.get("button").contains("Submit").click()
             cy.get("@handleSubmit").should("have.been.calledWith")

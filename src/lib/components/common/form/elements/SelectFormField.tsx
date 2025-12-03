@@ -19,7 +19,7 @@ export const SelectFormField = <E, V = E[keyof E]>({
                                                        multiple = false,
                                                        ...props
                                                    }: SelectFormFieldProps<E, V>) => {
-    const [field, , helpers] = useField<V | V[] | null>(name)
+    const [field, , helpers] = useField<V | V[] | null>(name as string)
     const { isSubmitting } = useFormikContext()
 
     useEffect(() => {
