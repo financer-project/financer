@@ -10,7 +10,7 @@ interface SwitchFieldProps<E> extends FormElementProps<E, boolean> {
 }
 
 const SwitchField = <E, >({ name, ...props }: SwitchFieldProps<E>) => {
-    const [field, , helpers] = useField<boolean>(name)
+    const [field, , helpers] = useField<boolean>(name as string)
     const { isSubmitting } = useFormikContext<FormikValues>()
 
     useEffect(() => {

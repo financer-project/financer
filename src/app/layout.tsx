@@ -3,6 +3,7 @@ import { BlitzProvider } from "./blitz-client"
 import { Inter } from "next/font/google"
 import { Metadata } from "next"
 import { Toaster } from "../lib/components/ui/toaster"
+import { cn } from "@/src/lib/util/utils"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-        <body className={inter.className}>
+        <body className={cn(inter.className)}>
         <BlitzProvider>
             <>{children}</>
             <Toaster />

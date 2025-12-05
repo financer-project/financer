@@ -16,13 +16,12 @@ type GetTransactionsInput =
 export default resolver.pipe(
     resolver.authorize(),
     async ({ where, orderBy, skip = 0, take = 100, householdId }: GetTransactionsInput, ctxt: AuthenticatedCtx) => {
-
-        let household;
+        let household
         if (householdId) {
-            household = await getHousehold({ id: householdId }, ctxt);
+            household = await getHousehold({ id: householdId }, ctxt)
         } else {
-            household = await getCurrentHousehold(null, ctxt);
-            if (!household) return { transactions: [], nextPage: null, hasMore: false, count: 0 };
+            household = await getCurrentHousehold(null, ctxt)
+            if (!household) return { transactions: [], nextPage: null, hasMore: false, count: 0 }
         }
 
         orderBy ??= { valueDate: "desc" }
@@ -45,14 +44,15 @@ export default resolver.pipe(
                 ...paginateArgs,
                 where,
                 orderBy,
-                include: { 
+                include: {
                     category: true,
+                    counterparty: true,
+                    account: true,
                     tags: {
                         include: {
                             tag: true
                         }
-                    },
-                    counterparty: true
+                    }
                 }
             })
         })

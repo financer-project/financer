@@ -11,10 +11,10 @@ const SendTestEmailSchema = z.object({
     smtpPort: z.number(),
     smtpUser: z.string(),
     smtpPassword: z.string(),
-    smtpFromEmail: z.string().email(),
+    smtpFromEmail: z.email(),
     smtpFromName: z.string(),
     smtpEncryption: z.string().nullable(),
-    testEmailRecipient: z.string().email().nullable()
+    testEmailRecipient: z.email().nullable()
 })
 
 export default resolver.pipe(

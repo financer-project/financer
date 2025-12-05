@@ -17,7 +17,7 @@ describe("Tags", () => {
 
         cy.get("input[name='name']").type("Shopping")
         cy.get("input[name='description']").type("Shopping expenses")
-        cy.get("label[for='color'] + div").type("blue{enter}")
+        cy.selectField({ for: "color", value: "Blue" })
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/tags"))
@@ -40,7 +40,7 @@ describe("Tags", () => {
         cy.get("a[href='/tags/new']").click()
         cy.get("input[name='name']").type("Groceries")
         cy.get("input[name='description']").type("Grocery shopping")
-        cy.get("label[for='color'] + div").type("green{enter}")
+        cy.selectField({ for: "color", value: "Green" })
         cy.get("button[type='submit']").click()
 
         // Now edit the tag
@@ -49,8 +49,7 @@ describe("Tags", () => {
 
         cy.get("input[name='name']").clear().type("Food")
         cy.get("input[name='description']").clear().type("Food expenses")
-        cy.get("label[for='color'] + div").click()
-        cy.get("div[role='option']").contains("Red").click()
+        cy.selectField({ for: "color", value: "Red" })
         cy.get("button[type='submit']").click()
 
         // Verify the changes

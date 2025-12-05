@@ -6,7 +6,7 @@ export const AdminSettingsSchema = z.object({
     smtpPort: z.coerce.number().nullable(),
     smtpUser: z.string().nullable(),
     smtpPassword: z.string().nullable(),
-    smtpFromEmail: z.string().email().nullable(),
+    smtpFromEmail: z.email().nullable(),
     smtpFromName: z.string().nullable(),
     smtpEncryption: z.string().nullable(),
 

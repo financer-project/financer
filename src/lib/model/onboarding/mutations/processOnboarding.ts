@@ -10,7 +10,7 @@ const ProcessOnboardingSchema = z.object({
     // User data
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
-    email: z.string().email("Invalid email address"),
+    email: z.email("Invalid email address"),
     password: z.string().min(10, "Password must be at least 10 characters"),
 
     // Household data
@@ -28,7 +28,7 @@ const ProcessOnboardingSchema = z.object({
     smtpPort: z.number().nullable().optional(),
     smtpUser: z.string().nullable().optional(),
     smtpPassword: z.string().nullable().optional(),
-    smtpFromEmail: z.string().email().nullable().optional(),
+    smtpFromEmail: z.email().nullable().optional(),
     smtpFromName: z.string().nullable().optional(),
     smtpEncryption: z.string().nullable().optional(),
 

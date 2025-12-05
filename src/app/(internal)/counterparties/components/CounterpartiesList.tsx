@@ -1,21 +1,17 @@
 "use client"
 import { usePaginatedQuery } from "@blitzjs/rpc"
-import { useSearchParams } from "next/navigation"
 import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
-import { DataTable } from "@/src/lib/components/common/data/DataTable"
+import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 
-export const CounterpartiesList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
-    itemsPerPage?: number
-}) => {
-    const searchParams = useSearchParams()
+export const CounterpartiesList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
-    const page = Number(searchParams?.get("page") ?? 0)
-    const [{ counterparties, hasMore }] = usePaginatedQuery(getCounterparties, {
-        skip: itemsPerPage * page,
-        take: itemsPerPage,
+    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+    const [{ counterparties, count }] = usePaginatedQuery(getCounterparties, {
+        skip: pageSize * page,
+        take: pageSize,
         householdId: currentHousehold.id
     })
 
@@ -52,7 +48,7 @@ export const CounterpartiesList = withFormatters(({ formatters, itemsPerPage = 2
                 }
             ]}
             itemRoute={counterparty => `/counterparties/${counterparty.id}`}
-            hasMore={hasMore}
+            count={count}
             createRoute="/counterparties/new" />
     )
 })

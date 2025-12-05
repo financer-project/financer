@@ -4,7 +4,7 @@ import { CounterpartyType } from "@prisma/client"
 export const CreateCounterpartySchema = z.object({
     householdId: z.uuid(),
     name: z.string().min(1),
-    type: z.nativeEnum(CounterpartyType),
+    type: z.enum(CounterpartyType),
     description: z.string().nullable(),
     accountName: z.string().nullable(),
     webAddress: z.string().nullable()
