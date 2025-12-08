@@ -1,23 +1,57 @@
 "use client"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
-import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
+import { DataTable, FilterConfig, useDataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
+import { CounterpartyType } from "@prisma/client"
+import type { Prisma } from "@/src/lib/db"
 
 export const CounterpartiesList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
-    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+
+    // Define filters and search
+    const filters: FilterConfig<import("@/src/lib/db").Prisma.CounterpartyGetPayload<{ select: { id: true } }>>[] = [
+        {
+            type: "select",
+            label: "Type",
+            property: "type",
+            multiSelect: true,
+            options: Object.values(CounterpartyType).map((type) => ({
+                label: formatters.capitalize.format(type.toLowerCase().replace("_", " ")),
+                value: type,
+                render: label => <CounterpartyIcon type={type} name={label} />
+            }))
+        }
+    ]
+
+    const searchConfig = {
+        fields: ["name", "description", "accountName", "webAddress"],
+        paramKey: "q"
+    }
+
+    const { page, pageSize, where } = useDataTable<
+        unknown,
+        Prisma.CounterpartyWhereInput
+    >({ defaultPageSize: 25, filters, search: searchConfig })
+
     const [{ counterparties, count }] = usePaginatedQuery(getCounterparties, {
         skip: pageSize * page,
         take: pageSize,
-        householdId: currentHousehold.id
+        householdId: currentHousehold.id,
+        where
     })
 
     return (
         <DataTable
             data={counterparties}
+            filters={filters}
+            search={{
+                fields: searchConfig.fields,
+                paramKey: searchConfig.paramKey,
+                placeholder: "Search counterparties"
+            }}
             columns={[
                 { name: "Name", render: counterparty => counterparty.name, isKey: true },
                 {

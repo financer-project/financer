@@ -3,7 +3,7 @@
 import React from "react"
 import Link from "next/link"
 import { Button } from "@/src/lib/components/ui/button"
-import { Plus } from "lucide-react"
+import { PlusCircle } from "lucide-react"
 import { TableColumn, TableContent } from "./TableContent"
 import { TablePagination } from "./TablePagination"
 import { TableToolbar } from "./TableToolbar"
@@ -45,16 +45,16 @@ export const DataTable = <T, >({
                                }: DataTableProps<T>) => {
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-full">
             {(search || filters || createRoute) && (
-                <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                <div className="flex flex-row justify-between items-start gap-4 w-full">
                     {/* 1. Dynamic Filter Toolbar */}
                     <TableToolbar filters={filters} search={search} />
 
                     {createRoute && (
-                        <div className="flex flex-row justify-end items-center">
+                        <div className="flex flex-row ml-auto items-center">
                             <Button variant={"outline"} asChild>
-                                <Link href={{ pathname: createRoute }}><Plus /> Create</Link>
+                                <Link href={{ pathname: createRoute }}><PlusCircle /> Create</Link>
                             </Button>
                         </div>
                     )}
