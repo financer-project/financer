@@ -66,7 +66,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
             <Section title={"Members"}
                      subtitle={"Manage household members and their roles."}>
                 <Suspense fallback={<div>Loading members...</div>}>
-                    <PaginatedTable
+                    <DataTable
                         data={household.members}
                         columns={[
                             { name: "Name", render: (member) => formatters.user.format(member.user) },

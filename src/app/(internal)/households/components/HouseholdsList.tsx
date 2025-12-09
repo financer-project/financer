@@ -43,13 +43,13 @@ export const HouseholdsList = withFormatters(({ formatters }: WithFormattersProp
                         const membership = household.members?.[0]
                         if (membership) {
                             if (membership.role === HouseholdRole.OWNER) {
-                                return <Badge variant={"secondary"}>Owner</Badge>
+                                return <Badge variant={"default"}>Owner</Badge>
                             } else if (membership.role === HouseholdRole.ADMIN) {
-                                return <Badge variant={"secondary"}>Admin</Badge>
+                                return <Badge variant={"default"}>Admin</Badge>
                             } else if (membership.role === HouseholdRole.MEMBER) {
                                 return <Badge variant={"secondary"}>Member</Badge>
                             } else {
-                                return <Badge variant={"secondary"}>Guest</Badge>
+                                return <Badge variant={"outline"}>Guest</Badge>
                             }
                         }
 

@@ -2,8 +2,9 @@ import { resolver } from "@blitzjs/rpc"
 import db from "src/lib/db"
 import { CreateHouseholdSchema } from "../schemas"
 import { Ctx } from "blitz"
-import { Household, HouseholdRole } from "@prisma/client"
+import { $Enums, Household, HouseholdRole } from "@prisma/client"
 import Guard from "@/src/lib/guard/ability"
+import AccessLevel = $Enums.AccessLevel
 
 export default resolver.pipe(
     resolver.zod(CreateHouseholdSchema),
@@ -23,7 +24,7 @@ export default resolver.pipe(
                 userId: ctx.session.userId!,
                 householdId: household.id,
                 role: HouseholdRole.OWNER,
-                accessLevel: "FULL"
+                accessLevel: AccessLevel.FULL
             }
         })
 
