@@ -51,7 +51,7 @@ describe("Counterparties", () => {
         cy.get("button[type='submit']").click()
 
         // Now edit the counterparty
-        cy.get("td").contains("Old Company").should("exist").click()
+        cy.get("td").contains("Old Company").click()
         cy.get("a").contains("Edit").click()
 
         cy.get("input[name='name']").clear().type("New Company")
@@ -62,9 +62,9 @@ describe("Counterparties", () => {
         cy.get("button[type='submit']").click()
 
         // Verify the changes
-        cy.url().should("satisfy", (str: string) => str.endsWith("/counterparties"))
+        cy.url().should("include", "/counterparties?")
         cy.reload()
-        cy.get("td").contains("New Company").should("exist").click()
+        cy.get("td").contains("New Company").click()
 
         cy.get("div").contains("Name").next().should("contain.text", "New Company")
         cy.get("div").contains("Type").next().should("contain.text", "Service provider")
