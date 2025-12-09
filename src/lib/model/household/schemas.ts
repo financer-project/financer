@@ -1,5 +1,6 @@
 import { z } from "zod"
 import currencyCodes from "currency-codes"
+import { AccessLevel, HouseholdRole } from "@prisma/client"
 
 const availableCurrencies = currencyCodes.codes()
 
@@ -17,4 +18,28 @@ export const UpdateHouseholdSchema = CreateHouseholdSchema.merge(
 
 export const DeleteHouseholdSchema = z.object({
     id: z.uuid()
+})
+
+// Membership management schemas
+
+export const AddHouseholdMemberSchema = z.object({
+    // Household ID (named `id` to align with Guard.authorizePipe("invite", "Household"))
+    id: z.uuid(),
+    email: z.string().email(),
+    role: z.nativeEnum(HouseholdRole).default(HouseholdRole.MEMBER),
+    accessLevel: z.nativeEnum(AccessLevel).default(AccessLevel.FULL)
+})
+
+export const UpdateHouseholdMemberSchema = z.object({
+    // Household ID (named `id` to align with Guard.authorizePipe("update", "Household"))
+    id: z.uuid(),
+    userId: z.string().uuid(),
+    role: z.nativeEnum(HouseholdRole),
+    accessLevel: z.nativeEnum(AccessLevel)
+})
+
+export const RemoveHouseholdMemberSchema = z.object({
+    // Household ID (named `id` to align with Guard.authorizePipe("update", "Household"))
+    id: z.uuid(),
+    userId: z.string().uuid()
 })

@@ -1,4 +1,5 @@
 "use client"
+
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import DataItem from "@/src/lib/components/common/data/DataItem"
@@ -8,7 +9,7 @@ import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
-import { Badge } from "@/src/lib/components/ui/badge"
+import MembersManager from "@/src/app/(internal)/households/components/MembersManager"
 
 export const Household = withFormatters(({ formatters, householdId }: WithFormattersProps & {
     householdId: string
@@ -66,13 +67,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
             <Section title={"Members"}
                      subtitle={"Manage household members and their roles."}>
                 <Suspense fallback={<div>Loading members...</div>}>
-                    <DataTable
-                        data={household.members}
-                        columns={[
-                            { name: "Name", render: (member) => formatters.user.format(member.user) },
-                            { name: "Email", render: (member) => member.user.email },
-                            { name: "Role", render: (member) => <Badge variant={"secondary"}>{member.role}</Badge> }
-                        ]} />
+                    <MembersManager householdId={household.id} />
                 </Suspense>
             </Section>
         </div>
