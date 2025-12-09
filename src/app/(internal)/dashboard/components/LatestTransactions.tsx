@@ -2,7 +2,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useTimeframe } from "../context/TimeframeContext"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
-import { HouseholdProvider, useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
+import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Separator } from "@/src/lib/components/ui/separator"
@@ -14,6 +14,7 @@ import { ArrowRight } from "lucide-react"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
+import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
 
 interface LatestTransactionsProps {
     className?: string;
@@ -65,7 +66,7 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
 
             <ScrollArea className={"flex-col max-h-full overflow-y-auto"}>
                 <CardContent className={"flex flex-col max-h-full grow p-0"}>
-                    <HouseholdProvider>
+                    <AccountProvider>
                         <CategoryProvider>
                             <TagProvider>
                                 <CounterpartyProvider>
@@ -73,7 +74,7 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
                                 </CounterpartyProvider>
                             </TagProvider>
                         </CategoryProvider>
-                    </HouseholdProvider>
+                    </AccountProvider>
                     <ScrollBar orientation={"vertical"} className={"pl-2"} />
                 </CardContent>
             </ScrollArea>

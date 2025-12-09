@@ -1,11 +1,11 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { TransactionsList } from "./components/TransactionsList"
-import { HouseholdProvider } from "@/src/lib/components/provider/HouseholdProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
+import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
 
 export const metadata: Metadata = {
     title: "Transactions",
@@ -21,7 +21,7 @@ export default function TransactionsPage() {
             </PageHeader>
             <PageContent>
                 <Suspense fallback={<div>Loading...</div>}>
-                    <HouseholdProvider>
+                    <AccountProvider>
                         <CategoryProvider>
                             <TagProvider>
                                 <CounterpartyProvider>
@@ -29,7 +29,7 @@ export default function TransactionsPage() {
                                 </CounterpartyProvider>
                             </TagProvider>
                         </CategoryProvider>
-                    </HouseholdProvider>
+                    </AccountProvider>
                 </Suspense>
             </PageContent>
         </Page>
