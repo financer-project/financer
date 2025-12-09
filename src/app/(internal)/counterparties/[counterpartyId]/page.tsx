@@ -4,6 +4,7 @@ import { invoke } from "@/src/app/blitz-server"
 import getCounterparty from "@/src/lib/model/counterparties/queries/getCounterparty"
 import { Counterparty } from "@/src/app/(internal)/counterparties/components/Counterparty"
 import CounterpartyHeader from "@/src/app/(internal)/counterparties/[counterpartyId]/header"
+import { Page, PageContent } from "@/src/lib/components/content/page"
 
 async function fetchCounterparty(id: string) {
     return invoke(getCounterparty, { id: id })
@@ -21,16 +22,18 @@ export async function generateMetadata(props: CounterpartyPageProps): Promise<Me
     }
 }
 
-export default async function Page(props: Readonly<CounterpartyPageProps>) {
+export default async function CounterpartyPage(props: Readonly<CounterpartyPageProps>) {
     const params = await props.params
     const counterparty = await fetchCounterparty(params.counterpartyId)
 
     return (
-        <div>
+        <Page>
             <CounterpartyHeader counterparty={counterparty} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <Counterparty counterpartyId={params.counterpartyId} />
-            </Suspense>
-        </div>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Counterparty counterpartyId={params.counterpartyId} />
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

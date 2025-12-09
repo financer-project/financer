@@ -6,7 +6,7 @@ import { Category } from ".prisma/client"
 import Guard from "@/src/lib/guard/ability"
 
 const GetCategory = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export default resolver.pipe(

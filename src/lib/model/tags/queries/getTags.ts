@@ -6,7 +6,7 @@ import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
 export const GetTagsSchema = z.object({
-    householdId: z.string().uuid()
+    householdId: z.uuid()
 })
 
 type GetTagsInput = Pick<Prisma.TagFindManyArgs, "where" | "orderBy" | "skip" | "take"> & z.infer<typeof GetTagsSchema>

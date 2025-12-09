@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { z } from "zod"
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
@@ -12,10 +12,12 @@ import { useCurrentHousehold, useHouseholds } from "@/src/lib/components/provide
 import ColorType from "@/src/lib/model/common/ColorType"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { Category } from ".prisma/client"
+import { useSearchParams } from "next/navigation"
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
+export const CategoryForm = <S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) => {
 
+    const searchParams = useSearchParams()
     const [parentCategory, setParentCategory] = useState<Category | null>(null)
     const categories = useCategories()
 
@@ -24,9 +26,11 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
         setParentCategory(selectedParent?.data ?? null)
     }
 
-    if (parentCategory === null && props.initialValues?.parentId) {
-        handleParentChange(props.initialValues.parentId)
-    }
+    useEffect(() => {
+        if (parentCategory === null && (props.initialValues?.parentId || searchParams?.get("parentId"))) {
+            handleParentChange(props.initialValues?.parentId || searchParams?.get("parentId")) // eslint-disable-line react-hooks/set-state-in-effect
+        }
+    }, [props]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Form<S> {...props}>
@@ -43,8 +47,13 @@ export function CategoryForm<S extends z.ZodType<any, any>>(props: Readonly<Form
                     name={"parentId"}
                     options={categories
                         .flatten()
+                        .sort((a, b) => a.data.name.localeCompare(b.data.name))
                         .filter(category => category.id !== props.initialValues?.id)
-                        .map(category => ({ label: category.data.name, value: category.id }))}
+                        .map(category => ({
+                            label: category.data.name,
+                            value: category.id,
+                            render: () => <ColoredTag label={category.data.name} color={category.data.color} />
+                        }))}
                     onChange={(value) => handleParentChange(value as string)} />
             </div>
             <div className={"flex flex-row gap-4"}>

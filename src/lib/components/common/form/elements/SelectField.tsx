@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/lib/components/ui/popover"
-import { Button } from "@/src/lib/components/ui/button"
 import { cn } from "@/src/lib/util/utils"
 import { Check, X } from "lucide-react"
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/src/lib/components/ui/command"
 import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
 import { ElementProps } from "@/src/lib/components/common/form/FormElement"
 import { Badge } from "@/src/lib/components/ui/badge"
+import { Checkbox } from "@/src/lib/components/ui/checkbox"
+import { Separator } from "@/src/lib/components/ui/separator"
+import { InputGroup, InputGroupAddon, InputGroupButton } from "@/src/lib/components/ui/input-group"
 
 export interface SelectOption<T> {
     label: string;
@@ -16,26 +18,31 @@ export interface SelectOption<T> {
     render?: (label: string) => React.ReactNode
 }
 
-interface SingleSelectProps<T> extends ElementProps<T> {
+interface BaseSelectProps<T> extends ElementProps<T> {
+    keepPlaceholder?: boolean,
+    disableClearButton?: true
+}
+
+interface SingleSelectProps<T> extends BaseSelectProps<T> {
     multiple?: false
-    options: SelectOption<T>[]
+    options: SelectOption<T>[],
 }
 
 
-interface MultiSelectProps<T>
-    extends Omit<ElementProps<T[]>, "value" | "onChange"> {
+interface MultiSelectProps<T> extends Omit<BaseSelectProps<T[]>, "value" | "onChange"> {
     multiple: true
-    options: SelectOption<T>[]
+    options: SelectOption<T>[],
     value?: T[]
-    onChange?: (value: T[]) => void
+    onChange?: (value: T[]) => void,
 }
 
 
 export type SelectFieldProps<T> = SingleSelectProps<T> | MultiSelectProps<T>
 
+type SelectFieldValue<T> = T | T[] | null
+
 export function SelectField<T>(props: MultiSelectProps<T>): React.ReactElement
 export function SelectField<T>(props: SingleSelectProps<T>): React.ReactElement
-
 
 export function SelectField<T, >({
                                      options,
@@ -47,8 +54,8 @@ export function SelectField<T, >({
                                  }: SelectFieldProps<T>) {
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState("")
-    const [internalValue, setInternalValue] = useState<T | T[] | null>(
-        multiple ? (Array.isArray(props.value) ? props.value : []) : (props.value ?? null)
+    const [internalValue, setInternalValue] = useState<SelectFieldValue<T>>(
+        multiple ? (props.value ?? []) : (props.value ?? null)
     )
 
     const onChangeMultiple = onChange as (v: T[]) => void
@@ -59,11 +66,11 @@ export function SelectField<T, >({
         if (props.value !== undefined) {
             if (multiple) {
                 if (Array.isArray(props.value)) {
-                    setInternalValue(props.value)
-                } else if (props.value !== null) {
-                    setInternalValue([props.value])
-                } else {
+                    setInternalValue(props.value) // eslint-disable-line react-hooks/set-state-in-effect
+                } else if (props.value === null) {
                     setInternalValue([])
+                } else {
+                    setInternalValue([props.value])
                 }
             } else {
                 setInternalValue(props.value ?? null)
@@ -100,15 +107,13 @@ export function SelectField<T, >({
 
                 onChangeMultiple?.(updatedValues)
                 setInternalValue(updatedValues)
+            } else if (isValueSelected(newValue)) {
+                onChangeSingle?.(null)
+                setInternalValue(null)
             } else {
-                if (isValueSelected(newValue)) {
-                    onChangeSingle?.(null)
-                    setInternalValue(null)
-                } else {
-                    setIsOpen(false)
-                    onChangeSingle?.(newValue)
-                    setInternalValue(newValue)
-                }
+                setIsOpen(false)
+                onChangeSingle?.(newValue)
+                setInternalValue(newValue)
             }
         }
     }
@@ -126,9 +131,10 @@ export function SelectField<T, >({
         }
     }
 
-    const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(search.toLowerCase())
-    )
+    const hasValuesSelected = () => {
+        return (multiple && Array.isArray(internalValue) && internalValue.length > 0) ||
+            (!multiple && internalValue !== null)
+    }
 
     const isValueSelected = (value: T): boolean => {
         if (multiple && Array.isArray(internalValue)) {
@@ -137,21 +143,41 @@ export function SelectField<T, >({
         return JSON.stringify(internalValue) === JSON.stringify(value)
     }
 
-    const renderValue = (value: T | T[] | null) => {
+    const renderButtonContent = (value: SelectFieldValue<T>) => {
+        if (props.keepPlaceholder) {
+            return (
+                <div className="flex gap-2 items-center">
+                    <span>{placeholder}</span>
+                    {renderValue(value) && (
+                        <>
+                            <Separator orientation="vertical" className="h-4" />
+                            {renderValue(value)}
+                        </>
+                    )}
+                </div>
+            )
+        } else {
+            return renderValue(value) ?? (<span className={"text-muted-foreground"}>{placeholder}</span>)
+        }
+    }
+
+    const renderValue = (value: SelectFieldValue<T>) => {
         if (multiple && Array.isArray(value) && value.length > 0) {
             return (
                 <div className="flex flex-wrap gap-2">
-                    {value.map((val) => {
-                        const option = options.find((opt) => JSON.stringify(opt.value) === JSON.stringify(val))
-                        if (option) {
-                            return (
-                                <Badge key={option.value as string} variant={"secondary"}>
-                                    {option.render ? option.render(option.label) : option.label}
-                                </Badge>
-                            )
-                        }
-                        return null
-                    })}
+                    {value.length > 3
+                        ? <Badge variant={"secondary"}>{value.length} selected</Badge>
+                        : value.map((val) => {
+                            const option = options.find((opt) => JSON.stringify(opt.value) === JSON.stringify(val))
+                            if (option) {
+                                return (
+                                    <Badge key={option.value as string} variant={"secondary"}>
+                                        {option.render ? option.render(option.label) : option.label}
+                                    </Badge>
+                                )
+                            }
+                            return null
+                        })}
                 </div>
             )
         } else if (!multiple) {
@@ -160,38 +186,37 @@ export function SelectField<T, >({
                 return option.render ? option.render(option.label) : option.label
             }
         }
-        return placeholder
     }
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen} modal={false}>
             <PopoverTrigger asChild>
-                <div className="relative w-full">
-                    <Button
-                        variant={"outline"}
-                        role="select-field"
-                        className={cn(
-                            "w-full justify-start font-normal shadow-sm px-4 py-0",
-                            props.className,
-                            (multiple ? (Array.isArray(internalValue) && internalValue.length > 0) : internalValue) ? "" : "text-muted-foreground"
-                        )}
-                        onClick={(event) => {
-                            event.preventDefault()
-                            if (!readonly) setIsOpen(true)
-                        }}
-                        disabled={readonly}>
-                        {renderValue(internalValue)}
-                    </Button>
-                    {((multiple && Array.isArray(internalValue) && internalValue.length > 0) ||
-                        (!multiple && internalValue !== null)) && !readonly && (
-                        <Button
-                            variant={"ghost"}
-                            onClick={handleClear}
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                            <X />
-                        </Button>
+                <InputGroup
+                    role="select-field"
+                    className={cn(
+                        "cursor-pointer shadow-sm text-sm",
+                        readonly && "opacity-50 pointer-events-none",
+                        props.className
                     )}
-                </div>
+                    onClick={(event) => {
+                        event.preventDefault()
+                        if (!readonly) setIsOpen(true)
+                    }}>
+                    <div className="flex items-center flex-1 px-3 min-w-0">
+                        {renderButtonContent(internalValue)}
+                    </div>
+                    {hasValuesSelected() && !props.disableClearButton && !readonly && (
+                        <InputGroupAddon align="inline-end">
+                            <InputGroupButton
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleClear()
+                                }}>
+                                <X />
+                            </InputGroupButton>
+                        </InputGroupAddon>
+                    )}
+                </InputGroup>
             </PopoverTrigger>
             <PopoverContent className="p-2 w-full max-w-sm">
                 <Command>
@@ -202,20 +227,20 @@ export function SelectField<T, >({
                         disabled={readonly} />
                     <ScrollArea>
                         <CommandList>
-                            {filteredOptions.length > 0 ? (
-                                filteredOptions.map((option) => (
-                                    <CommandItem
-                                        key={option.value as string}
-                                        onSelect={() => handleSelect(option.value)}
-                                        className={cn("transition-all", isValueSelected(option.value) && "bg-accent")}>
-                                        <Check
-                                            className={cn(isValueSelected(option.value) ? "visible" : "invisible")} />
-                                        {option.render ? option.render(option.label) : option.label}
-                                    </CommandItem>
-                                ))
-                            ) : (
-                                <CommandEmpty>Keine Optionen gefunden</CommandEmpty>
-                            )}
+                            <CommandEmpty>No options found</CommandEmpty>
+                            {options.map((option) => (
+                                <CommandItem
+                                    key={option.value as string}
+                                    keywords={[option.label]}
+                                    onSelect={() => handleSelect(option.value)}
+                                    className={cn("transition-all", isValueSelected(option.value) && "bg-accent")}>
+                                    {multiple
+                                        ? <Checkbox checked={isValueSelected(option.value)} />
+                                        : <Check
+                                            className={cn(isValueSelected(option.value) ? "visible" : "invisible")} />}
+                                    {option.render ? option.render(option.label) : option.label}
+                                </CommandItem>
+                            ))}
                         </CommandList>
                     </ScrollArea>
                 </Command>

@@ -29,16 +29,16 @@ const KPICard: React.FC<KPICardProps> = ({
     className
 }) => {
     return (
-        <Card className={cn("w-full", className)}>
+        <Card className={cn("w-full border-none shadow-none bg-secondary/50", className)}>
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-center">
                     <CardTitle className="text-sm font-medium">{title}</CardTitle>
                     {icon && <div className="text-muted-foreground">{icon}</div>}
                 </div>
-                <CardDescription>{description}</CardDescription>
+                <CardDescription className={"text-xs"}>{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">{value}</div>
+                <div className="text-3xl font-bold font-mono">{value}</div>
                 {trend && (
                     <div className="flex items-center mt-2">
                         <span 

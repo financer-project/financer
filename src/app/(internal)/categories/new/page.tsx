@@ -1,29 +1,31 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { NewCategory } from "@/src/app/(internal)/categories/components/NewCategory"
-import Header from "@/src/lib/components/content/nav/Header"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
-    title: "New Project",
-    description: "Create a new project"
+    title: "New Category",
+    description: "Create a new category"
 }
 
-export default function Page() {
+export default function NewCategoryPage() {
     return (
-        <div>
-            <Header title={"Create new Category"}
-                    subtitle={"Here can you create a new category"}
-                    breadcrumbs={[
-                        { label: "Categories", url: "/categories" },
-                        { label: "New" }
-                    ]} />
-
-            <Suspense fallback={<div>Loading...</div>}>
-                <CategoryProvider>
-                    <NewCategory />
-                </CategoryProvider>
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[
+                { label: "Categories", url: "/categories" },
+                { label: "New" }
+            ]}>
+                <PageTitle>Create new Category</PageTitle>
+                <PageDescription>Here can you create a new category</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <CategoryProvider>
+                        <NewCategory />
+                    </CategoryProvider>
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

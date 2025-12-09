@@ -4,7 +4,7 @@ import { invoke } from "@/src/app/blitz-server"
 import getCategory from "@/src/lib/model/categories/queries/getCategory"
 import { EditCategory } from "@/src/app/(internal)/categories/components/EditCategory"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
-import Header from "@/src/lib/components/content/nav/Header"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 async function fetchCategory(id: string) {
     return invoke(getCategory, { id: id })
@@ -22,24 +22,27 @@ export async function generateMetadata(props: EditCategoryPageProps): Promise<Me
     }
 }
 
-export default async function Page(props: Readonly<EditCategoryPageProps>) {
+export default async function EditCategoryPage(props: Readonly<EditCategoryPageProps>) {
     const params = await props.params
     const category = await fetchCategory(params.categoryId)
 
     return (
-        <div>
-            <Header title={"Edit Category"}
-                    subtitle={"Here can you edit your category."}
-                    breadcrumbs={[
-                        { label: "Categories", url: "/categories" },
-                        { label: category.name, url: `/categories/${category.id}` },
-                        { label: "Edit" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <CategoryProvider>
-                    <EditCategory categoryId={params.categoryId} />
-                </CategoryProvider>
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[
+                { label: "Categories", url: "/categories" },
+                { label: category.name, url: `/categories/${category.id}` },
+                { label: "Edit" }
+            ]}>
+                <PageTitle>Edit Category</PageTitle>
+                <PageDescription>Here can you edit your category.</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <CategoryProvider>
+                        <EditCategory categoryId={params.categoryId} />
+                    </CategoryProvider>
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

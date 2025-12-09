@@ -5,7 +5,7 @@ import db from "@/src/lib/db"
 import Guard from "@/src/lib/guard/ability"
 
 const GetTag = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export default resolver.pipe(

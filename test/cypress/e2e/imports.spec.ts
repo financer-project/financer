@@ -27,35 +27,32 @@ describe("CSV Import", () => {
 
         // Map columns to transaction fields
         // SelectField uses buttons instead of select elements
-        cy.get("button[role=select-field]").eq(0).should("contain.text", "Value Date") // Date column
-        cy.get("button[role=select-field]").eq(2).should("contain.text", "Name") // Description column
-        cy.get("button[role=select-field]").eq(3).first().should("contain.text", "Amount") // Amount column
-        cy.get("button[role=select-field]").eq(5).first().should("contain.text", "Account Identifier") // Account column
-        cy.get("button[role=select-field]").eq(6).first().should("contain.text", "Category Name") // Category column
+        cy.findSelectField({ contains: "Value Date" }).should("contain.text", "Value Date") // Date column
+        cy.findSelectField({ contains: "Name" }).should("contain.text", "Name") // Description column
+        cy.findSelectField({ contains: "Amount" }).should("contain.text", "Amount") // Amount column
+        cy.findSelectField({ contains: "Account Identifier" }).should("contain.text", "Account Identifier") // Account column
+        cy.findSelectField({ contains: "Category Name" }).should("contain.text", "Category Name") // Category column
 
         // Select date format for the Date column
-        cy.contains("Date Format").parent().find("button").first().click()
-        cy.get("div[role='dialog']").contains("YYYY-MM-DD").click()
+        cy.selectField({ contains: "Select date format", value: "YYYY-MM-DD" })
 
         // Select amount format for the Amount column
-        cy.contains("Amount Format").parent().find("button").first().click()
-        cy.get("div[role='dialog']").contains("comma").click()
+        cy.selectField({ contains: "Select amount format", value: "comma" })
 
         // Click the "Next" button to proceed to value mapping
         cy.get("button").contains("Next").click()
 
         // Map values to entities
         // Map "My Account" to the standard account
-        cy.get("button").contains("My Account").should("exist")
+        cy.findSelectField({ contains: "My Account" }).should("exist")
 
         cy.contains("Categories (2)").click()
 
         // Income category should be mapped automatically
-        cy.get("button").contains("Income").should("exist")
+        cy.findSelectField({ contains: "Income" }).should("exist")
 
         // Map "Living Costs" to the living costs category
-        cy.contains("Living Costs").parent().find("button").first().click()
-        cy.get("div[role='dialog']").contains(testData.categories.standard.livingCosts.name).click()
+        cy.selectField({ contains: "Select category", value: testData.categories.standard.livingCosts.name })
 
         cy.get("button").contains("Next").click()
 

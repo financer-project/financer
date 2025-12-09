@@ -5,7 +5,7 @@ import { z } from "zod"
 import Guard from "@/src/lib/guard/ability"
 
 const GetHousehold = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export const HouseholdModelInclude = {

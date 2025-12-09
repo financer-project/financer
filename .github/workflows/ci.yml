@@ -17,6 +17,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install package manager (from package.json)
+        run: |
+          corepack enable
+          corepack install
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -56,7 +61,8 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           start: yarn test:start:app
-          wait-on: http://localhost:3000
+          wait-on: http://localhost:3000/api/health-check
+          browser: chrome
         env:
           NODE_ENV: test
           DATABASE_URL: mysql://financer-test:password@localhost:3307/financer-test
@@ -86,3 +92,10 @@ jobs:
         with:
           args: >
             --define sonar.branch.name
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v5
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: .test/e2e/screenshots

@@ -9,16 +9,17 @@ export type TransactionModel = Prisma.TransactionGetPayload<{
     include: {
         category: true,
         account: true,
+        counterparty: true,
         tags: {
             include: {
                 tag: true
             }
-        }
+        },
     }
 }>;
 
 const GetTransaction = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export default resolver.pipe(
@@ -31,6 +32,7 @@ export default resolver.pipe(
             include: {
                 category: true,
                 account: true,
+                counterparty: true,
                 tags: {
                     include: {
                         tag: true

@@ -25,4 +25,7 @@ model AdminSettings {
     // Default Settings
     defaultLanguage String @default("en-US")
     defaultTheme    String @default("light")
+
+    // Onboarding Settings
+    onboardingCompleted Boolean @default(false)
 }

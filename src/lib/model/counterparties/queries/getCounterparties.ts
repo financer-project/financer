@@ -5,7 +5,7 @@ import { z } from "zod"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
 export const GetCounterpartiesSchema = z.object({
-    householdId: z.string().uuid()
+    householdId: z.uuid()
 })
 
 type GetCounterpartyInput =

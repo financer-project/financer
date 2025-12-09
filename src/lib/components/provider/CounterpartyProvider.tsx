@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext } from "react"
+import React, { createContext, useContext, useMemo } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
@@ -11,9 +11,10 @@ const CounterpartyContext = createContext<Counterparty[] | undefined>(undefined)
 export function CounterpartyProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     const currentHousehold = useCurrentHousehold()
     const [counterpartiesResult] = useQuery(getCounterparties, { householdId: currentHousehold!.id })
+    const counterparties = useMemo(() => counterpartiesResult?.counterparties ?? [], [counterpartiesResult])
     
     return (
-        <CounterpartyContext.Provider value={counterpartiesResult?.counterparties ?? []}>
+        <CounterpartyContext.Provider value={counterparties}>
             {children}
         </CounterpartyContext.Provider>
     )

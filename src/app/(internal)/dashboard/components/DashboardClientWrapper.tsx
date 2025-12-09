@@ -11,7 +11,7 @@ export const TimeframeSelector: React.FC = () => {
 
     return (
         <SelectField<DateTime>
-            className={"min-w-64"}
+            className={"min-w-48"}
             placeholder="Timeframe"
             value={timeframe}
             onChange={value => value && setTimeframe(value)}

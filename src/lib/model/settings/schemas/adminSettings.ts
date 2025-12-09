@@ -6,7 +6,7 @@ export const AdminSettingsSchema = z.object({
     smtpPort: z.coerce.number().nullable(),
     smtpUser: z.string().nullable(),
     smtpPassword: z.string().nullable(),
-    smtpFromEmail: z.string().email().nullable(),
+    smtpFromEmail: z.email().nullable(),
     smtpFromName: z.string().nullable(),
     smtpEncryption: z.string().nullable(),
 
@@ -19,7 +19,10 @@ export const AdminSettingsSchema = z.object({
 
     // Default Settings
     defaultLanguage: z.string().default("en-US"),
-    defaultTheme: z.string().default("light")
+    defaultTheme: z.string().default("light"),
+
+    // Onboarding Settings
+    onboardingCompleted: z.boolean().default(false)
 })
 
 export const UpdateAdminSettingsSchema = AdminSettingsSchema

@@ -45,7 +45,6 @@ export abstract class TestUtilityBase implements TestUtility {
                 return !resetUsers ? value !== "User" && value !== "Session" : true
             })
         for (const tableName of tableNames) {
-            console.info(`Resetting database table name ${tableName}`)
             await db.$queryRawUnsafe(`TRUNCATE TABLE ${tableName};`)
         }
 

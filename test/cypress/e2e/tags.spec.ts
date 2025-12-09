@@ -17,7 +17,7 @@ describe("Tags", () => {
 
         cy.get("input[name='name']").type("Shopping")
         cy.get("input[name='description']").type("Shopping expenses")
-        cy.get("label[for='color'] + div").type("blue{enter}")
+        cy.selectField({ for: "color", value: "Blue" })
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/tags"))
@@ -25,12 +25,12 @@ describe("Tags", () => {
         cy.reload()
         cy.get("td").contains("Shopping").should("exist").click()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "Shopping")
-        cy.get(":nth-child(2) > .text-md").should("contain.text", "Shopping expenses")
-        cy.get(":nth-child(3) > .text-md").should("contain.text", "Blue")
+        cy.component("dataItem").should("contain.text", "Shopping")
+        cy.component("dataItem").should("contain.text", "Shopping expenses")
+        cy.component("dataItem").should("contain.text", "Blue")
 
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
         cy.url().should("satisfy", (str: string) => str.endsWith("/tags"))
         cy.get("td").contains("Shopping").should("not.exist")
     })
@@ -40,7 +40,7 @@ describe("Tags", () => {
         cy.get("a[href='/tags/new']").click()
         cy.get("input[name='name']").type("Groceries")
         cy.get("input[name='description']").type("Grocery shopping")
-        cy.get("label[for='color'] + div").type("green{enter}")
+        cy.selectField({ for: "color", value: "Green" })
         cy.get("button[type='submit']").click()
 
         // Now edit the tag
@@ -49,8 +49,7 @@ describe("Tags", () => {
 
         cy.get("input[name='name']").clear().type("Food")
         cy.get("input[name='description']").clear().type("Food expenses")
-        cy.get("label[for='color'] + div").click()
-        cy.get("div[role='option']").contains("Red").click()
+        cy.selectField({ for: "color", value: "Red" })
         cy.get("button[type='submit']").click()
 
         // Verify the changes
@@ -58,12 +57,12 @@ describe("Tags", () => {
         cy.reload()
         cy.get("td").contains("Food").should("exist").click()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "Food")
-        cy.get(":nth-child(2) > .text-md").should("contain.text", "Food expenses")
-        cy.get(":nth-child(3) > .text-md").should("contain.text", "Red")
+        cy.component("dataItem").should("contain.text", "Food")
+        cy.component("dataItem").should("contain.text", "Food expenses")
+        cy.component("dataItem").should("contain.text", "Red")
 
         // Clean up
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
     })
 })

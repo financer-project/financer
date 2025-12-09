@@ -15,9 +15,9 @@ describe("Categories", () => {
     it("should be able to create a new sub category and delete it afterwards", () => {
         cy.get("a[href='/categories/new?type=EXPENSE']").click()
 
-        cy.get("label[for='parentId'] + div").type("living{enter}")
+        cy.selectField({ for: "parentId", search: "living" })
         cy.get("input[name='name']").type("Food")
-        cy.get("button[role=select-field]").eq(3).should("contain.text", "Teal")
+        cy.findSelectField({ label: "Color" }).should("contain.text", "Teal")
         cy.get("button[type='submit']").click()
 
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
@@ -25,11 +25,11 @@ describe("Categories", () => {
         cy.reload()
         cy.get("span").contains("Food").should("exist").click()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "Food")
-        cy.get(":nth-child(3) > .text-md").should("contain.text", "Teal")
+        cy.component("dataItem").should("contain.text", "Food")
+        cy.component("dataItem").should("contain.text", "Teal")
 
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
         cy.url().should("satisfy", (str: string) => str.endsWith("/categories"))
         cy.wait(1000)
         cy.get("span").contains("Food").should("not.exist")

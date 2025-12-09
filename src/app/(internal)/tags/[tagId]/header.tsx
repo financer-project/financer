@@ -4,7 +4,7 @@ import { Button } from "@/src/lib/components/ui/button"
 import Link from "next/link"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/navigation"
-import Header from "@/src/lib/components/content/nav/Header"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import deleteTag from "@/src/lib/model/tags/mutations/deleteTag"
 import { Tag } from "@prisma/client"
@@ -37,13 +37,14 @@ const TagHeader = ({ tag }: { tag: Tag }) => {
     )
 
     return (
-        <Header title="Tags"
-                subtitle={"Here you can see all details of your tag."}
-                breadcrumbs={[
-                    { label: "Tags", url: "/tags" },
-                    { label: tag.name }
-                ]}
-                actions={renderActions(tag)} />
+        <PageHeader items={[
+            { label: "Tags", url: "/tags" },
+            { label: tag.name }
+        ]}>
+            <PageTitle>Tag</PageTitle>
+            <PageDescription>Here you can see all details of your tag.</PageDescription>
+            <PageActions>{renderActions(tag)}</PageActions>
+        </PageHeader>
     )
 }
 export default TagHeader

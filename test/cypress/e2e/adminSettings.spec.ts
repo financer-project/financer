@@ -39,19 +39,16 @@ describe("Admin Settings Page", () => {
         cy.get("input[name='smtpFromName']").clear().type("Updated App")
 
         // Change encryption type
-        cy.get("button[role=select-field]").eq(2).click()
-        cy.get("div[role='listbox'] div div").contains("SSL").click()
+        cy.selectField({ label: "Encryption Type", value: "SSL" })
 
         // Toggle allowRegistration
         cy.get("input[name='allowRegistration']").parent().click()
 
         // Change default language
-        cy.get("button[role=select-field]").contains("English (American)").click()
-        cy.get("div[role='listbox'] div div").contains("German").click()
+        cy.selectField({ label: "Default Language", value: "German" })
 
         // Change default theme
-        cy.get("button[role=select-field]").contains("Light").click()
-        cy.get("div[role='listbox'] div div").contains("Dark").click()
+        cy.selectField({ label: "Default Theme", value: "Dark" })
 
         // Submit the form
         cy.get("button[type='submit']").click()
@@ -69,10 +66,10 @@ describe("Admin Settings Page", () => {
         cy.get("input[name='smtpPassword']").should("have.value", "newpassword")
         cy.get("input[name='smtpFromEmail']").should("have.value", "updated@example.com")
         cy.get("input[name='smtpFromName']").should("have.value", "Updated App")
-        cy.get("button").contains("SSL").should("exist")
+        cy.findSelectField({ label: "Encryption Type" }).should("contain.text", "SSL")
         cy.get("input[name='allowRegistration']").should("not.be.checked")
-        cy.get("button").contains("German").should("be.visible")
-        cy.get("button").contains("Dark").should("be.visible")
+        cy.findSelectField({ label: "Default Language" }).should("contain.text", "German")
+        cy.findSelectField({ label: "Default Theme" }).should("contain.text", "Dark")
     })
 
     it("sends a test email", () => {
@@ -91,8 +88,7 @@ describe("Admin Settings Page", () => {
         cy.get("input[name='smtpFromName']").clear().type("Financer App")
 
         // Change encryption type
-        cy.get("button[role=select-field]").eq(2).click()
-        cy.get("div[role='listbox'] div div").contains("TLS").click()
+        cy.selectField({ label: "Encryption Type", value: "TLS" })
 
         cy.get("button[type='submit']").click()
 

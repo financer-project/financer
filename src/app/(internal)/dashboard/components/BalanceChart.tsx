@@ -15,7 +15,7 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
     const [balance] = useQuery(getBalanceHistory, { startDate: timeframe.toJSDate() })
 
     return (
-        <Card className={cn("w-full")}>
+        <Card className={cn("w-full", className)}>
             <CardHeader>
                 <CardTitle>Balance</CardTitle>
                 <CardDescription>This is your overall balance.</CardDescription>
@@ -24,7 +24,7 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
             <CardContent>
                 <Suspense fallback={<p>Loading ...</p>}>
                     <ChartContainer
-                        className={cn("w-full", className)}
+                        className={cn("w-full max-h-72")}
                         config={{
                             income: {
                                 label: "Income",
@@ -45,12 +45,12 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
                                 tickFormatter={(value) => formatters.date.format(value, { onlyMonth: true })}
                             />
                             <ChartTooltip cursor={false}
-                                          content={<ChartTooltipContent indicator="dot" />} />
+                                          content={<ChartTooltipContent indicator="dot"  />} />
                             <Bar dataKey="income"
-                                 fill="var(--color-income)"
+                                 fill="var(--color-chart-2)"
                                  radius={4} />
                             <Bar dataKey="expenses"
-                                 fill="var(--color-expense)"
+                                 fill="var(--color-chart-1)"
                                  radius={4} />
                         </BarChart>
                     </ChartContainer>

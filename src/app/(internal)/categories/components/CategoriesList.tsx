@@ -43,7 +43,8 @@ export const CategoriesList = () => {
                     tree={categories.filter(node => node.data.type === CategoryType.INCOME)}
                     renderNode={node => <ColoredTag color={node.color} label={node.name} />}
                     expandedAll={expandAllIncome}
-                    itemRoute={category => `/categories/${category.id}`} />
+                    itemRoute={category => `/categories/${category.id}`}
+                    sort={(a, b) => a.name.localeCompare(b.name)} />
             </Section>
             <Section title={"Expenses"}
                      subtitle={"All categories that are marked as expense."}
@@ -52,7 +53,8 @@ export const CategoriesList = () => {
                     tree={categories.filter(node => node.data.type === CategoryType.EXPENSE)}
                     renderNode={node => <ColoredTag color={node.color} label={node.name} />}
                     expandedAll={expandAllExpense}
-                    itemRoute={category => `/categories/${category.id}`} />
+                    itemRoute={category => `/categories/${category.id}`}
+                    sort={(a, b) => a.name.localeCompare(b.name)} />
             </Section>
         </div>
     )

@@ -1,29 +1,59 @@
 "use client"
 import { usePaginatedQuery } from "@blitzjs/rpc"
-import { useSearchParams } from "next/navigation"
 import getCounterparties from "@/src/lib/model/counterparties/queries/getCounterparties"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable, FilterConfig, useDataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
+import { CounterpartyType } from "@prisma/client"
+import type { Prisma } from "@/src/lib/db"
 
-export const CounterpartiesList = withFormatters(({ formatters, itemsPerPage = 25 }: WithFormattersProps & {
-    itemsPerPage?: number
-}) => {
-    const searchParams = useSearchParams()
+export const CounterpartiesList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
-    const page = Number(searchParams?.get("page") ?? 0)
-    const [{ counterparties, hasMore }] = usePaginatedQuery(getCounterparties, {
-        skip: itemsPerPage * page,
-        take: itemsPerPage,
-        householdId: currentHousehold.id
+
+    // Define filters and search
+    const filters: FilterConfig<import("@/src/lib/db").Prisma.CounterpartyGetPayload<{ select: { id: true } }>>[] = [
+        {
+            type: "select",
+            label: "Type",
+            property: "type",
+            multiSelect: true,
+            options: Object.values(CounterpartyType).map((type) => ({
+                label: formatters.capitalize.format(type.toLowerCase().replace("_", " ")),
+                value: type,
+                render: label => <CounterpartyIcon type={type} name={label} />
+            }))
+        }
+    ]
+
+    const searchConfig = {
+        fields: ["name", "description", "accountName", "webAddress"],
+        paramKey: "q"
+    }
+
+    const { page, pageSize, where } = useDataTable<
+        unknown,
+        Prisma.CounterpartyWhereInput
+    >({ defaultPageSize: 25, filters, search: searchConfig })
+
+    const [{ counterparties, count }] = usePaginatedQuery(getCounterparties, {
+        skip: pageSize * page,
+        take: pageSize,
+        householdId: currentHousehold.id,
+        where
     })
 
     return (
-        <PaginatedTable
+        <DataTable
             data={counterparties}
+            filters={filters}
+            search={{
+                fields: searchConfig.fields,
+                paramKey: searchConfig.paramKey,
+                placeholder: "Search counterparties"
+            }}
             columns={[
-                { name: "Name", render: counterparty => counterparty.name },
+                { name: "Name", render: counterparty => counterparty.name, isKey: true },
                 {
                     name: "Type",
                     render: counterparty =>
@@ -52,7 +82,7 @@ export const CounterpartiesList = withFormatters(({ formatters, itemsPerPage = 2
                 }
             ]}
             itemRoute={counterparty => `/counterparties/${counterparty.id}`}
-            hasMore={hasMore}
+            count={count}
             createRoute="/counterparties/new" />
     )
 })

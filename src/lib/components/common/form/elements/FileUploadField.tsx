@@ -16,22 +16,22 @@ export const FileUploadField = <E, >({ name, accept = "*", onChange, ...props }:
     const [fileName, setFileName] = useState<string>("")
     const { isSubmitting } = useFormikContext<FormikValues>()
 
-    useEffect(() => {
-        if (props.value) {
-            handleFileChange(props.value)
-        } else if (initialValues[name as string]) {
-            handleFileChange(initialValues[name as string])
-        } else if (values[name as string]) {
-            handleFileChange(values[name as string])
-        }
-    }, [props.value, initialValues, name]) // eslint-disable-line react-hooks/exhaustive-deps
-
     const handleFileChange = (file: File | null) => {
         setFileName(file?.name ?? "")
         setFieldValue(name as string, file ?? null)
 
         onChange?.(file)
     }
+
+    useEffect(() => {
+        if (props.value) {
+            handleFileChange(props.value) // eslint-disable-line react-hooks/set-state-in-effect
+        } else if (initialValues[name as string]) {
+            handleFileChange(initialValues[name as string])
+        } else if (values[name as string]) {
+            handleFileChange(values[name as string])
+        }
+    }, [props.value, initialValues, name]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleButtonClick = () => {
         fileInputRef.current?.click()

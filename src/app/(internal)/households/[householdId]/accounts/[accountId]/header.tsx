@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import React from "react"
 import deleteAccount from "@/src/lib/model/account/mutations/deleteAccount"
-import Header from "@/src/lib/components/content/nav/Header"
+import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { AccountModel } from "@/src/lib/model/account/queries/getAccount"
 
 const AccountHeader = ({ account }: { account: AccountModel }) => {
@@ -36,14 +36,15 @@ const AccountHeader = ({ account }: { account: AccountModel }) => {
     )
 
     return (
-        <Header title={"Account Details"}
-                subtitle={"Here can you edit, delete and view the household details."}
-                breadcrumbs={[
-                    { label: "Households", url: "/households" },
-                    { label: account.household.name, url: `/households/${account.householdId}` },
-                    { label: account.name }
-                ]}
-                actions={renderHeaderButtons()} />
+        <PageHeader items={[
+            { label: "Households", url: "/households" },
+            { label: account.household.name, url: `/households/${account.householdId}` },
+            { label: account.name }
+        ]}>
+            <PageTitle>Account Details</PageTitle>
+            <PageDescription>Here can you edit, delete and view the account details.</PageDescription>
+            <PageActions>{renderHeaderButtons()}</PageActions>
+        </PageHeader>
     )
 }
 

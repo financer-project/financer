@@ -6,7 +6,7 @@ import { Prisma } from ".prisma/client"
 import Guard from "@/src/lib/guard/ability"
 
 const GetAccount = z.object({
-    id: z.string().uuid()
+    id: z.uuid()
 })
 
 export type AccountModel = Prisma.AccountGetPayload<{ include: { household: true } }>;

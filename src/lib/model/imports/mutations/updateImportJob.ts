@@ -9,7 +9,7 @@ const UpdateImportJobSchema = z.object({
     filePath: z.string().optional(),
     fileName: z.string().optional(),
     separator: z.string().optional(),
-    status: z.nativeEnum(ImportStatus).optional(),
+    status: z.enum(ImportStatus).optional(),
     columnMappings: z.array(
         z.object({
             csvHeader: z.string(),

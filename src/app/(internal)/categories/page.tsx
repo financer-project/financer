@@ -1,27 +1,28 @@
 import { Metadata } from "next"
 import { Suspense } from "react"
 import { CategoriesList } from "@/src/app/(internal)/categories/components/CategoriesList"
-import Header from "@/src/lib/components/content/nav/Header"
 import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
+import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 
 export const metadata: Metadata = {
     title: "Categories",
     description: "List of categories"
 }
 
-export default function Page() {
+export default function CategoriesPage() {
     return (
-        <div>
-            <Header title={"Categories"}
-                    subtitle={"Here can you find all your categories."}
-                    breadcrumbs={[
-                        { label: "Categories" }
-                    ]} />
-            <Suspense fallback={<div>Loading...</div>}>
-                <CategoryProvider>
-                    <CategoriesList />
-                </CategoryProvider>
-            </Suspense>
-        </div>
+        <Page>
+            <PageHeader items={[{ label: "Categories" }]}>
+                <PageTitle>Categories</PageTitle>
+                <PageDescription>Here can you find all your categories.</PageDescription>
+            </PageHeader>
+            <PageContent>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <CategoryProvider>
+                        <CategoriesList />
+                    </CategoryProvider>
+                </Suspense>
+            </PageContent>
+        </Page>
     )
 }

@@ -6,8 +6,7 @@ describe("Households", () => {
     const createNewHousehold = () => {
         cy.get("a[href='/households/new']").click()
         cy.get("input[name='name']").type("A New Household")
-        cy.get("div[type='button']").click()
-        cy.get("input[role='combobox']").type("Euro{enter}")
+        cy.selectField({ for: "currency", value: "Euro" })
         cy.get("textarea[name='description']").type("My Household")
         cy.get("button[type='submit']").click()
     }
@@ -34,11 +33,11 @@ describe("Households", () => {
     it("should create a household and delete", () => {
         createNewHousehold()
 
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "A New Household")
-        cy.get(":nth-child(2) > .text-md").should("contain.text", "Euro (EUR)")
+        cy.component("dataItem").should("contain.text", "A New Household")
+        cy.component("dataItem").should("contain.text", "Euro (EUR)")
 
         cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").click()
+        cy.get(".bg-primary").contains("Confirm").click()
 
         cy.get("tbody tr").should("have.length", 1)
     })
@@ -48,7 +47,7 @@ describe("Households", () => {
         cy.get("tbody tr:nth-child(1) td:nth-child(2) div").should("have.text", "Active")
 
         createNewHousehold()
-        cy.get(":nth-child(1) > .text-md").should("contain.text", "A New Household")
+        cy.component("dataItem").should("contain.text", "A New Household")
 
         // navigate to /households
         cy.get("a[href='/households'][data-sidebar='menu-button']").click()

@@ -1,7 +1,7 @@
 "use client"
 
 import {
-    Sidebar as SidebarComponent,
+    Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
@@ -17,11 +17,12 @@ import {
     ArrowLeftRightIcon,
     BookmarkIcon,
     ChartLineIcon,
+    CirclePlus,
     CogIcon,
-    HandCoinsIcon,
     HouseIcon,
     ImportIcon,
-    ShieldIcon, StoreIcon,
+    ShieldIcon,
+    StoreIcon,
     TagIcon
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -29,7 +30,19 @@ import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
 import { useSession } from "@blitzjs/auth"
 import { Role } from "@prisma/client"
 
-const getGroups = (isAdmin: boolean) => [
+interface MenuGroup {
+    name: string
+    items: MenuItem[]
+}
+
+interface MenuItem {
+    title: string
+    url: string
+    icon: React.ComponentType<{ className?: string }>
+    variant?: "default" | "primary" | "outline"
+}
+
+const getGroups = (isAdmin: boolean): MenuGroup[] => [
     {
         name: "Transactions",
         items: [
@@ -47,17 +60,23 @@ const getGroups = (isAdmin: boolean) => [
                 title: "Imports",
                 url: "/imports",
                 icon: ImportIcon
+            },
+            {
+                title: "Create Transaction",
+                url: "/transactions/new",
+                icon: CirclePlus,
+                variant: "primary"
             }
         ]
     },
     {
-        name: "Budgets",
+        name: "Organization",
         items: [
-            {
-                title: "Budgets",
-                url: "",
-                icon: HandCoinsIcon
-            },
+            // {
+            //     title: "Budgets",
+            //     url: "/budgets",
+            //     icon: HandCoinsIcon
+            // },
             {
                 title: "Categories",
                 url: "/categories",
@@ -99,30 +118,27 @@ const getGroups = (isAdmin: boolean) => [
     }
 ]
 
-const Sidebar = () => {
+const AppSidebar = () => {
     const pathname = usePathname()
     const session = useSession()
     const isAdmin = session.role === Role.ADMIN
 
     return (
-        <SidebarComponent
-            variant={"inset"}
-            collapsible="none"
-            side={"left"}
-            className={"h-screen "}>
-            <SidebarHeader className={"flex flex-col justify-center items-center py-4 h-20 max-h-20"}>
+        <Sidebar>
+            <SidebarHeader className={"flex flex-col justify-center items-center max-h-20 h-20 py-4 pl-4 md:pr-0 pr-4"}>
                 <NavHousehold />
+                <Separator />
             </SidebarHeader>
-            <Separator />
-            <SidebarContent>
+            <SidebarContent className={"pl-4 md:pr-0 pr-4"}>
                 {getGroups(isAdmin).map((group) => (
-                    <SidebarGroup key={group.name}>
+                    <SidebarGroup key={group.name} className={"px-0"}>
                         <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
                         <SidebarMenu>
                             {group.items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild
-                                                       isActive={pathname?.includes(item.url)}>
+                                                       isActive={pathname?.includes(item.url)}
+                                                       variant={item.variant ?? "default"}>
                                         <a href={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>
@@ -134,12 +150,12 @@ const Sidebar = () => {
                     </SidebarGroup>
                 ))}
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className={"pl-4 md:pr-0 pr-4"}>
                 <Separator />
                 <NavUser />
             </SidebarFooter>
-        </SidebarComponent>
+        </Sidebar>
     )
 }
 
-export default Sidebar
+export default AppSidebar

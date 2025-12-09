@@ -1,18 +1,16 @@
 import { loadEnvConfig } from "@next/env"
 import { defineConfig } from "vitest/config"
-
-import react from "@vitejs/plugin-react"
 import tsconfigPaths from "vite-tsconfig-paths"
 
 const projectDir = process.cwd()
 loadEnvConfig(projectDir)
 
 export default defineConfig({
-    plugins: [react(), tsconfigPaths()],
+    plugins: [tsconfigPaths()],
     test: {
         dir: "./test/vitest",
         globals: true,
-        setupFiles: "test/vitest/setup/mock-prisma.ts",
+        setupFiles: ["test/vitest/setup/mock-prisma.ts"],
         coverage: {
             enabled: true,
             provider: "istanbul",
@@ -29,7 +27,7 @@ export default defineConfig({
             ],
             extension: [".ts", ".tsx"],
             reportsDirectory: ".test/unit/coverage/"
-        },
+        }
     },
     build: {
         sourcemap: "inline"

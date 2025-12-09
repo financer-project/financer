@@ -2,62 +2,57 @@
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import DataItem from "@/src/lib/components/common/data/DataItem"
+import { DataItemContainer } from "@/src/lib/components/common/data/DataItemContainer"
 import { Suspense } from "react"
-import { useSearchParams } from "next/navigation"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { Badge } from "@/src/lib/components/ui/badge"
-
-const ITEMS_PER_PAGE = 100
 
 export const Household = withFormatters(({ formatters, householdId }: WithFormattersProps & {
     householdId: string
 }) => {
     const [household] = useQuery(getHousehold, { id: householdId })
 
-    const urlSearchParams = useSearchParams()
-    const page = Number(urlSearchParams?.get("page") ?? 0)
-    const [{ accounts, hasMore }] = usePaginatedQuery(getAccounts, {
+    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+    const [{ accounts, count }] = usePaginatedQuery(getAccounts, {
         householdId: householdId,
         orderBy: { id: "asc" },
-        skip: ITEMS_PER_PAGE * page,
-        take: ITEMS_PER_PAGE
+        skip: pageSize * page,
+        take: pageSize
     })
 
     return (
         <div className={"flex flex-col gap-16"}>
             <Section title={"Basic Information"}
                      subtitle={"Please find all information to the household below."}>
-                <div className={"flex flex-row w-full"}>
+                <DataItemContainer>
                     <DataItem label={"Name"}
-                              data={household.name}
-                              className={"basis-1/4"} />
+                              data={household.name} />
 
                     <DataItem label={"Currency"}
-                              data={formatters.currencyDescription.format(household.currency)}
-                              className={"basis-1/4"} />
+                              data={formatters.currencyDescription.format(household.currency)} />
 
                     <DataItem label={"Description"}
-                              data={household.description}
-                              className={"basis-1/4"} />
-                </div>
+                              data={household.description} />
+                </DataItemContainer>
             </Section>
 
             <Section title={"Accounts"}
                      subtitle={"Please find all information to the household below."}>
                 <Suspense fallback={<div>Loading...</div>}>
-                    <PaginatedTable
+                    <DataTable
                         data={accounts}
-                        hasMore={hasMore}
+                        count={count}
                         itemRoute={(account) => `/households/${account.householdId}/accounts/${account.id}`}
                         createRoute={`/households/${household.id}/accounts/new`}
                         columns={[
                             {
                                 name: "Name",
                                 render: (account) =>
-                                    <span className={"font-semibold"}>{account.name}</span>
+                                    <span className={"font-semibold"}>{account.name}</span>,
+                                isKey: true
                             },
                             {
                                 name: "Technical Name",

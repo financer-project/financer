@@ -2,36 +2,34 @@
 
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
 import getHouseholds from "@/src/lib/model/household/queries/getHouseholds"
-import { PaginatedTable } from "@/src/lib/components/common/data/PaginatedTable"
+import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import { Household, HouseholdRole } from "@prisma/client"
 import { useState } from "react"
 import { Badge } from "@/src/lib/components/ui/badge"
 
-const ITEMS_PER_PAGE = 100
-
 export const HouseholdsList = withFormatters(({ formatters }: WithFormattersProps) => {
     const [currentHousehold] = useState<Household | undefined>(useCurrentHousehold())
-    const urlSearchParams = useSearchParams()
-    const page = Number(urlSearchParams?.get("page") ?? 0)
-    const [{ households, hasMore }] = usePaginatedQuery(getHouseholds, {
+
+    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+    const [{ households, count }] = usePaginatedQuery(getHouseholds, {
         orderBy: { id: "asc" },
-        skip: ITEMS_PER_PAGE * page,
-        take: ITEMS_PER_PAGE
+        skip: pageSize * page,
+        take: pageSize
     })
 
     return (
-        <PaginatedTable
+        <DataTable
             data={households}
-            hasMore={hasMore}
+            count={count}
             itemRoute={(household) => `/households/${household.id}`}
             columns={[
                 {
                     name: "Name",
-                    render: (household) => <Link href={`/households/${household.id}`}>{household.name}</Link>
+                    render: (household) => <Link href={`/households/${household.id}`}>{household.name}</Link>,
+                    isKey: true
                 },
                 {
                     name: "Status", render: (household) =>
