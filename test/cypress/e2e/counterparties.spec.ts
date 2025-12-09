@@ -22,10 +22,10 @@ describe("Counterparties", () => {
         cy.get("input[name='webAddress']").type("https://testshop.com")
         cy.get("button[type='submit']").click()
 
-        cy.url().should("satisfy", (str: string) => str.endsWith("/counterparties"))
-        cy.wait(2000)
+        cy.url().should("include", "/counterparties?")
         cy.reload()
-        cy.get("td").contains("Test Shop").should("exist").click()
+        cy.get("td").contains("Test Shop").should("exist")
+        cy.get("td").contains("Test Shop").click()
 
         // Verify counterparty details
         cy.get("div").contains("Name").next().should("contain.text", "Test Shop")
@@ -37,7 +37,8 @@ describe("Counterparties", () => {
         // Delete the counterparty
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
-        cy.url().should("satisfy", (str: string) => str.endsWith("/counterparties"))
+
+        cy.url().should("include", "/counterparties?")
         cy.get("td").contains("Test Shop").should("not.exist")
     })
 
