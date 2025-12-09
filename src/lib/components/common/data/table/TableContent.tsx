@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/u
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import { DataItemContainer } from "@/src/lib/components/common/data/DataItemContainer"
 import { useRouter } from "next/navigation"
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/src/lib/components/ui/empty"
+import { Squirrel } from "lucide-react"
 
 export interface TableColumn<T> {
     key?: string
@@ -14,13 +16,29 @@ export interface TableColumn<T> {
     isKey?: boolean
 }
 
-export const TableContent = <T,>({ columns, data, itemRoute }: {
+export const TableContent = <T, >({ columns, data, itemRoute }: {
     columns: TableColumn<T>[]
     data: T[]
-    itemRoute?: (item: T) => string
+    itemRoute?: (item: T) => string,
 }) => {
     const isMobile = useIsMobile()
     const router = useRouter()
+
+    if (data.length === 0) {
+        return (
+            <Empty>
+                <EmptyHeader>
+                    <EmptyMedia variant={"icon"}>
+                        <Squirrel />
+                    </EmptyMedia>
+                    <EmptyTitle>No data yet.</EmptyTitle>
+                    <EmptyDescription>
+                        You haven't added data. Add some data by pressing the <span className={"font-mono"}>create</span> button.
+                    </EmptyDescription>
+                </EmptyHeader>
+            </Empty>
+        )
+    }
 
     return (
         <>
@@ -60,7 +78,8 @@ export const TableContent = <T,>({ columns, data, itemRoute }: {
                                 {columns
                                     .filter((column) => !column.isKey)
                                     .map((column) => (
-                                        <DataItem key={column.key || column.name} label={column.name} data={column.render(item)} />
+                                        <DataItem key={column.key || column.name} label={column.name}
+                                                  data={column.render(item)} />
                                     ))}
                             </DataItemContainer>
                         </CardContent>

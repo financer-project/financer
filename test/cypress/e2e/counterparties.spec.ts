@@ -22,22 +22,23 @@ describe("Counterparties", () => {
         cy.get("input[name='webAddress']").type("https://testshop.com")
         cy.get("button[type='submit']").click()
 
-        cy.url().should("satisfy", (str: string) => str.endsWith("/counterparties"))
-        cy.wait(2000)
+        cy.url().should("include", "/counterparties?")
         cy.reload()
-        cy.get("td").contains("Test Shop").should("exist").click()
+        cy.get("td").contains("Test Shop").should("exist")
+        cy.get("td").contains("Test Shop").click()
 
         // Verify counterparty details
-        cy.get("div").contains("Name").next().should("contain.text", "Test Shop")
-        cy.get("div").contains("Type").next().should("contain.text", "Merchant")
-        cy.get("div").contains("Description").next().should("contain.text", "My test shop")
-        cy.get("div").contains("Account Name").next().should("contain.text", "Shop Account")
-        cy.get("div").contains("Web Address").next().should("contain.text", "https://testshop.com")
+        cy.component("dataItem").should("contain.text", "Test Shop")
+        cy.component("dataItem").should("contain.text", "Merchant")
+        cy.component("dataItem").should("contain.text", "My test shop")
+        cy.component("dataItem").should("contain.text", "Shop Account")
+        cy.component("dataItem").should("contain.text", "https://testshop.com")
 
         // Delete the counterparty
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
-        cy.url().should("satisfy", (str: string) => str.endsWith("/counterparties"))
+
+        cy.url().should("include", "/counterparties?")
         cy.get("td").contains("Test Shop").should("not.exist")
     })
 
@@ -50,7 +51,7 @@ describe("Counterparties", () => {
         cy.get("button[type='submit']").click()
 
         // Now edit the counterparty
-        cy.get("td").contains("Old Company").should("exist").click()
+        cy.get("td").contains("Old Company").click()
         cy.get("a").contains("Edit").click()
 
         cy.get("input[name='name']").clear().type("New Company")
@@ -61,15 +62,15 @@ describe("Counterparties", () => {
         cy.get("button[type='submit']").click()
 
         // Verify the changes
-        cy.url().should("satisfy", (str: string) => str.endsWith("/counterparties"))
+        cy.url().should("include", "/counterparties?")
         cy.reload()
-        cy.get("td").contains("New Company").should("exist").click()
+        cy.get("td").contains("New Company").click()
 
-        cy.get("div").contains("Name").next().should("contain.text", "New Company")
-        cy.get("div").contains("Type").next().should("contain.text", "Service provider")
-        cy.get("div").contains("Description").next().should("contain.text", "New service provider")
-        cy.get("div").contains("Account Name").next().should("contain.text", "Service Account")
-        cy.get("div").contains("Web Address").next().should("contain.text", "https://newcompany.com")
+        cy.component("dataItem").should("contain.text", "New Company")
+        cy.component("dataItem").should("contain.text", "Service provider")
+        cy.component("dataItem").should("contain.text", "New service provider")
+        cy.component("dataItem").should("contain.text", "Service Account")
+        cy.component("dataItem").should("contain.text", "https://newcompany.com")
 
         // Clean up
         cy.get(".bg-destructive").click()

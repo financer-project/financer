@@ -11,12 +11,23 @@ import { Heading3 } from "@/src/lib/components/common/typography"
 import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import getUsers from "@/src/lib/model/auth/queries/getUsers"
 import Link from "next/link"
+import type { Prisma } from "@/src/lib/db"
 
 const UserManagementSection = () => {
-    const { page, pageSize } = useDataTable({ defaultPageSize: 25 })
+    const searchConfig = {
+        fields: ["firstName", "lastName", "email"],
+        paramKey: "q"
+    }
+
+    const { page, pageSize, where } = useDataTable<unknown, Prisma.UserWhereInput>({
+        defaultPageSize: 25,
+        search: searchConfig
+    })
+
     const [{ users, count }] = usePaginatedQuery(getUsers, {
         skip: pageSize * page,
-        take: pageSize
+        take: pageSize,
+        where
     })
 
     const [inviteUserMutation] = useMutation(inviteUser)
@@ -87,6 +98,7 @@ const UserManagementSection = () => {
                 <DataTable
                     data={users}
                     count={count}
+                    search={{ fields: searchConfig.fields, paramKey: searchConfig.paramKey, placeholder: "Search users" }}
                     columns={[
                         {
                             name: "Name",

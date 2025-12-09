@@ -72,7 +72,7 @@ export const TableToolbar = <T, >({ filters = [], search }: TableToolbarProps<T>
     if (!search && (!filters || filters.length === 0)) return null
 
     return (
-        <div className="flex flex-wrap gap-2 items-center w-full">
+        <div className="flex flex-wrap gap-2 items-center">
             {search && (
                 <InputGroup className={isMobile ? "w-full" : "w-md"}>
                     <InputGroupAddon>

@@ -167,6 +167,7 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
                        }}
                        columns={columns}
                        itemRoute={transaction => `/transactions/${transaction.id}`}
+                       createRoute={"/transactions/new"}
                        count={count} />
         </div>
     )
