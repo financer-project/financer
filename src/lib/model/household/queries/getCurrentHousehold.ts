@@ -46,7 +46,7 @@ export default resolver.pipe(
         // Check if the user still has access to this household
         const membership = await db.householdMembership.findFirst({
             where: { 
-                userId: ctx.session.userId!,
+                userId: ctx.session.userId,
                 householdId: currentHousehold.id
             }
         })

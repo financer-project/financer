@@ -59,13 +59,14 @@ describe("processOnboarding", () => {
 
             // Verify household creation
             const createdHousehold = await db.household.findFirst({
-                where: { name: validOnboardingData.householdName }
+                where: { name: validOnboardingData.householdName },
+                include: { members: true }
             })
             expect(createdHousehold).toBeTruthy()
             expect(createdHousehold?.name).toBe(validOnboardingData.householdName)
             expect(createdHousehold?.currency).toBe(validOnboardingData.currency)
             expect(createdHousehold?.description).toBe(validOnboardingData.description)
-            expect(createdHousehold?.ownerId).toBe(createdUser?.id)
+            expect(createdHousehold?.members?.[0]?.userId).toBe(createdUser?.id)
 
             // Verify admin settings creation/update
             const adminSettings = await db.adminSettings.findFirst()

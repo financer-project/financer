@@ -16,7 +16,7 @@ import { useToast } from "@/src/lib/hooks/use-toast"
 
 type Member = HouseholdModel["members"][number]
 
-export default function MembersManager({ householdId }: { householdId: string }) {
+export default function MembersManager({ householdId }: Readonly<{ householdId: string }>) {
     const { toast } = useToast()
     const [email, setEmail] = useState("")
     const [role, setRole] = useState<$Enums.HouseholdRole>($Enums.HouseholdRole.MEMBER)

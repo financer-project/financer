@@ -73,16 +73,14 @@ export default resolver.pipe(
                 data: {
                     name: input.householdName,
                     currency: input.currency,
-                    description: input.description || null
-                }
-            })
-
-            tx.householdMembership.create({
-                data: {
-                    userId: user.id,
-                    householdId: household.id,
-                    role: HouseholdRole.OWNER,
-                    accessLevel: AccessLevel.FULL
+                    description: input.description || null,
+                    members: {
+                        create: {
+                            user: { connect: { id: user.id } },
+                            role: HouseholdRole.OWNER,
+                            accessLevel: AccessLevel.FULL,
+                        }
+                    }
                 }
             })
 
