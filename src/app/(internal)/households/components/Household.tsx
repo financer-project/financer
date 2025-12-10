@@ -1,4 +1,5 @@
 "use client"
+
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import DataItem from "@/src/lib/components/common/data/DataItem"
@@ -8,6 +9,7 @@ import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
+import HouseholdMemberList from "@/src/app/(internal)/households/components/HouseholdMemberList"
 
 export const Household = withFormatters(({ formatters, householdId }: WithFormattersProps & {
     householdId: string
@@ -38,7 +40,6 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                 </DataItemContainer>
             </Section>
 
-
             <Section title={"Accounts"}
                      subtitle={"Please find all information to the household below."}>
                 <Suspense fallback={<div>Loading...</div>}>
@@ -60,6 +61,13 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
                             }
                         ]}
                     />
+                </Suspense>
+            </Section>
+
+            <Section title={"Members"}
+                     subtitle={"Manage household members and their roles."}>
+                <Suspense fallback={<div>Loading members...</div>}>
+                    <HouseholdMemberList householdId={household.id} />
                 </Suspense>
             </Section>
         </div>

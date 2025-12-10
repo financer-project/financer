@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "src/lib/db"
 import { UpdateCategorySchema } from "../schemas"
+import Guard from "@/src/lib/guard/ability"
 
 async function collectAllDescendantIds(parentId: string): Promise<string[]> {
     // Get all direct children of the parent
@@ -39,6 +40,7 @@ async function updateChildrenColors(parentId: string, color: string | null) {
 export default resolver.pipe(
     resolver.zod(UpdateCategorySchema),
     resolver.authorize(),
+    Guard.authorizePipe("update", "Category"),
     async ({ id, ...data }) => {
         // Get the current category to check if color actually changed
         const currentCategory = await db.category.findUnique({ where: { id } })

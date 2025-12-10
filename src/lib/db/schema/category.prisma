@@ -7,7 +7,7 @@ model Category {
     budget       Float?
     color        String?
     description  String?
-    household    Household     @relation(name: "CategoryHousehold", fields: [householdId], references: [id])
+    household    Household     @relation(name: "CategoryHousehold", fields: [householdId], references: [id], onDelete: Cascade)
     householdId  String
     parent       Category?     @relation(name: "CategoryHierarchy", fields: [parentId], references: [id])
     parentId     String?

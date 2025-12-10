@@ -1,9 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
-import { Role } from "@prisma/client"
+import { $Enums, HouseholdRole, Role } from "@prisma/client"
 import { z } from "zod"
 import { Ctx } from "blitz"
+import AccessLevel = $Enums.AccessLevel
 
 // Schema for the onboarding mutation input
 const ProcessOnboardingSchema = z.object({
@@ -73,7 +74,13 @@ export default resolver.pipe(
                     name: input.householdName,
                     currency: input.currency,
                     description: input.description || null,
-                    ownerId: user.id
+                    members: {
+                        create: {
+                            user: { connect: { id: user.id } },
+                            role: HouseholdRole.OWNER,
+                            accessLevel: AccessLevel.FULL,
+                        }
+                    }
                 }
             })
 

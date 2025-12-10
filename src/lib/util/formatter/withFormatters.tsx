@@ -9,12 +9,14 @@ import CurrencyDescriptionFormatter from "@/src/lib/util/formatter/CurrencyDescr
 import DateFormatter from "@/src/lib/util/formatter/DateFormatter"
 import { useQuery } from "@blitzjs/rpc"
 import getSetting from "@/src/lib/model/settings/queries/getSetting"
+import UserFormatter from "./UserFormatter"
 
 const getFormatters = (context: FormatterContext) => ({
     amount: new AmountFormatter(context),
     capitalize: { format: (str: string) => str.charAt(0).toUpperCase() + str.slice(1) } satisfies Formatter<string, string>,
     currencyDescription: new CurrencyDescriptionFormatter(context),
-    date: new DateFormatter(context)
+    date: new DateFormatter(context),
+    user: new UserFormatter(context)
 })
 
 export interface WithFormattersProps {
@@ -35,7 +37,7 @@ function withFormatters<T extends WithFormattersProps = WithFormattersProps>(Wra
         return (<WrappedComponent {...(props as T)} formatters={formatters} />)
     }
     WithFormatters.displayName = "WithFormatters"
-    return WithFormatters;
+    return WithFormatters
 }
 
 export default withFormatters

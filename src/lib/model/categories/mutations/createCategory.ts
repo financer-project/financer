@@ -1,10 +1,12 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "src/lib/db"
 import { CreateCategorySchema } from "../schemas"
+import Guard from "@/src/lib/guard/ability"
 
 export default resolver.pipe(
     resolver.zod(CreateCategorySchema),
     resolver.authorize(),
+    Guard.authorizePipe("create", "Category"),
     async (input) => {
         if (input.parentId) {
             const parentCategory = await db.category.findFirst({ where: { id: input.parentId } })

@@ -1,6 +1,6 @@
 describe("Authentication Spec", () => {
     beforeEach(() => {
-        cy.resetAndSeedDatabase(()=> {
+        cy.resetAndSeedDatabase(() => {
             cy.visit("/")
         }, true)
     })
@@ -10,7 +10,6 @@ describe("Authentication Spec", () => {
     })
 
     it("Create a new user", () => {
-
         cy.get("a[href='/signup']").click()
 
         cy.get("input[name='firstName']").type("Cypress")
@@ -19,7 +18,15 @@ describe("Authentication Spec", () => {
         cy.get("input[name='password']").type("password123")
         cy.get("button[type='submit']").click()
 
-        cy.url().should("include", "/dashboard")
+        cy.url().should("include", "/onboarding")
+
+        cy.get("input[name='name']").type("A New Household")
+        cy.get("div[type='button']").click()
+        cy.get("input[role='combobox']").type("Euro{enter}")
+        cy.get("textarea[name='description']").type("My Household")
+        cy.get("button[type='submit']").click()
+
+        cy.url().should("include", "/households/")
     })
 
     it("Login with existing user", () => {
@@ -30,5 +37,6 @@ describe("Authentication Spec", () => {
         cy.get("button[type='submit']").click()
 
         cy.url().should("include", "/dashboard")
+        cy.get("div").contains("Dashboard").should("exist")
     })
 })

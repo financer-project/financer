@@ -16,9 +16,8 @@ describe("Accounts", () => {
         cy.get("tbody tr:first-child").click()
         cy.url().should("include", `/households/${testData.households.standard.id}`)
 
-        cy.get("tbody tr").should("have.length", 1)
-        cy.get("tbody tr:first-child").scrollIntoView()
-        cy.get("tbody tr:first-child").click()
+        cy.get("#accounts tbody tr").should("have.length", 1)
+        cy.get("#accounts tbody tr:first-child").click()
 
         cy.component("dataItem").should("contain.text", "My Account")
     })
@@ -27,7 +26,7 @@ describe("Accounts", () => {
         cy.get("tbody tr:first-child").click()
         cy.url().should("include", `/households/${testData.households.standard.id}`)
 
-        cy.get("tbody tr").should("have.length", 1)
+        cy.get("#accounts tbody tr").should("have.length", 1)
 
         cy.get(`a[href='/households/${testData.households.standard.id}/accounts/new']`).click()
         cy.url().should("include", `/households/${testData.households.standard.id}/accounts/new`)
@@ -42,7 +41,6 @@ describe("Accounts", () => {
         cy.get(".bg-primary").contains("Confirm").click()
 
         cy.url().should("include", `/households/${testData.households.standard.id}`)
-        cy.get("tbody tr").scrollIntoView()
-        cy.get("tbody tr").should("have.length", 1)
+        cy.get("#accounts tbody tr").should("have.length", 1)
     })
 })

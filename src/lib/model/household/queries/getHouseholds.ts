@@ -4,15 +4,23 @@ import db, { Prisma } from "src/lib/db"
 
 export default resolver.pipe(
     resolver.authorize(),
-    async ({ where, orderBy, skip = 0, take = 100 }: Pick<Prisma.HouseholdFindManyArgs, "where" | "orderBy" | "skip" | "take">, ctx: AuthenticatedCtx) => {
+    async ({
+               where,
+               orderBy,
+               skip = 0,
+               take = 100
+           }: Pick<Prisma.HouseholdFindManyArgs, "where" | "orderBy" | "skip" | "take">, ctx: AuthenticatedCtx) => {
         const userId = ctx.session.userId
         if (!userId) {
             throw new Error("User is not authenticated")
         }
 
+        // Get both owned households and households where the user is a member
         where = {
             ...where,
-            ownerId: userId
+            OR: [
+                { members: { some: { userId } } }
+            ]
         }
 
         const {
@@ -24,7 +32,17 @@ export default resolver.pipe(
             skip,
             take,
             count: () => db.household.count({ where }),
-            query: (paginateArgs) => db.household.findMany({ ...paginateArgs, where, orderBy })
+            query: (paginateArgs) => db.household.findMany({
+                ...paginateArgs,
+                where,
+                orderBy,
+                include: {
+                    members: {
+                        where: { userId },
+                        select: { role: true }
+                    }
+                }
+            })
         })
 
         return {
