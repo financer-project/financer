@@ -9,7 +9,7 @@ import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import getAccounts from "@/src/lib/model/account/queries/getAccounts"
 import Section from "@/src/lib/components/common/structure/Section"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
-import MembersManager from "@/src/app/(internal)/households/components/MembersManager"
+import HouseholdMemberList from "@/src/app/(internal)/households/components/HouseholdMemberList"
 
 export const Household = withFormatters(({ formatters, householdId }: WithFormattersProps & {
     householdId: string
@@ -67,7 +67,7 @@ export const Household = withFormatters(({ formatters, householdId }: WithFormat
             <Section title={"Members"}
                      subtitle={"Manage household members and their roles."}>
                 <Suspense fallback={<div>Loading members...</div>}>
-                    <MembersManager householdId={household.id} />
+                    <HouseholdMemberList householdId={household.id} />
                 </Suspense>
             </Section>
         </div>

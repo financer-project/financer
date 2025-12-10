@@ -2,8 +2,8 @@ import "./globals.css"
 import { BlitzProvider } from "./blitz-client"
 import { Inter } from "next/font/google"
 import { Metadata } from "next"
-import { Toaster } from "../lib/components/ui/toaster"
 import { cn } from "@/src/lib/util/utils"
+import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 

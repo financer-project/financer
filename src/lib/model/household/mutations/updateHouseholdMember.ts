@@ -19,6 +19,11 @@ export default resolver.pipe(
             if (!acting || acting.role !== HouseholdRole.OWNER) {
                 throw new AuthorizationError()
             }
+
+            // Owners cannot change their own role
+            if (ctx.session.userId === userId) {
+                throw new AuthorizationError("Owners cannot change their own role.")
+            }
         }
 
         // Prevent removing last OWNER via role change
@@ -26,6 +31,16 @@ export default resolver.pipe(
             const ownerCount = await db.householdMembership.count({ where: { householdId: id, role: HouseholdRole.OWNER } })
             if (ownerCount <= 1) {
                 throw new AuthorizationError("Cannot demote the last owner. Transfer ownership first.")
+            }
+        }
+
+        // Do not allow creating a second OWNER via update
+        if (role === HouseholdRole.OWNER) {
+            const otherOwner = await db.householdMembership.findFirst({
+                where: { householdId: id, role: HouseholdRole.OWNER }
+            })
+            if (otherOwner && otherOwner.userId !== userId) {
+                throw new AuthorizationError("This household already has an owner.")
             }
         }
 

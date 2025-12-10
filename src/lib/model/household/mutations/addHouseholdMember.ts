@@ -2,7 +2,8 @@ import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import Guard from "@/src/lib/guard/ability"
 import { AddHouseholdMemberSchema } from "@/src/lib/model/household/schemas"
-import { NotFoundError } from "blitz"
+import { AuthorizationError, NotFoundError } from "blitz"
+import { HouseholdRole } from "@prisma/client"
 
 export default resolver.pipe(
     resolver.zod(AddHouseholdMemberSchema),
@@ -20,6 +21,14 @@ export default resolver.pipe(
         const existing = await db.householdMembership.findFirst({ where: { userId: user.id, householdId: id } })
         if (existing) {
             return existing
+        }
+
+        // Ensure there is only one OWNER per household
+        if (role === HouseholdRole.OWNER) {
+            const ownerCount = await db.householdMembership.count({ where: { householdId: id, role: HouseholdRole.OWNER } })
+            if (ownerCount > 0) {
+                throw new AuthorizationError("This household already has an owner.")
+            }
         }
 
         return db.householdMembership.create({
