@@ -17,8 +17,7 @@ export default async function seedHouseholds(users: UserSeed): Promise<Household
             members: {
                 create: {
                     userId: users.standard.id,
-                    role: HouseholdRole.OWNER,
-                    accessLevel: "FULL"
+                    role: HouseholdRole.OWNER
                 }
             }
         }
@@ -33,8 +32,7 @@ export default async function seedHouseholds(users: UserSeed): Promise<Household
             members: {
                 create: {
                     userId: users.admin.id,
-                    role: HouseholdRole.OWNER,
-                    accessLevel: "FULL"
+                    role: HouseholdRole.OWNER
                 }
             }
         }

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import addOrInviteHouseholdMember from "@/src/lib/model/household/mutations/addOrInviteHouseholdMember"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import db from "@/src/lib/db"
-import { AccessLevel, HouseholdRole } from "@prisma/client"
+import { HouseholdRole } from "@prisma/client"
 
 // Mock mailers
 vi.mock("@/src/lib/mailers/invitationMailer", () => ({
@@ -50,8 +50,7 @@ describe("addOrInviteHouseholdMember mutation", () => {
         const result = await addOrInviteHouseholdMember({
             id: adminHouseholdId,
             email: targetUser.email,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         expect(result).toBeTruthy()
@@ -71,8 +70,7 @@ describe("addOrInviteHouseholdMember mutation", () => {
         const result: any = await addOrInviteHouseholdMember({
             id: adminHouseholdId,
             email,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         // Indicates invitation was sent

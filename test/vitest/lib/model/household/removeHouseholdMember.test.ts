@@ -4,7 +4,7 @@ import removeHouseholdMember from "@/src/lib/model/household/mutations/removeHou
 import addHouseholdMember from "@/src/lib/model/household/mutations/addHouseholdMember"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import db from "@/src/lib/db"
-import { AccessLevel, HouseholdRole } from "@prisma/client"
+import { HouseholdRole } from "@prisma/client"
 
 describe("removeHouseholdMember mutation", () => {
     const utils = TestUtilityMock.getInstance()
@@ -21,8 +21,7 @@ describe("removeHouseholdMember mutation", () => {
         await addHouseholdMember({
             id: householdId,
             userId: target.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         const result = await removeHouseholdMember({ id: householdId, userId: target.id }, utils.getMockContext("admin"))
@@ -52,8 +51,7 @@ describe("removeHouseholdMember mutation", () => {
         await addHouseholdMember({
             id: householdId,
             userId: acting.id,
-            role: HouseholdRole.ADMIN,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.ADMIN
         }, utils.getMockContext("admin"))
 
         await expect(async () => removeHouseholdMember({ id: householdId, userId: ownerId }, utils.getMockContext("standard")))

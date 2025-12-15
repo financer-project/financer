@@ -60,14 +60,13 @@ export default async function signup(
 
     // If this is a household invitation, attach the user to the household
     if (invitationToken?.type === "INVITATION_HOUSEHOLD") {
-        const payload = invitationToken.content as { householdId?: string, role?: any, accessLevel?: any } | undefined
-        if (payload?.householdId && payload?.role && payload?.accessLevel) {
+        const payload = invitationToken.content as { householdId?: string, role?: any } | undefined
+        if (payload?.householdId && payload?.role) {
             try {
                 await performAddHouseholdMember({
                     householdId: payload.householdId,
                     userId: user.id,
-                    role: payload.role,
-                    accessLevel: payload.accessLevel
+                    role: payload.role
                 })
             } catch {
                 // Silently ignore membership creation errors here; the user is still created

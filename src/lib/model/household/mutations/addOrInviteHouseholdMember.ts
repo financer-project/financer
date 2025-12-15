@@ -13,7 +13,7 @@ export default resolver.pipe(
     resolver.zod(AddOrInviteHouseholdMemberSchema),
     resolver.authorize(),
     Guard.authorizePipe("invite", "Household"),
-    async ({ id, email, role, accessLevel }, ctx) => {
+    async ({ id, email, role }, ctx) => {
         const household = await db.household.findFirst({ where: { id } })
         if (!household) throw new Error("Household not found")
 
@@ -32,7 +32,7 @@ export default resolver.pipe(
         if (user) {
             const existing = await db.householdMembership.findFirst({ where: { userId: user.id, householdId: id } })
             if (!existing) {
-                await performAddHouseholdMember({ householdId: id, userId: user.id, role, accessLevel })
+                await performAddHouseholdMember({ householdId: id, userId: user.id, role })
             }
 
             await notificationMailer({
@@ -40,7 +40,7 @@ export default resolver.pipe(
                 title: existing ? "Household update" : "You were added to a household",
                 message: existing
                     ? `You have been (re)added or your permissions were updated for household "${household.name}".`
-                    : `You have been added to the household "${household.name}".\n                Role: ${role}. Access: ${accessLevel}.`,
+                    : `You have been added to the household "${household.name}".\n                Role: ${role}.`,
                 link: {
                     href: `${process.env.APP_ORIGIN ?? process.env.BLITZ_DEV_SERVER_ORIGIN}/households/${id}`,
                     text: existing ? "Open household" : "View household"
@@ -77,9 +77,8 @@ export default resolver.pipe(
                 expiresAt,
                 content: {
                     householdId: id,
-                    role,
-                    accessLevel
-                } as any
+                    role
+                }
             }
         })
 

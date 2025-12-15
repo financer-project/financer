@@ -26,7 +26,6 @@ model HouseholdMembership {
     household   Household     @relation(name: "HouseholdMember", fields: [householdId], references: [id], onDelete: Cascade)
     householdId String
     role        HouseholdRole
-    accessLevel AccessLevel
 
     @@unique([userId, householdId])
 }
@@ -36,10 +35,4 @@ enum HouseholdRole {
     ADMIN
     MEMBER
     GUEST
-}
-
-enum AccessLevel {
-    FULL
-    TRANSACTIONS_ONLY
-    VIEW_ONLY
 }

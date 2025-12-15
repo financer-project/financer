@@ -3,13 +3,12 @@ import db from "@/src/lib/db"
 import Guard from "@/src/lib/guard/ability"
 import { AddHouseholdMemberSchema } from "@/src/lib/model/household/schemas"
 import { AuthorizationError } from "blitz"
-import { AccessLevel, HouseholdRole } from "@prisma/client"
+import { HouseholdRole } from "@prisma/client"
 
 export async function performAddHouseholdMember(params: {
     householdId: string
     userId: string
     role: HouseholdRole
-    accessLevel: AccessLevel
 }) {
     // Ensure there is only one OWNER per household
     if (params.role === HouseholdRole.OWNER) {
@@ -27,8 +26,7 @@ export async function performAddHouseholdMember(params: {
         data: {
             userId: params.userId,
             householdId: params.householdId,
-            role: params.role,
-            accessLevel: params.accessLevel
+            role: params.role
         }
     })
 }
@@ -37,12 +35,12 @@ export default resolver.pipe(
     resolver.zod(AddHouseholdMemberSchema),
     resolver.authorize(),
     Guard.authorizePipe("invite", "Household"),
-    async ({ id, userId, role, accessLevel }) => {
+    async ({ id, userId, role }) => {
         // Validate household exists
         const household = await db.household.findFirst({ where: { id } })
         if (!household) throw new Error("Household not found")
 
         // Add membership (idempotent) and return
-        return performAddHouseholdMember({ householdId: id, userId, role, accessLevel })
+        return performAddHouseholdMember({ householdId: id, userId, role })
     }
 )

@@ -4,7 +4,7 @@ import updateHouseholdMember from "@/src/lib/model/household/mutations/updateHou
 import addHouseholdMember from "@/src/lib/model/household/mutations/addHouseholdMember"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import db from "@/src/lib/db"
-import { AccessLevel, HouseholdRole } from "@prisma/client"
+import { HouseholdRole } from "@prisma/client"
 
 describe("updateHouseholdMember mutation", () => {
     const utils = TestUtilityMock.getInstance()
@@ -13,7 +13,7 @@ describe("updateHouseholdMember mutation", () => {
         await utils.seedDatabase()
     })
 
-    it("updates a member's role and access (OWNER acting)", async () => {
+    it("updates a member's role (OWNER acting)", async () => {
         const householdId = utils.getTestData().households.admin.id
         const target = utils.getTestData().users.standard
 
@@ -21,24 +21,20 @@ describe("updateHouseholdMember mutation", () => {
         await addHouseholdMember({
             id: householdId,
             userId: target.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         const updated = await updateHouseholdMember({
             id: householdId,
             userId: target.id,
-            role: HouseholdRole.ADMIN,
-            accessLevel: AccessLevel.VIEW_ONLY
+            role: HouseholdRole.ADMIN
         }, utils.getMockContext("admin"))
 
         expect(updated.role).toBe("ADMIN")
-        expect(updated.accessLevel).toBe("VIEW_ONLY")
 
         const household = await getHousehold({ id: householdId }, utils.getMockContext("admin"))
         const m = household.members.find(m => m.userId === target.id)!
         expect(m.role).toBe("ADMIN")
-        expect(m.accessLevel).toBe("VIEW_ONLY")
     })
 
     it("prevents creating a second OWNER via update", async () => {
@@ -48,15 +44,13 @@ describe("updateHouseholdMember mutation", () => {
         await addHouseholdMember({
             id: householdId,
             userId: target.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         await expect(async () => updateHouseholdMember({
             id: householdId,
             userId: target.id,
-            role: HouseholdRole.OWNER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.OWNER
         }, utils.getMockContext("admin"))).rejects.toThrow("already has an owner")
     })
 
@@ -69,15 +63,13 @@ describe("updateHouseholdMember mutation", () => {
         await addHouseholdMember({
             id: householdId,
             userId: acting.id,
-            role: HouseholdRole.ADMIN,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.ADMIN
         }, utils.getMockContext("admin"))
 
         await expect(async () => updateHouseholdMember({
             id: householdId,
             userId: ownerId,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("standard")))
             .rejects.toThrow()
     })
@@ -89,8 +81,7 @@ describe("updateHouseholdMember mutation", () => {
         await expect(async () => updateHouseholdMember({
             id: householdId,
             userId: ownerId,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin")))
             .rejects.toThrow("Owners cannot change their own role")
     })

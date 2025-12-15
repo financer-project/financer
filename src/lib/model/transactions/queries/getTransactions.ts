@@ -4,6 +4,7 @@ import db, { Prisma } from "src/lib/db"
 import { z } from "zod"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
+import Guard from "@/src/lib/guard/ability"
 
 export const GetTransactionsSchema = z.object({
     householdId: z.uuid().optional()
@@ -14,7 +15,9 @@ type GetTransactionsInput =
     & z.infer<typeof GetTransactionsSchema>
 
 export default resolver.pipe(
+    resolver.zod(GetTransactionsSchema),
     resolver.authorize(),
+    Guard.authorizePipe("read", "Transaction"),
     async ({ where, orderBy, skip = 0, take = 100, householdId }: GetTransactionsInput, ctxt: AuthenticatedCtx) => {
         let household
         if (householdId) {

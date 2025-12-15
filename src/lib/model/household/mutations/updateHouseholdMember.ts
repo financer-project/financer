@@ -9,7 +9,7 @@ export default resolver.pipe(
     resolver.zod(UpdateHouseholdMemberSchema),
     resolver.authorize(),
     Guard.authorizePipe("update", "Household"),
-    async ({ id, userId, role, accessLevel }, ctx: Ctx) => {
+    async ({ id, userId, role }, ctx: Ctx) => {
         const membership = await db.householdMembership.findFirst({ where: { householdId: id, userId } })
         if (!membership) throw new NotFoundError()
 
@@ -46,7 +46,7 @@ export default resolver.pipe(
 
         return db.householdMembership.update({
             where: { id: membership.id },
-            data: { role, accessLevel }
+            data: { role }
         })
     }
 )

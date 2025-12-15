@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import addHouseholdMember from "@/src/lib/model/household/mutations/addHouseholdMember"
 import db from "@/src/lib/db"
-import { AccessLevel, HouseholdRole } from "@prisma/client"
+import { HouseholdRole } from "@prisma/client"
 
 describe("addHouseholdMember (ID-based) mutation", () => {
     const utils = TestUtilityMock.getInstance()
@@ -18,8 +18,7 @@ describe("addHouseholdMember (ID-based) mutation", () => {
         const result = await addHouseholdMember({
             id: householdId,
             userId: userToAdd.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         expect(result).toBeTruthy()
@@ -27,7 +26,7 @@ describe("addHouseholdMember (ID-based) mutation", () => {
         const membership = await db.householdMembership.findFirst({ where: { householdId, userId: userToAdd.id } })
         expect(membership).not.toBeNull()
         expect(membership!.role).toBe("MEMBER")
-        expect(membership!.accessLevel).toBe("FULL")
+        // access level removed; permissions derived from role
     })
 
     it("is idempotent when adding the same member twice", async () => {
@@ -37,15 +36,13 @@ describe("addHouseholdMember (ID-based) mutation", () => {
         await addHouseholdMember({
             id: householdId,
             userId: userToAdd.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         await addHouseholdMember({
             id: householdId,
             userId: userToAdd.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))
 
         const count = await db.householdMembership.count({ where: { householdId, userId: userToAdd.id } })
@@ -59,8 +56,7 @@ describe("addHouseholdMember (ID-based) mutation", () => {
         await expect(async () => addHouseholdMember({
             id: householdId,
             userId: userToAdd.id,
-            role: HouseholdRole.OWNER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.OWNER
         }, utils.getMockContext("admin"))).rejects.toThrow()
     })
 
@@ -69,8 +65,7 @@ describe("addHouseholdMember (ID-based) mutation", () => {
         await expect(async () => addHouseholdMember({
             id: "00000000-0000-0000-0000-000000000000",
             userId: userToAdd.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("admin"))).rejects.toThrow()
     })
 
@@ -81,8 +76,7 @@ describe("addHouseholdMember (ID-based) mutation", () => {
         await expect(async () => addHouseholdMember({
             id: householdId,
             userId: userToAdd.id,
-            role: HouseholdRole.MEMBER,
-            accessLevel: AccessLevel.FULL
+            role: HouseholdRole.MEMBER
         }, utils.getMockContext("standard"))) // not owner/admin of this household
             .rejects.toThrow()
     })

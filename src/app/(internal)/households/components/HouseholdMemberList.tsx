@@ -63,7 +63,6 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
         },
         { name: "Email", render: (m: Member) => m.user.email },
         { name: "Role", render: (m: Member) => <Badge variant="secondary">{m.role}</Badge> },
-        { name: "Access", render: (m: Member) => <Badge variant="outline">{m.accessLevel}</Badge> },
         {
             name: "",
             render: (member: Member) => (
@@ -82,14 +81,13 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
                             </DialogHeader>
                             <HouseholdMemberForm
                                 schema={HouseholdMemberSchema}
-                                initialValues={{ email: member.user.email, ...member }}
+                                initialValues={{ email: member.user.email, role: member.role }}
                                 submitText="Save"
                                 onSubmit={async (values) => {
                                     const p = updateMemberMutation({
                                         id: householdId,
                                         userId: member.userId,
-                                        role: values.role,
-                                        accessLevel: values.accessLevel
+                                        role: values.role
                                     })
                                     toast.promise(p, {
                                         loading: "Updating member...",
@@ -129,7 +127,6 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
                             schema={HouseholdMemberSchema}
                             initialValues={{
                                 role: $Enums.HouseholdRole.MEMBER,
-                                accessLevel: $Enums.AccessLevel.FULL,
                                 email: ""
                             }}
                             submitText="Add"
@@ -137,8 +134,7 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
                                 const p = addMemberMutation({
                                     id: householdId,
                                     email: values.email,
-                                    role: values.role,
-                                    accessLevel: values.accessLevel
+                                    role: values.role
                                 })
                                 toast.promise(p, {
                                     loading: "Adding member...",

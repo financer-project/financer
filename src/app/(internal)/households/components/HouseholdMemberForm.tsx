@@ -9,8 +9,7 @@ import { $Enums, HouseholdRole } from "@prisma/client"
 
 export const HouseholdMemberSchema = z.object({
     email: z.email(),
-    role: z.enum($Enums.HouseholdRole),
-    accessLevel: z.enum($Enums.AccessLevel)
+    role: z.enum($Enums.HouseholdRole)
 })
 
 type formType = z.infer<typeof HouseholdMemberSchema>
@@ -21,8 +20,7 @@ export function HouseholdMemberForm<S extends z.ZodType<any, any>>(props: Readon
         .filter(role => role !== HouseholdRole.OWNER)
         .map((role) => ({ value: role, label: role }))
 
-    const accessOptions = Object.values($Enums.AccessLevel)
-        .map((accessLevel) => ({ value: accessLevel, label: accessLevel }))
+    // access level removed; permissions are derived from role
 
     return (
         <Form<S> {...props}>
@@ -39,12 +37,6 @@ export function HouseholdMemberForm<S extends z.ZodType<any, any>>(props: Readon
                         label={"Role"}
                         name={"role"}
                         options={roleOptions} />
-
-                    <SelectFormField<formType>
-                        label={"Access level"}
-                        name={"accessLevel"}
-                        options={accessOptions}
-                    />
                 </div>
             </div>
         </Form>
