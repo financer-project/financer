@@ -11,10 +11,7 @@ import { Badge } from "@/src/lib/components/ui/badge"
 import { $Enums, HouseholdRole } from "@prisma/client"
 import { DataTable } from "@/src/lib/components/common/data/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/src/lib/components/ui/dialog"
-import {
-    HouseholdMemberForm,
-    HouseholdMemberSchema
-} from "./HouseholdMemberForm"
+import { HouseholdMemberForm, HouseholdMemberSchema } from "./HouseholdMemberForm"
 import { toast } from "sonner"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import { useCurrentUser } from "@/src/lib/hooks/useCurrentUser"
@@ -68,7 +65,7 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
         { name: "Role", render: (m: Member) => <Badge variant="secondary">{m.role}</Badge> },
         { name: "Access", render: (m: Member) => <Badge variant="outline">{m.accessLevel}</Badge> },
         {
-            name: "Actions",
+            name: "",
             render: (member: Member) => (
                 <div className="flex gap-2 justify-end">
                     <Dialog open={editMember?.id === member.id} onOpenChange={(o) => setEditMember(o ? member : null)}>
@@ -145,10 +142,12 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
                                 })
                                 toast.promise(p, {
                                     loading: "Adding member...",
-                                    success: async () => {
+                                    success: async (result) => {
                                         setOpenCreate(false)
                                         await refetch()
-                                        return "Member added"
+                                        return result?.hasOwnProperty("invited")
+                                            ? "Invitation to household has been sent."
+                                            : "Member added successfully."
                                     },
                                     error: (e) => e.message ?? "Failed to add member"
                                 })
