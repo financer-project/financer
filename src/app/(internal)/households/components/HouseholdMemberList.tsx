@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import getHousehold, { HouseholdModel } from "@/src/lib/model/household/queries/getHousehold"
-import addHouseholdMember from "@/src/lib/model/household/mutations/addHouseholdMember"
+import addOrInviteHouseholdMember from "@/src/lib/model/household/mutations/addOrInviteHouseholdMember"
 import updateHouseholdMember from "@/src/lib/model/household/mutations/updateHouseholdMember"
 import removeHouseholdMember from "@/src/lib/model/household/mutations/removeHouseholdMember"
 import { useMemo, useState } from "react"
@@ -26,7 +26,7 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
     const currentUser = useCurrentUser()
     const [household, { refetch }] = useQuery(getHousehold, { id: householdId })
 
-    const [addMemberMutation] = useMutation(addHouseholdMember)
+    const [addMemberMutation] = useMutation(addOrInviteHouseholdMember)
     const [updateMemberMutation] = useMutation(updateHouseholdMember)
     const [removeMemberMutation] = useMutation(removeHouseholdMember)
 
@@ -36,7 +36,7 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
     const currentUserRole = useMemo(() => household.members.find(member => member.userId === currentUser.id)!.role, [currentUser, household.members])
 
     const isActionActive = (member: Member) =>
-        member.role !== HouseholdRole.OWNER && (currentUserRole === HouseholdRole.OWNER || currentUserRole === HouseholdRole.ADMIN)
+        member.userId !== currentUser.id && member.role !== HouseholdRole.OWNER && (currentUserRole === HouseholdRole.OWNER || currentUserRole === HouseholdRole.ADMIN)
 
     const handleDeleteMember = async (member: Member) => {
         const confirmed = await ConfirmationDialog({

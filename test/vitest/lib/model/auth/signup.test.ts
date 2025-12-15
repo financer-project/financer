@@ -153,7 +153,7 @@ describe("Signup Mutation", () => {
             expect(db.token.findFirst).toHaveBeenCalledWith({
                 where: {
                     hashedToken: "hashed-test-token",
-                    type: "INVITATION",
+                    type: { in: ["INVITATION", "INVITATION_HOUSEHOLD"] },
                     sentTo: "test@example.com",
                     expiresAt: { gt: expect.any(Date) }
                 }

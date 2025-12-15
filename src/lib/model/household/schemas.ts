@@ -22,10 +22,19 @@ export const DeleteHouseholdSchema = z.object({
 
 // Membership management schemas
 
-export const AddHouseholdMemberSchema = z.object({
+// Email-based add-or-invite flow (used by UI form)
+export const AddOrInviteHouseholdMemberSchema = z.object({
     // Household ID (named `id` to align with Guard.authorizePipe("invite", "Household"))
     id: z.uuid(),
     email: z.string().email(),
+    role: z.nativeEnum(HouseholdRole).default(HouseholdRole.MEMBER),
+    accessLevel: z.nativeEnum(AccessLevel).default(AccessLevel.FULL)
+})
+
+// ID-based add-only mutation (used by signup flow and internal logic)
+export const AddHouseholdMemberSchema = z.object({
+    id: z.uuid(), // householdId
+    userId: z.string().uuid(),
     role: z.nativeEnum(HouseholdRole).default(HouseholdRole.MEMBER),
     accessLevel: z.nativeEnum(AccessLevel).default(AccessLevel.FULL)
 })
