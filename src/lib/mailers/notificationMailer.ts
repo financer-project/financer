@@ -1,6 +1,8 @@
 import { baseTemplate, createButton, createParagraph } from "./templates/baseTemplate"
 import { getEmailTransporter } from "@/src/lib/mailers/getEmailTransporter"
 import db from "@/src/lib/db"
+import { Logger, ILogObj } from "tslog"
+
 
 export type NotificationLink = {
     href: string;
@@ -33,7 +35,9 @@ export function notificationMailer({ to, title, message, link }: NotificationMai
         async send() {
             const transporter = await getEmailTransporter()
             if (!transporter) {
-                throw new Error("No SMTP settings provided")
+                const logger = new Logger()
+                logger.warn("No SMTP settings provided, therefore Financer cannot send any notifications.")
+                return
             }
 
             const adminSettings = await db.adminSettings.findFirst()

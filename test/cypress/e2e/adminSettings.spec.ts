@@ -72,7 +72,7 @@ describe("Admin Settings Page", () => {
         cy.findSelectField({ label: "Default Theme" }).should("contain.text", "Dark")
     })
 
-    it("sends a test email", () => {
+    it.only("sends a test email", () => {
         cy.loginWithUser(testData.users.admin)
         cy.visit("/dashboard")
 

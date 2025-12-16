@@ -11,7 +11,7 @@ export default async function seedHouseholds(users: UserSeed): Promise<Household
     const standard = await db.household.create({
         data: {
             id: "fd04bde4-e366-492c-940c-282f5b86ebbd", // fixed uuid as current household id is stored in session
-            name: "My Household",
+            name: "My Household (Standard)",
             currency: "USD",
             description: "My Household description",
             members: {
@@ -26,7 +26,7 @@ export default async function seedHouseholds(users: UserSeed): Promise<Household
     const admin = await db.household.create({
         data: {
             id: "2d037b2c-2ad2-43f0-9548-bc30b7e7aaf7",
-            name: "My Household",
+            name: "My Household (Admin)",
             currency: "USD",
             description: "My Household description",
             members: {

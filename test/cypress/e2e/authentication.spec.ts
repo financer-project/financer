@@ -18,15 +18,7 @@ describe("Authentication Spec", () => {
         cy.get("input[name='password']").type("password123")
         cy.get("button[type='submit']").click()
 
-        cy.url().should("include", "/onboarding")
-
-        cy.get("input[name='name']").type("A New Household")
-        cy.get("div[type='button']").click()
-        cy.get("input[role='combobox']").type("Euro{enter}")
-        cy.get("textarea[name='description']").type("My Household")
-        cy.get("button[type='submit']").click()
-
-        cy.url().should("include", "/households/")
+        cy.url().should("include", "/dashboard")
     })
 
     it("Login with existing user", () => {

@@ -5,9 +5,9 @@ import SMTPTransport from "nodemailer/lib/smtp-transport"
 export const getEmailTransporter = async (): Promise<Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options> | null> => {
     const adminSettings = await db.adminSettings.findFirst()
 
-    if (adminSettings) {
+    if (adminSettings?.smtpHost && adminSettings?.smtpUser && adminSettings?.smtpPassword) {
         return nodemailer.createTransport({
-            host: adminSettings.smtpHost ?? "",
+            host: adminSettings.smtpHost,
             port: adminSettings.smtpPort ?? 587,
             secure: (adminSettings.smtpPort ?? 587) === 465, // true for 465, false for other ports
             auth: {
