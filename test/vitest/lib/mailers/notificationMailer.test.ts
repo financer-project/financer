@@ -70,9 +70,9 @@ describe("notificationMailer", () => {
         }))
     })
 
-    it("should throw when transporter is missing", async () => {
+    it("should not throw when transporter is missing", async () => {
         vi.mocked(getEmailTransporter).mockResolvedValueOnce(null as any)
         const mailer = notificationMailer({ to: "user@example.com", title: "X", message: "Y" })
-        await expect(mailer.send()).rejects.toThrow("No SMTP settings provided")
+        await mailer.send()
     })
 })

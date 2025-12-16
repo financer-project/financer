@@ -1,18 +1,26 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi, type Mock } from "vitest"
 import db from "@/src/lib/db"
 import updateAdminSettings from "@/src/lib/model/settings/mutations/updateAdminSettings"
 import getAdminSettings from "@/src/lib/model/settings/queries/getAdminSettings"
 import sendTestEmail from "@/src/lib/model/settings/mutations/sendTestEmail"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import nodemailer from "nodemailer"
+import { getEmailTransporter } from "@/src/lib/mailers/getEmailTransporter"
 
 // Mock nodemailer
 vi.mock("nodemailer", () => ({
     default: {
-        createTransport: vi.fn().mockReturnValue({
+        createTransport: vi.fn(() => ({
             sendMail: vi.fn().mockResolvedValue({ messageId: "test-message-id" })
-        })
+        }))
     }
+}))
+
+// Mock getEmailTransporter to return a mock transporter
+vi.mock("@/src/lib/mailers/getEmailTransporter", () => ({
+    getEmailTransporter: vi.fn().mockResolvedValue({
+        sendMail: vi.fn().mockResolvedValue({ messageId: "test-message-id" })
+    })
 }))
 
 describe("Admin Settings", () => {
@@ -175,6 +183,8 @@ describe("Admin Settings", () => {
             }, utils.getMockContext("admin"))
 
             expect(result).toEqual({ success: true })
+
+            // Verify nodemailer.createTransport was called with correct config
             expect(nodemailer.createTransport).toHaveBeenCalledWith(expect.objectContaining({
                 host: "smtp.test.com",
                 port: 587,
@@ -186,8 +196,9 @@ describe("Admin Settings", () => {
                 requireTLS: true
             }))
 
-            const transporter = nodemailer.createTransport()
-            expect(transporter.sendMail).toHaveBeenCalledWith(expect.objectContaining({
+            // Verify sendMail was called with correct parameters
+            const mockTransporter = (nodemailer.createTransport as Mock).mock.results[0].value
+            expect(mockTransporter.sendMail).toHaveBeenCalledWith(expect.objectContaining({
                 from: "\"Test App\" <noreply@test.com>",
                 to: "recipient@test.com",
                 subject: "Test Email from Financer App"
@@ -208,8 +219,9 @@ describe("Admin Settings", () => {
 
             expect(result).toEqual({ success: true })
 
-            const transporter = nodemailer.createTransport()
-            expect(transporter.sendMail).toHaveBeenCalledWith(expect.objectContaining({
+            // Verify sendMail was called with session email
+            const mockTransporter = (nodemailer.createTransport as Mock).mock.results[0].value
+            expect(mockTransporter.sendMail).toHaveBeenCalledWith(expect.objectContaining({
                 to: "admin@financer.com" // This is the email from the mock context
             }))
         })
