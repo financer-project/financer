@@ -76,7 +76,7 @@ async function user(ctx: Ctx, { can, cannot }: AbilitiesParamsType<Resource, Abi
 
     const household = () => {
         can("create", "Household")
-        can("read", "Household", async ({ id }: { id: string }) => isMemberOfHousehold(id, HouseholdRole.MEMBER))
+        can("read", "Household", async ({ id }: { id: string }) => isMemberOfHousehold(id, HouseholdRole.GUEST))
 
         const isAdminOfHousehold = async ({ id }: { id: string }) => isMemberOfHousehold(id, HouseholdRole.ADMIN)
         can("update", "Household", isAdminOfHousehold)
@@ -153,12 +153,27 @@ async function user(ctx: Ctx, { can, cannot }: AbilitiesParamsType<Resource, Abi
         can("delete", "Transaction", isTransactionPartOfHousehold(HouseholdRole.MEMBER))
     }
 
+    const importJobs = () => {
+        const isImportJobPartOfHousehold = (role?: HouseholdRole) => {
+            return async ({ id }: { id: string }) => {
+                const importJob = await db.importJob.findFirst({ where: { id } })
+                return importJob ? isMemberOfHousehold(importJob.householdId, role) : false
+            }
+        }
+
+        can("create", "ImportJob", isMemberOfHouseholdWrapper(HouseholdRole.MEMBER))
+        can("read", "ImportJob", isImportJobPartOfHousehold(HouseholdRole.GUEST))
+        can("update", "ImportJob", isImportJobPartOfHousehold(HouseholdRole.MEMBER))
+        can("delete", "ImportJob", isImportJobPartOfHousehold(HouseholdRole.MEMBER))
+    }
+
     household()
     categories()
     accounts()
     counterparties()
     tags()
     transactions()
+    importJobs()
 }
 
 export default Guard

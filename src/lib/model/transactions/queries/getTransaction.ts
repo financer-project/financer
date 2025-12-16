@@ -25,7 +25,7 @@ const GetTransaction = z.object({
 export default resolver.pipe(
     resolver.zod(GetTransaction),
     resolver.authorize(),
-    Guard.authorizePipe("create", "Transaction"),
+    Guard.authorizePipe("read", "Transaction"),
     async ({ id }): Promise<TransactionModel> => {
         const transaction = await db.transaction.findFirst({
             where: { id },

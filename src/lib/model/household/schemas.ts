@@ -33,19 +33,19 @@ export const AddOrInviteHouseholdMemberSchema = z.object({
 // ID-based add-only mutation (used by signup flow and internal logic)
 export const AddHouseholdMemberSchema = z.object({
     id: z.uuid(), // householdId
-    userId: z.string().uuid(),
+    userId: z.uuid(),
     role: z.nativeEnum(HouseholdRole).default(HouseholdRole.MEMBER)
 })
 
 export const UpdateHouseholdMemberSchema = z.object({
     // Household ID (named `id` to align with Guard.authorizePipe("update", "Household"))
     id: z.uuid(),
-    userId: z.string().uuid(),
+    userId: z.uuid(),
     role: z.nativeEnum(HouseholdRole)
 })
 
 export const RemoveHouseholdMemberSchema = z.object({
     // Household ID (named `id` to align with Guard.authorizePipe("update", "Household"))
     id: z.uuid(),
-    userId: z.string().uuid()
+    userId: z.uuid()
 })

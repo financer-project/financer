@@ -2,13 +2,14 @@ import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import { z } from "zod"
 import { ImportStatus } from "@prisma/client"
+import Guard from "@/src/lib/guard/ability"
 
 const CreateImportJobSchema = z.object({
     name: z.string().min(1),
     filePath: z.string().optional(), // Path to the CSV file on disk
     fileName: z.string().optional(),
     separator: z.string().default(","), // CSV separator character
-    householdId: z.string(),
+    householdId: z.uuid(),
     columnMappings: z.array(
         z.object({
             csvHeader: z.string(),
@@ -28,6 +29,7 @@ const CreateImportJobSchema = z.object({
 export default resolver.pipe(
     resolver.zod(CreateImportJobSchema),
     resolver.authorize(),
+    Guard.authorizePipe("create", "ImportJob"),
     async (input) => {
         // Create the import job
         const importJob = await db.importJob.create({

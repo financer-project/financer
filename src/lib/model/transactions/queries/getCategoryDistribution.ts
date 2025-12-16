@@ -7,6 +7,8 @@ import { Tree } from "@/src/lib/model/categories/Tree"
 import { Category } from ".prisma/client"
 import ColorType from "@/src/lib/model/common/ColorType"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
+import Guard from "@/src/lib/guard/ability"
+import { NotFoundError } from "blitz"
 
 const GetCategoryDistribution = z.object({
     startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
@@ -26,16 +28,17 @@ export interface CategoryDistribution {
 export default resolver.pipe(
     resolver.zod(GetCategoryDistribution),
     resolver.authorize(),
-    async ({ startDate, endDate, categoryIds, includeUncategorized }, ctx): Promise<CategoryDistribution[]> => {
+    async (input, ctx) => {
+        const currentHousehold = await getCurrentHousehold(null, ctx)
+        if (!currentHousehold) throw new NotFoundError()
+        return { id: currentHousehold.id, currentHousehold, ...input }
+    },
+    Guard.authorizePipe("read", "Household"),
+    async ({ currentHousehold, startDate, endDate, categoryIds, includeUncategorized }, ctx): Promise<CategoryDistribution[]> => {
         const result: CategoryDistribution[] = []
 
-        endDate ??= DateTime.now().endOf("month").toJSDate()
+        endDate ??= DateTime.now().toJSDate()
 
-        // Get current household
-        const currentHousehold = await getCurrentHousehold(null, ctx)
-        if (!currentHousehold) return []
-
-        // Filter categories by household
         let categoryTree: Tree<Category> = Tree.fromFlatList(
             await db.category.findMany({
                 where: { householdId: currentHousehold.id }

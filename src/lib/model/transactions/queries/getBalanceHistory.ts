@@ -4,6 +4,8 @@ import { z } from "zod"
 import { DateTime } from "luxon"
 import { Transaction } from "@prisma/client"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
+import Guard from "@/src/lib/guard/ability"
+import { NotFoundError } from "blitz"
 
 const GetBalanceHistory = z.object({
     startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
@@ -76,21 +78,20 @@ function calculateMonthlyBalances(
 export default resolver.pipe(
     resolver.zod(GetBalanceHistory),
     resolver.authorize(),
-    async ({ startDate, endDate }, ctx): Promise<BalanceHistory[]> => {
-        // Set default end date if not provided
-        endDate ??= DateTime.now().toJSDate()
-
-        // Get current household
+    async (input, ctx) => {
         const currentHousehold = await getCurrentHousehold(null, ctx)
-        if (!currentHousehold) return []
+        if (!currentHousehold) throw new NotFoundError()
+        return { id: currentHousehold.id, currentHousehold, ...input }
+    },
+    Guard.authorizePipe("read", "Household"),
+    async ({ currentHousehold, startDate, endDate }, ctx): Promise<BalanceHistory[]> => {
+        endDate ??= DateTime.now().toJSDate()
 
         // Get all transactions in the date range for the current household
         const transactions = await db.transaction.findMany({
             where: {
                 valueDate: { gte: startDate, lte: endDate },
-                account: {
-                    householdId: currentHousehold.id
-                }
+                account: { householdId: currentHousehold.id }
             }
         })
 

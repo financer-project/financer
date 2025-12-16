@@ -2,6 +2,8 @@ import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import { z } from "zod"
 import { Prisma } from "@prisma/client"
+import { NotFoundError } from "blitz"
+import Guard from "@/src/lib/guard/ability"
 
 const GetImportJobSchema = z.object({
     id: z.uuid()
@@ -18,9 +20,9 @@ export type ImportJobModel = Prisma.ImportJobGetPayload<{
 export default resolver.pipe(
     resolver.zod(GetImportJobSchema),
     resolver.authorize(),
+    Guard.authorizePipe("read", "ImportJob"),
     async (input) => {
-        // Get the import job with its related data
-        const importJob = await db.importJob.findUnique({
+        const job = await db.importJob.findUnique({
             where: { id: input.id },
             include: {
                 columnMappings: true,
@@ -28,11 +30,8 @@ export default resolver.pipe(
                 _count: { select: { transactions: true } }
             }
         })
+        if (!job) throw new NotFoundError()
 
-        if (!importJob) {
-            throw new Error("Import job not found")
-        }
-
-        return importJob
+        return job
     }
 )

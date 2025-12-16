@@ -1,9 +1,11 @@
 import db from "@/src/lib/db"
 import { resolver } from "@blitzjs/rpc"
 import { AdminSettings, Role } from "@prisma/client"
+import Guard from "@/src/lib/guard/ability"
 
 export default resolver.pipe(
     resolver.authorize(Role.ADMIN),
+    Guard.authorizePipe("manage", "all"),
     async (): Promise<AdminSettings> => {
         // Get the admin settings from the database
         let adminSettings = await db.adminSettings.findFirst()

@@ -1,9 +1,25 @@
-import db from "@/src/lib/db"
+import db, { Prisma } from "@/src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { AuthenticatedCtx } from "blitz"
-import { Role } from "@prisma/client"
+import { Role, HouseholdRole } from "@prisma/client"
 import { hash256 } from "@blitzjs/auth"
 import { performAddHouseholdMember } from "@/src/lib/model/household/mutations/addHouseholdMember"
+
+type HouseholdInvitationContent = {
+    householdId: string
+    role: HouseholdRole
+}
+
+function isHouseholdInvitationContent(content: unknown): content is HouseholdInvitationContent {
+    if (typeof content !== "object" || content === null) return false
+    const obj = content as Record<string, unknown>
+    const role = obj.role
+    return (
+        typeof obj.householdId === "string" &&
+        typeof role === "string" &&
+        (Object.values(HouseholdRole) as string[]).includes(role)
+    )
+}
 
 export default async function signup(
     input: {
@@ -21,7 +37,7 @@ export default async function signup(
     let adminSettings = await db.adminSettings.findFirst()
 
     // If registration is not allowed OR a token is presented, validate token
-    let invitationToken: { id: string, type: string, content?: any } | null = null
+    let invitationToken: { id: string, type: "INVITATION" | "INVITATION_HOUSEHOLD", content?: Prisma.JsonValue | null } | null = null
     if (!adminSettings?.allowRegistration || input.token) {
         if (!input.token) {
             throw new Error("Registration is currently by invitation only. Please use an invitation link.")
@@ -43,7 +59,7 @@ export default async function signup(
             throw new Error("Invalid or expired invitation token.")
         }
 
-        invitationToken = { id: token.id, type: token.type, content: (token as any).content }
+        invitationToken = { id: token.id, type: token.type as "INVITATION" | "INVITATION_HOUSEHOLD", content: token.content }
         // Note: We will delete the token after creating the user and processing household membership
     }
 
@@ -60,8 +76,8 @@ export default async function signup(
 
     // If this is a household invitation, attach the user to the household
     if (invitationToken?.type === "INVITATION_HOUSEHOLD") {
-        const payload = invitationToken.content as { householdId?: string, role?: any } | undefined
-        if (payload?.householdId && payload?.role) {
+        const payload = invitationToken.content
+        if (isHouseholdInvitationContent(payload)) {
             try {
                 await performAddHouseholdMember({
                     householdId: payload.householdId,

@@ -1,34 +1,21 @@
 import { AuthenticatedCtx, paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "src/lib/db"
+import { getFindManySchema } from "@/src/lib/util/zod/zodUtil"
+
+export const GetHouseholdsSchema =
+    getFindManySchema<Prisma.HouseholdWhereInput, Prisma.HouseholdOrderByWithRelationInput>()
 
 export default resolver.pipe(
+    resolver.zod(GetHouseholdsSchema),
     resolver.authorize(),
-    async ({
-               where,
-               orderBy,
-               skip = 0,
-               take = 100
-           }: Pick<Prisma.HouseholdFindManyArgs, "where" | "orderBy" | "skip" | "take">, ctx: AuthenticatedCtx) => {
+    async ({ where, orderBy, skip = 0, take = 100 }, ctx: AuthenticatedCtx) => {
         const userId = ctx.session.userId
-        if (!userId) {
-            throw new Error("User is not authenticated")
-        }
 
-        // Get both owned households and households where the user is a member
-        where = {
-            ...where,
-            OR: [
-                { members: { some: { userId } } }
-            ]
-        }
+        // Only households where the user is a member
+        where = { ...where, OR: [{ members: { some: { userId } } }] }
 
-        const {
-            items: households,
-            hasMore,
-            nextPage,
-            count
-        } = await paginate({
+        const { items: households, hasMore, nextPage, count } = await paginate({
             skip,
             take,
             count: () => db.household.count({ where }),
@@ -36,20 +23,10 @@ export default resolver.pipe(
                 ...paginateArgs,
                 where,
                 orderBy,
-                include: {
-                    members: {
-                        where: { userId },
-                        select: { role: true }
-                    }
-                }
+                include: { members: { where: { userId }, select: { role: true } } }
             })
         })
 
-        return {
-            households,
-            nextPage,
-            hasMore,
-            count
-        }
+        return { households, nextPage, hasMore, count }
     }
 )
