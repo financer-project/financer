@@ -10,7 +10,6 @@ import Theme from "@/src/app/(internal)/theme"
 import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
 import checkOnboardingStatus from "@/src/lib/model/onboarding/queries/checkOnboardingStatus"
 import { redirect } from "next/navigation"
-import getHouseholds from "@/src/lib/model/household/queries/getHouseholds"
 import { Dialog } from "@/src/lib/components/ui/dialog"
 
 export const dynamic = "force-dynamic"
@@ -21,10 +20,6 @@ async function fetchUser() {
 
 async function fetchSettings() {
     return invoke(getSetting, {})
-}
-
-async function fetchHouseholds() {
-    return invoke(getHouseholds, {})
 }
 
 async function fetchOnboardingStatus() {
@@ -52,7 +47,6 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
     }
 
     const settings = await fetchSettings()
-    const households = await fetchHouseholds()
 
     return (
         <div>
