@@ -34,7 +34,13 @@ export default resolver.pipe(
         return { id: currentHousehold.id, currentHousehold, ...input }
     },
     Guard.authorizePipe("read", "Household"),
-    async ({ currentHousehold, startDate, endDate, categoryIds, includeUncategorized }, ctx): Promise<CategoryDistribution[]> => {
+    async ({
+               currentHousehold,
+               startDate,
+               endDate,
+               categoryIds,
+               includeUncategorized
+           }): Promise<CategoryDistribution[]> => {
         const result: CategoryDistribution[] = []
 
         endDate ??= DateTime.now().toJSDate()

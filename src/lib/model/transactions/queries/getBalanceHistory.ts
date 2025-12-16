@@ -84,7 +84,7 @@ export default resolver.pipe(
         return { id: currentHousehold.id, currentHousehold, ...input }
     },
     Guard.authorizePipe("read", "Household"),
-    async ({ currentHousehold, startDate, endDate }, ctx): Promise<BalanceHistory[]> => {
+    async ({ currentHousehold, startDate, endDate }): Promise<BalanceHistory[]> => {
         endDate ??= DateTime.now().toJSDate()
 
         // Get all transactions in the date range for the current household
