@@ -1,7 +1,7 @@
 import db, { Prisma } from "@/src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { AuthenticatedCtx } from "blitz"
-import { Role, HouseholdRole } from "@prisma/client"
+import { HouseholdRole, Role } from "@prisma/client"
 import { hash256 } from "@blitzjs/auth"
 import { performAddHouseholdMember } from "@/src/lib/model/household/mutations/addHouseholdMember"
 

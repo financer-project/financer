@@ -2,7 +2,6 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "@/src/lib/db"
 import { z } from "zod"
-import Guard from "@/src/lib/guard/ability"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 import { getFindManySchema } from "@/src/lib/util/zod/zodUtil"
 

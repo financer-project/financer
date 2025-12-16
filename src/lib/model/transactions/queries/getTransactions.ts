@@ -3,7 +3,6 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "src/lib/db"
 import { z } from "zod"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
-import Guard from "@/src/lib/guard/ability"
 import { getFindManySchema } from "@/src/lib/util/zod/zodUtil"
 import TransactionWhereInput = Prisma.TransactionWhereInput
 import TransactionOrderByWithRelationInput = Prisma.TransactionOrderByWithRelationInput
