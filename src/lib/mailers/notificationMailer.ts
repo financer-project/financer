@@ -1,7 +1,7 @@
 import { baseTemplate, createButton, createParagraph } from "./templates/baseTemplate"
 import { getEmailTransporter } from "@/src/lib/mailers/getEmailTransporter"
 import db from "@/src/lib/db"
-import { Logger, ILogObj } from "tslog"
+import { Logger } from "tslog"
 
 
 export type NotificationLink = {
