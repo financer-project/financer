@@ -1,19 +1,24 @@
 import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "@/src/lib/db"
+import { z } from "zod"
+import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
+import { getFindManySchema } from "@/src/lib/util/zod/zodUtil"
 
-interface GetAccountsInput
-    extends Pick<Prisma.AccountFindManyArgs, "where" | "orderBy" | "skip" | "take"> {
-    householdId: string
-}
+export const GetAccountsSchema =
+    getFindManySchema<Prisma.AccountWhereInput, Prisma.AccountOrderByWithRelationInput>().extend({
+        householdId: z.uuid().optional()
+    })
 
 export default resolver.pipe(
+    resolver.zod(GetAccountsSchema),
     resolver.authorize(),
-    async ({ where, orderBy, skip = 0, take = 100, householdId }: GetAccountsInput) => {
-        where = {
-            ...where,
-            householdId: householdId
+    async ({ where, orderBy, skip = 0, take = 100, householdId }, ctx) => {
+        if (!householdId) {
+            householdId = (await getCurrentHousehold(null, ctx))?.id
         }
+
+        where = { ...where, householdId }
 
         const {
             items: accounts,

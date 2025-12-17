@@ -10,11 +10,9 @@ export const CreateCounterpartySchema = z.object({
     webAddress: z.string().nullable()
 })
 
-export const UpdateCounterpartySchema = CreateCounterpartySchema.merge(
-    z.object({
-        id: z.uuid()
-    })
-)
+export const UpdateCounterpartySchema = CreateCounterpartySchema.extend({
+    id: z.uuid()
+})
 
 export const DeleteCounterpartySchema = z.object({
     id: z.uuid()

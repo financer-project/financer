@@ -1,8 +1,25 @@
-import db from "@/src/lib/db"
+import db, { Prisma } from "@/src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { AuthenticatedCtx } from "blitz"
-import { Role } from "@prisma/client"
+import { HouseholdRole, Role, TokenType } from "@prisma/client"
 import { hash256 } from "@blitzjs/auth"
+import { performAddHouseholdMember } from "@/src/lib/model/household/mutations/addHouseholdMember"
+
+type HouseholdInvitationContent = {
+    householdId: string
+    role: HouseholdRole
+}
+
+function isHouseholdInvitationContent(content: unknown): content is HouseholdInvitationContent {
+    if (typeof content !== "object" || content === null) return false
+    const obj = content as Record<string, unknown>
+    const role = obj.role
+    return (
+        typeof obj.householdId === "string" &&
+        typeof role === "string" &&
+        (Object.values(HouseholdRole) as string[]).includes(role)
+    )
+}
 
 export default async function signup(
     input: {
@@ -19,32 +36,31 @@ export default async function signup(
     // Get admin settings to check if registration is allowed
     let adminSettings = await db.adminSettings.findFirst()
 
-    // If registration is not allowed, check for a valid invitation token
+    // If registration is not allowed OR a token is presented, validate token
+    let invitationToken: { id: string, type: TokenType, content?: Prisma.JsonValue | null } | null = null
     if (!adminSettings?.allowRegistration || input.token) {
-        // If token is provided, validate it
         if (!input.token) {
             throw new Error("Registration is currently by invitation only. Please use an invitation link.")
         }
 
         const hashedToken = hash256(input.token)
 
-        // Find the token in the database
+        // Find the token in the database (accept both generic and household invitations)
         const token = await db.token.findFirst({
             where: {
                 hashedToken,
-                type: "INVITATION",
+                type: { in: [TokenType.INVITATION, TokenType.INVITATION_HOUSEHOLD] },
                 sentTo: input.email,
                 expiresAt: { gt: new Date() }
             }
         })
 
-        // If token is not found or expired, throw an error
         if (!token) {
             throw new Error("Invalid or expired invitation token.")
         }
 
-        // Delete the token so it can't be used again
-        await db.token.delete({ where: { id: token.id } })
+        invitationToken = { id: token.id, type: token.type, content: token.content }
+        // Note: We will delete the token after creating the user and processing household membership
     }
 
     // Create the user
@@ -57,6 +73,27 @@ export default async function signup(
             hashedPassword: hashedPassword
         }
     })
+
+    // If this is a household invitation, attach the user to the household
+    if (invitationToken?.type === TokenType.INVITATION_HOUSEHOLD) {
+        const payload = invitationToken.content
+        if (isHouseholdInvitationContent(payload)) {
+            try {
+                await performAddHouseholdMember({
+                    householdId: payload.householdId,
+                    userId: user.id,
+                    role: payload.role
+                })
+            } catch {
+                // Silently ignore membership creation errors here; the user is still created
+            }
+        }
+    }
+
+    // Delete the token so it can't be used again
+    if (invitationToken) {
+        await db.token.delete({ where: { id: invitationToken.id } })
+    }
 
     await blitzContext.session.$create({ userId: user.id, email: user.email, role: Role.USER })
 

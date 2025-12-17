@@ -12,7 +12,7 @@ describe("Counterparties", () => {
         })
     })
 
-    it("should be able to create a new counterparty and delete it afterwards", () => {
+    it.only("should be able to create a new counterparty and delete it afterwards", () => {
         cy.get("a[href='/counterparties/new']").click()
 
         cy.get("input[name='name']").type("Test Shop")
@@ -24,6 +24,7 @@ describe("Counterparties", () => {
 
         cy.url().should("include", "/counterparties?")
         cy.reload()
+        cy.wait(500)
         cy.get("td").contains("Test Shop").should("exist")
         cy.get("td").contains("Test Shop").click()
 

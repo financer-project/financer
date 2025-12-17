@@ -1,6 +1,6 @@
 import { generateToken, hash256 } from "@blitzjs/auth"
 import { resolver } from "@blitzjs/rpc"
-import { Role } from "@prisma/client"
+import { Role, TokenType } from "@prisma/client"
 import { z } from "zod"
 import db from "@/src/lib/db"
 import { invitationMailer } from "@/src/lib/mailers/invitationMailer"
@@ -55,7 +55,7 @@ export default resolver.pipe(
 
         // Delete any existing invitation tokens for this email
         await db.token.deleteMany({
-            where: { type: "INVITATION", sentTo: email }
+            where: { type: TokenType.INVITATION, sentTo: email }
         })
 
         // Save the new token in the database
@@ -63,7 +63,7 @@ export default resolver.pipe(
             data: {
                 userId: ctx.session.userId,
                 sentTo: email,
-                type: "INVITATION",
+                type: TokenType.INVITATION,
                 hashedToken,
                 expiresAt
             }

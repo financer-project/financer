@@ -19,6 +19,9 @@ model AdminSettings {
     invitationTokenExpirationHours Int @default(72) // 3 days
     resetPasswordTokenExpirationHours Int @default(4) // 4 hours
 
+    // Household Settings
+    allowHouseholdAdminsToInviteUsers Boolean @default(true) // Controls whether household admins can invite other users
+
     // Default Settings
     defaultLanguage String @default("en-US")
     defaultTheme    String @default("light")

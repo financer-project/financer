@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
-import { Role } from "@prisma/client"
+import { HouseholdRole, Role } from "@prisma/client"
 import { z } from "zod"
 import { Ctx } from "blitz"
 
@@ -73,7 +73,12 @@ export default resolver.pipe(
                     name: input.householdName,
                     currency: input.currency,
                     description: input.description || null,
-                    ownerId: user.id
+                    members: {
+                        create: {
+                            user: { connect: { id: user.id } },
+                            role: HouseholdRole.OWNER
+                        }
+                    }
                 }
             })
 

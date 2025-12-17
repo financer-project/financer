@@ -11,6 +11,11 @@ export default defineConfig({
         dir: "./test/vitest",
         globals: true,
         setupFiles: ["test/vitest/setup/mock-prisma.ts"],
+        // Global timeouts increased for heavy integration tests (e.g., Testcontainers + MySQL)
+        // to avoid "Hook timed out in 10000ms" during container startup on CI/Windows.
+        hookTimeout: 120_000,
+        testTimeout: 120_000,
+        teardownTimeout: 60_000,
         coverage: {
             enabled: true,
             provider: "istanbul",

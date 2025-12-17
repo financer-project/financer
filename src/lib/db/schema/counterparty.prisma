@@ -9,7 +9,7 @@ model Counterparty {
     accountName String?
     webAddress  String?
 
-    household   Household @relation(name: "HouseholdCounterparty", fields: [householdId], references: [id])
+    household   Household @relation(name: "HouseholdCounterparty", fields: [householdId], references: [id], onDelete: Cascade)
     householdId String
 
     transactions Transaction[] @relation("TransactionCounterparty")

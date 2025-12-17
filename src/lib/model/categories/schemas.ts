@@ -6,15 +6,13 @@ export const CreateCategorySchema = z.object({
     householdId: z.uuid(),
     parentId: z.uuid().nullable(),
     name: z.string().min(3),
-    type: z.nativeEnum(CategoryType),
-    color: z.nativeEnum(ColorType).nullable()
+    type: z.enum(CategoryType),
+    color: z.enum(ColorType).nullable()
 })
 
-export const UpdateCategorySchema = CreateCategorySchema.merge(
-    z.object({
-        id: z.uuid()
-    })
-)
+export const UpdateCategorySchema = CreateCategorySchema.extend({
+    id: z.uuid()
+})
 
 export const DeleteCategorySchema = z.object({
     id: z.uuid()

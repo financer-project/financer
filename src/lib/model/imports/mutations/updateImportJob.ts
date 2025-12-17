@@ -2,6 +2,8 @@ import { resolver } from "@blitzjs/rpc"
 import db from "@/src/lib/db"
 import { z } from "zod"
 import { ImportStatus } from "@prisma/client"
+import Guard from "@/src/lib/guard/ability"
+import { NotFoundError } from "blitz"
 
 const UpdateImportJobSchema = z.object({
     id: z.string(),
@@ -29,19 +31,13 @@ const UpdateImportJobSchema = z.object({
 export default resolver.pipe(
     resolver.zod(UpdateImportJobSchema),
     resolver.authorize(),
+    Guard.authorizePipe("update", "ImportJob"),
     async (input) => {
-        // Get the current import job
-        const importJob = await db.importJob.findUnique({
+        const job = await db.importJob.findUnique({
             where: { id: input.id },
-            include: {
-                columnMappings: true,
-                valueMappings: true
-            }
+            include: { columnMappings: true, valueMappings: true }
         })
-
-        if (!importJob) {
-            throw new Error("Import job not found")
-        }
+        if (!job) throw new NotFoundError()
 
         // Update the import job
         const updatedImportJob = await db.importJob.update({
@@ -57,12 +53,7 @@ export default resolver.pipe(
 
         // Update column mappings if provided
         if (input.columnMappings) {
-            // Delete existing column mappings
-            await db.columnMapping.deleteMany({
-                where: { importJobId: input.id }
-            })
-
-            // Create new column mappings
+            await db.columnMapping.deleteMany({ where: { importJobId: input.id } })
             if (input.columnMappings.length > 0) {
                 await db.columnMapping.createMany({
                     data: input.columnMappings.map(mapping => ({
@@ -77,12 +68,7 @@ export default resolver.pipe(
 
         // Update value mappings if provided
         if (input.valueMappings) {
-            // Delete existing value mappings
-            await db.valueMapping.deleteMany({
-                where: { importJobId: input.id }
-            })
-
-            // Create new value mappings
+            await db.valueMapping.deleteMany({ where: { importJobId: input.id } })
             if (input.valueMappings.length > 0) {
                 await db.valueMapping.createMany({
                     data: input.valueMappings.map(mapping => ({

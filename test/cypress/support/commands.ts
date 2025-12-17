@@ -20,6 +20,17 @@ Cypress.Commands.add("loginWithUser", (user: User) => {
     })
 })
 
+Cypress.Commands.add("changeUser", (user: User) => {
+    cy.get("button[data-sidebar='menu-button']").last().click()
+    cy.contains("Log out").click()
+
+    cy.url().should("contain", "/login")
+
+    // Login as admin user
+    cy.loginWithUser(user)
+    cy.visit("/dashboard")
+})
+
 Cypress.Commands.add("resetAndSeedDatabase", (callback, resetUsers) => {
     cy.task("resetDatabase", resetUsers)
     cy.task("seedDatabase").then((result) => {
@@ -78,7 +89,7 @@ Cypress.Commands.add("selectField", (opts) => {
     }
 
     const ensureClosed = () => {
-        return cy.get("div[role='listbox'], div[role='dialog']").should("not.exist")
+        return cy.get("div[data-radix-popper-content-wrapper]").should("not.exist")
     }
 
     const selectByTyping = (text: string) => {

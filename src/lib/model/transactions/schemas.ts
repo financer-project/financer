@@ -5,7 +5,7 @@ export const CreateTransactionSchema = z.object({
     accountId: z.uuid(),
     categoryId: z.uuid().nullable(),
     counterpartyId: z.uuid().nullable(),
-    type: z.nativeEnum(TransactionType),
+    type: z.enum(TransactionType),
     name: z.string().nullable(),
     valueDate: z.date(),
     description: z.string().nullable(),
@@ -13,11 +13,9 @@ export const CreateTransactionSchema = z.object({
     tagIds: z.array(z.uuid()).optional()
 })
 
-export const UpdateTransactionSchema = CreateTransactionSchema.merge(
-    z.object({
-        id: z.uuid()
-    })
-)
+export const UpdateTransactionSchema = CreateTransactionSchema.extend({
+    id: z.uuid()
+})
 
 export const DeleteTransactionSchema = z.object({
     id: z.uuid()

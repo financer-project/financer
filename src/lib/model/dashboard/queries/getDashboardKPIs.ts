@@ -3,6 +3,9 @@ import db from "src/lib/db"
 import { z } from "zod"
 import { DateTime } from "luxon"
 import { Transaction } from "@prisma/client"
+import Guard from "@/src/lib/guard/ability"
+import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
+import { NotFoundError } from "blitz"
 
 const GetDashboardKPIs = z.object({
     startDate: z.date().max(DateTime.now().endOf("month").toJSDate()),
@@ -54,17 +57,25 @@ function calculateFinancialMetrics(transactions: Transaction[]): FinancialMetric
 /**
  * Get transactions for a specific date range
  */
-async function getTransactionsForPeriod(startDate: Date, endDate: Date): Promise<Transaction[]> {
+async function getTransactionsForPeriod(householdId: string, startDate: Date, endDate: Date): Promise<Transaction[]> {
     return db.transaction.findMany({
-        where: { valueDate: { gte: startDate, lte: endDate } }
+        where: {
+            valueDate: { gte: startDate, lte: endDate },
+            account: { householdId }
+        }
     })
 }
 
 export default resolver.pipe(
     resolver.zod(GetDashboardKPIs),
     resolver.authorize(),
-    async ({ startDate, endDate, previousPeriod }): Promise<DashboardKPIs> => {
-        // Set default end date if not provided
+    async (input, ctx) => {
+        const currentHousehold = await getCurrentHousehold(null, ctx)
+        if (!currentHousehold) throw new NotFoundError()
+        return { id: currentHousehold.id, currentHousehold, ...input }
+    },
+    Guard.authorizePipe("read", "Household"),
+    async ({ currentHousehold, startDate, endDate, previousPeriod }): Promise<DashboardKPIs> => {
         endDate ??= DateTime.now().toJSDate()
 
         // Calculate the previous period (same duration, immediately before the selected period)
@@ -73,7 +84,7 @@ export default resolver.pipe(
         const previousEndDate = startDate
 
         // Get current period transactions and calculate metrics
-        const currentTransactions = await getTransactionsForPeriod(startDate, endDate)
+        const currentTransactions = await getTransactionsForPeriod(currentHousehold.id, startDate, endDate)
         const currentMetrics = calculateFinancialMetrics(currentTransactions)
 
         // If previous period data is not needed, return current period data only
@@ -87,7 +98,7 @@ export default resolver.pipe(
         }
 
         // Get previous period transactions and calculate metrics
-        const previousTransactions = await getTransactionsForPeriod(previousStartDate, previousEndDate)
+        const previousTransactions = await getTransactionsForPeriod(currentHousehold.id, previousStartDate, previousEndDate)
         const previousMetrics = calculateFinancialMetrics(previousTransactions)
 
         return {

@@ -29,6 +29,9 @@ export default defineConfig({
                 async seedDatabase() {
                     await dbContainer.seedDatabase()
                     return dbContainer.getTestData()
+                },
+                async createToken({ type, email, userId, content }: { type: string, email: string, userId: string, content?: unknown }) {
+                    return dbContainer.createToken(type, email, userId, content)
                 }
             })
 
