@@ -39,7 +39,7 @@ export const AdminSettings = () => {
             },
             error: (error) => ({
                 message: "Failed to send test email",
-                description: `Error: ${error.toString()}`
+                description: error.toString()
             }),
             finally: () => {
                 setIsSendingTestEmail(false)

@@ -9,13 +9,14 @@ const ChangeCurrentHouseholdSchema = z.object({
 
 export default resolver.pipe(
     resolver.zod(ChangeCurrentHouseholdSchema),
-    resolver.authorize(), async ({ id }, ctx) => {
+    resolver.authorize(),
+    async ({ id }, ctx) => {
         const household = await db.household.findFirst({ where: { id } })
         if (!household) throw new NotFoundError()
 
         // Ensure the acting user is a member of the target household
         const membership = await db.householdMembership.findFirst({
-            where: { householdId: id, userId: ctx.session.userId! }
+            where: { householdId: id, userId: ctx.session.userId }
         })
         if (!membership) {
             throw new AuthorizationError()
@@ -23,4 +24,5 @@ export default resolver.pipe(
 
         await ctx.session.$setPrivateData({ currentHouseholdId: household.id })
         return household
-    })
+    }
+)

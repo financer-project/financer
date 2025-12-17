@@ -7,6 +7,7 @@ import db, { Prisma } from "@/src/lib/db"
 import seedTransactions, { TransactionSeed } from "@/test/seed/transactions"
 import seedAdminSettings, { AdminSettingsSeed } from "@/test/seed/adminSettings"
 import seedCounterparties, { CounterpartySeed } from "@/test/seed/counterpartySeed"
+import { generateToken, hash256 } from "@blitzjs/auth"
 
 export interface TestData {
     adminSettings: AdminSettingsSeed,
@@ -92,5 +93,32 @@ export abstract class TestUtilityBase implements TestUtility {
 
     public getDatabase(): typeof db {
         return db
+    }
+
+    public async createToken(type: string, email: string, userId: string, content?: any): Promise<{ token: string }> {
+        const token = generateToken()
+        const hashedToken = hash256(token)
+
+        // Delete any existing tokens of this type for this user
+        await db.token.deleteMany({
+            where: {
+                type: type as any,
+                sentTo: email
+            }
+        })
+
+        // Create the new token
+        await db.token.create({
+            data: {
+                userId,
+                type: type as any,
+                hashedToken,
+                sentTo: email,
+                expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000), // 72 hours from now
+                content: content || null
+            }
+        })
+
+        return { token }
     }
 }

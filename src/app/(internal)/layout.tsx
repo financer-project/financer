@@ -11,6 +11,8 @@ import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"
 import checkOnboardingStatus from "@/src/lib/model/onboarding/queries/checkOnboardingStatus"
 import { redirect } from "next/navigation"
 import { Dialog } from "@/src/lib/components/ui/dialog"
+import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
+import { RequireHouseholdDialog } from "./RequireHouseholdDialog"
 
 export const dynamic = "force-dynamic"
 
@@ -24,6 +26,10 @@ async function fetchSettings() {
 
 async function fetchOnboardingStatus() {
     return invoke(checkOnboardingStatus, {})
+}
+
+async function fetchCurrentHousehold() {
+    return invoke(getCurrentHousehold, null)
 }
 
 export const metadata: Metadata = {
@@ -47,19 +53,21 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
     }
 
     const settings = await fetchSettings()
+    const currentHousehold = await fetchCurrentHousehold()
 
     return (
         <div>
             <Dialog></Dialog>
             <Theme theme={settings.theme} />
             <HouseholdProvider>
+                <RequireHouseholdDialog hasHousehold={!!currentHousehold} />
                 <SidebarProvider>
                     <AppSidebar />
                     <main className={"flex flex-col w-full h-screen bg-sidebar md:p-4 p-0"}>
                         <div className={"bg-background md:rounded-xl h-full max-h-full"}>
                             <ScrollArea
                                 className={"h-full overflow-y-auto md:rounded-xl flex flex-col justify-start"}>
-                                {children}
+                                {currentHousehold ? children : undefined}
                                 <ScrollBar orientation="vertical" className={"pl-2"} />
                             </ScrollArea>
                         </div>

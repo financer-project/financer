@@ -15,7 +15,7 @@ export default resolver.pipe(
     },
     Guard.authorizePipe("create", "Transaction"),
     async (transaction) => {
-        const { tagIds, ...transactionData } = transaction
+        const { tagIds, householdId, ...transactionData } = transaction
 
         // Adjust amount based on transaction type
         transactionData.amount = transactionData.type === TransactionType.EXPENSE ?
