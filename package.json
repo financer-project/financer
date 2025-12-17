@@ -112,6 +112,7 @@
         "eslint-plugin-react-hooks": "^7.0.1",
         "jsdom": "^27.2.0",
         "lcov-result-merger": "5.0.1",
+        "mysql2": "^3.11.3",
         "nyc": "^17.1.0",
         "prisma-mock": "^0.10.3",
         "start-server-and-test": "2.1.2",
