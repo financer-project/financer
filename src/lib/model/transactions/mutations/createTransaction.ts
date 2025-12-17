@@ -15,7 +15,7 @@ export default resolver.pipe(
     },
     Guard.authorizePipe("create", "Transaction"),
     async (transaction) => {
-        const { tagIds, householdId, ...transactionData } = transaction
+        const { tagIds, householdId, ...transactionData } = transaction // eslint-disable-line @typescript-eslint/no-unused-vars
 
         // Adjust amount based on transaction type
         transactionData.amount = transactionData.type === TransactionType.EXPENSE ?

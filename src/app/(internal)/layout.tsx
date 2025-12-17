@@ -60,7 +60,7 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
             <Dialog></Dialog>
             <Theme theme={settings.theme} />
             <HouseholdProvider>
-                <RequireHouseholdDialog hasHousehold={!!currentHousehold} />
+                {!currentHousehold && <RequireHouseholdDialog />}
                 <SidebarProvider>
                     <AppSidebar />
                     <main className={"flex flex-col w-full h-screen bg-sidebar md:p-4 p-0"}>
