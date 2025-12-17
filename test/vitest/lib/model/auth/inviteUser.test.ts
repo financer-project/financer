@@ -4,7 +4,7 @@ import inviteUser, { UserAlreadyRegisteredError } from "@/src/lib/model/auth/mut
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import { invitationMailer } from "@/src/lib/mailers/invitationMailer"
 import { generateToken, hash256 } from "@blitzjs/auth"
-import { User } from "@prisma/client"
+import { TokenType } from "@prisma/client"
 
 // Mock dependencies
 vi.mock("@/src/lib/mailers/invitationMailer", () => ({
@@ -51,10 +51,11 @@ describe("inviteUser mutation", () => {
             createdAt: new Date(),
             updatedAt: new Date(),
             hashedToken: "hashed-test-token",
-            type: "INVITATION",
+            type: TokenType.INVITATION,
             expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000), // 3 days from now
             sentTo: "test@example.com",
-            userId: utils.getTestData().users.admin.id
+            userId: utils.getTestData().users.admin.id,
+            content: null
         })
     })
 
@@ -69,14 +70,14 @@ describe("inviteUser mutation", () => {
 
         // Check that the token was deleted and created
         expect(db.token.deleteMany).toHaveBeenCalledWith({
-            where: { type: "INVITATION", sentTo: "test@example.com" }
+            where: { type: TokenType.INVITATION, sentTo: "test@example.com" }
         })
 
         expect(db.token.create).toHaveBeenCalledWith({
             data: {
                 userId: utils.getTestData().users.admin.id,
                 sentTo: "test@example.com",
-                type: "INVITATION",
+                type: TokenType.INVITATION,
                 hashedToken: "hashed-test-token",
                 expiresAt: expect.any(Date)
             }

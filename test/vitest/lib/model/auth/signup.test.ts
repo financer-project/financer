@@ -5,6 +5,7 @@ import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import getAdminSettings from "@/src/lib/model/settings/queries/getAdminSettings"
 import { hash256 } from "@blitzjs/auth"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
+import { TokenType } from "@prisma/client"
 
 // Mock dependencies
 vi.mock("@/src/lib/model/settings/queries/getAdminSettings", () => ({
@@ -41,10 +42,11 @@ describe("Signup Mutation", () => {
             createdAt: new Date(),
             updatedAt: new Date(),
             hashedToken: "hashed-test-token",
-            type: "INVITATION",
+            type: TokenType.INVITATION,
             expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000), // 3 days from now
             sentTo: "test@example.com",
-            userId: utils.getTestData().users.admin.id
+            userId: utils.getTestData().users.admin.id,
+            content: null
         })
 
 
@@ -131,7 +133,7 @@ describe("Signup Mutation", () => {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 hashedToken: "hashed-test-token",
-                type: "INVITATION",
+                type: TokenType.INVITATION,
                 expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000), // 3 days from now
                 sentTo: "test@example.com",
                 userId: utils.getTestData().users.admin.id
@@ -153,7 +155,7 @@ describe("Signup Mutation", () => {
             expect(db.token.findFirst).toHaveBeenCalledWith({
                 where: {
                     hashedToken: "hashed-test-token",
-                    type: { in: ["INVITATION", "INVITATION_HOUSEHOLD"] },
+                    type: { in: [TokenType.INVITATION, TokenType.INVITATION_HOUSEHOLD] },
                     sentTo: "test@example.com",
                     expiresAt: { gt: expect.any(Date) }
                 }

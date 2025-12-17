@@ -3,7 +3,7 @@ import db from "@/src/lib/db"
 import Guard from "@/src/lib/guard/ability"
 import { AddOrInviteHouseholdMemberSchema } from "@/src/lib/model/household/schemas"
 import { AuthorizationError } from "blitz"
-import { HouseholdRole } from "@prisma/client"
+import { HouseholdRole, TokenType } from "@prisma/client"
 import { notificationMailer } from "@/src/lib/mailers/notificationMailer"
 import { invitationMailer } from "@/src/lib/mailers/invitationMailer"
 import { generateToken, hash256 } from "@blitzjs/auth"
@@ -66,13 +66,13 @@ export default resolver.pipe(
         expiresAt.setHours(expiresAt.getHours() + tokenExpirationHours)
 
         // Remove any existing household invitation tokens for this email
-        await db.token.deleteMany({ where: { type: "INVITATION_HOUSEHOLD", sentTo: normalizedEmail } })
+        await db.token.deleteMany({ where: { type: TokenType.INVITATION_HOUSEHOLD, sentTo: normalizedEmail } })
         // Save new token with household content
         await db.token.create({
             data: {
                 userId: ctx.session.userId,
                 sentTo: normalizedEmail,
-                type: "INVITATION_HOUSEHOLD",
+                type: TokenType.INVITATION_HOUSEHOLD,
                 hashedToken,
                 expiresAt,
                 content: {

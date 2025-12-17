@@ -1,7 +1,7 @@
 import db, { Prisma } from "@/src/lib/db"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { AuthenticatedCtx } from "blitz"
-import { HouseholdRole, Role } from "@prisma/client"
+import { HouseholdRole, Role, TokenType } from "@prisma/client"
 import { hash256 } from "@blitzjs/auth"
 import { performAddHouseholdMember } from "@/src/lib/model/household/mutations/addHouseholdMember"
 
@@ -37,7 +37,7 @@ export default async function signup(
     let adminSettings = await db.adminSettings.findFirst()
 
     // If registration is not allowed OR a token is presented, validate token
-    let invitationToken: { id: string, type: "INVITATION" | "INVITATION_HOUSEHOLD", content?: Prisma.JsonValue | null } | null = null
+    let invitationToken: { id: string, type: TokenType, content?: Prisma.JsonValue | null } | null = null
     if (!adminSettings?.allowRegistration || input.token) {
         if (!input.token) {
             throw new Error("Registration is currently by invitation only. Please use an invitation link.")
@@ -49,7 +49,7 @@ export default async function signup(
         const token = await db.token.findFirst({
             where: {
                 hashedToken,
-                type: { in: ["INVITATION", "INVITATION_HOUSEHOLD"] },
+                type: { in: [TokenType.INVITATION, TokenType.INVITATION_HOUSEHOLD] },
                 sentTo: input.email,
                 expiresAt: { gt: new Date() }
             }
@@ -59,7 +59,7 @@ export default async function signup(
             throw new Error("Invalid or expired invitation token.")
         }
 
-        invitationToken = { id: token.id, type: token.type as "INVITATION" | "INVITATION_HOUSEHOLD", content: token.content }
+        invitationToken = { id: token.id, type: token.type, content: token.content }
         // Note: We will delete the token after creating the user and processing household membership
     }
 
@@ -75,7 +75,7 @@ export default async function signup(
     })
 
     // If this is a household invitation, attach the user to the household
-    if (invitationToken?.type === "INVITATION_HOUSEHOLD") {
+    if (invitationToken?.type === TokenType.INVITATION_HOUSEHOLD) {
         const payload = invitationToken.content
         if (isHouseholdInvitationContent(payload)) {
             try {

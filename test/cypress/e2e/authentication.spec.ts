@@ -1,4 +1,5 @@
 import { TestData } from "@/test/utility/TestUtility"
+import { TokenType } from "@prisma/client"
 
 describe("Authentication Spec", () => {
     let testData: TestData
@@ -58,7 +59,7 @@ describe("Authentication Spec", () => {
 
         // Create an INVITATION token
         cy.task("createToken", {
-            type: "INVITATION",
+            type: TokenType.INVITATION,
             email: newUserEmail,
             userId: testData.users.admin.id
         }).then((result: any) => {
@@ -98,7 +99,7 @@ describe("Authentication Spec", () => {
 
         // Create an INVITATION_HOUSEHOLD token with household info
         cy.task("createToken", {
-            type: "INVITATION_HOUSEHOLD",
+            type: TokenType.INVITATION_HOUSEHOLD,
             email: newUserEmail,
             userId: testData.users.admin.id,
             content: {

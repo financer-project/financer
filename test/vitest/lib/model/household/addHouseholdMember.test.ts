@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import addOrInviteHouseholdMember from "@/src/lib/model/household/mutations/addOrInviteHouseholdMember"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import db from "@/src/lib/db"
-import { HouseholdRole } from "@prisma/client"
+import { HouseholdRole, TokenType } from "@prisma/client"
 
 // Mock mailers
 vi.mock("@/src/lib/mailers/invitationMailer", () => ({
@@ -36,7 +36,7 @@ describe("addOrInviteHouseholdMember mutation", () => {
             createdAt: new Date(),
             updatedAt: new Date(),
             hashedToken: "hashed-test-token",
-            type: "INVITATION",
+            type: TokenType.INVITATION,
             expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000),
             sentTo: "invitee@example.com",
             userId: utils.getTestData().users.admin.id
@@ -77,8 +77,8 @@ describe("addOrInviteHouseholdMember mutation", () => {
         expect(result).toEqual({ invited: true })
 
         // Check token handling for invitation
-        expect(db.token.deleteMany).toHaveBeenCalledWith({ where: { type: "INVITATION_HOUSEHOLD", sentTo: email } })
-        expect(db.token.create).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ sentTo: email, type: "INVITATION_HOUSEHOLD", content: expect.objectContaining({ householdId: adminHouseholdId }) }) }))
+        expect(db.token.deleteMany).toHaveBeenCalledWith({ where: { type: TokenType.INVITATION_HOUSEHOLD, sentTo: email } })
+        expect(db.token.create).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ sentTo: email, type: TokenType.INVITATION_HOUSEHOLD, content: expect.objectContaining({ householdId: adminHouseholdId }) }) }))
 
         // Mailers called in correct order (we can only assert both were called)
         const { invitationMailer } = await import("@/src/lib/mailers/invitationMailer")
