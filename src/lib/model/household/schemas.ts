@@ -10,11 +10,9 @@ export const CreateHouseholdSchema = z.object({
     description: z.string().nullable()
 })
 
-export const UpdateHouseholdSchema = CreateHouseholdSchema.merge(
-    z.object({
-        id: z.uuid()
-    })
-)
+export const UpdateHouseholdSchema = CreateHouseholdSchema.extend({
+    id: z.uuid()
+})
 
 export const DeleteHouseholdSchema = z.object({
     id: z.uuid()
@@ -26,22 +24,22 @@ export const DeleteHouseholdSchema = z.object({
 export const AddOrInviteHouseholdMemberSchema = z.object({
     // Household ID (named `id` to align with Guard.authorizePipe("invite", "Household"))
     id: z.uuid(),
-    email: z.string().email(),
-    role: z.nativeEnum(HouseholdRole).default(HouseholdRole.MEMBER)
+    email: z.email(),
+    role: z.enum(HouseholdRole).default(HouseholdRole.MEMBER)
 })
 
 // ID-based add-only mutation (used by signup flow and internal logic)
 export const AddHouseholdMemberSchema = z.object({
     id: z.uuid(), // householdId
     userId: z.uuid(),
-    role: z.nativeEnum(HouseholdRole).default(HouseholdRole.MEMBER)
+    role: z.enum(HouseholdRole).default(HouseholdRole.MEMBER)
 })
 
 export const UpdateHouseholdMemberSchema = z.object({
     // Household ID (named `id` to align with Guard.authorizePipe("update", "Household"))
     id: z.uuid(),
     userId: z.uuid(),
-    role: z.nativeEnum(HouseholdRole)
+    role: z.enum(HouseholdRole)
 })
 
 export const RemoveHouseholdMemberSchema = z.object({
