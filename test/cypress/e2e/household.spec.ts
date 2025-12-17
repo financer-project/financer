@@ -36,7 +36,7 @@ describe("Households", () => {
         cy.component("dataItem").should("contain.text", "A New Household")
         cy.component("dataItem").should("contain.text", "Euro (EUR)")
 
-        cy.get(".bg-destructive").click()
+        cy.get(".bg-destructive").contains("Delete").click()
         cy.get(".bg-primary").contains("Confirm").click()
 
         cy.get("tbody tr").should("have.length", 1)
