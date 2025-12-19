@@ -2,17 +2,20 @@
 import { TreeView } from "@/src/lib/components/common/data/TreeView"
 import Section from "@/src/lib/components/common/structure/Section"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
-import { CategoryType } from "@prisma/client"
+import { CategoryType, Prisma } from "@prisma/client"
 import { useState } from "react"
 import { Button } from "@/src/lib/components/ui/button"
 import { ChevronsDownUp, ChevronsUpDown } from "lucide-react"
 import Link from "next/link"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
+import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
 
 export const CategoriesList = () => {
     const [expandAllIncome, setExpandAllIncome] = useState<boolean>(true)
     const [expandAllExpense, setExpandAllExpense] = useState<boolean>(true)
     const categories = useCategories()
+
+    const canCreateCategory = useAuthorize("create", Prisma.ModelName.Category, {}, true)
 
     const renderActions = (setter: (value: boolean) => void, type: CategoryType) => (
         <div className={"flex flex-row gap-2"}>
@@ -26,11 +29,13 @@ export const CategoriesList = () => {
                     onClick={() => setter(false)}>
                 <ChevronsDownUp />
             </Button>
-            <Button variant={"outline"} asChild>
-                <Link href={{ pathname: "/categories/new", query: { type: type } }}>
-                    New
-                </Link>
-            </Button>
+            {canCreateCategory && (
+                <Button variant={"outline"} asChild>
+                    <Link href={{ pathname: "/categories/new", query: { type: type } }}>
+                        New
+                    </Link>
+                </Button>
+            )}
         </div>
     )
 

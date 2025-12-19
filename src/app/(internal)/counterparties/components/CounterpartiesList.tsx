@@ -5,8 +5,9 @@ import { DataTable, FilterConfig, useDataTable } from "@/src/lib/components/comm
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
-import { CounterpartyType } from "@prisma/client"
+import { CounterpartyType, Prisma as PrismaClient } from "@prisma/client"
 import type { Prisma } from "@/src/lib/db"
+import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
 
 export const CounterpartiesList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
@@ -42,6 +43,8 @@ export const CounterpartiesList = withFormatters(({ formatters }: WithFormatters
         householdId: currentHousehold.id,
         where
     })
+
+    const canCreateCounterparty = useAuthorize("create", PrismaClient.ModelName.Counterparty, {}, true)
 
     return (
         <DataTable
@@ -83,6 +86,6 @@ export const CounterpartiesList = withFormatters(({ formatters }: WithFormatters
             ]}
             itemRoute={counterparty => `/counterparties/${counterparty.id}`}
             count={count}
-            createRoute="/counterparties/new" />
+            createRoute={canCreateCounterparty ? "/counterparties/new" : undefined} />
     )
 })
