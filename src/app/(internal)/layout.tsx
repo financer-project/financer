@@ -13,6 +13,8 @@ import { redirect } from "next/navigation"
 import { Dialog } from "@/src/lib/components/ui/dialog"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 import { RequireHouseholdDialog } from "./RequireHouseholdDialog"
+import Link from "next/link"
+import { Dot } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
@@ -70,6 +72,19 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
                                 {currentHousehold ? children : undefined}
                                 <ScrollBar orientation="vertical" className={"pl-2"} />
                             </ScrollArea>
+                        </div>
+                        <div
+                            className={"md:flex hidden gap-2 text-xs text-muted-foreground mt-2 mr-2 -mb-1 justify-end items-center"}>
+                            <Link href={"https://financer-project.org/"}>
+                                © {new Date().getFullYear()} Financer
+                            </Link>
+                            <Dot className={"w-4"} />
+                            <Link
+                                href={`https://github.com/financer-project/financer/releases/tag/v${process.env.npm_package_version}`}>
+                                v{process.env.npm_package_version}
+                            </Link>
+                            <Dot className={"w-4"} />
+                            <Link href={"https://github.com/financer-project/financer/"}>GitHub</Link>
                         </div>
                     </main>
                 </SidebarProvider>
