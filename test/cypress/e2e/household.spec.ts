@@ -143,12 +143,8 @@ describe("Households", () => {
         cy.get("tbody tr").should("have.length", 2)
 
         // Try to create new transaction
-        cy.get("a[href='/transactions/new']").first().click()
-        cy.get("input[name='name']").type("Salary")
-        cy.selectField({ for: "type", value: "Income" })
-        cy.get("input[name='amount']").type("100.00")
-        cy.get("button[type='submit']").click()
-
-        cy.contains("AuthorizationError").should("exist")
+        cy.get("a[href='/transactions/new']").should("not.exist")
+        cy.visit("/transactions/new")
+        cy.url().should("contain", "/transactions?")
     })
 })

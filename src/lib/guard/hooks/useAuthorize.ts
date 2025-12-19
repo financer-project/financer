@@ -9,7 +9,7 @@ export type AbilityAction = "create" | "read" | "update" | "delete" | "manage" |
 export function useAuthorize(
     action: AbilityAction,
     resource: Prisma.ModelName,
-    params?: any,
+    params?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     useCurrentHousehold?: boolean
 ): boolean {
     const [allowed] = useQuery(authorizeAbility, { action, resource, params, useCurrentHousehold })
@@ -20,7 +20,7 @@ export function useAuthorize(
 export function useAuthorizeState(
     action: AbilityAction,
     resource: Prisma.ModelName,
-    params?: any,
+    params?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     useCurrentHousehold?: boolean
 ) {
     const [allowed] = useQuery(authorizeAbility, { action, resource, params, useCurrentHousehold })

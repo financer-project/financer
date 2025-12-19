@@ -6,7 +6,6 @@ import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src
 import { invoke } from "@/src/app/blitz-server"
 import authorizeAbility from "@/src/lib/guard/queries/authorizeAbility"
 import { Prisma } from "@prisma/client"
-import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {

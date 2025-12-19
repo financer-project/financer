@@ -22,7 +22,7 @@ export default resolver.pipe(
     resolver.authorize(),
     async ({ action, resource, params, useCurrentHousehold }, ctx) => {
         try {
-            let finalParams: any = params ?? {}
+            let finalParams = params ?? {}
 
             const resourcesScopedToHousehold: Prisma.ModelName[] = [
                 Prisma.ModelName.Transaction,
