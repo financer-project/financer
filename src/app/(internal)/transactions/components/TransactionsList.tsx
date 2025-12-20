@@ -13,6 +13,7 @@ import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransa
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
+import { useTags } from "@/src/lib/components/provider/TagProvider"
 
 export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
     hideFilters?: boolean
@@ -23,6 +24,7 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
     const accounts = useAccounts()
     const categories = useCategories()
     const counterparties = useCounterparties()
+    const tags = useTags()
     const [{ importJobs }] = useQuery(getImportJobs, { take: 200, orderBy: { createdAt: "desc" } })
 
     const columns: TableColumn<TransactionModel>[] = [
@@ -96,6 +98,13 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
                     render: (label: string) => (<ColoredTag color={c.data.color} label={label} />)
                 })),
             ]
+        },
+        {
+            type: "select",
+            label: "Tag",
+            property: "tagId",
+            multiSelect: true,
+            options: tags.map((tag) => ({ label: tag.name, value: tag.id }))
         },
         {
             type: "select",
