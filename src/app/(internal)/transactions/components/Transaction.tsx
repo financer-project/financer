@@ -67,8 +67,7 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                                                               color={tag.tag.color} />
                                               </Badge>
                                           ))}
-                                      </div>}
-                                  linkTo={`/categories/${transaction.category?.id}`} />
+                                      </div>} />
                     </DataItemGroup>
 
                     <DataItem label={"Description"}
