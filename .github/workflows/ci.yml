@@ -91,7 +91,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            --define sonar.branch.name
+            --define sonar.branch.name=main
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v5
