@@ -65,7 +65,7 @@ const CategoryDistributionChart = ({ className }: { className?: string }) => {
     )
 }
 
-const DistributionChart = withFormatters(({ categories, formatters }: {
+const DistributionChart = withFormatters(({ categories }: {
     categories: CategoryDistribution[]
 } & WithFormattersProps) => {
     const chartConfig: ChartConfig = {
