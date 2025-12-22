@@ -1,5 +1,6 @@
 import React from "react"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
+import PasswordField from "@/src/lib/components/common/form/elements/PasswordField"
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 import { AdminSettings } from "@prisma/client"
 import { Button } from "@/src/lib/components/ui/button"
@@ -42,11 +43,10 @@ const EmailSettingsSection: React.FC<EmailSettingsSectionProps> = ({
                     name="smtpUser"
                     label="SMTP Username"
                     placeholder="user@example.com" />
-                <TextField
+                <PasswordField
                     name="smtpPassword"
                     label="SMTP Password"
-                    placeholder="password"
-                    type="password" />
+                    placeholder="password" />
                 <TextField
                     name="smtpFromEmail"
                     label="From Email"

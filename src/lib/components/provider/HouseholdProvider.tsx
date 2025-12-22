@@ -6,8 +6,8 @@ import { useQuery } from "@blitzjs/rpc"
 import getHouseholds from "@/src/lib/model/household/queries/getHouseholds"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 
-const HouseholdContext = createContext<Household[]>([])
-const CurrentHouseholdContext = createContext<Household | undefined>(undefined)
+export const HouseholdContext = createContext<Household[]>([])
+export const CurrentHouseholdContext = createContext<Household | undefined>(undefined)
 
 export function HouseholdProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     const [{ households }] = useQuery(getHouseholds, { orderBy: { name: "asc" } })
