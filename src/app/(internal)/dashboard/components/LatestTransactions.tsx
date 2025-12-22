@@ -31,7 +31,8 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
         householdId: currentHousehold.id,
         where: {
             valueDate: {
-                gte: timeframe.toJSDate()
+                gte: timeframe.startDate.toJSDate(),
+                lte: timeframe.endDate?.toJSDate()
             }
         }
     })

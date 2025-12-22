@@ -3,22 +3,38 @@
 import React, { createContext, ReactNode, useContext, useMemo, useState } from "react"
 import { DateTime } from "luxon"
 
+// Define the timeframe type
+export type Timeframe = {
+    startDate: DateTime
+    endDate?: DateTime
+}
+
 // Define the timeframe options
 export type TimeframeOption = {
     label: string
-    value: DateTime
+    value: Timeframe
 }
 
 // Default timeframe options
 export const defaultTimeframeOptions: TimeframeOption[] = [
-    { label: "Last 3 Months", value: DateTime.now().minus({ months: 3 }) },
-    { label: "Last Year", value: DateTime.now().minus({ months: 12 }) }
+    { label: "This Week", value: { startDate: DateTime.now().startOf("week") } },
+    { label: "This Month", value: { startDate: DateTime.now().startOf("month") } },
+    { label: "Last 3 Months", value: { startDate: DateTime.now().minus({ months: 3 }) } },
+    { label: "This Quarter", value: { startDate: DateTime.now().startOf("quarter") } },
+    { label: "This Year", value: { startDate: DateTime.now().startOf("year") } },
+    {
+        label: "Last Year",
+        value: {
+            startDate: DateTime.now().minus({ years: 1 }).startOf("year"),
+            endDate: DateTime.now().minus({ years: 1 }).endOf("year")
+        }
+    }
 ]
 
 // Context type definition
 type TimeframeContextType = {
-    timeframe: DateTime
-    setTimeframe: (timeframe: DateTime) => void
+    timeframe: Timeframe
+    setTimeframe: (timeframe: Timeframe) => void
     timeframeOptions: TimeframeOption[]
 }
 
@@ -30,14 +46,14 @@ const TimeframeContext = createContext<TimeframeContextType | undefined>(
 // Provider component
 export const TimeframeProvider: React.FC<{
     children: ReactNode
-    initialTimeframe?: DateTime
+    initialTimeframe?: Timeframe
     options?: TimeframeOption[]
 }> = ({
           children,
-          initialTimeframe = defaultTimeframeOptions[0].value,
+          initialTimeframe = defaultTimeframeOptions[2].value, // Default to "Last 3 Months"
           options = defaultTimeframeOptions
       }) => {
-    const [timeframe, setTimeframe] = useState<DateTime>(initialTimeframe)
+    const [timeframe, setTimeframe] = useState<Timeframe>(initialTimeframe)
 
     // Memoize the context value to avoid unnecessary re-renders
     const value = useMemo(

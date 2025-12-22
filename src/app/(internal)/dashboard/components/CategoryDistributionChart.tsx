@@ -20,12 +20,14 @@ import { cn } from "@/src/lib/util/utils"
 import { CategoryType } from "@prisma/client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/lib/components/ui/tabs"
 import { useTimeframe } from "../context/TimeframeContext"
+import { Separator } from "@/src/lib/components/ui/separator"
 
 const CategoryDistributionChart = ({ className }: { className?: string }) => {
     const { timeframe } = useTimeframe()
     const [activeTab, setActiveTab] = useState<string>("expenses") // Default to expenses tab
     const [categories] = useQuery(getCategoryDistribution, {
-        startDate: timeframe.toJSDate(),
+        startDate: timeframe.startDate.toJSDate(),
+        endDate: timeframe.endDate?.toJSDate(),
         includeUncategorized: true
     })
 
@@ -36,21 +38,17 @@ const CategoryDistributionChart = ({ className }: { className?: string }) => {
     return (
         <Card className={cn("w-full", className)}>
             <Tabs defaultValue="expenses" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <CardHeader>
-                    <div className={"flex flex-row justify-between"}>
-                        <div>
-                            <CardTitle>Category Distribution</CardTitle>
-                            <CardDescription>Breakdown by category.</CardDescription>
-                        </div>
-                        <div>
-                            <TabsList className="mb-4">
-                                <TabsTrigger value="expenses">Expenses</TabsTrigger>
-                                <TabsTrigger value="income">Income</TabsTrigger>
-                            </TabsList>
-                        </div>
+                <CardHeader className={"flex flex-row justify-between items-center"}>
+                    <div>
+                        <CardTitle>Category Distribution</CardTitle>
+                        <CardDescription>Breakdown by category.</CardDescription>
                     </div>
+                    <TabsList >
+                        <TabsTrigger value="expenses">Expenses</TabsTrigger>
+                        <TabsTrigger value="income">Income</TabsTrigger>
+                    </TabsList>
                 </CardHeader>
-
+                <Separator />
                 <CardContent>
                     <Suspense fallback={<p>Loading ...</p>}>
                         <TabsContent value="expenses" className="flex justify-center">
@@ -77,18 +75,15 @@ const DistributionChart = withFormatters(({ categories, formatters }: {
                 color: `var(--color-${category.color}-500)`
             }
             return config
-        }, {} as Record<string, unknown>),
-        amount: {
-            label: "Amount"
-        }
-    }
+        }, {} as Record<string, unknown>)
+    } as ChartConfig
 
     categories.forEach(category => category.amount = Math.abs(category.amount))
 
     const pieProps = {
-        innerRadius: 60,
+        innerRadius: 50,
         outerRadius: "95",
-        paddingAngle: 4
+        paddingAngle: 0
     }
 
     return (
@@ -96,10 +91,9 @@ const DistributionChart = withFormatters(({ categories, formatters }: {
             className={cn("mx-auto aspect-square max-h-[250px] min-h-64")}
             config={chartConfig}>
             <PieChart>
-                <ChartTooltip
-                    formatter={(value) => formatters.amount.format(value as number)}
-                    content={<ChartTooltipContent nameKey={"id"} />} />
+                <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
                 <ChartLegend
+                    visibility={categories.length <= 5 ? "hidden" : undefined}
                     content={<ChartLegendContent nameKey={"id"} />}
                     className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center" />
                 <Pie

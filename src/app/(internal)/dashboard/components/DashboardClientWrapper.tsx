@@ -1,16 +1,15 @@
 "use client"
 
 import React from "react"
-import { TimeframeProvider, useTimeframe } from "../context/TimeframeContext"
+import { Timeframe, TimeframeProvider, useTimeframe } from "../context/TimeframeContext"
 import { SelectField } from "@/src/lib/components/common/form/elements/SelectField"
-import { DateTime } from "luxon"
 
 // Component for the timeframe selector in the header
 export const TimeframeSelector: React.FC = () => {
     const { timeframe, setTimeframe, timeframeOptions } = useTimeframe()
 
     return (
-        <SelectField<DateTime>
+        <SelectField<Timeframe>
             className={"min-w-48"}
             placeholder="Timeframe"
             value={timeframe}
