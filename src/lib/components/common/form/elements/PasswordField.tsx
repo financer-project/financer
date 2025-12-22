@@ -4,12 +4,9 @@ import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/src/lib/components/ui/input-group"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
-import { useField, useFormikContext, FormikValues } from "formik"
+import { FormikValues, useField, useFormikContext } from "formik"
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface PasswordFieldProps<E, V> extends FormElementProps<E, V> {}
-
-export const PasswordField = <E, V>({ name, ...props }: PasswordFieldProps<E, V>) => {
+export const PasswordField = <E, V = string>({ name, ...props }: FormElementProps<E, V>) => {
     const [showPassword, setShowPassword] = useState(false)
     const [input, , helpers] = useField(name as string)
     const { isSubmitting } = useFormikContext<FormikValues>()

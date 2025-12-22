@@ -4,12 +4,9 @@ import currencyCodes from "currency-codes"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/src/lib/components/ui/input-group"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
-import { useField, useFormikContext, FormikValues } from "formik"
+import { FormikValues, useField, useFormikContext } from "formik"
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface AmountFieldProps<E, V> extends FormElementProps<E, V> {}
-
-export const AmountField = <E, V>({ name, ...props }: AmountFieldProps<E, V>) => {
+export const AmountField = <E, V = number>({ name, ...props }: FormElementProps<E, V>) => {
     const currentHousehold = useCurrentHousehold()
     const currency = currencyCodes.code(currentHousehold?.currency ?? "USD")!
 
