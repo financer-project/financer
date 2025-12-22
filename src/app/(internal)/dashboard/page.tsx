@@ -29,10 +29,10 @@ const Dashboard: BlitzPage = async () => {
                 <PageContent>
                     <DashboardKPIs />
 
-                    <div className={"grid grid-cols-4 gap-6"}>
-                        <BalanceChart className={"col-span-4"} />
-                        <CategoryDistributionChart className={"max-h-96 lg:col-span-1 col-span-4"} />
-                        <LatestTransactions className={"max-h-96 lg:col-span-3 col-span-4"} />
+                    <div className={"grid grid-cols-5 gap-6"}>
+                        <BalanceChart className={"col-span-5"} />
+                        <CategoryDistributionChart className={"max-h-96 xl:col-span-2 col-span-5"} />
+                        <LatestTransactions className={"max-h-96 lg:col-span-3 col-span-5"} />
                     </div>
                 </PageContent>
             </Page>

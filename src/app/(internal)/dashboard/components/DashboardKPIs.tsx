@@ -59,7 +59,8 @@ const calculatePercentChange = (
 const DashboardKPIs: React.FC<WithFormattersProps> = ({ formatters }) => {
     const { timeframe } = useTimeframe()
     const [kpis] = useQuery(getDashboardKPIs, {
-        startDate: timeframe.toJSDate(),
+        startDate: timeframe.startDate.toJSDate(),
+        endDate: timeframe.endDate?.toJSDate(),
         previousPeriod: true
     })
 

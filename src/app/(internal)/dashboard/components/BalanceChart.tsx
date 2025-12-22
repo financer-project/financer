@@ -9,10 +9,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Suspense } from "react"
 import { cn } from "@/src/lib/util/utils"
 import { useTimeframe } from "../context/TimeframeContext"
+import { Separator } from "@/src/lib/components/ui/separator"
 
 const BalanceChart = ({ formatters, className }: WithFormattersProps & { className?: string }) => {
     const { timeframe } = useTimeframe()
-    const [balance] = useQuery(getBalanceHistory, { startDate: timeframe.toJSDate() })
+    const [balance] = useQuery(getBalanceHistory, {
+        startDate: timeframe.startDate.toJSDate(),
+        endDate: timeframe.endDate?.toJSDate()
+    })
 
     return (
         <Card className={cn("w-full", className)}>
@@ -20,7 +24,7 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
                 <CardTitle>Balance</CardTitle>
                 <CardDescription>This is your overall balance.</CardDescription>
             </CardHeader>
-
+            <Separator />
             <CardContent>
                 <Suspense fallback={<p>Loading ...</p>}>
                     <ChartContainer
@@ -30,13 +34,15 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
                                 label: "Income",
                                 color: "hsl(var(--chart-2))"
                             },
-                            expense: {
+                            expenses: {
                                 label: "Expenses",
                                 color: "hsl(var(--chart-1))"
                             }
                         }}>
-                        <BarChart accessibilityLayer data={balance}>
+                        <BarChart accessibilityLayer data={balance} dataKey={"month"}>
                             <CartesianGrid vertical={false} />
+                            <ChartTooltip cursor={false}
+                                          content={<ChartTooltipContent indicator="dot"/>} />
                             <XAxis
                                 dataKey="month"
                                 tickLine={false}
@@ -44,8 +50,6 @@ const BalanceChart = ({ formatters, className }: WithFormattersProps & { classNa
                                 tickMargin={8}
                                 tickFormatter={(value) => formatters.date.format(value, { onlyMonth: true })}
                             />
-                            <ChartTooltip cursor={false}
-                                          content={<ChartTooltipContent indicator="dot"  />} />
                             <Bar dataKey="income"
                                  fill="var(--color-chart-2)"
                                  radius={4} />
