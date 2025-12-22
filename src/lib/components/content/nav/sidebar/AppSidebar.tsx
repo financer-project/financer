@@ -28,7 +28,8 @@ import {
 import { usePathname } from "next/navigation"
 import NavHousehold from "@/src/lib/components/content/nav/sidebar/NavHousehold"
 import { useSession } from "@blitzjs/auth"
-import { Role } from "@prisma/client"
+import { Prisma, Role } from "@prisma/client"
+import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
 
 interface MenuGroup {
     name: string
@@ -42,7 +43,7 @@ interface MenuItem {
     variant?: "default" | "primary" | "outline"
 }
 
-const getGroups = (isAdmin: boolean): MenuGroup[] => [
+const getGroups = (isAdmin: boolean, canCreateTransaction: boolean): MenuGroup[] => [
     {
         name: "Transactions",
         items: [
@@ -61,12 +62,12 @@ const getGroups = (isAdmin: boolean): MenuGroup[] => [
                 url: "/imports",
                 icon: ImportIcon
             },
-            {
+            ...(canCreateTransaction ? [{
                 title: "Create Transaction",
                 url: "/transactions/new",
                 icon: CirclePlus,
-                variant: "primary"
-            }
+                variant: "primary" as const
+            }] : [])
         ]
     },
     {
@@ -123,6 +124,9 @@ const AppSidebar = () => {
     const session = useSession()
     const isAdmin = session.role === Role.ADMIN
 
+    const canCreateTransaction = useAuthorize("create", Prisma.ModelName.Transaction, {}, true)
+
+
     return (
         <Sidebar>
             <SidebarHeader className={"flex flex-col justify-center items-center max-h-20 h-20 py-4 pl-4 md:pr-0 pr-4"}>
@@ -130,7 +134,7 @@ const AppSidebar = () => {
                 <Separator />
             </SidebarHeader>
             <SidebarContent className={"pl-4 md:pr-0 pr-4"}>
-                {getGroups(isAdmin).map((group) => (
+                {getGroups(isAdmin, canCreateTransaction).map((group) => (
                     <SidebarGroup key={group.name} className={"px-0"}>
                         <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
                         <SidebarMenu>

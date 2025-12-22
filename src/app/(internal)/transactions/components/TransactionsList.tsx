@@ -13,6 +13,8 @@ import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransa
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
+import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
+import { Prisma } from "@prisma/client"
 import { useTags } from "@/src/lib/components/provider/TagProvider"
 
 export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
@@ -96,7 +98,7 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
                     label: c.data.name,
                     value: c.data.id,
                     render: (label: string) => (<ColoredTag color={c.data.color} label={label} />)
-                })),
+                }))
             ]
         },
         {
@@ -165,6 +167,8 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
         where
     })
 
+    const canCreateTransaction = useAuthorize("create", Prisma.ModelName.Transaction, {}, true)
+
     return (
         <div>
             <DataTable data={transactions}
@@ -176,7 +180,7 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
                        }}
                        columns={columns}
                        itemRoute={transaction => `/transactions/${transaction.id}`}
-                       createRoute={"/transactions/new"}
+                       createRoute={canCreateTransaction ? "/transactions/new" : undefined}
                        count={count} />
         </div>
     )

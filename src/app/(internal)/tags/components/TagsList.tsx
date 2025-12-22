@@ -5,6 +5,8 @@ import { DataTable, useDataTable } from "@/src/lib/components/common/data/table"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
+import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
+import { Prisma } from "@prisma/client"
 
 export const TagsList = withFormatters(({ formatters }: WithFormattersProps) => {
     const currentHousehold = useCurrentHousehold()!
@@ -14,6 +16,8 @@ export const TagsList = withFormatters(({ formatters }: WithFormattersProps) => 
         take: pageSize,
         householdId: currentHousehold.id
     })
+
+    const canCreateTag = useAuthorize("create", Prisma.ModelName.Tag, {}, true)
 
     return (
         <DataTable
@@ -38,6 +42,6 @@ export const TagsList = withFormatters(({ formatters }: WithFormattersProps) => 
             ]}
             itemRoute={tag => `/tags/${tag.id}`}
             count={count}
-            createRoute="/tags/new" />
+            createRoute={canCreateTag ? "/tags/new" : undefined} />
     )
 })

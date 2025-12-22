@@ -9,34 +9,46 @@ import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/c
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
 import { CirclePlus } from "lucide-react"
+import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
+import { Prisma } from "@prisma/client"
 
 const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) => {
     const [deleteTransactionMutation] = useMutation(deleteTransaction)
     const router = useRouter()
 
+    const canCreateMore = useAuthorize("create", Prisma.ModelName.Transaction, {}, true)
+    const canEdit = useAuthorize("update", Prisma.ModelName.Transaction, { id: transaction.id })
+    const canDelete = useAuthorize("delete", Prisma.ModelName.Transaction, { id: transaction.id })
+
     const renderActions = (transaction: TransactionModel) => (
         <div className={"flex flex-row gap-2"}>
-            <Button variant={"outline"} asChild>
-                <Link href={`/transactions/new`}><CirclePlus />Create more</Link>
-            </Button>
-            <Button variant={"outline"} asChild>
-                <Link href={`/transactions/${transaction.id}/edit`}>Edit</Link>
-            </Button>
-            <Button
-                variant={"destructive"}
-                onClick={async () => {
-                    const confirmed = await ConfirmationDialog({
-                        title: "Do you really want to delete this transaction?",
-                        description: "Deleting a transaction is irreversible."
-                    })
+            {canCreateMore && (
+                <Button variant={"outline"} asChild>
+                    <Link href={`/transactions/new`}><CirclePlus />Create more</Link>
+                </Button>
+            )}
+            {canEdit && (
+                <Button variant={"outline"} asChild>
+                    <Link href={`/transactions/${transaction.id}/edit`}>Edit</Link>
+                </Button>
+            )}
+            {canDelete && (
+                <Button
+                    variant={"destructive"}
+                    onClick={async () => {
+                        const confirmed = await ConfirmationDialog({
+                            title: "Do you really want to delete this transaction?",
+                            description: "Deleting a transaction is irreversible."
+                        })
 
-                    if (confirmed) {
-                        await deleteTransactionMutation({ id: transaction.id })
-                        router.push("/transactions")
-                    }
-                }}>
-                Delete
-            </Button>
+                        if (confirmed) {
+                            await deleteTransactionMutation({ id: transaction.id })
+                            router.push("/transactions")
+                        }
+                    }}>
+                    Delete
+                </Button>
+            )}
         </div>
     )
 

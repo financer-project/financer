@@ -33,7 +33,8 @@ export const TableContent = <T, >({ columns, data, itemRoute }: {
                     </EmptyMedia>
                     <EmptyTitle>No data yet.</EmptyTitle>
                     <EmptyDescription>
-                        You haven't added data. Add some data by pressing the <span className={"font-mono"}>create</span> button.
+                        You haven't added data. Add some data by pressing the <span
+                        className={"font-mono"}>create</span> button.
                     </EmptyDescription>
                 </EmptyHeader>
             </Empty>
@@ -67,7 +68,8 @@ export const TableContent = <T, >({ columns, data, itemRoute }: {
                 : data.map((item, index) => (
                     <Card
                         key={`mobile-item-${index}`}
-                        onClick={() => itemRoute && router.push(itemRoute(item))}>
+                        onClick={() => itemRoute && router.push(itemRoute(item))}
+                        className={"cursor-pointer"}>
                         <CardHeader>
                             <CardTitle className={"text-lg"}>
                                 {columns.find((column) => column.isKey)?.render(item)}

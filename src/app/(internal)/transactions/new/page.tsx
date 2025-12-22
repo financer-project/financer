@@ -6,13 +6,27 @@ import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
 import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
 import { Page, PageContent, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
+import { invoke } from "@/src/app/blitz-server"
+import authorizeAbility from "@/src/lib/guard/queries/authorizeAbility"
+import { Prisma } from "@prisma/client"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
     title: "New Transaction",
     description: "Create a new transaction"
 }
 
-export default function NewTransactionPage() {
+export default async function NewTransactionPage() {
+    const allowed = await invoke(authorizeAbility, {
+        action: "create",
+        resource: Prisma.ModelName.Transaction,
+        useCurrentHousehold: true
+    })
+
+    if (!allowed) {
+        redirect("/transactions")
+    }
+
     return (
         <Page>
             <PageHeader items={[

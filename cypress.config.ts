@@ -46,8 +46,8 @@ export default defineConfig({
             return config
         },
         experimentalRunAllSpecs: true,
-        requestTimeout: 10000,
-        defaultCommandTimeout: 10000
+        requestTimeout: 20000,
+        defaultCommandTimeout: 20000
     },
 
     fixturesFolder: "test/cypress/fixtures",

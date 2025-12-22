@@ -67,9 +67,9 @@ describe("Mobile Tests", () => {
         cy.get("div.text-lg").should("have.length", 3)
 
         // Navigate to details
-        cy.get("div").contains("Mobile Test Transaction").click()
+        cy.get("div.text-lg").contains("Mobile Test Transaction").click()
         cy.url().should("include", "/transactions/")
-        cy.component("breadcrumb").should("contain.text", "Mobile Test Transaction")
+        cy.component("breadcrumb").should("contain.text", "Mobile Test Transaction", { timeout: 10000 })
         cy.component("dataItem").should("contain.text", "Mobile Test Transaction")
 
         // Clean up - delete the transaction
