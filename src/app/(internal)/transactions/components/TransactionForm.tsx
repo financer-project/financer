@@ -4,6 +4,7 @@ import Form, { FormProps } from "@/src/lib/components/common/form/Form"
 import React, { useState } from "react"
 import { z } from "zod"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
+import AmountField from "@/src/lib/components/common/form/elements/AmountField"
 import { Transaction, TransactionType } from "@prisma/client"
 import TextAreaField from "@/src/lib/components/common/form/elements/TextAreaField"
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
@@ -71,10 +72,9 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                             { value: TransactionType.TRANSFER, label: "Transfer" }
                         ]} />
 
-                    <TextField<Transaction, string>
+                    <AmountField<Transaction, string>
                         label={"Amount"}
                         name={"amount"}
-                        type={"number"}
                         required />
                 </div>
 

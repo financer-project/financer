@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { cn } from "@/src/lib/util/utils"
 import TextField from "@/src/lib/components/common/form/elements/TextField"
+import PasswordField from "@/src/lib/components/common/form/elements/PasswordField"
 
 export const SignupForm = () => {
     const [signupMutation] = useMutation(signup)
@@ -78,7 +79,7 @@ export const SignupForm = () => {
                     </div>
 
                     <div className={cn("flex-flex-col gap-2")}>
-                        <TextField name="password" label={"Password"} placeholder="Password" type="password" />
+                        <PasswordField name="password" label={"Password"} placeholder="Password" />
                     </div>
                 </Form>
             </CardContent>

@@ -3,6 +3,7 @@
 import { AuthenticationError } from "blitz"
 import Link from "next/link"
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
+import { PasswordField } from "@/src/lib/components/common/form/elements/PasswordField"
 import { Form, FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import login from "@/src/lib/model/auth/mutations/login"
 import { Login } from "../validations"
@@ -49,7 +50,7 @@ export const LoginForm = () => {
                         }
                     }}>
                     <TextField name="email" label={"E-Mail Address"} placeholder="Email" />
-                    <TextField name="password" label={"Password"} placeholder="Password" type="password" />
+                    <PasswordField name="password" label={"Password"} placeholder="Password" />
 
                     <small>
                         <span className={"text-muted-foreground"}>Forgot your password? </span>

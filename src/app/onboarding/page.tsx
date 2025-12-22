@@ -8,6 +8,7 @@ import { z } from "zod"
 import { Card, CardContent } from "@/src/lib/components/ui/card"
 import { MultiStepForm, Step } from "@/src/lib/components/common/form/MultiStepForm"
 import { TextField } from "@/src/lib/components/common/form/elements/TextField"
+import { PasswordField } from "@/src/lib/components/common/form/elements/PasswordField"
 import { SelectFormField } from "@/src/lib/components/common/form/elements/SelectFormField"
 import { TextAreaField } from "@/src/lib/components/common/form/elements/TextAreaField"
 import processOnboarding from "@/src/lib/model/onboarding/mutations/processOnboarding"
@@ -144,11 +145,10 @@ export default function OnboardingPage() {
                                     required
                                 />
 
-                                <TextField
+                                <PasswordField
                                     name="password"
                                     label="Password"
                                     placeholder="Password"
-                                    type="password"
                                     required
                                 />
                             </Step>

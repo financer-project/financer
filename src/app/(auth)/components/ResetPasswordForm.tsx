@@ -1,6 +1,6 @@
 "use client"
 
-import { TextField } from "@/src/lib/components/common/form/elements/TextField"
+import { PasswordField } from "@/src/lib/components/common/form/elements/PasswordField"
 import { Form } from "@/src/lib/components/common/form/Form"
 import { ResetPassword } from "../validations"
 import resetPassword from "@/src/lib/model/auth/mutations/resetPassword"
@@ -47,14 +47,12 @@ export function ResetPasswordForm() {
                               })
                           })
                       }}>
-                    <TextField name="password"
-                               label="New Password"
-                               type="password"
-                               required />
-                    <TextField name="passwordConfirmation"
-                               label="Confirm New Password"
-                               type="password"
-                               required />
+                    <PasswordField name="password"
+                                   label="New Password"
+                                   required />
+                    <PasswordField name="passwordConfirmation"
+                                   label="Confirm New Password"
+                                   required />
                     <Input type="hidden" name="token" value={token} />
                 </Form>
             </CardContent>
