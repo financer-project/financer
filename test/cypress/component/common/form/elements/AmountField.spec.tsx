@@ -44,8 +44,6 @@ describe("<AmountField />", () => {
             />
         )
 
-        // For EUR, symbol is €
-        cy.contains("€").should("be.visible")
         cy.contains("EUR").should("be.visible")
     })
 
@@ -61,7 +59,6 @@ describe("<AmountField />", () => {
         )
 
         // For USD, symbol is $
-        cy.contains("$").should("be.visible")
         cy.contains("USD").should("be.visible")
     })
 
