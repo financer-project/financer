@@ -3,7 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import getCounterparty from "@/src/lib/model/counterparties/queries/getCounterparty"
 import Section from "@/src/lib/components/common/structure/Section"
 import DataItem from "@/src/lib/components/common/data/DataItem"
-import { DataItemContainer, DataItemGroup } from "@/src/lib/components/common/data/DataItemContainer"
+import { DataItemContainer, DataItemWrapper } from "@/src/lib/components/common/data/DataItemContainer"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 
@@ -18,7 +18,7 @@ export const Counterparty = withFormatters(({ counterpartyId, formatters }: With
                      subtitle={"This is the basic data of the counterparty."}>
 
                 <DataItemContainer>
-                    <DataItemGroup>
+                    <DataItemWrapper>
                         <DataItem label={"Name"}
                                   data={counterparty.name} />
 
@@ -26,9 +26,9 @@ export const Counterparty = withFormatters(({ counterpartyId, formatters }: With
                                   data={<CounterpartyIcon type={counterparty.type}
                                                           name={formatters.capitalize.format(counterparty.type.toLowerCase().replace("_", " "))} />
                                   } />
-                    </DataItemGroup>
+                    </DataItemWrapper>
 
-                    <DataItemGroup>
+                    <DataItemWrapper>
                         <DataItem label={"Description"}
                                   data={counterparty.description} />
 
@@ -37,7 +37,7 @@ export const Counterparty = withFormatters(({ counterpartyId, formatters }: With
 
                         <DataItem label={"Web Address"}
                                   data={counterparty.webAddress} />
-                    </DataItemGroup>
+                    </DataItemWrapper>
                 </DataItemContainer>
 
             </Section>
