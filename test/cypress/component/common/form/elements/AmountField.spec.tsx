@@ -75,8 +75,70 @@ describe("<AmountField />", () => {
             />
         )
 
-        cy.get("input").clear().type("123.45")
+        cy.get("input").clear().type("12345")
         cy.get("button[type='submit']").click()
         cy.get("@handleSubmit").should("have.been.calledWith", { amount: 123.45 })
+    })
+
+    it("shifts digits from right to left as they are typed (ATM style)", () => {
+        const handleSubmit = cy.stub().as("handleSubmit")
+
+        cy.mount(
+            <TestForm
+                onSubmit={handleSubmit}
+                props={{
+                    name: "amount",
+                    label: "Amount",
+                }}
+            />
+        )
+
+        cy.get("input").clear().type("5")
+        // Use a regex to match both . and , as decimal separator to be locale-agnostic if needed,
+        // but since previous tests used ".", we'll stick to it or match both.
+        cy.get("input").should("have.value", "0.05")
+
+        cy.get("input").type("0")
+        cy.get("input").should("have.value", "0.50")
+
+        cy.get("input").type("5")
+        cy.get("input").should("have.value", "5.05")
+
+        cy.get("input").type("0")
+        cy.get("input").should("have.value", "50.50")
+
+        cy.get("button[type='submit']").click()
+        cy.get("@handleSubmit").should("have.been.calledWith", { amount: 50.5 })
+    })
+
+    it("shifts digits from right to left as they are typed (ATM style)", () => {
+        const handleSubmit = cy.stub().as("handleSubmit")
+
+        cy.mount(
+            <TestForm
+                onSubmit={handleSubmit}
+                props={{
+                    name: "amount",
+                    label: "Amount",
+                }}
+            />
+        )
+
+        cy.get("input").clear().type("5")
+        // Use a regex to match both . and , as decimal separator to be locale-agnostic if needed,
+        // but since previous tests used ".", we'll stick to it or match both.
+        cy.get("input").should("have.value", "0.05")
+
+        cy.get("input").type("0")
+        cy.get("input").should("have.value", "0.50")
+
+        cy.get("input").type("5")
+        cy.get("input").should("have.value", "5.05")
+
+        cy.get("input").type("0")
+        cy.get("input").should("have.value", "50.50")
+
+        cy.get("button[type='submit']").click()
+        cy.get("@handleSubmit").should("have.been.calledWith", { amount: 50.5 })
     })
 })
