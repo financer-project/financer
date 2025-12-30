@@ -27,7 +27,7 @@ export const AmountField = <E, V = number>({ name, ...props }: FormElementProps<
                     }) : ""}
                     disabled={isSubmitting || props.readonly}
                     placeholder={props.placeholder ?? "0.00"}
-                    className={"text-right"}
+                    className={"text-right appearance-none items-center"}
                     onChange={event => {
                         const digits = event.target.value.replace(/\D/g, "")
                         if (digits === "") {
@@ -41,7 +41,7 @@ export const AmountField = <E, V = number>({ name, ...props }: FormElementProps<
                     }}
                 />
                 <InputGroupAddon align="inline-end">
-                    <InputGroupText>{currency.code}</InputGroupText>
+                    <InputGroupText className={"mt-0.5"}>{currency.code}</InputGroupText>
                 </InputGroupAddon>
             </InputGroup>
         </FormElement>
