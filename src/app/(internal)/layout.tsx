@@ -65,16 +65,15 @@ const RootLayout: BlitzLayout = async ({ children }: { children: React.ReactNode
                 {!currentHousehold && <RequireHouseholdDialog />}
                 <SidebarProvider>
                     <AppSidebar />
-                    <main className={"flex flex-col w-full h-screen bg-sidebar md:p-4 p-0"}>
-                        <div className={"bg-background md:rounded-xl h-full max-h-full"}>
+                    <main className={"flex flex-col w-full h-screen bg-sidebar md:p-4 md:pb-2 p-0"}>
+                        <div className={"grow bg-background md:rounded-xl overflow-y-auto"}>
                             <ScrollArea
-                                className={"h-full overflow-y-auto md:rounded-xl flex flex-col justify-start"}>
+                                className={"h-full overflow-y-auto md:rounded-xl flex flex-col justify-start pb-4"}>
                                 {currentHousehold ? children : undefined}
                                 <ScrollBar orientation="vertical" className={"pl-2"} />
                             </ScrollArea>
                         </div>
-                        <div
-                            className={"md:flex hidden gap-2 text-xs text-muted-foreground mt-2 mr-2 -mb-1 justify-end items-center"}>
+                        <div className={"md:flex hidden gap-2 text-xs text-muted-foreground mt-2 mr-2 justify-end items-center"}>
                             <Link href={"https://financer-project.org/"}>
                                 © {new Date().getFullYear()} Financer
                             </Link>
