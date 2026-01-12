@@ -36,7 +36,7 @@ export const AmountField = <E, V = number>({ name, ...props }: FormElementProps<
                         } else {
                             const amount = parseInt(digits, 10) / 100
                             helpers.setValue(amount)
-                            props.onChange?.(amount as any as V)
+                            props.onChange?.(amount as V)
                         }
                     }}
                 />
