@@ -19,19 +19,24 @@ export const AmountField = <E, V = number>({ name, ...props }: FormElementProps<
                 <InputGroupInput
                     {...input}
                     id={name.toString()}
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    value={typeof input.value === "number" ? input.value.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }) : ""}
                     disabled={isSubmitting || props.readonly}
                     placeholder={props.placeholder ?? "0.00"}
                     className={"text-right appearance-none items-center"}
                     onChange={event => {
-                        if (event.target.value === "") {
+                        const digits = event.target.value.replace(/\D/g, "")
+                        if (digits === "") {
                             helpers.setValue(null)
                             props.onChange?.(null)
                         } else {
-                            input.onChange(event)
-                            if (event.target.value) {
-                                props.onChange?.(event.target.value as V)
-                            }
+                            const amount = parseInt(digits, 10) / 100
+                            helpers.setValue(amount)
+                            props.onChange?.(amount as V)
                         }
                     }}
                 />
