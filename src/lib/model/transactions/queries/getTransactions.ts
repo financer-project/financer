@@ -43,7 +43,8 @@ export default resolver.pipe(
                     category: true,
                     counterparty: true,
                     account: true,
-                    tags: { include: { tag: true } }
+                    tags: { include: { tag: true } },
+                    attachments: true
                 }
             })
         })

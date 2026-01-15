@@ -1,7 +1,15 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vitest"
 import * as fs from "fs"
 import * as path from "path"
-import { ensureDirectoryExists, saveImportFile, readImportFile, deleteImportFile } from "@/src/lib/util/fileStorage"
+import {
+    ensureDirectoryExists,
+    saveImportFile,
+    readImportFile,
+    deleteImportFile,
+    saveAttachmentFile,
+    readFile,
+    deleteFile
+} from "@/src/lib/util/fileStorage"
 
 // Mock the fs module
 vi.mock("fs", () => {
@@ -125,7 +133,7 @@ describe("File Storage Utilities", () => {
 
             // Verify
             expect(fs.existsSync).toHaveBeenCalledWith(mockFilePath)
-            expect(fs.readFileSync).toHaveBeenCalledWith(mockFilePath, "utf8")
+            expect(fs.readFileSync).toHaveBeenCalledWith(mockFilePath)
             expect(result).toBe(mockContent)
         })
 
@@ -163,6 +171,55 @@ describe("File Storage Utilities", () => {
             // Verify
             expect(fs.existsSync).toHaveBeenCalledWith(mockFilePath)
             expect(fs.unlinkSync).not.toHaveBeenCalled()
+        })
+    })
+
+    describe("saveAttachmentFile", () => {
+        const ATTACHMENTS_DIR = "data/attachments"
+        const transactionId = "trans-1"
+        const attachmentId = "attach-1"
+        const fileName = "test.pdf"
+        const content = Buffer.from("test content")
+
+        test("saves attachment file correctly", async () => {
+            vi.mocked(fs.existsSync).mockReturnValue(false)
+            vi.mocked(path.join).mockImplementation((...args) => args.join("/"))
+
+            const expectedDir = `${ATTACHMENTS_DIR}/${transactionId}/${attachmentId}`
+            const expectedPath = `${expectedDir}/${fileName}`
+
+            const result = await saveAttachmentFile(transactionId, attachmentId, fileName, content)
+
+            expect(result).toBe(expectedPath)
+            expect(fs.mkdirSync).toHaveBeenCalledWith(expectedDir, { recursive: true })
+            expect(fs.writeFileSync).toHaveBeenCalledWith(expectedPath, content)
+        })
+    })
+
+    describe("readFile", () => {
+        test("reads file as buffer", () => {
+            const filePath = "some/file.txt"
+            const content = Buffer.from("hello")
+            vi.mocked(fs.existsSync).mockReturnValue(true)
+            vi.mocked(fs.readFileSync).mockReturnValue(content)
+
+            const result = readFile(filePath)
+
+            expect(result).toBe(content)
+            expect(fs.readFileSync).toHaveBeenCalledWith(filePath)
+        })
+
+        test("throws error if file not found", () => {
+            vi.mocked(fs.existsSync).mockReturnValue(false)
+            expect(() => readFile("missing.txt")).toThrow("File not found: missing.txt")
+        })
+    })
+
+    describe("deleteFile", () => {
+        test("deletes file if exists", () => {
+            vi.mocked(fs.existsSync).mockReturnValue(true)
+            deleteFile("exists.txt")
+            expect(fs.unlinkSync).toHaveBeenCalledWith("exists.txt")
         })
     })
 })

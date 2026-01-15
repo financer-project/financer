@@ -16,6 +16,7 @@ import { useCounterparties } from "@/src/lib/components/provider/CounterpartyPro
 import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
 import { Prisma } from "@prisma/client"
 import { useTags } from "@/src/lib/components/provider/TagProvider"
+import { Paperclip } from "lucide-react"
 
 export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
     hideFilters?: boolean
@@ -32,7 +33,14 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
     const columns: TableColumn<TransactionModel>[] = [
         {
             name: "Name",
-            render: transaction => transaction.name,
+            render: transaction => (
+                <div className="flex items-center gap-2">
+                    {transaction.name}
+                    {transaction.attachments && transaction.attachments.length > 0 && (
+                        <Paperclip className="h-3 w-3 text-muted-foreground" />
+                    )}
+                </div>
+            ),
             isKey: true
         },
         {

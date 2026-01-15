@@ -9,6 +9,7 @@ import { Badge } from "@/src/lib/components/ui/badge"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 import { DataItemContainer, DataItemWrapper } from "@/src/lib/components/common/data/DataItemContainer"
+import { AttachmentList } from "./AttachmentList"
 
 export const Transaction = withFormatters(({ transactionId, formatters }: WithFormattersProps & {
     transactionId: string
@@ -74,6 +75,8 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                               className={"col-span-2"} />
                 </DataItemWrapper>
             </Section>
+
+            <AttachmentList transactionId={transaction.id} attachments={transaction.attachments} />
 
             <Section title={"Administrative Data"}
                      subtitle={"Administrative data contains information about who has changed what etc."}>
