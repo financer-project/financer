@@ -10,6 +10,7 @@
         "lint": "eslint .",
         "db:generate": "prisma generate",
         "db:migrate:dev": "dotenv -e .env.local prisma migrate dev",
+        "db:migrate:reset": "dotenv -e .env.local prisma migrate reset",
         "db:migrate:deploy": "dotenv -e .env.local prisma migrate deploy",
         "db:push": "dotenv -e .env.local prisma db push",
         "test": "yarn test:unit && yarn test:component && yarn test:e2e && yarn coverage:merge",
