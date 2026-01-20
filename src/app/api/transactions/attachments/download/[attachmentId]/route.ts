@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
         const fileBuffer = readFile(attachment.path)
 
-        return new NextResponse(fileBuffer, {
+        return new NextResponse(new Uint8Array(fileBuffer), {
             headers: {
                 "Content-Type": attachment.type,
                 "Content-Disposition": `inline; filename="${attachment.name}"`
