@@ -76,7 +76,7 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                 </DataItemWrapper>
             </Section>
 
-            <AttachmentList transactionId={transaction.id} attachments={transaction.attachments} />
+            <AttachmentList transactionId={transaction.id} attachments={transaction.attachments} formatters={formatters} />
 
             <Section title={"Administrative Data"}
                      subtitle={"Administrative data contains information about who has changed what etc."}>

@@ -175,7 +175,7 @@ describe("File Storage Utilities", () => {
     })
 
     describe("saveAttachmentFile", () => {
-        const ATTACHMENTS_DIR = "data/attachments"
+        const TRANSACTIONS_DIR = "data/transactions"
         const transactionId = "trans-1"
         const attachmentId = "attach-1"
         const fileName = "test.pdf"
@@ -185,7 +185,7 @@ describe("File Storage Utilities", () => {
             vi.mocked(fs.existsSync).mockReturnValue(false)
             vi.mocked(path.join).mockImplementation((...args) => args.join("/"))
 
-            const expectedDir = `${ATTACHMENTS_DIR}/${transactionId}/${attachmentId}`
+            const expectedDir = `${TRANSACTIONS_DIR}/${transactionId}/attachments/${attachmentId}`
             const expectedPath = `${expectedDir}/${fileName}`
 
             const result = await saveAttachmentFile(transactionId, attachmentId, fileName, content)

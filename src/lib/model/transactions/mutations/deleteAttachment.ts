@@ -7,7 +7,7 @@ import { deleteFile } from "@/src/lib/util/fileStorage"
 import { AuthenticatedCtx } from "blitz"
 
 const DeleteAttachmentSchema = z.object({
-    id: z.string().uuid(),
+    id: z.uuid(),
 })
 
 export default resolver.pipe(
@@ -23,7 +23,7 @@ export default resolver.pipe(
             throw new Error("Attachment not found")
         }
 
-        await Guard.authorize("update", "Transaction", { id: attachment.transactionId }, ctx)
+        await Guard.authorizePipe("update", "Transaction")({ id: attachment.transactionId }, ctx)
 
         await db.attachment.delete({
             where: { id: input.id }

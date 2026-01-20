@@ -3,7 +3,7 @@ import path from "path"
 
 const DATA_DIR = "data"
 const IMPORTS_DIR = path.join(DATA_DIR, "imports")
-const ATTACHMENTS_DIR = path.join(DATA_DIR, "attachments")
+const TRANSACTIONS_DIR = path.join(DATA_DIR, "transactions")
 
 /**
  * Ensures that the directory exists, creating it if necessary
@@ -41,7 +41,7 @@ export function saveImportFile(importId: string, content: string): string {
  * @returns The path to the saved file
  */
 export async function saveAttachmentFile(transactionId: string, attachmentId: string, fileName: string, content: Buffer): Promise<string> {
-    const attachmentDir = path.join(ATTACHMENTS_DIR, transactionId, attachmentId)
+    const attachmentDir = path.join(TRANSACTIONS_DIR, transactionId, "attachments", attachmentId)
     ensureDirectoryExists(attachmentDir)
 
     const filePath = path.join(attachmentDir, fileName)
