@@ -51,3 +51,6 @@ data/
 
 # generated coding
 .generated/
+
+# AI
+.claude/

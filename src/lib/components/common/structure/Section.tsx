@@ -15,7 +15,7 @@ const Section = ({ title, subtitle, actions, children, className, id }: SectionP
     const sectionId = id ?? title.toLowerCase().replace(/\s+/g, "-")
 
     return (
-        <section id={sectionId} className={cn("flex flex-col gap-8 mb-6", className)}>
+        <section id={sectionId} className={cn("flex flex-col gap-6 mb-12", className)}>
             <Separator />
             <div className={"flex flex-row justify-between"}>
                 <div>
