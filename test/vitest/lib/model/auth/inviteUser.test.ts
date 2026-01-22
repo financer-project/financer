@@ -106,10 +106,10 @@ describe("inviteUser mutation", () => {
         vi.spyOn(db.user, "findFirst").mockImplementation((args) => {
             // For the existing user check (first call)
             if (args?.where?.email === "test@example.com") {
-                return Promise.resolve(null)
+                return Promise.resolve(null) as any
             }
             // For the inviter user lookup (second call)
-            return Promise.resolve(null)
+            return Promise.resolve(null) as any
         })
 
         await expect(
@@ -132,14 +132,22 @@ describe("inviteUser mutation", () => {
                     role: "USER",
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    hashedPassword: "hashed-password"
-                })
+                    hashedPassword: "hashed-password",
+                    avatarPath: null
+                }) as any
             }
             // For the inviter user lookup
             return Promise.resolve({
+                id: "admin-user-id",
+                email: "admin@example.com",
                 firstName: "Admin",
-                lastName: "User"
-            })
+                lastName: "User",
+                role: "ADMIN",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                hashedPassword: "hashed-password",
+                avatarPath: null
+            }) as any
         })
 
         await expect(

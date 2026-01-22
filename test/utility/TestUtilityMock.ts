@@ -87,6 +87,12 @@ export default class TestUtilityMock extends TestUtilityBase {
                     userId = publicData.userId ?? null
                     role = publicData.role ?? null
                     return Promise.resolve()
+                },
+                $setPublicData(publicData: Record<string, any>): Promise<void> {
+                    if (publicData.userId !== undefined) userId = publicData.userId
+                    if (publicData.role !== undefined) role = publicData.role
+                    if (publicData.email !== undefined) email = publicData.email
+                    return Promise.resolve()
                 }
             }
         } as unknown as AuthenticatedCtx
