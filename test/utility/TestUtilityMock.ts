@@ -52,6 +52,7 @@ export default class TestUtilityMock extends TestUtilityBase {
         let userId = userObject?.id ?? null
         let role = userObject?.role ?? null
         let email = userObject?.email ?? null
+        const handle = userObject ? `session-handle-${userObject.id}` : null
 
         return {
             session: {
@@ -63,6 +64,9 @@ export default class TestUtilityMock extends TestUtilityBase {
                 },
                 get email() {
                     return email
+                },
+                get $handle() {
+                    return handle
                 },
                 $getPrivateData(): Promise<Record<any, any>> {
                     return Promise.resolve(privateDataStorage)

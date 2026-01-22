@@ -6,17 +6,22 @@ import { useRouter } from "next/navigation"
 import getProfile from "@/src/lib/model/user/queries/getProfile"
 import updateProfile from "@/src/lib/model/user/mutations/updateProfile"
 import deleteAvatar from "@/src/lib/model/user/mutations/deleteAvatar"
+import invalidateAllSessions from "@/src/lib/model/auth/mutations/invalidateAllSessions"
 import { ProfileForm } from "./ProfileForm"
 import { AvatarUpload } from "./AvatarUpload"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import { UpdateProfileSchema } from "@/src/lib/model/user/schemas"
 import Section from "@/src/lib/components/common/structure/Section"
 import { ChangePasswordDialog } from "@/src/app/(internal)/settings/components/ChangePasswordDialog"
+import { Button } from "@/src/lib/components/ui/button"
+import { LogOut } from "lucide-react"
+import { toast } from "sonner"
 
 export function EditProfile() {
     const [profile, { refetch }] = useQuery(getProfile, null, { staleTime: Infinity })
     const [updateProfileMutation] = useMutation(updateProfile)
     const [deleteAvatarMutation] = useMutation(deleteAvatar)
+    const [invalidateAllSessionsMutation, { isLoading: isInvalidating }] = useMutation(invalidateAllSessions)
     const router = useRouter()
 
     return (
@@ -67,7 +72,23 @@ export function EditProfile() {
             {profile.hasPassword && (
                 <Section title={"Security"}
                          subtitle={"Update your password to keep your account secure."}>
-                    <ChangePasswordDialog onSuccess={() => router.refresh()} />
+                    <div className={"flex flex-wrap gap-2"}>
+                        <ChangePasswordDialog onSuccess={() => router.refresh()} />
+                        <Button
+                            variant={"outline"}
+                            disabled={isInvalidating}
+                            onClick={() => {
+                                toast.promise(invalidateAllSessionsMutation(), {
+                                    loading: "Logging out from all devices...",
+                                    success: "Successfully logged out from all other devices",
+                                    error: "Failed to logout from other devices"
+                                })
+                            }}
+                        >
+                            <LogOut className={"h-4 w-4"} />
+                            Logout from all devices
+                        </Button>
+                    </div>
                 </Section>
             )}
 

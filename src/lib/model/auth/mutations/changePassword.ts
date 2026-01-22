@@ -18,6 +18,14 @@ export default resolver.pipe(
             data: { hashedPassword }
         })
 
+        // Invalidate all other sessions for security
+        await db.session.deleteMany({
+            where: {
+                userId: user.id,
+                handle: { not: ctx.session.$handle! }
+            }
+        })
+
         return true
     }
 )
