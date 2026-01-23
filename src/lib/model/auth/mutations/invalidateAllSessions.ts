@@ -10,7 +10,7 @@ export default resolver.pipe(
         await db.session.deleteMany({
             where: {
                 userId,
-                handle: { not: currentHandle }
+                handle: { not: currentHandle! }
             }
         })
 
