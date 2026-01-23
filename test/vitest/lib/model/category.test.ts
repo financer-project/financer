@@ -258,7 +258,7 @@ describe("Category Mutations & Queries", () => {
                 householdId: util.getTestData().households.standard.id,
                 name: "Updated Parent Name",
                 type: parentCategory.type,
-                color: parentCategory.color,
+                color: parentCategory.color as ColorType | null,
                 parentId: null
             }, util.getMockContext())
 

@@ -37,7 +37,8 @@ describe("forgotPassword mutation", () => {
             role: "USER",
             createdAt: new Date(),
             updatedAt: new Date(),
-            hashedPassword: "hashed-password"
+            hashedPassword: "hashed-password",
+            avatarPath: null
         })
 
         // Mock db.token.findFirst (no existing token by default)
@@ -53,7 +54,8 @@ describe("forgotPassword mutation", () => {
             type: "RESET_PASSWORD",
             expiresAt: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours from now
             sentTo: testEmail,
-            userId: "test-user-id"
+            userId: "test-user-id",
+            content: null
         })
     })
 
@@ -88,7 +90,8 @@ describe("forgotPassword mutation", () => {
             type: "RESET_PASSWORD",
             expiresAt: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours from now
             sentTo: testEmail,
-            userId: "test-user-id"
+            userId: "test-user-id",
+            content: null
         })
 
         // Expect the mutation to throw a RecentPasswordResetError

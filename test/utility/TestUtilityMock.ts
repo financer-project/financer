@@ -52,6 +52,7 @@ export default class TestUtilityMock extends TestUtilityBase {
         let userId = userObject?.id ?? null
         let role = userObject?.role ?? null
         let email = userObject?.email ?? null
+        const handle = userObject ? `session-handle-${userObject.id}` : null
 
         return {
             session: {
@@ -63,6 +64,9 @@ export default class TestUtilityMock extends TestUtilityBase {
                 },
                 get email() {
                     return email
+                },
+                get $handle() {
+                    return handle
                 },
                 $getPrivateData(): Promise<Record<any, any>> {
                     return Promise.resolve(privateDataStorage)
@@ -86,6 +90,12 @@ export default class TestUtilityMock extends TestUtilityBase {
                 $create(publicData: Record<string, any>): Promise<void> {
                     userId = publicData.userId ?? null
                     role = publicData.role ?? null
+                    return Promise.resolve()
+                },
+                $setPublicData(publicData: Record<string, any>): Promise<void> {
+                    if (publicData.userId !== undefined) userId = publicData.userId
+                    if (publicData.role !== undefined) role = publicData.role
+                    if (publicData.email !== undefined) email = publicData.email
                     return Promise.resolve()
                 }
             }
