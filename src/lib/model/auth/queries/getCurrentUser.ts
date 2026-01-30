@@ -11,6 +11,7 @@ export default async function getCurrentUser(_: null, ctx: Ctx) {
             lastName: true,
             email: true,
             role: true,
+            avatarPath: true,
             settings: true
         }
     })

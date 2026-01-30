@@ -8,9 +8,14 @@ import { Role } from "@/types"
 export const authenticateUser = async (rawEmail: string, rawPassword: string) => {
     const { email, password } = Login.parse({ email: rawEmail, password: rawPassword })
     const user = await db.user.findFirst({ where: { email } })
-    if (!user) throw new AuthenticationError()
+    if (!user) throw new AuthenticationError("Invalid credentials")
 
-    const result = await SecurePassword.verify(user.hashedPassword, password)
+    let result
+    try {
+        result = await SecurePassword.verify(user.hashedPassword, password)
+    } catch {
+        throw new AuthenticationError("The credentials provided are invalid.")
+    }
 
     if (result === SecurePassword.VALID_NEEDS_REHASH) {
         // Upgrade hashed password with a more secure hash

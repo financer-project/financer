@@ -16,6 +16,7 @@ import { toast } from "sonner"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import { useCurrentUser } from "@/src/lib/hooks/useCurrentUser"
 import { Edit, Trash } from "lucide-react"
+import { UserAvatar } from "@/src/lib/components/content/user"
 
 type Member = HouseholdModel["members"][number]
 
@@ -57,9 +58,14 @@ export default function HouseholdMemberList({ householdId }: Readonly<{ househol
         {
             name: "Name",
             isKey: true,
-            render: (m: Member) => (m.user.firstName || m.user.lastName)
-                ? `${m.user.firstName ?? ""} ${m.user.lastName ?? ""}`.trim()
-                : <Badge variant="secondary">No name</Badge>
+            render: (m: Member) => (
+                <div className="flex items-center gap-3">
+                    <UserAvatar user={m.user} size="sm" showTooltip={false} />
+                    {(m.user.firstName || m.user.lastName)
+                        ? `${m.user.firstName ?? ""} ${m.user.lastName ?? ""}`.trim()
+                        : <Badge variant="secondary">No name</Badge>}
+                </div>
+            )
         },
         { name: "Email", render: (m: Member) => m.user.email },
         { name: "Role", render: (m: Member) => <Badge variant="secondary">{m.role}</Badge> },

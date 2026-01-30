@@ -3,6 +3,7 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "src/lib/db"
 import { z } from "zod"
 import Guard from "@/src/lib/guard/ability"
+import { createdByUserSelect } from "@/src/lib/model/common/userSelect"
 
 const GetHousehold = z.object({
     id: z.uuid()
@@ -12,10 +13,11 @@ export const HouseholdModelInclude = {
     members: {
         include: {
             user: {
-                select: { id: true, email: true, firstName: true, lastName: true }
+                select: { id: true, email: true, firstName: true, lastName: true, avatarPath: true }
             }
         }
-    }
+    },
+    createdBy: { select: createdByUserSelect }
 }
 
 export type HouseholdModel = Prisma.HouseholdGetPayload<{
@@ -23,10 +25,11 @@ export type HouseholdModel = Prisma.HouseholdGetPayload<{
         members: {
             include: {
                 user: {
-                    select: { id: true, email: true, firstName: true, lastName: true }
+                    select: { id: true, email: true, firstName: true, lastName: true, avatarPath: true }
                 }
             }
-        }
+        },
+        createdBy: { select: typeof createdByUserSelect }
     }
 }>;
 

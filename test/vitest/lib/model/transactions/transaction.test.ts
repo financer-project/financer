@@ -34,6 +34,29 @@ describe("Transaction Mutations & Queries", () => {
             expect(transaction.account).toBeDefined()
         })
 
+        test("includes createdBy in transaction query", async () => {
+            // First create a transaction with a known creator
+            const ctx = util.getMockContext("standard")
+            const created = await createTransaction({
+                name: "Test With Creator",
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: null,
+                type: TransactionType.INCOME,
+                valueDate: DateTime.now().toJSDate(),
+                amount: 100,
+                description: null,
+                counterpartyId: null
+            }, ctx)
+
+            // Then fetch it and verify createdBy is included
+            const transaction = await getTransaction({ id: created.id }, ctx)
+
+            expect(transaction.createdBy).toBeDefined()
+            expect(transaction.createdBy?.id).toBe(util.getTestData().users.standard.id)
+            expect(transaction.createdBy?.firstName).toBe(util.getTestData().users.standard.firstName)
+            expect(transaction.createdBy?.lastName).toBe(util.getTestData().users.standard.lastName)
+        })
+
         test("get only own transactions", async () => {
             const { transactions } = await getTransactions({ householdId: util.getTestData().households.standard.id }, util.getMockContext())
 
@@ -107,6 +130,24 @@ describe("Transaction Mutations & Queries", () => {
                 description: null,
                 counterpartyId: null
             }, util.getMockContext())).rejects.toThrowError()
+        })
+
+        test("sets createdById to current user", async () => {
+            const ctx = util.getMockContext("standard")
+            const transactionData = {
+                name: "Test CreatedBy",
+                accountId: util.getTestData().accounts.standard.id,
+                categoryId: util.getTestData().categories.standard.income.id,
+                type: TransactionType.INCOME,
+                valueDate: DateTime.now().toJSDate(),
+                amount: 100,
+                description: null,
+                counterpartyId: null
+            }
+
+            const result = await createTransaction(transactionData, ctx)
+
+            expect(result.createdById).toBe(util.getTestData().users.standard.id)
         })
     })
 

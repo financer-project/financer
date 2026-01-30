@@ -10,10 +10,11 @@ export default resolver.pipe(
     resolver.authorize(),
     Guard.authorizePipe("create", "Household"),
     async (input, ctx: Ctx): Promise<Household> => {
-        // Create the household
+        // Create the household with createdBy
         const household = await db.household.create({
             data: {
-                ...input
+                ...input,
+                createdById: ctx.session.userId!
             }
         })
 

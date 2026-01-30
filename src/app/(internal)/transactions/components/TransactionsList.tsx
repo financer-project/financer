@@ -17,6 +17,7 @@ import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
 import { Prisma } from "@prisma/client"
 import { useTags } from "@/src/lib/components/provider/TagProvider"
 import { Paperclip } from "lucide-react"
+import { UserAvatar } from "@/src/lib/components/content/user"
 
 export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
     hideFilters?: boolean
@@ -74,16 +75,20 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
                 : <span className={"text-muted-foreground"}>No counterparty</span>
         },
         {
-            name: "Date",
-            render: transaction => formatters.date.format(transaction.valueDate)
-        },
-        {
             name: "Amount",
             render: transaction =>
                 <Badge variant={"secondary"} className={"font-mono"}>
                     {formatters.amount.format(transaction.amount)}
                 </Badge>
-        }
+        },
+        {
+            name: "Date",
+            render: transaction => formatters.date.format(transaction.valueDate)
+        },
+        {
+            name: "",
+            render: transaction => <UserAvatar user={transaction.createdBy} size="sm" />
+        },
     ]
 
     // Define dynamic filters

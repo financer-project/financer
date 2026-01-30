@@ -10,6 +10,7 @@ import { useCounterparties } from "@/src/lib/components/provider/CounterpartyPro
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 import { DataItemContainer, DataItemWrapper } from "@/src/lib/components/common/data/DataItemContainer"
 import { AttachmentList } from "./AttachmentList"
+import { UserAvatar } from "@/src/lib/components/content/user"
 
 export const Transaction = withFormatters(({ transactionId, formatters }: WithFormattersProps & {
     transactionId: string
@@ -86,6 +87,16 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
 
                     <DataItem label={"Updated At"}
                               data={formatters.date.format(transaction.updatedAt)} />
+
+                    <DataItem label={"Created By"}
+                              data={transaction.createdBy && (
+                                  <UserAvatar
+                                      user={transaction.createdBy}
+                                      size="sm"
+                                      showName
+                                      showTooltip={false}
+                                  />
+                              )} />
                 </DataItemContainer>
             </Section>
         </div>
