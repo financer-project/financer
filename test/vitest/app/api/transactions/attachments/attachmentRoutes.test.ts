@@ -90,6 +90,7 @@ describe("Attachment API Routes", () => {
                 categoryId: null,
                 isTransfer: false,
                 importJobId: null,
+                createdById: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             })
@@ -119,6 +120,7 @@ describe("Attachment API Routes", () => {
                 categoryId: null,
                 isTransfer: false,
                 importJobId: null,
+                createdById: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             })

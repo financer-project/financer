@@ -4,7 +4,6 @@ import db from "src/lib/db"
 import { z } from "zod"
 import { Prisma } from ".prisma/client"
 import Guard from "@/src/lib/guard/ability"
-import { createdByUserSelect } from "@/src/lib/model/common/userSelect"
 
 export type TransactionModel = Prisma.TransactionGetPayload<{
     include: {
