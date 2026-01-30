@@ -4,6 +4,7 @@ import db, { Prisma } from "src/lib/db"
 import { z } from "zod"
 import getCurrentHousehold from "@/src/lib/model/household/queries/getCurrentHousehold"
 import { getFindManySchema } from "@/src/lib/util/zod/zodUtil"
+import { createdByUserSelect } from "@/src/lib/model/common/userSelect"
 import TransactionWhereInput = Prisma.TransactionWhereInput
 import TransactionOrderByWithRelationInput = Prisma.TransactionOrderByWithRelationInput
 
@@ -44,7 +45,8 @@ export default resolver.pipe(
                     counterparty: true,
                     account: true,
                     tags: { include: { tag: true } },
-                    attachments: true
+                    attachments: true,
+                    createdBy: true
                 }
             })
         })

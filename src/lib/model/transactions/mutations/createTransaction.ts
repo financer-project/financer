@@ -3,15 +3,15 @@ import db from "src/lib/db"
 import { CreateTransactionSchema } from "../schemas"
 import { TransactionType } from "@prisma/client"
 import Guard from "@/src/lib/guard/ability"
-import { NotFoundError } from "blitz"
+import { Ctx, NotFoundError } from "blitz"
 
 export default resolver.pipe(
     resolver.zod(CreateTransactionSchema),
     resolver.authorize(),
-    async (input) => {
+    async (input, ctx: Ctx) => {
         const account = await db.account.findFirst({ where: { id: input.accountId } })
         if (!account) throw new NotFoundError(`Account with ID ${input.accountId} does not exist`)
-        return { householdId: account.householdId, ...input }
+        return { householdId: account.householdId, createdById: ctx.session.userId, ...input }
     },
     Guard.authorizePipe("create", "Transaction"),
     async (transaction) => {
