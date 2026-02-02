@@ -22,6 +22,9 @@ model Transaction {
 
     tags        TransactonTags[] @relation(name: "TransactionTags")
     attachments Attachment[]
+
+    createdBy   User?   @relation("TransactionCreatedBy", fields: [createdById], references: [id])
+    createdById String?
 }
 
 enum TransactionType {

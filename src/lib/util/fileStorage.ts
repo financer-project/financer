@@ -4,6 +4,7 @@ import path from "path"
 const DATA_DIR = "data"
 const IMPORTS_DIR = path.join(DATA_DIR, "imports")
 const TRANSACTIONS_DIR = path.join(DATA_DIR, "transactions")
+const USERS_DIR = path.join(DATA_DIR, "users")
 
 /**
  * Ensures that the directory exists, creating it if necessary
@@ -88,4 +89,41 @@ export function deleteFile(filePath: string): void {
  */
 export function deleteImportFile(filePath: string): void {
     deleteFile(filePath)
+}
+
+/**
+ * Saves a user avatar, replacing any existing avatar
+ * @param userId The user's ID
+ * @param fileName Original filename (for extension extraction)
+ * @param content The file content as Buffer
+ * @returns The path to the saved file
+ */
+export function saveUserAvatar(userId: string, fileName: string, content: Buffer): string {
+    const avatarDir = path.join(USERS_DIR, userId, "avatar")
+
+    // Clear any existing avatar files in the directory
+    if (fs.existsSync(avatarDir)) {
+        const existingFiles = fs.readdirSync(avatarDir)
+        for (const file of existingFiles) {
+            fs.unlinkSync(path.join(avatarDir, file))
+        }
+    }
+
+    ensureDirectoryExists(avatarDir)
+
+    // Use a consistent filename with original extension
+    const extension = path.extname(fileName) || ".jpg"
+    const newFileName = `avatar${extension}`
+    const filePath = path.join(avatarDir, newFileName)
+
+    fs.writeFileSync(filePath, content)
+    return filePath
+}
+
+/**
+ * Deletes a user's avatar
+ * @param avatarPath Path to the avatar file
+ */
+export function deleteUserAvatar(avatarPath: string): void {
+    deleteFile(avatarPath)
 }

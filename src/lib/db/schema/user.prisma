@@ -7,11 +7,15 @@ model User {
     email          String   @unique
     hashedPassword String?
     role           Role     @default(USER)
+    avatarPath     String?
 
     tokens      Token[]
     sessions    Session[]
     memberships HouseholdMembership[]
     settings    Settings?             @relation("UserSettings")
+
+    createdTransactions Transaction[] @relation("TransactionCreatedBy")
+    createdHouseholds   Household[]   @relation("HouseholdCreatedBy")
 }
 
 model Settings {

@@ -15,7 +15,8 @@ export type TransactionModel = Prisma.TransactionGetPayload<{
                 tag: true
             }
         },
-        attachments: true
+        attachments: true,
+        createdBy: true
     }
 }>;
 
@@ -39,7 +40,8 @@ export default resolver.pipe(
                         tag: true
                     }
                 },
-                attachments: true
+                attachments: true,
+                createdBy: true
             }
         })
 

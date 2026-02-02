@@ -24,6 +24,9 @@ export function NavUser() {
     const router = useRouter()
     const [logoutMutation] = useMutation(logout)
 
+    const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
+    const avatarUrl = user.avatarPath ? `/api/users/avatar/${user.id}` : undefined
+
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -33,8 +36,8 @@ export function NavUser() {
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
                             <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage alt={user.firstName} />
-                                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                <AvatarImage src={avatarUrl} alt={user.firstName} />
+                                <AvatarFallback className="rounded-lg bg-background">{initials}</AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">{user.firstName}</span>
@@ -51,8 +54,8 @@ export function NavUser() {
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage alt={user.firstName} />
-                                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                    <AvatarImage src={avatarUrl} alt={user.firstName} />
+                                    <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">{user.firstName}</span>
@@ -69,9 +72,11 @@ export function NavUser() {
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Account
+                            <DropdownMenuItem asChild>
+                                <Link href={"/settings"}>
+                                    <BadgeCheck />
+                                    Account
+                                </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <CreditCard />

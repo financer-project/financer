@@ -82,11 +82,15 @@ describe("Attachment API Routes", () => {
                 id: "transaction-123",
                 accountId: "account-123",
                 amount: 100,
-                date: new Date(),
+                valueDate: new Date(),
+                name: null,
                 description: "Test transaction",
                 type: "INCOME",
                 counterpartyId: null,
                 categoryId: null,
+                isTransfer: false,
+                importJobId: null,
+                createdById: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             })
@@ -108,11 +112,15 @@ describe("Attachment API Routes", () => {
                 id: transactionId,
                 accountId: "account-123",
                 amount: 100,
-                date: new Date(),
+                valueDate: new Date(),
+                name: null,
                 description: "Test transaction",
                 type: "INCOME",
                 counterpartyId: null,
                 categoryId: null,
+                isTransfer: false,
+                importJobId: null,
+                createdById: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             })

@@ -6,6 +6,9 @@ model Household {
     description String?
     currency    String
 
+    createdBy   User?   @relation("HouseholdCreatedBy", fields: [createdById], references: [id])
+    createdById String?
+
     accounts Account[]
     members  HouseholdMembership[] @relation(name: "HouseholdMember")
 
