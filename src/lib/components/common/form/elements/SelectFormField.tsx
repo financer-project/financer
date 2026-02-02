@@ -8,6 +8,8 @@ import { SelectField, SelectOption } from "@/src/lib/components/common/form/elem
 export interface SelectFormFieldProps<TEntity, TValue> extends FormElementProps<TEntity, TValue> {
     options: SelectOption<TValue>[]
     multiple?: boolean
+    onCreateNew?: () => void
+    createNewLabel?: string
 }
 
 export const SelectFormField = <E, V = E[keyof E]>({
@@ -17,6 +19,8 @@ export const SelectFormField = <E, V = E[keyof E]>({
                                                        onChange,
                                                        value,
                                                        multiple = false,
+                                                       onCreateNew,
+                                                       createNewLabel,
                                                        ...props
                                                    }: SelectFormFieldProps<E, V>) => {
     const [field, , helpers] = useField<V | V[] | null>(name as string)
@@ -47,6 +51,8 @@ export const SelectFormField = <E, V = E[keyof E]>({
                     onChange={handleChange as (newValue: V[] | null) => void}
                     readonly={readonly || isSubmitting}
                     multiple={true}
+                    onCreateNew={onCreateNew}
+                    createNewLabel={createNewLabel}
                     {...props} />
                 : <SelectField
                     options={options}
@@ -54,6 +60,8 @@ export const SelectFormField = <E, V = E[keyof E]>({
                     onChange={handleChange as (newValue: V | null) => void}
                     readonly={readonly || isSubmitting}
                     multiple={false}
+                    onCreateNew={onCreateNew}
+                    createNewLabel={createNewLabel}
                     {...props} />}
         </FormElement>
     )
