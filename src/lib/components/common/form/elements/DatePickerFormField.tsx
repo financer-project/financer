@@ -1,9 +1,10 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React from "react"
 import { useField, useFormikContext } from "formik"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
 import { DatePicker } from "@/src/lib/components/common/form/elements/DatePicker"
+import { useFormFieldInit } from "@/src/lib/hooks/use-form-field-init"
 
 export const DatePickerFormField = <E, >({
                                              name,
@@ -14,15 +15,12 @@ export const DatePickerFormField = <E, >({
     const [field, , helpers] = useField<Date | null>(name as string)
     const { isSubmitting } = useFormikContext()
 
-    useEffect(() => {
-        if (field.value === undefined) {
-            helpers.setValue(null)
-        }
-
-        if (props.value && props.value !== field.value) {
-            helpers.setValue(props.value)
-        }
-    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
+    useFormFieldInit({
+        fieldValue: field.value,
+        propValue: props.value,
+        defaultValue: null,
+        helpers
+    })
 
     const handleChange = (newValue: Date | null) => {
         if (!readonly) {

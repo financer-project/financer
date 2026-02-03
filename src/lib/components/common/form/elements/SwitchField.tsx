@@ -1,9 +1,9 @@
 import { FormElementProps } from "@/src/lib/components/common/form/FormElement"
 import { FormikValues, useField, useFormikContext } from "formik"
-import { useEffect } from "react"
 import { Card, CardContent } from "@/src/lib/components/ui/card"
 import { Switch } from "@/src/lib/components/ui/switch"
 import { cn } from "@/src/lib/util/utils"
+import { useFormFieldInit } from "@/src/lib/hooks/use-form-field-init"
 
 interface SwitchFieldProps<E> extends FormElementProps<E, boolean> {
     showCard?: boolean
@@ -13,15 +13,12 @@ const SwitchField = <E, >({ name, ...props }: SwitchFieldProps<E>) => {
     const [field, , helpers] = useField<boolean>(name as string)
     const { isSubmitting } = useFormikContext<FormikValues>()
 
-    useEffect(() => {
-        if (field.value === undefined) {
-            helpers.setValue(false)
-        }
-
-        if (props.value && props.value !== field.value) {
-            helpers.setValue(props.value)
-        }
-    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
+    useFormFieldInit<boolean>({
+        fieldValue: field.value,
+        propValue: props.value,
+        defaultValue: false,
+        helpers
+    })
 
     return (
         <label htmlFor={name as string}>
