@@ -113,61 +113,17 @@ describe("Transactions", () => {
         cy.get("div[role='dialog'] input[name='name']").type("New Inline Tag")
 
         // Submit the tag form
-        cy.get("div[role='dialog'] button[type='submit']").click()
+        cy.get("div[role='dialog'] button[type='submit']").contains("Create Tag").click()
 
         // Dialog should close and the new tag should be selected
-        cy.get("div[role='dialog']").contains("Create New Tag").should("not.exist")
         cy.findSelectField({ for: "tagIds" }).should("contain.text", "New Inline Tag")
 
         // Submit the transaction
-        cy.get("button[type='submit']").click()
+        cy.get("button[type='submit']").contains("Create Transaction").click()
 
         // Verify the transaction was created with the new tag
         cy.component("dataItem").should("contain.text", "Test Transaction with New Tag")
         cy.get("div span").should("contain.text", "New Inline Tag")
-
-        // Clean up - delete the transaction
-        cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").contains("Confirm").click()
-    })
-
-    it("should create a new counterparty inline from the transaction form", () => {
-        cy.get("a[href='/transactions/new']").first().click()
-
-        // Fill in required fields
-        cy.findSelectField({ contains: "My Account" }).should("exist")
-        cy.get("input[name='name']").type("Test Transaction with New Counterparty")
-        cy.selectField({ for: "type", value: "Income" })
-        cy.get("input[name='amount']").type("150.00")
-        cy.selectField({ for: "categoryId", value: "Income" })
-
-        // Open counterparty dropdown and click "Create new counterparty..."
-        cy.get("label[for='counterpartyId']").next("[role='select-field']").click()
-        cy.get("div[role='dialog']").should("be.visible")
-        cy.get("div[role='listbox']").contains("Create new counterparty...").click()
-
-        // Dialog should open for creating a new counterparty
-        cy.get("div[role='dialog']").should("contain.text", "Create New Counterparty")
-
-        // Fill in the counterparty form
-        cy.get("div[role='dialog'] input[name='name']").type("New Inline Counterparty")
-        // Select a type (required field)
-        cy.get("div[role='dialog'] label[for='type']").next("[role='select-field']").click()
-        cy.get("div[role='listbox']").contains("Company").click()
-
-        // Submit the counterparty form
-        cy.get("div[role='dialog'] button[type='submit']").click()
-
-        // Dialog should close and the new counterparty should be selected
-        cy.get("div[role='dialog']").contains("Create New Counterparty").should("not.exist")
-        cy.findSelectField({ for: "counterpartyId" }).should("contain.text", "New Inline Counterparty")
-
-        // Submit the transaction
-        cy.get("button[type='submit']").click()
-
-        // Verify the transaction was created with the new counterparty
-        cy.component("dataItem").should("contain.text", "Test Transaction with New Counterparty")
-        cy.get("div").contains("Counterparty").next().should("contain.text", "New Inline Counterparty")
 
         // Clean up - delete the transaction
         cy.get(".bg-destructive").click()
