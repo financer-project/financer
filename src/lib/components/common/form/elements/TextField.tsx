@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
 import { FormikValues, useField, useFormikContext } from "formik"
 import { Input } from "@/src/lib/components/ui/input"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
+import { useFormFieldInit } from "@/src/lib/hooks/use-form-field-init"
 
 export interface LabeledTextFieldProps<E, V> extends FormElementProps<E, V> {
     type?: "text" | "password" | "email" | "number"
@@ -13,15 +13,12 @@ export const TextField = <E, V>({ name, type = "text", ...props }: LabeledTextFi
     const [input, , helpers] = useField(name as string)
     const { isSubmitting } = useFormikContext<FormikValues>()
 
-    useEffect(() => {
-        if (input.value === undefined) {
-            helpers.setValue(null)
-        }
-
-        if (props.value && props.value !== input.value) {
-            helpers.setValue(props.value)
-        }
-    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
+    useFormFieldInit({
+        fieldValue: input.value,
+        propValue: props.value,
+        defaultValue: null,
+        helpers
+    })
 
     return (
         <FormElement name={name} {...props}>

@@ -179,7 +179,7 @@ describe("<SelectField />", () => {
             cy.get("[role='select-field']").should("contain.text", "Select option ...")
         })
 
-        it.only("respects keepPlaceholder property", () => {
+        it("respects keepPlaceholder property", () => {
             cy.mount(<SelectField<string>
                 options={[{ value: "first", label: "First" },
                     { value: "second", label: "Second" },
@@ -211,6 +211,111 @@ describe("<SelectField />", () => {
 
             cy.get("[role='select-field']").should("contain.text", "First")
             cy.get("[role='select-field'] button").should("not.exist")
+        })
+    })
+
+    // Create new functionality tests
+    describe("Create New", () => {
+        it("shows 'Create new...' option when onCreateNew is provided", () => {
+            const handleCreateNew = cy.stub().as("handleCreateNew")
+
+            cy.mount(<SelectField<string>
+                options={[
+                    { value: "first", label: "First" },
+                    { value: "second", label: "Second" }
+                ]}
+                onCreateNew={handleCreateNew}
+            />)
+
+            cy.get("[role='select-field']").click()
+            cy.get("div[role='dialog']").should("be.visible")
+            cy.get("div[role='listbox']").should("contain.text", "Create new...")
+        })
+
+        it("uses custom createNewLabel when provided", () => {
+            const handleCreateNew = cy.stub().as("handleCreateNew")
+
+            cy.mount(<SelectField<string>
+                options={[
+                    { value: "first", label: "First" },
+                    { value: "second", label: "Second" }
+                ]}
+                onCreateNew={handleCreateNew}
+                createNewLabel="Add new item..."
+            />)
+
+            cy.get("[role='select-field']").click()
+            cy.get("div[role='dialog']").should("be.visible")
+            cy.get("div[role='listbox']").should("contain.text", "Add new item...")
+            cy.get("div[role='listbox']").should("not.contain.text", "Create new...")
+        })
+
+        it("calls onCreateNew callback when clicking 'Create new...'", () => {
+            const handleCreateNew = cy.stub().as("handleCreateNew")
+
+            cy.mount(<SelectField<string>
+                options={[
+                    { value: "first", label: "First" },
+                    { value: "second", label: "Second" }
+                ]}
+                onCreateNew={handleCreateNew}
+            />)
+
+            cy.get("[role='select-field']").click()
+            cy.get("div[role='listbox']").contains("Create new...").click()
+
+            cy.get("@handleCreateNew").should("have.been.calledOnce")
+        })
+
+        it("closes the dropdown after clicking 'Create new...'", () => {
+            const handleCreateNew = cy.stub().as("handleCreateNew")
+
+            cy.mount(<SelectField<string>
+                options={[
+                    { value: "first", label: "First" },
+                    { value: "second", label: "Second" }
+                ]}
+                onCreateNew={handleCreateNew}
+            />)
+
+            cy.get("[role='select-field']").click()
+            cy.get("div[role='dialog']").should("be.visible")
+
+            cy.get("div[role='listbox']").contains("Create new...").click()
+            cy.get("div[role='dialog']").should("not.exist")
+        })
+
+        it("does not show 'Create new...' option when onCreateNew is not provided", () => {
+            cy.mount(<SelectField<string>
+                options={[
+                    { value: "first", label: "First" },
+                    { value: "second", label: "Second" }
+                ]}
+            />)
+
+            cy.get("[role='select-field']").click()
+            cy.get("div[role='dialog']").should("be.visible")
+            cy.get("div[role='listbox']").should("not.contain.text", "Create new...")
+        })
+
+        it("works with multiple selection mode", () => {
+            const handleCreateNew = cy.stub().as("handleCreateNew")
+
+            cy.mount(<SelectField<string>
+                options={[
+                    { value: "first", label: "First" },
+                    { value: "second", label: "Second" }
+                ]}
+                multiple={true}
+                onCreateNew={handleCreateNew}
+            />)
+
+            cy.get("[role='select-field']").click()
+            cy.get("div[role='dialog']").should("be.visible")
+            cy.get("div[role='listbox']").should("contain.text", "Create new...")
+
+            cy.get("div[role='listbox']").contains("Create new...").click()
+            cy.get("@handleCreateNew").should("have.been.calledOnce")
         })
     })
 })

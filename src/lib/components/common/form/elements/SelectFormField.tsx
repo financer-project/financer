@@ -1,13 +1,16 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React from "react"
 import { useField, useFormikContext } from "formik"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
 import { SelectField, SelectOption } from "@/src/lib/components/common/form/elements/SelectField"
+import { useFormFieldInit } from "@/src/lib/hooks/use-form-field-init"
 
 export interface SelectFormFieldProps<TEntity, TValue> extends FormElementProps<TEntity, TValue> {
     options: SelectOption<TValue>[]
     multiple?: boolean
+    onCreateNew?: () => void
+    createNewLabel?: string
 }
 
 export const SelectFormField = <E, V = E[keyof E]>({
@@ -17,20 +20,19 @@ export const SelectFormField = <E, V = E[keyof E]>({
                                                        onChange,
                                                        value,
                                                        multiple = false,
+                                                       onCreateNew,
+                                                       createNewLabel,
                                                        ...props
                                                    }: SelectFormFieldProps<E, V>) => {
     const [field, , helpers] = useField<V | V[] | null>(name as string)
     const { isSubmitting } = useFormikContext()
 
-    useEffect(() => {
-        if (field.value === undefined) {
-            helpers.setValue(multiple ? [] : null)
-        }
-
-        if (value !== undefined && value !== field.value) {
-            helpers.setValue(value)
-        }
-    }, [value, multiple]) // eslint-disable-line react-hooks/exhaustive-deps
+    useFormFieldInit({
+        fieldValue: field.value,
+        propValue: value,
+        defaultValue: multiple ? ([] as unknown as V | V[] | null) : null,
+        helpers
+    })
 
     const handleChange = (newValue: V | V[] | null) => {
         if (!readonly) {
@@ -47,6 +49,8 @@ export const SelectFormField = <E, V = E[keyof E]>({
                     onChange={handleChange as (newValue: V[] | null) => void}
                     readonly={readonly || isSubmitting}
                     multiple={true}
+                    onCreateNew={onCreateNew}
+                    createNewLabel={createNewLabel}
                     {...props} />
                 : <SelectField
                     options={options}
@@ -54,6 +58,8 @@ export const SelectFormField = <E, V = E[keyof E]>({
                     onChange={handleChange as (newValue: V | null) => void}
                     readonly={readonly || isSubmitting}
                     multiple={false}
+                    onCreateNew={onCreateNew}
+                    createNewLabel={createNewLabel}
                     {...props} />}
         </FormElement>
     )

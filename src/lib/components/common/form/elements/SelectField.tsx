@@ -3,8 +3,15 @@
 import React, { useEffect, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/lib/components/ui/popover"
 import { cn } from "@/src/lib/util/utils"
-import { Check, X } from "lucide-react"
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/src/lib/components/ui/command"
+import { Check, Plus, X } from "lucide-react"
+import {
+    Command,
+    CommandEmpty,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    CommandSeparator
+} from "@/src/lib/components/ui/command"
 import { ScrollArea } from "@/src/lib/components/ui/scroll-area"
 import { ElementProps } from "@/src/lib/components/common/form/FormElement"
 import { Badge } from "@/src/lib/components/ui/badge"
@@ -20,7 +27,9 @@ export interface SelectOption<T> {
 
 interface BaseSelectProps<T> extends ElementProps<T> {
     keepPlaceholder?: boolean,
-    disableClearButton?: true
+    disableClearButton?: true,
+    onCreateNew?: () => void,
+    createNewLabel?: string
 }
 
 interface SingleSelectProps<T> extends BaseSelectProps<T> {
@@ -50,6 +59,8 @@ export function SelectField<T, >({
                                      readonly,
                                      placeholder = "Select option ...",
                                      multiple = false,
+                                     onCreateNew,
+                                     createNewLabel,
                                      ...props
                                  }: SelectFieldProps<T>) {
     const [isOpen, setIsOpen] = useState(false)
@@ -241,6 +252,15 @@ export function SelectField<T, >({
                                     {option.render ? option.render(option.label) : option.label}
                                 </CommandItem>
                             ))}
+                            {onCreateNew && (
+                                <>
+                                    <CommandSeparator />
+                                    <CommandItem onSelect={() => { setIsOpen(false); onCreateNew(); }}>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        {createNewLabel ?? "Create new..."}
+                                    </CommandItem>
+                                </>
+                            )}
                         </CommandList>
                     </ScrollArea>
                 </Command>

@@ -90,4 +90,65 @@ describe("Transactions", () => {
         cy.contains("button", "Reset").click()
         cy.get("tbody tr").should("have.length", 2)
     })
+
+    it("should create a new tag inline from the transaction form", () => {
+        cy.get("a[href='/transactions/new']").first().click()
+
+        // Fill in required fields
+        cy.findSelectField({ contains: "My Account" }).should("exist")
+        cy.get("input[name='name']").type("Test Transaction with New Tag")
+        cy.selectField({ for: "type", value: "Expense" })
+        cy.get("input[name='amount']").type("25.00")
+        cy.selectField({ for: "categoryId", value: "Cost of Living" })
+
+        // Open tags dropdown and click "Create new tag..."
+        cy.get("label[for='tagIds']").next("[role='select-field']").click()
+        cy.get("div[role='dialog']").should("be.visible")
+        cy.get("div[role='listbox']").contains("Create new tag...").click()
+
+        // Dialog should open for creating a new tag
+        cy.get("div[role='dialog']").should("contain.text", "Create New Tag")
+
+        // Fill in the tag form
+        cy.get("div[role='dialog'] input[name='name']").type("New Inline Tag")
+
+        // Submit the tag form
+        cy.get("div[role='dialog'] button[type='submit']").contains("Create Tag").click()
+
+        // Dialog should close and the new tag should be selected
+        cy.findSelectField({ for: "tagIds" }).should("contain.text", "New Inline Tag")
+
+        // Submit the transaction
+        cy.get("button[type='submit']").contains("Create Transaction").click()
+
+        // Verify the transaction was created with the new tag
+        cy.component("dataItem").should("contain.text", "Test Transaction with New Tag")
+        cy.get("div span").should("contain.text", "New Inline Tag")
+
+        // Clean up - delete the transaction
+        cy.get(".bg-destructive").click()
+        cy.get(".bg-primary").contains("Confirm").click()
+    })
+
+    it("should allow canceling the create tag dialog without affecting the form", () => {
+        cy.get("a[href='/transactions/new']").first().click()
+
+        // Select an existing tag first
+        cy.selectField({ for: "tagIds", values: ["Work"] })
+        cy.findSelectField({ for: "tagIds" }).should("contain.text", "Work")
+
+        // Open tags dropdown and click "Create new tag..."
+        cy.get("label[for='tagIds']").next("[role='select-field']").click()
+        cy.get("div[role='dialog']").should("be.visible")
+        cy.get("div[role='listbox']").contains("Create new tag...").click()
+
+        // Dialog should open
+        cy.get("div[role='dialog']").should("contain.text", "Create New Tag")
+
+        // Close the dialog without submitting (click the close button)
+        cy.get("div[role='dialog'] button[class*='absolute']").click()
+
+        // The previously selected tag should still be there
+        cy.findSelectField({ for: "tagIds" }).should("contain.text", "Work")
+    })
 })

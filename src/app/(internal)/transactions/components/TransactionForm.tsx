@@ -17,14 +17,75 @@ import { DateTime } from "luxon"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
 import Section from "@/src/lib/components/common/structure/Section"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
+import { CreateTagDialog } from "@/src/app/(internal)/tags/components/CreateTagDialog"
+import { CreateCounterpartyDialog } from "@/src/app/(internal)/counterparties/components/CreateCounterpartyDialog"
+import { useFormikContext } from "formik"
+
+function TagsAndCounterpartyFields() {
+    const tags = useTags()
+    const counterparties = useCounterparties()
+    const { setFieldValue, values } = useFormikContext<{ tagIds?: string[]; counterpartyId?: string }>()
+
+    const [createTagDialogOpen, setCreateTagDialogOpen] = useState(false)
+    const [createCounterpartyDialogOpen, setCreateCounterpartyDialogOpen] = useState(false)
+
+    return (
+        <>
+            <div className={"flex flex-row gap-4"}>
+                <SelectFormField<Transaction, string>
+                    label={"Counterparty"}
+                    name={"counterpartyId"}
+                    onCreateNew={() => setCreateCounterpartyDialogOpen(true)}
+                    createNewLabel="Create new counterparty..."
+                    options={counterparties
+                        .toSorted((a, b) => a.name.localeCompare(b.name))
+                        .map(counterparty => ({
+                            label: counterparty.name,
+                            value: counterparty.id,
+                            render: () => <CounterpartyIcon type={counterparty.type} name={counterparty.name} />
+                        }))} />
+
+                <SelectFormField
+                    label={"Tags"}
+                    name={"tagIds"}
+                    multiple={true}
+                    onCreateNew={() => setCreateTagDialogOpen(true)}
+                    createNewLabel="Create new tag..."
+                    options={tags
+                        .toSorted((a, b) => a.name.localeCompare(b.name))
+                        .map(tag => ({
+                            label: tag.name,
+                            value: tag.id,
+                            render: () => (
+                                <ColoredTag label={tag.name} color={tag.color} />
+                            )
+                        }))} />
+            </div>
+
+            <CreateTagDialog
+                open={createTagDialogOpen}
+                onOpenChange={setCreateTagDialogOpen}
+                onCreated={(tagId) => {
+                    const currentTags = values.tagIds ?? []
+                    setFieldValue("tagIds", [...currentTags, tagId])
+                }}
+            />
+            <CreateCounterpartyDialog
+                open={createCounterpartyDialogOpen}
+                onOpenChange={setCreateCounterpartyDialogOpen}
+                onCreated={(counterpartyId) => {
+                    setFieldValue("counterpartyId", counterpartyId)
+                }}
+            />
+        </>
+    )
+}
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
 
     const accounts = useAccounts()
     const categories = useCategories()
-    const tags = useTags()
-    const counterparties = useCounterparties()
 
     const [transactionType, setTransactionType] = useState<TransactionType | null>(props.initialValues?.type ?? null)
 
@@ -100,30 +161,8 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                                 value: category.data.id,
                                 render: () => <ColoredTag label={category.data.name} color={category.data.color} />
                             }))} />
-                    <SelectFormField<Transaction, string>
-                        label={"Counterparty"}
-                        name={"counterpartyId"}
-                        options={counterparties
-                            .toSorted((a, b) => a.name.localeCompare(b.name))
-                            .map(counterparty => ({
-                                label: counterparty.name,
-                                value: counterparty.id,
-                                render: () => <CounterpartyIcon type={counterparty.type} name={counterparty.name} />
-                            }))} />
                 </div>
-                <SelectFormField
-                    label={"Tags"}
-                    name={"tagIds"}
-                    multiple={true}
-                    options={tags
-                        .toSorted((a, b) => a.name.localeCompare(b.name))
-                        .map(tag => ({
-                            label: tag.name,
-                            value: tag.id,
-                            render: () => (
-                                <ColoredTag label={tag.name} color={tag.color} />
-                            )
-                        }))} />
+                <TagsAndCounterpartyFields />
             </Section>
         </Form>
     )

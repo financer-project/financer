@@ -67,6 +67,7 @@ export const CategoryForm = <S extends z.ZodType<any, any>>(props: Readonly<Form
                         name={"type"}
                         required
                         value={parentCategory?.type}
+                        readonly={parentCategory !== null}
                         options={[
                             { value: CategoryType.INCOME, label: "Income" },
                             { value: CategoryType.EXPENSE, label: "Expense" }

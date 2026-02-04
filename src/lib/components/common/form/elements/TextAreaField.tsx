@@ -1,21 +1,18 @@
 import { useField, useFormikContext } from "formik"
 import FormElement, { FormElementProps } from "@/src/lib/components/common/form/FormElement"
 import { Textarea } from "@/src/lib/components/ui/textarea"
-import { useEffect } from "react"
+import { useFormFieldInit } from "@/src/lib/hooks/use-form-field-init"
 
 export const TextAreaField = <E, >({ name, label, ...props }: FormElementProps<E, string>) => {
     const [input, , helpers] = useField(name as string)
     const { isSubmitting } = useFormikContext()
 
-    useEffect(() => {
-        if (input.value === undefined) {
-            helpers.setValue(null)
-        }
-
-        if (props.value && props.value !== input.value) {
-            helpers.setValue(props.value)
-        }
-    }, [props.value]) // eslint-disable-line react-hooks/exhaustive-deps
+    useFormFieldInit({
+        fieldValue: input.value,
+        propValue: props.value,
+        defaultValue: null,
+        helpers
+    })
 
     return (
         <FormElement {...{ name, label }}>
