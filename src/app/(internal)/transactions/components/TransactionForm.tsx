@@ -9,7 +9,7 @@ import { Transaction, TransactionType } from "@prisma/client"
 import TextAreaField from "@/src/lib/components/common/form/elements/TextAreaField"
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
-import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
+import { useAccounts, useDefaultAccountId } from "@/src/lib/components/provider/AccountProvider"
 import { useTags } from "@/src/lib/components/provider/TagProvider"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
 import DatePickerFormField from "@/src/lib/components/common/form/elements/DatePickerFormField"
@@ -85,6 +85,7 @@ function TagsAndCounterpartyFields() {
 export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
 
     const accounts = useAccounts()
+    const defaultAccountId = useDefaultAccountId()
     const categories = useCategories()
 
     const [transactionType, setTransactionType] = useState<TransactionType | null>(props.initialValues?.type ?? null)
@@ -103,7 +104,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                     <SelectFormField<Transaction>
                         label={"Account"}
                         name={"accountId"}
-                        value={props.initialValues?.account.id ?? (accounts.length === 1 ? accounts[0].id : null)}
+                        value={props.initialValues?.account.id ?? defaultAccountId ?? (accounts.length === 1 ? accounts[0].id : null)}
                         options={accounts
                             .toSorted((a, b) => a.name.localeCompare(b.name))
                             .map(account => ({ label: account.name, value: account.id }))}

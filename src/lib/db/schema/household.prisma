@@ -30,6 +30,9 @@ model HouseholdMembership {
     householdId String
     role        HouseholdRole
 
+    defaultAccount   Account? @relation(fields: [defaultAccountId], references: [id], onDelete: SetNull)
+    defaultAccountId String?
+
     @@unique([userId, householdId])
 }
 

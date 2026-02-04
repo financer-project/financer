@@ -47,3 +47,8 @@ export const RemoveHouseholdMemberSchema = z.object({
     id: z.uuid(),
     userId: z.uuid()
 })
+
+export const SetDefaultAccountSchema = z.object({
+    householdId: z.uuid(),
+    accountId: z.uuid().nullable()
+})

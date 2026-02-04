@@ -8,4 +8,6 @@ model Account {
     household    Household     @relation(fields: [householdId], references: [id])
     householdId  String
     transactions Transaction[]
+
+    defaultForMemberships HouseholdMembership[]
 }
