@@ -2,6 +2,7 @@
 
 import React from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/src/lib/components/ui/button"
 import { PlusCircle } from "lucide-react"
 import { TableColumn, TableContent } from "./TableContent"
@@ -43,6 +44,28 @@ export const DataTable = <T, >({
                                    search,
                                    count
                                }: DataTableProps<T>) => {
+    const searchParams = useSearchParams()
+
+    // Build query params for create link from single-value filters
+    const createQueryParams = React.useMemo(() => {
+        if (!filters || !searchParams) return {}
+
+        const params: Record<string, string> = {}
+        for (const filter of filters) {
+            const value = searchParams.get(filter.property as string)
+            if (value && !value.includes(",")) {
+                // Only include single values (not multi-select)
+                params[filter.property as string] = value
+            }
+        }
+        return params
+    }, [filters, searchParams])
+
+    const createHref = React.useMemo(() => {
+        if (!createRoute) return undefined
+        const queryString = new URLSearchParams(createQueryParams).toString()
+        return queryString ? `${createRoute}?${queryString}` : createRoute
+    }, [createRoute, createQueryParams])
 
     return (
         <div className="flex flex-col gap-4 w-full">
@@ -51,10 +74,10 @@ export const DataTable = <T, >({
                     {/* 1. Dynamic Filter Toolbar */}
                     <TableToolbar filters={filters} search={search} />
 
-                    {createRoute && (
+                    {createHref && (
                         <div className="flex flex-row ml-auto items-center">
                             <Button variant={"outline"} asChild>
-                                <Link href={{ pathname: createRoute }}><PlusCircle /> Create</Link>
+                                <Link href={createHref}><PlusCircle /> Create</Link>
                             </Button>
                         </div>
                     )}

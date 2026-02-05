@@ -55,7 +55,7 @@ export const TableContent = <T, >({ columns, data, itemRoute }: {
                     <TableBody>
                         {data.map((item, index) => (
                             <TableRow key={`tr-${index}`}
-                                      className={"cursor-pointer"}
+                                      className={itemRoute &&"cursor-pointer"}
                                       onClick={() => itemRoute && router.push(itemRoute(item))}>
                                 {columns.map((column, colIndex) => (
                                     <TableCell key={`td-${colIndex}`}>{column.render(item)}</TableCell>

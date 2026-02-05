@@ -9,7 +9,7 @@ import { Transaction, TransactionType } from "@prisma/client"
 import TextAreaField from "@/src/lib/components/common/form/elements/TextAreaField"
 import SelectFormField from "@/src/lib/components/common/form/elements/SelectFormField"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
-import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
+import { useAccounts, useDefaultAccountId } from "@/src/lib/components/provider/AccountProvider"
 import { useTags } from "@/src/lib/components/provider/TagProvider"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
 import DatePickerFormField from "@/src/lib/components/common/form/elements/DatePickerFormField"
@@ -21,7 +21,9 @@ import { CreateTagDialog } from "@/src/app/(internal)/tags/components/CreateTagD
 import { CreateCounterpartyDialog } from "@/src/app/(internal)/counterparties/components/CreateCounterpartyDialog"
 import { useFormikContext } from "formik"
 
-function TagsAndCounterpartyFields() {
+function TagsAndCounterpartyFields({ prefillCounterpartyId }: {
+    prefillCounterpartyId?: string
+}) {
     const tags = useTags()
     const counterparties = useCounterparties()
     const { setFieldValue, values } = useFormikContext<{ tagIds?: string[]; counterpartyId?: string }>()
@@ -35,6 +37,7 @@ function TagsAndCounterpartyFields() {
                 <SelectFormField<Transaction, string>
                     label={"Counterparty"}
                     name={"counterpartyId"}
+                    value={prefillCounterpartyId ?? null}
                     onCreateNew={() => setCreateCounterpartyDialogOpen(true)}
                     createNewLabel="Create new counterparty..."
                     options={counterparties
@@ -81,10 +84,18 @@ function TagsAndCounterpartyFields() {
     )
 }
 
+interface PrefillFromFilters {
+    accountId?: string
+    categoryId?: string
+    counterpartyId?: string
+}
+
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S>>) {
+export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<FormProps<S> & { prefillFromFilters?: PrefillFromFilters }>) {
+    const { prefillFromFilters, ...formProps } = props
 
     const accounts = useAccounts()
+    const defaultAccountId = useDefaultAccountId()
     const categories = useCategories()
 
     const [transactionType, setTransactionType] = useState<TransactionType | null>(props.initialValues?.type ?? null)
@@ -97,13 +108,13 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
     }
 
     return (
-        <Form<S> {...props}>
+        <Form<S> {...formProps}>
             <Section title={"Basic Data"}>
                 <div className={"flex flex-row gap-4"}>
                     <SelectFormField<Transaction>
                         label={"Account"}
                         name={"accountId"}
-                        value={props.initialValues?.account.id ?? (accounts.length === 1 ? accounts[0].id : null)}
+                        value={props.initialValues?.account.id ?? prefillFromFilters?.accountId ?? defaultAccountId ?? (accounts.length === 1 ? accounts[0].id : null)}
                         options={accounts
                             .toSorted((a, b) => a.name.localeCompare(b.name))
                             .map(account => ({ label: account.name, value: account.id }))}
@@ -152,6 +163,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                     <SelectFormField<Transaction, string>
                         label={"Category"}
                         name={"categoryId"}
+                        value={prefillFromFilters?.categoryId ?? null}
                         onChange={onCategorySelect}
                         options={categories
                             .flatten()
@@ -162,7 +174,8 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                                 render: () => <ColoredTag label={category.data.name} color={category.data.color} />
                             }))} />
                 </div>
-                <TagsAndCounterpartyFields />
+                <TagsAndCounterpartyFields
+                    prefillCounterpartyId={prefillFromFilters?.counterpartyId} />
             </Section>
         </Form>
     )
