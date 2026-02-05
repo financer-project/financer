@@ -7,11 +7,11 @@ const initial = path.join(root, "src/lib/db/schema/migrations/20250924094054_ini
 const migration1 = path.join(root, "src/lib/db/schema/migrations/20251217125154_household_sharing/migration.sql")
 const migration2 = path.join(root, "src/lib/db/schema/migrations/20260120124419_transaction_attachments/migration.sql")
 const migration3 = path.join(root, "src/lib/db/schema/migrations/20260130105551_user_profile/migration.sql")
-const migrationToTest = path.join(root, "src/lib/db/schema/migrations/20260205000000_add_default_account_to_membership/migration.sql")
+const migrationToTest = path.join(root, "src/lib/db/schema/migrations/20260205000000_default_account/migration.sql")
 
 let db: Awaited<ReturnType<typeof startMySql>>
 
-describe("migration: 20260205000000_add_default_account_to_membership", () => {
+describe("migration: 20260204105001_default_account", () => {
     beforeAll(async () => {
         db = await startMySql()
 
