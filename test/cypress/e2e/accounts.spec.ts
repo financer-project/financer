@@ -43,4 +43,19 @@ describe("Accounts", () => {
         cy.url().should("include", `/households/${testData.households.standard.id}`)
         cy.get("#accounts tbody tr").should("have.length", 1)
     })
+
+    it("should be able to set and toggle default account", () => {
+        cy.get("tbody tr:first-child").click()
+        cy.url().should("include", `/households/${testData.households.standard.id}`)
+
+        cy.get("#accounts tbody tr:first-child").click()
+
+        // Set as default
+        cy.contains("button", "Set as Default").click()
+        cy.contains("button", "Default").should("exist")
+
+        // Toggle off
+        cy.contains("button", "Default").click()
+        cy.contains("button", "Set as Default").should("exist")
+    })
 })
