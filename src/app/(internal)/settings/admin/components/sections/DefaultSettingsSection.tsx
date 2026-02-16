@@ -18,8 +18,9 @@ const DefaultSettingsSection: React.FC = () => {
                 label={"Default Theme"}
                 name={"defaultTheme"}
                 options={[
+                    { value: "light", label: "Light" },
                     { value: "dark", label: "Dark" },
-                    { value: "light", label: "Light" }
+                    { value: "system", label: "System" }
                 ]}
                 description={"The default theme for new users."} />
         </div>

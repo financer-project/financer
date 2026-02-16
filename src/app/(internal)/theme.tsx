@@ -1,17 +1,37 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useCallback } from "react"
+
+const THEME_COOKIE_NAME = "financer-theme"
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
+
+function setThemeCookie(theme: string) {
+    document.cookie = `${THEME_COOKIE_NAME}=${theme};path=/;max-age=${COOKIE_MAX_AGE};SameSite=Lax`
+}
 
 const Theme = ({ theme }: { theme: string }) => {
-    useEffect(() => {
-        if (theme === "dark") {
-            document.documentElement.classList.add("dark")
+    const applyTheme = useCallback(() => {
+        if (theme === "system") {
+            const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+            document.documentElement.classList.toggle("dark", isDark)
         } else {
-            document.documentElement.classList.remove("dark")
+            document.documentElement.classList.toggle("dark", theme === "dark")
         }
-    }, [theme]) // Runs the effect whenever the 'theme' prop changes
+    }, [theme])
 
-    return (<></>)
+    useEffect(() => {
+        setThemeCookie(theme)
+        applyTheme()
+
+        if (theme === "system") {
+            const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+            const handler = () => applyTheme()
+            mediaQuery.addEventListener("change", handler)
+            return () => mediaQuery.removeEventListener("change", handler)
+        }
+    }, [theme, applyTheme])
+
+    return null
 }
 
 export default Theme
