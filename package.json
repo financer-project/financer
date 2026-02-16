@@ -13,6 +13,7 @@
         "db:migrate:reset": "dotenv -e .env.local prisma migrate reset",
         "db:migrate:deploy": "dotenv -e .env.local prisma migrate deploy",
         "db:push": "dotenv -e .env.local prisma db push",
+        "db:seed": "dotenv -e .env.local prisma db seed",
         "test": "yarn test:unit && yarn test:component && yarn test:e2e && yarn coverage:merge",
         "test:unit": "vitest run --passWithNoTests --coverage",
         "test:unit:watch": "vitest",
@@ -122,6 +123,7 @@
         "start-server-and-test": "2.1.2",
         "tailwindcss": "^4.1.17",
         "testcontainers": "^11.7.0",
+        "tsx": "^4.19.0",
         "tw-animate-css": "^1.4.0",
         "typescript": "^5.9.3",
         "vite-tsconfig-paths": "^5.1.4",
@@ -130,6 +132,9 @@
     },
     "resolutions": {
         "@babel/core": "^7.22.0"
+    },
+    "prisma": {
+        "seed": "npx tsx prisma/seed.ts"
     },
     "packageManager": "yarn@4.12.0"
 }
