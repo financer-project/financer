@@ -1,4 +1,5 @@
 import {
+    PrismaClient,
     Role,
     HouseholdRole,
     CategoryType,
@@ -6,18 +7,6 @@ import {
     TransactionType,
 } from "@prisma/client"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
-
-type DB = {
-    adminSettings: { upsert: Function }
-    user: { create: Function; findFirst: Function }
-    household: { create: Function }
-    account: { create: Function }
-    householdMembership: { findFirst: Function; update: Function }
-    category: { create: Function }
-    tag: { create: Function }
-    counterparty: { create: Function }
-    transaction: { create: Function }
-}
 
 function daysAgo(days: number): Date {
     const d = new Date()
@@ -30,7 +19,7 @@ function randomAmount(min: number, max: number): number {
     return Math.round((min + Math.random() * (max - min)) * 100) / 100
 }
 
-export async function seedDemoData(db: DB): Promise<void> {
+export async function seedDemoData(db: PrismaClient): Promise<void> {
     if (process.env.DEMO_DATA !== "true") {
         return
     }
@@ -95,7 +84,7 @@ export async function seedDemoData(db: DB): Promise<void> {
 }
 
 async function seedHouseholdWithData(
-    db: DB,
+    db: PrismaClient,
     userId: string,
     householdName: string,
     description: string,
