@@ -60,6 +60,28 @@ describe("User Settings", () => {
             })
         })
 
+        it("should update theme to system", async () => {
+            const updatedSettings = await updateSetting({
+                userId: utils.getTestData().users.standard.id,
+                language: "en-US",
+                theme: "system"
+            }, utils.getMockContext("standard"))
+
+            expect(updatedSettings).toMatchObject({
+                userId: utils.getTestData().users.standard.id,
+                language: "en-US",
+                theme: "system"
+            })
+
+            const savedSettings = await db.settings.findFirst({
+                where: { userId: utils.getTestData().users.standard.id }
+            })
+
+            expect(savedSettings).toMatchObject({
+                theme: "system"
+            })
+        })
+
         it("should throw an error if not authorized", async () => {
             await expect(async () => updateSetting({
                     userId: utils.getTestData().users.admin.id,
