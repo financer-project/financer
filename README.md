@@ -2,6 +2,8 @@
 
 A comprehensive personal finance management application built with Next.js, TypeScript, and Blitz.js.
 
+![Financer Dashboard](https://github.com/user-attachments/assets/83ef1c6d-699a-4ed0-a6f6-d2897e07a49c)
+
 ## Features
 
 - 🏠 **Household Management** - Create and manage multiple households with family collaboration
