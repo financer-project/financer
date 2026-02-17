@@ -4,7 +4,6 @@ import { Inter } from "next/font/google"
 import { Metadata } from "next"
 import { cn } from "@/src/lib/util/utils"
 import { Toaster } from "sonner"
-import { cookies } from "next/headers"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -29,17 +28,11 @@ const themeScript = `
 })()
 `
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    const cookieStore = await cookies()
-    const theme = cookieStore.get("financer-theme")?.value ?? "light"
-    const initialDark = theme === "dark"
-
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en" className={initialDark ? "dark" : ""} suppressHydrationWarning>
-        <head>
-            <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        </head>
+        <html lang="en" suppressHydrationWarning>
         <body className={cn(inter.className)}>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <BlitzProvider>
             <>{children}</>
             <Toaster />
