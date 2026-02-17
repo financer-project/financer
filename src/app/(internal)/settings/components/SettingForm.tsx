@@ -27,8 +27,9 @@ export function SettingForm<S extends z.ZodType<any, any>>(props: Readonly<FormP
                         label={"Theme"}
                         name={"theme"}
                         options={[
+                            { value: "light", label: "Light" },
                             { value: "dark", label: "Dark" },
-                            { value: "light", label: "Light" }
+                            { value: "system", label: "System" }
                         ]}
                         description={"The theme of the application."} />
                 </div>
