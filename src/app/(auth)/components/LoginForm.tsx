@@ -12,11 +12,15 @@ import { useRouter, useSearchParams } from "next/navigation"
 import type { Route } from "next"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { cn } from "@/src/lib/util/utils"
+import { Alert, AlertDescription, AlertTitle } from "@/src/lib/components/ui/alert"
+import { Badge } from "@/src/lib/components/ui/badge"
+import { useConfig } from "@/src/lib/hooks/useConfig"
 
 export const LoginForm = () => {
     const [loginMutation] = useMutation(login)
     const router = useRouter()
     const next = useSearchParams()?.get("next")
+    const config = useConfig()
     return (
         <Card className={"w-full"}>
             <CardHeader>
@@ -25,6 +29,16 @@ export const LoginForm = () => {
             </CardHeader>
 
             <CardContent className={cn("flex flex-col gap-4")}>
+
+                {config.demoData && (
+                    <Alert>
+                        <AlertTitle>Demo Mode Switched On</AlertTitle>
+                        <AlertDescription>
+                            Login with <Badge variant={"secondary-code"}>demo@financer.com</Badge> / <Badge variant={"secondary-code"}>demo1234</Badge>
+                        </AlertDescription>
+                    </Alert>
+                )}
+
                 <Form
                     submitText="Login"
                     schema={Login}
@@ -44,7 +58,7 @@ export const LoginForm = () => {
                             } else {
                                 return {
                                     [FORM_ERROR]:
-                                    "Sorry, we had an unexpected error. Please try again. - " + error.toString()
+                                        "Sorry, we had an unexpected error. Please try again. - " + error.toString()
                                 }
                             }
                         }
