@@ -1,0 +1,7 @@
+services:
+  docs:
+    build: .
+    container_name: financer-docs
+    ports:
+      - "8080:80"
+    restart: unless-stopped
