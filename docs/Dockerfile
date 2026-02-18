@@ -1,12 +1,15 @@
 FROM node:22-alpine AS build
 
+# Enable Corepack for Yarn 4
+RUN corepack enable
+
 WORKDIR /app
 
-COPY package.json ./
-RUN npm install
+COPY package.json yarn.lock* .yarnrc.yml ./
+RUN yarn install --immutable || yarn install
 
 COPY . .
-RUN npm run build
+RUN yarn build
 
 FROM nginx:alpine AS production
 
