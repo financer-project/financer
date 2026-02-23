@@ -33,7 +33,7 @@ describe("Transaction Templates", () => {
         cy.get(".bg-primary").contains("Confirm").click()
 
         cy.url().should("include", "/transaction-templates")
-        cy.get("td").contains("Monthly Rent").should("not.exist")
+        cy.contains("Monthly Rent").should("not.exist")
     })
 
     it("should be able to edit a template", () => {

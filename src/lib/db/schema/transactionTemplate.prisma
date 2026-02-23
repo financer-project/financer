@@ -18,9 +18,9 @@ model TransactionTemplate {
   // Relations
   account        Account       @relation(fields: [accountId], references: [id])
   accountId      String
-  category       Category?     @relation(fields: [categoryId], references: [id])
+  category       Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId     String?
-  counterparty   Counterparty? @relation(fields: [counterpartyId], references: [id])
+  counterparty   Counterparty? @relation(fields: [counterpartyId], references: [id], onDelete: SetNull)
   counterpartyId String?
   household      Household     @relation(name: "HouseholdTransactionTemplates", fields: [householdId], references: [id])
   householdId    String
