@@ -4,7 +4,7 @@ import { useTimeframe } from "../context/TimeframeContext"
 import getTransactions from "@/src/lib/model/transactions/queries/getTransactions"
 import { useCurrentHousehold } from "@/src/lib/components/provider/HouseholdProvider"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Separator } from "@/src/lib/components/ui/separator"
 import { Button } from "@/src/lib/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/src/lib/components/ui/scroll-area"
@@ -49,24 +49,22 @@ const LatestTransactions: React.FC<LatestTransactionsProps> = ({ className }) =>
     // Let TransactionsList manage its own page size via URL (default 25).
 
     return (
-        <Card className={cn("flex flex-col gap-0", className)}>
-            <CardHeader className={"flex flex-row justify-between items-center gap-4"}>
-                <div className={"flex flex-col grow gap-2"}>
-                    <CardTitle>Latest Transactions</CardTitle>
-                    <CardDescription>
-                        This is a list of the latest transactions within the selected timeframe.
-                    </CardDescription>
-                </div>
-                <div>
+        <Card className={cn(className)}>
+            <CardHeader>
+                <CardTitle>Latest Transactions</CardTitle>
+                <CardDescription>
+                    This is a list of the latest transactions within the selected timeframe.
+                </CardDescription>
+                <CardAction>
                     <Button variant={"link"} asChild>
                         <Link href="/transactions">View all transactions <ArrowRight /></Link>
                     </Button>
-                </div>
+                </CardAction>
             </CardHeader>
             <Separator />
 
             <ScrollArea className={"flex-col max-h-full overflow-y-auto"}>
-                <CardContent className={"flex flex-col max-h-full grow p-0"}>
+                <CardContent className={"flex flex-col max-h-full grow "}>
                     <AccountProvider>
                         <CategoryProvider>
                             <TagProvider>

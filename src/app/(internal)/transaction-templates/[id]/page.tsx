@@ -5,6 +5,10 @@ import getTransactionTemplate from "@/src/lib/model/transactionTemplates/queries
 import { TransactionTemplate } from "@/src/app/(internal)/transaction-templates/components/TransactionTemplate"
 import TransactionTemplateHeader from "@/src/app/(internal)/transaction-templates/[id]/header"
 import { Page, PageContent } from "@/src/lib/components/content/page"
+import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
+import { CategoryProvider } from "@/src/lib/components/provider/CategoryProvider"
+import { CounterpartyProvider } from "@/src/lib/components/provider/CounterpartyProvider"
+import { TagProvider } from "@/src/lib/components/provider/TagProvider"
 
 async function fetchTemplate(id: string) {
     return invoke(getTransactionTemplate, { id })
@@ -28,9 +32,17 @@ export default async function TransactionTemplatePage(props: Readonly<Transactio
         <Page>
             <TransactionTemplateHeader template={template} />
             <PageContent>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <TransactionTemplate templateId={params.id} />
-                </Suspense>
+                <AccountProvider>
+                    <CategoryProvider>
+                        <CounterpartyProvider>
+                            <TagProvider>
+                                <Suspense fallback={<div>Loading...</div>}>
+                                    <TransactionTemplate templateId={params.id} />
+                                </Suspense>
+                            </TagProvider>
+                        </CounterpartyProvider>
+                    </CategoryProvider>
+                </AccountProvider>
             </PageContent>
         </Page>
     )

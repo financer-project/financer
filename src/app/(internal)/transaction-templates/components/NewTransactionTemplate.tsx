@@ -2,8 +2,9 @@
 
 import { TransactionTemplateForm } from "./TransactionTemplateForm"
 import { CreateTransactionTemplateSchema } from "@/src/lib/model/transactionTemplates/schemas"
-import { useMutation } from "@blitzjs/rpc"
+import { invalidateQuery, useMutation } from "@blitzjs/rpc"
 import createTransactionTemplate from "@/src/lib/model/transactionTemplates/mutations/createTransactionTemplate"
+import getSuggestedTemplates from "@/src/lib/model/transactions/queries/getSuggestedTemplates"
 import { useRouter } from "next/navigation"
 import { FORM_ERROR } from "@/src/lib/components/common/form/Form"
 import { AccountProvider } from "@/src/lib/components/provider/AccountProvider"
@@ -24,6 +25,7 @@ export function NewTransactionTemplate() {
                         onSubmit={async (values) => {
                             try {
                                 const template = await createMutation(values)
+                                await invalidateQuery(getSuggestedTemplates)
                                 router.push(`/transaction-templates/${template.id}`)
                             } catch (error: unknown) {
                                 console.error(error)

@@ -11,14 +11,6 @@ export type TransactionTemplateModel = Prisma.TransactionTemplateGetPayload<{
         category: true
         counterparty: true
         createdBy: true
-        transactions: {
-            include: {
-                category: true
-                account: true
-            }
-            orderBy: { valueDate: "desc" }
-            take: 10
-        }
     }
 }>
 
@@ -37,15 +29,7 @@ export default resolver.pipe(
                 account: true,
                 category: true,
                 counterparty: true,
-                createdBy: true,
-                transactions: {
-                    include: {
-                        category: true,
-                        account: true
-                    },
-                    orderBy: { valueDate: "desc" },
-                    take: 10
-                }
+                createdBy: true
             }
         })
 

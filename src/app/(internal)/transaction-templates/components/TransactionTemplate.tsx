@@ -7,13 +7,12 @@ import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/wi
 import DataItem from "@/src/lib/components/common/data/DataItem"
 import Section from "@/src/lib/components/common/structure/Section"
 import ColoredTag from "@/src/lib/components/content/categories/ColoredTag"
-import { Badge } from "@/src/lib/components/ui/badge"
 import { Switch } from "@/src/lib/components/ui/switch"
 import { Label } from "@/src/lib/components/ui/label"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 import { DataItemContainer, DataItemWrapper } from "@/src/lib/components/common/data/DataItemContainer"
-import { DataTable } from "@/src/lib/components/common/data/table"
-import { RecurrenceFrequency, TransactionType } from "@prisma/client"
+import { TransactionsList } from "@/src/app/(internal)/transactions/components/TransactionsList"
+import { RecurrenceFrequency } from "@prisma/client"
 
 const frequencyLabel: Record<RecurrenceFrequency, string> = {
     [RecurrenceFrequency.DAILY]: "Daily",
@@ -90,44 +89,8 @@ export const TransactionTemplate = withFormatters(({ templateId, formatters }: W
             </Section>
 
             <Section title={"Generated Transactions"}
-                     subtitle={"The latest 10 transactions generated from this template."}>
-                <DataTable
-                    data={template.transactions}
-                    itemRoute={transaction => `/transactions/${transaction.id}`}
-                    columns={[
-                        {
-                            name: "Date",
-                            render: transaction => formatters.date.format(transaction.valueDate),
-                            isKey: true
-                        },
-                        {
-                            name: "Name",
-                            render: transaction => transaction.name ?? <span className={"text-muted-foreground"}>—</span>
-                        },
-                        {
-                            name: "Amount",
-                            render: transaction => (
-                                <Badge variant={"secondary"} className={"font-mono"}>
-                                    {formatters.amount.format(transaction.amount)}
-                                </Badge>
-                            )
-                        },
-                        {
-                            name: "Category",
-                            render: transaction => transaction.category
-                                ? <ColoredTag color={transaction.category.color} label={transaction.category.name} />
-                                : <span className={"text-muted-foreground"}>Uncategorized</span>
-                        },
-                        {
-                            name: "Type",
-                            render: transaction => (
-                                <Badge variant={transaction.type === TransactionType.EXPENSE ? "destructive" : "default"}>
-                                    {transaction.type}
-                                </Badge>
-                            )
-                        }
-                    ]}
-                />
+                     subtitle={"Transactions generated from this template."}>
+                <TransactionsList fixedFilters={{ transactionTemplateId: template.id }} />
             </Section>
         </div>
     )
