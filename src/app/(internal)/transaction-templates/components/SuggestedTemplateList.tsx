@@ -9,10 +9,41 @@ import { SuggestedTemplate } from "@/src/lib/model/transactions/services/recurri
 import Section from "@/src/lib/components/common/structure/Section"
 import { Badge } from "@/src/lib/components/ui/badge"
 import { Button } from "@/src/lib/components/ui/button"
-import { ChevronDown, ChevronRight } from "lucide-react"
+import { ChevronDown, ChevronRight, X } from "lucide-react"
 import { TransactionsList } from "@/src/app/(internal)/transactions/components/TransactionsList"
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Separator } from "@/src/lib/components/ui/separator"
+
+const DISMISSED_STORAGE_KEY = "financer-dismissed-suggestions"
+
+function getDismissedKeys(): Set<string> {
+    try {
+        const stored = localStorage.getItem(DISMISSED_STORAGE_KEY)
+        return stored ? new Set(JSON.parse(stored) as string[]) : new Set()
+    } catch {
+        return new Set()
+    }
+}
+
+function persistDismissedKeys(keys: Set<string>) {
+    try {
+        localStorage.setItem(DISMISSED_STORAGE_KEY, JSON.stringify([...keys]))
+    } catch {
+        // ignore storage errors
+    }
+}
+
+function suggestionKey(suggestion: SuggestedTemplate): string {
+    return JSON.stringify({
+        name: suggestion.name,
+        type: suggestion.type,
+        amount: suggestion.amount,
+        frequency: suggestion.frequency,
+        accountId: suggestion.accountId,
+        categoryId: suggestion.categoryId,
+        counterpartyId: suggestion.counterpartyId
+    })
+}
 
 const frequencyLabel: Record<RecurrenceFrequency, string> = {
     [RecurrenceFrequency.DAILY]: "Daily",
@@ -33,11 +64,18 @@ const confidenceVariant = (confidence: "HIGH" | "MEDIUM" | "LOW"): "default" | "
     return "outline"
 }
 
-function SuggestionCard({ suggestion }: { suggestion: SuggestedTemplate }) {
+function SuggestionCard({
+    suggestion,
+    onDismiss
+}: {
+    suggestion: SuggestedTemplate
+    onDismiss: () => void
+}) {
     const [isExpanded, setIsExpanded] = useState(false)
     const router = useRouter()
 
-    const handleCreate = () => {
+    const handleCreate = (e: React.MouseEvent) => {
+        e.stopPropagation()
         const params = new URLSearchParams({
             name: suggestion.name,
             type: suggestion.type,
@@ -79,9 +117,19 @@ function SuggestionCard({ suggestion }: { suggestion: SuggestedTemplate }) {
                     <span className="text-sm text-muted-foreground">{suggestion.occurrences} occurrences</span>
                 </CardDescription>
                 <CardAction>
-                    <Button size="sm" onClick={handleCreate} className="shrink-0">
-                        Create Template
-                    </Button>
+                    <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                        <Button size="sm" onClick={handleCreate}>
+                            Create Template
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={onDismiss}
+                            title="Dismiss suggestion"
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
                 </CardAction>
             </CardHeader>
             {isExpanded && (
@@ -103,13 +151,38 @@ function SuggestionCard({ suggestion }: { suggestion: SuggestedTemplate }) {
 
 export function SuggestedTemplateList() {
     const [suggestions] = useQuery(getSuggestedTemplates, null)
+    const [dismissedKeys, setDismissedKeys] = useState<Set<string>>(() => getDismissedKeys())
 
     if (!suggestions || suggestions.length === 0) return null
 
+    // Only count dismissals for suggestions that still exist (prunes stale keys from created templates)
+    const currentKeys = new Set(suggestions.map(suggestionKey))
+    const activeDismissedKeys = new Set([...dismissedKeys].filter(k => currentKeys.has(k)))
+
+    const visibleSuggestions = suggestions.filter(s => !activeDismissedKeys.has(suggestionKey(s)))
+    const hiddenCount = activeDismissedKeys.size
+
+    const handleDismiss = (suggestion: SuggestedTemplate) => {
+        const updated = new Set([...dismissedKeys, suggestionKey(suggestion)])
+        persistDismissedKeys(updated)
+        setDismissedKeys(updated)
+    }
+
+    const handleResetDismissed = () => {
+        persistDismissedKeys(new Set())
+        setDismissedKeys(new Set())
+    }
+
     const countBadge = (
         <Badge variant="secondary" className="text-xs">
-            {suggestions.length}
+            {visibleSuggestions.length}
         </Badge>
+    )
+
+    const resetAction = hiddenCount > 0 && (
+        <Button variant="ghost" size="sm" onClick={handleResetDismissed}>
+            Show {hiddenCount} dismissed
+        </Button>
     )
 
     return (
@@ -119,9 +192,14 @@ export function SuggestedTemplateList() {
             collapsible
             defaultCollapsed
             badge={countBadge}
+            actions={resetAction || undefined}
         >
-            {suggestions.map((suggestion, index) => (
-                <SuggestionCard key={index} suggestion={suggestion} />
+            {visibleSuggestions.map((suggestion, index) => (
+                <SuggestionCard
+                    key={index}
+                    suggestion={suggestion}
+                    onDismiss={() => handleDismiss(suggestion)}
+                />
             ))}
         </Section>
     )
