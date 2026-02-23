@@ -1,6 +1,7 @@
 import { Queue, Worker } from "bullmq"
 import { Redis } from "ioredis"
 import { processImport } from "../model/imports/services/importProcessor"
+import { processTransactionTemplates } from "../model/transactionTemplates/services/templateProcessor"
 
 // Create a Redis connection
 const connection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", {
@@ -29,4 +30,40 @@ importWorker.on("failed", (job, err) => {
 // Function to add a job to the queue
 export async function queueImportJob(importJobId: string): Promise<void> {
     await importQueue.add("process-import", { importJobId })
+}
+
+// Transaction Templates Queue
+export const transactionTemplatesQueue = new Queue("transaction-templates-queue", { connection })
+
+export const transactionTemplatesWorker = new Worker(
+    "transaction-templates-queue",
+    async () => { await processTransactionTemplates() },
+    { connection }
+)
+
+transactionTemplatesWorker.on("completed", job => {
+    console.log(`Transaction templates job ${job.id} completed`)
+})
+
+transactionTemplatesWorker.on("failed", (job, err) => {
+    console.error(`Transaction templates job ${job?.id} failed:`, err)
+})
+
+// Convert "HH:mm" to cron expression "mm HH * * *"
+export function timeToCron(hhmm: string): string {
+    const [hours, minutes] = hhmm.split(":")
+    return `${minutes} ${hours} * * *`
+}
+
+// Replace the repeatable job with a new cron expression
+export async function registerTransactionTemplatesJob(cronExpression: string): Promise<void> {
+    const existing = await transactionTemplatesQueue.getRepeatableJobs()
+    for (const job of existing) {
+        await transactionTemplatesQueue.removeRepeatableByKey(job.key)
+    }
+    await transactionTemplatesQueue.add(
+        "process-transaction-templates",
+        {},
+        { repeat: { pattern: cronExpression } }
+    )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useCallback } from "react"
+import { useCallback, useEffect } from "react"
 
 const THEME_COOKIE_NAME = "financer-theme"
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year

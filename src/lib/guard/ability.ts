@@ -167,6 +167,20 @@ async function user(ctx: Ctx, { can, cannot }: AbilitiesParamsType<Resource, Abi
         can("delete", "ImportJob", isImportJobPartOfHousehold(HouseholdRole.MEMBER))
     }
 
+    const transactionTemplates = () => {
+        const isTemplatePartOfHousehold = (role?: HouseholdRole) => {
+            return async ({ id }: { id: string }) => {
+                const template = await db.transactionTemplate.findFirst({ where: { id } })
+                return template ? isMemberOfHousehold(template.householdId, role) : false
+            }
+        }
+
+        can("create", "TransactionTemplate", isMemberOfHouseholdWrapper(HouseholdRole.MEMBER))
+        can("read", "TransactionTemplate", isTemplatePartOfHousehold(HouseholdRole.GUEST))
+        can("update", "TransactionTemplate", isTemplatePartOfHousehold(HouseholdRole.MEMBER))
+        can("delete", "TransactionTemplate", isTemplatePartOfHousehold(HouseholdRole.MEMBER))
+    }
+
     household()
     categories()
     accounts()
@@ -174,6 +188,7 @@ async function user(ctx: Ctx, { can, cannot }: AbilitiesParamsType<Resource, Abi
     tags()
     transactions()
     importJobs()
+    transactionTemplates()
 }
 
 export default Guard

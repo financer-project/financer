@@ -25,6 +25,9 @@ model Transaction {
 
     createdBy   User?   @relation("TransactionCreatedBy", fields: [createdById], references: [id])
     createdById String?
+
+    transactionTemplate   TransactionTemplate? @relation("TemplateTransactions", fields: [transactionTemplateId], references: [id])
+    transactionTemplateId String?
 }
 
 enum TransactionType {

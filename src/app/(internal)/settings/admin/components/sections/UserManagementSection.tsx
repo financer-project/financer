@@ -73,7 +73,7 @@ const UserManagementSection = () => {
                     description={"When checked, users can register themselves without an invitation code."} />
             </div>
             <div className={"flex flex-row gap-2"}>
-                <div className={"flex-grow"}>
+                <div className={"grow"}>
                     <TextField
                         name={"inviteUserEmail"}
                         type={"email"}

@@ -1,11 +1,4 @@
-import {
-    PrismaClient,
-    Role,
-    HouseholdRole,
-    CategoryType,
-    CounterpartyType,
-    TransactionType,
-} from "@prisma/client"
+import { CategoryType, CounterpartyType, HouseholdRole, PrismaClient, Role, TransactionType } from "@prisma/client"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 
 function daysAgo(days: number): Date {

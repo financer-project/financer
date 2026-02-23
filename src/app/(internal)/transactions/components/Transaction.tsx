@@ -89,14 +89,20 @@ export const Transaction = withFormatters(({ transactionId, formatters }: WithFo
                               data={formatters.date.format(transaction.updatedAt)} />
 
                     <DataItem label={"Created By"}
-                              data={transaction.createdBy && (
+                              data={
                                   <UserAvatar
                                       user={transaction.createdBy}
                                       size="sm"
                                       showName
                                       showTooltip={false}
                                   />
-                              )} />
+                              } />
+
+                    <DataItem label={"Recurring Template"}
+                              data={transaction.transactionTemplate?.name ?? null}
+                              linkTo={transaction.transactionTemplateId
+                                  ? `/transaction-templates/${transaction.transactionTemplateId}`
+                                  : undefined} />
                 </DataItemContainer>
             </Section>
         </div>

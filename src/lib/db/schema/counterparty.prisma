@@ -12,7 +12,8 @@ model Counterparty {
     household   Household @relation(name: "HouseholdCounterparty", fields: [householdId], references: [id], onDelete: Cascade)
     householdId String
 
-    transactions Transaction[] @relation("TransactionCounterparty")
+    transactions        Transaction[]        @relation("TransactionCounterparty")
+    TransactionTemplate TransactionTemplate[]
 }
 
 enum CounterpartyType {

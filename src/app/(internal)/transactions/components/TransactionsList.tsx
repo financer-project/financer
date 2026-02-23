@@ -9,7 +9,6 @@ import { Badge } from "@/src/lib/components/ui/badge"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { format as formatDate } from "date-fns"
-import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
@@ -18,6 +17,7 @@ import { Prisma } from "@prisma/client"
 import { useTags } from "@/src/lib/components/provider/TagProvider"
 import { Paperclip } from "lucide-react"
 import { UserAvatar } from "@/src/lib/components/content/user"
+import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
 
 export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
     hideFilters?: boolean
@@ -31,7 +31,7 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
     const tags = useTags()
     const [{ importJobs }] = useQuery(getImportJobs, { take: 200, orderBy: { createdAt: "desc" } })
 
-    const columns: TableColumn<TransactionModel>[] = [
+    const columns: TableColumn<typeof transactions[0]>[] = [
         {
             name: "Name",
             render: transaction => (
