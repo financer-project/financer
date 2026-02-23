@@ -273,8 +273,8 @@ describe("Transaction Template Mutations & Queries", () => {
             expect(template.id).toBe(created.id)
             expect(template.name).toBe(created.name)
             expect(template.account).toBeDefined()
-            expect(template.transactions).toBeDefined()
-            expect(Array.isArray(template.transactions)).toBe(true)
+            expect(template.category).toBeDefined()
+            expect(template.counterparty).toBeDefined()
         })
 
         test("throws an error when template does not exist", async () => {
