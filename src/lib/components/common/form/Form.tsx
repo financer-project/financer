@@ -42,7 +42,7 @@ export function Form<S extends z.ZodType<any, any>>({
             const params = Object.fromEntries(
                 [...searchParams.entries()].map(([key, value]) => {
                     const isNumeric = /^-?\d+(\.\d+)?$/.test(value)
-                    return [key, isNumeric ? parseFloat(value) : value]
+                    return [key, isNumeric ? Number.parseFloat(value) : value]
                 })
             )
             return {
