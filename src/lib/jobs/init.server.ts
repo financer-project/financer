@@ -25,7 +25,7 @@ async function initTransactionTemplatesJob() {
     }
 }
 
-void initTransactionTemplatesJob()
+await initTransactionTemplatesJob()
 
 // Handle process shutdown
 process.on("SIGTERM", async () => {

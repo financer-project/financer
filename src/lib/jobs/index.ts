@@ -57,9 +57,9 @@ export function timeToCron(hhmm: string): string {
 
 // Replace the repeatable job with a new cron expression
 export async function registerTransactionTemplatesJob(cronExpression: string): Promise<void> {
-    const existing = await transactionTemplatesQueue.getRepeatableJobs()
+    const existing = await transactionTemplatesQueue.getJobSchedulers()
     for (const job of existing) {
-        await transactionTemplatesQueue.removeRepeatableByKey(job.key)
+        await transactionTemplatesQueue.removeJobScheduler(job.key)
     }
     await transactionTemplatesQueue.add(
         "process-transaction-templates",

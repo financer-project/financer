@@ -39,7 +39,12 @@ export function Form<S extends z.ZodType<any, any>>({
 
     const getInitialValues = (): z.infer<S> => {
         if (searchParams) {
-            const params = Object.fromEntries(searchParams.entries()) // Convert query params into an object
+            const params = Object.fromEntries(
+                [...searchParams.entries()].map(([key, value]) => {
+                    const isNumeric = /^-?\d+(\.\d+)?$/.test(value)
+                    return [key, isNumeric ? parseFloat(value) : value]
+                })
+            )
             return {
                 ...initialValues,
                 ...params
