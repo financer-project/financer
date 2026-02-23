@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { RecurrenceFrequency, TransactionType } from "@prisma/client"
 import { Suspense, useState } from "react"
 import getSuggestedTemplates from "@/src/lib/model/transactions/queries/getSuggestedTemplates"
-import { SuggestedTemplate } from "@/src/lib/model/transactions/services/recurringTransactionDetector"
+import { SuggestedTemplate, suggestionKey } from "@/src/lib/model/transactions/services/recurringTransactionDetector"
 import Section from "@/src/lib/components/common/structure/Section"
 import { Badge } from "@/src/lib/components/ui/badge"
 import { Button } from "@/src/lib/components/ui/button"
@@ -31,18 +31,6 @@ function persistDismissedKeys(keys: Set<string>) {
     } catch {
         // ignore storage errors
     }
-}
-
-function suggestionKey(suggestion: SuggestedTemplate): string {
-    return JSON.stringify({
-        name: suggestion.name,
-        type: suggestion.type,
-        amount: suggestion.amount,
-        frequency: suggestion.frequency,
-        accountId: suggestion.accountId,
-        categoryId: suggestion.categoryId,
-        counterpartyId: suggestion.counterpartyId
-    })
 }
 
 const frequencyLabel: Record<RecurrenceFrequency, string> = {

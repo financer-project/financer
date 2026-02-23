@@ -11,6 +11,11 @@ describe("Transaction Templates", () => {
         })
     })
 
+    // Helper: expand the collapsed "Suggested Templates" section
+    function expandSuggestionsSection() {
+        cy.get("#suggested-templates").contains("Suggested Templates").click()
+    }
+
     it("should be able to create a new template and delete it", () => {
         cy.get("a[href='/transaction-templates/new']").click()
 
@@ -61,6 +66,65 @@ describe("Transaction Templates", () => {
         // Clean up
         cy.get(".bg-destructive").click()
         cy.get(".bg-primary").contains("Confirm").click()
+    })
+
+    describe("suggestions", () => {
+        beforeEach(() => {
+            cy.resetAndSeedDatabase(result => {
+                testData = result as TestData
+                cy.seedRecurringTransactions({ name: "Monthly Subscription", amount: 15, type: "EXPENSE", count: 3 })
+                cy.loginWithUser(testData.users.standard)
+                cy.visit("/transaction-templates")
+                cy.clearLocalStorage("financer-dismissed-suggestions")
+            })
+        })
+
+        it("should show suggestions, pre-fill the form on create, and remove the suggestion afterwards", () => {
+            // Section starts collapsed with count badge
+            cy.get("#suggested-templates").contains("1").should("be.visible")
+
+            // Expand and verify card content
+            expandSuggestionsSection()
+            cy.contains("Monthly Subscription")
+                .closest("[data-slot='card']")
+                .within(() => {
+                    cy.contains("Monthly").should("be.visible")
+                    cy.contains("3 occurrences").should("be.visible")
+                })
+
+            // Click Create Template — form should be pre-filled from URL params
+            cy.contains("Monthly Subscription")
+                .closest("[data-slot='card']")
+                .contains("Create Template")
+                .click()
+
+            cy.url().should("include", "/transaction-templates/new")
+            cy.get("input[name='name']").should("have.value", "Monthly Subscription")
+            cy.findSelectField({ for: "frequency" }).should("contain.text", "Monthly")
+            cy.get("button[type='submit']").click()
+            cy.url().should("match", /\/transaction-templates\/[^/]+$/)
+
+            // Suggestion should no longer appear after the template is created
+            cy.visit("/transaction-templates")
+            expandSuggestionsSection()
+            cy.contains("Monthly Subscription").should("not.exist")
+        })
+
+        it("should allow dismissing a suggestion and resetting dismissed ones", () => {
+            expandSuggestionsSection()
+            cy.contains("Monthly Subscription").should("be.visible")
+
+            // Dismiss — suggestion disappears, badge drops to 0, reset button appears
+            cy.get("button[title='Dismiss suggestion']").click()
+            cy.contains("Monthly Subscription").should("not.exist")
+            cy.get("#suggested-templates").contains("0").should("be.visible")
+            cy.get("#suggested-templates").contains("Show 1 dismissed").should("be.visible")
+
+            // Reset — suggestion reappears, reset button disappears
+            cy.get("#suggested-templates").contains("Show 1 dismissed").click()
+            cy.contains("Monthly Subscription").should("be.visible")
+            cy.get("#suggested-templates").contains("Show").should("not.exist")
+        })
     })
 
     it("should be able to toggle template active status from detail page", () => {

@@ -8,6 +8,9 @@ import deleteTransactionTemplate from "@/src/lib/model/transactionTemplates/muta
 import toggleTransactionTemplate from "@/src/lib/model/transactionTemplates/mutations/toggleTransactionTemplate"
 import getTransactionTemplate from "@/src/lib/model/transactionTemplates/queries/getTransactionTemplate"
 import getTransactionTemplates from "@/src/lib/model/transactionTemplates/queries/getTransactionTemplates"
+import getSuggestedTemplates from "@/src/lib/model/transactions/queries/getSuggestedTemplates"
+import { suggestionKey } from "@/src/lib/model/transactions/services/recurringTransactionDetector"
+import db from "@/src/lib/db"
 
 describe("Transaction Template Mutations & Queries", () => {
     const util = TestUtilityMock.getInstance()
@@ -281,6 +284,146 @@ describe("Transaction Template Mutations & Queries", () => {
             await expect(
                 getTransactionTemplate({ id: "00000000-0000-0000-0000-000000000000" }, util.getMockContext())
             ).rejects.toThrowError()
+        })
+    })
+
+    describe("suggestions", () => {
+        const householdId = () => util.getTestData().households.standard.id
+        const accountId = () => util.getTestData().accounts.standard.id
+        const ctx = () => util.getMockContext("standard", { currentHouseholdId: householdId() })
+
+        async function seedMonthlyTransactions(name: string, amount: number, type: TransactionType, count = 3) {
+            const signed = type === TransactionType.EXPENSE ? -Math.abs(amount) : Math.abs(amount)
+            for (let i = 0; i < count; i++) {
+                await db.transaction.create({
+                    data: {
+                        name,
+                        type,
+                        amount: signed,
+                        valueDate: DateTime.now().minus({ months: count - 1 - i }).startOf("day").toJSDate(),
+                        accountId: accountId()
+                    }
+                })
+            }
+        }
+
+        describe("getSuggestedTemplates", () => {
+            test("returns a suggestion for a recurring transaction pattern", async () => {
+                await seedMonthlyTransactions("Streaming", 15, TransactionType.EXPENSE)
+
+                const suggestions = await getSuggestedTemplates(null, ctx())
+
+                expect(suggestions.find(s => s.name === "Streaming")).toBeDefined()
+            })
+
+            test("suggestion is removed once a matching template is created", async () => {
+                await seedMonthlyTransactions("Electricity", 90, TransactionType.EXPENSE)
+
+                const before = await getSuggestedTemplates(null, ctx())
+                expect(before.find(s => s.name === "Electricity")).toBeDefined()
+
+                await createTransactionTemplate({
+                    name: "Electricity",
+                    type: TransactionType.EXPENSE,
+                    amount: 90,
+                    frequency: RecurrenceFrequency.MONTHLY,
+                    startDate: DateTime.now().toJSDate(),
+                    accountId: accountId()
+                }, ctx())
+
+                const after = await getSuggestedTemplates(null, ctx())
+                expect(after.find(s => s.name === "Electricity")).toBeUndefined()
+            })
+
+            test("suggestion reappears after the matching template is deleted", async () => {
+                await seedMonthlyTransactions("Water Bill", 25, TransactionType.EXPENSE)
+
+                const template = await createTransactionTemplate({
+                    name: "Water Bill",
+                    type: TransactionType.EXPENSE,
+                    amount: 25,
+                    frequency: RecurrenceFrequency.MONTHLY,
+                    startDate: DateTime.now().toJSDate(),
+                    accountId: accountId()
+                }, ctx())
+
+                const afterCreate = await getSuggestedTemplates(null, ctx())
+                expect(afterCreate.find(s => s.name === "Water Bill")).toBeUndefined()
+
+                await deleteTransactionTemplate({ id: template.id }, ctx())
+
+                const afterDelete = await getSuggestedTemplates(null, ctx())
+                expect(afterDelete.find(s => s.name === "Water Bill")).toBeDefined()
+            })
+        })
+
+        describe("suggestionKey (dismiss identity)", () => {
+            test("identical suggestions produce the same key", async () => {
+                await seedMonthlyTransactions("Rent", 1000, TransactionType.EXPENSE)
+                const suggestions = await getSuggestedTemplates(null, ctx())
+                const rent = suggestions.find(s => s.name === "Rent")!
+
+                expect(suggestionKey(rent)).toBe(suggestionKey(rent))
+            })
+
+            test("suggestions differing only by amount produce different keys", async () => {
+                await seedMonthlyTransactions("Sub A", 10, TransactionType.EXPENSE)
+                await seedMonthlyTransactions("Sub A", 20, TransactionType.EXPENSE)
+                const suggestions = await getSuggestedTemplates(null, ctx())
+                const both = suggestions.filter(s => s.name === "Sub A")
+
+                // Two distinct suggestions (different amount) should have different keys
+                expect(both.length).toBe(2)
+                expect(suggestionKey(both[0])).not.toBe(suggestionKey(both[1]))
+            })
+
+            test("suggestions differing only by type produce different keys", async () => {
+                await seedMonthlyTransactions("Transfer", 500, TransactionType.INCOME)
+                await seedMonthlyTransactions("Transfer", 500, TransactionType.EXPENSE)
+                const suggestions = await getSuggestedTemplates(null, ctx())
+                const both = suggestions.filter(s => s.name === "Transfer")
+
+                expect(both.length).toBe(2)
+                expect(suggestionKey(both[0])).not.toBe(suggestionKey(both[1]))
+            })
+
+            test("dismissed key set correctly filters visible suggestions", async () => {
+                await seedMonthlyTransactions("Keep Me", 50, TransactionType.EXPENSE)
+                await seedMonthlyTransactions("Dismiss Me", 80, TransactionType.EXPENSE)
+                const suggestions = await getSuggestedTemplates(null, ctx())
+
+                const dismissMe = suggestions.find(s => s.name === "Dismiss Me")!
+                const dismissedKeys = new Set([suggestionKey(dismissMe)])
+
+                const visible = suggestions.filter(s => !dismissedKeys.has(suggestionKey(s)))
+
+                expect(visible.find(s => s.name === "Keep Me")).toBeDefined()
+                expect(visible.find(s => s.name === "Dismiss Me")).toBeUndefined()
+            })
+
+            test("stale dismissed keys are pruned when suggestion no longer exists", async () => {
+                await seedMonthlyTransactions("Gone Soon", 60, TransactionType.EXPENSE)
+                const before = await getSuggestedTemplates(null, ctx())
+                const goneSoon = before.find(s => s.name === "Gone Soon")!
+                const dismissedKeys = new Set([suggestionKey(goneSoon)])
+
+                // Create a template so the suggestion disappears server-side
+                await createTransactionTemplate({
+                    name: "Gone Soon",
+                    type: TransactionType.EXPENSE,
+                    amount: 60,
+                    frequency: RecurrenceFrequency.MONTHLY,
+                    startDate: DateTime.now().toJSDate(),
+                    accountId: accountId()
+                }, ctx())
+
+                const after = await getSuggestedTemplates(null, ctx())
+                const currentKeys = new Set(after.map(suggestionKey))
+
+                // Stale keys = dismissed keys that no longer exist in current suggestions
+                const activeKeys = new Set([...dismissedKeys].filter(k => currentKeys.has(k)))
+                expect(activeKeys.size).toBe(0)
+            })
         })
     })
 })

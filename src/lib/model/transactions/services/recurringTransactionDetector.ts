@@ -54,6 +54,18 @@ function assignConfidence(occurrences: number, intervalStdDev: number): "HIGH" |
 
 const confidenceOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 }
 
+export function suggestionKey(suggestion: SuggestedTemplate): string {
+    return JSON.stringify({
+        name: suggestion.name,
+        type: suggestion.type,
+        amount: suggestion.amount,
+        frequency: suggestion.frequency,
+        accountId: suggestion.accountId,
+        categoryId: suggestion.categoryId,
+        counterpartyId: suggestion.counterpartyId
+    })
+}
+
 export async function detectRecurringTransactions(householdId: string): Promise<SuggestedTemplate[]> {
     const [transactions, existingTemplates] = await Promise.all([
         db.transaction.findMany({
