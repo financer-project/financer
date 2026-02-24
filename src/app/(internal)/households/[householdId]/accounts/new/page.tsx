@@ -10,9 +10,7 @@ async function fetchHousehold(householdId: string): Promise<Household> {
     return invoke(getHousehold, { id: householdId })
 }
 
-export async function generateMetadata(props: HouseholdPageProps): Promise<Metadata> {
-    const params = await props.params
-    const household = await fetchHousehold(params.householdId)
+export async function generateMetadata(): Promise<Metadata> {
     return {
         title: "New Account"
     }

@@ -9,6 +9,7 @@ export interface UserAvatarUser {
     id: string
     firstName: string
     lastName: string
+    email: string
     avatarPath?: string | null
 }
 
@@ -16,6 +17,7 @@ export interface UserAvatarProps {
     user: UserAvatarUser | null | undefined
     size?: "sm" | "md" | "lg"
     showName?: boolean
+    showEmail?: boolean
     showTooltip?: boolean
     className?: string
 }
@@ -27,12 +29,13 @@ const sizeClasses = {
 }
 
 export function UserAvatar({
-    user,
-    size = "md",
-    showName = false,
-    showTooltip,
-    className
-}: Readonly<UserAvatarProps>) {
+                               user,
+                               size = "md",
+                               showName = false,
+                               showEmail = false,
+                               showTooltip,
+                               className
+                           }: Readonly<UserAvatarProps>) {
     const shouldShowTooltip = showTooltip ?? !showName
 
     if (!user) {
@@ -79,7 +82,10 @@ export function UserAvatar({
     const content = showName ? (
         <div className="flex items-center gap-2">
             {avatarElement}
-            <span className="text-sm">{fullName}</span>
+            <div className={"flex flex-col"}>
+                <span className="text-sm font-medium">{fullName}</span>
+                {showEmail && (<span className={"text-xs text-muted-foreground"}>{user.email}</span>)}
+            </div>
         </div>
     ) : avatarElement
 
