@@ -54,7 +54,9 @@ describe("Transaction Templates", () => {
         cy.url().should("match", /\/transaction-templates\/[^/]+$/)
 
         // Edit the template
+        cy.component("dataItem").should("contain.text", "Weekly Groceries")
         cy.get("a").contains("Edit").click()
+        cy.url().should("contain", "/edit")
 
         cy.get("input[name='name']").clear().type("Weekly Groceries Updated")
         cy.get("input[name='amount']").clear().type("200")
@@ -106,8 +108,7 @@ describe("Transaction Templates", () => {
 
             // Suggestion should no longer appear after the template is created
             cy.visit("/transaction-templates")
-            expandSuggestionsSection()
-            cy.contains("Monthly Subscription").should("not.exist")
+            cy.get("#suggested-templates").should("not.exist")
         })
 
         it("should allow dismissing a suggestion and resetting dismissed ones", () => {
