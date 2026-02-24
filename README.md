@@ -10,7 +10,7 @@ A comprehensive personal finance management application built with Next.js, Type
 - 💰 **Transaction Tracking** - Record, categorize, and analyze your income and expenses
 - 📊 **Categories & Tags** - Organize transactions with custom categories and flexible tagging
 - 👥 **Counterparties** - Manage payees, payers, and recurring transaction partners
-- 🔁 **Recurring Transactions** - Automate regular income and expenses with configurable templates (daily, weekly, monthly, yearly)
+- 🔁 **Transaction Templates** - Automate regular income and expenses with configurable templates (daily, weekly, monthly, yearly)
 - 📈 **Dashboard & Analytics** - Visual reports, charts, and financial insights
 - 📥 **Import & Export** - CSV import support and data export capabilities
 - ⚙️ **Settings & Administration** - User profiles, preferences, and system configuration
