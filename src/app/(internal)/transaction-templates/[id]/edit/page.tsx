@@ -17,11 +17,13 @@ export async function generateMetadata(props: EditTransactionTemplatePageProps):
 
 export default async function EditTransactionTemplatePage(props: Readonly<EditTransactionTemplatePageProps>) {
     const params = await props.params
+    const template = await invoke(getTransactionTemplate, { id: params.id })
 
     return (
         <Page>
             <PageHeader items={[
                 { label: "Transaction Templates", url: "/transaction-templates" },
+                { label: template.name, url: `/transaction-templates/${params.id}` },
                 { label: "Edit" }
             ]}>
                 <PageTitle>Edit Transaction Template</PageTitle>

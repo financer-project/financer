@@ -18,7 +18,7 @@ const TransactionTemplateHeader = ({ template }: { template: TransactionTemplate
             { label: "Transaction Templates", url: "/transaction-templates" },
             { label: template.name }
         ]}>
-            <PageTitle>Transaction Template</PageTitle>
+            <PageTitle>{template.name}</PageTitle>
             <PageDescription>View and manage this recurring transaction template.</PageDescription>
             <PageActions>
                 <div className={"flex flex-row gap-2"}>

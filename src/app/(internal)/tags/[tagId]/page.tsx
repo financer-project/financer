@@ -14,7 +14,7 @@ export async function generateMetadata(props: TagPageProps): Promise<Metadata> {
     const params = await props.params
     const tag = await fetchTag(params.tagId)
     return {
-        title: `Tag ${tag.id} - ${tag.name}`
+        title: tag.name
     }
 }
 

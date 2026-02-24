@@ -17,7 +17,7 @@ export async function generateMetadata(props: EditCounterpartyPageProps): Promis
     const params = await props.params
     const counterparty = await fetchCounterparty(params.counterpartyId)
     return {
-        title: `Edit Counterparty ${counterparty.id} - ${counterparty.name}`
+        title: `Edit ${counterparty.name}`
     }
 }
 

@@ -34,7 +34,7 @@ export const EditTransaction = ({ transactionId }: { transactionId: string }) =>
                 { label: "Edit" }
             ]}>
                 <PageTitle>Edit Transaction</PageTitle>
-                <PageDescription>Edit transaction {transaction.id}</PageDescription>
+                <PageDescription>Here you can edit your transaction.</PageDescription>
             </PageHeader>
             <PageContent>
                 <Suspense fallback={<div>Loading...</div>}>

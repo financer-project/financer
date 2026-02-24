@@ -41,7 +41,7 @@ const CounterpartyHeader = ({ counterparty }: { counterparty: Counterparty }) =>
             { label: "Counterparties", url: "/counterparties" },
             { label: counterparty.name }
         ]}>
-            <PageTitle>Counterparty</PageTitle>
+            <PageTitle>{counterparty.name}</PageTitle>
             <PageDescription>Here you can see all details of your counterparty.</PageDescription>
             <PageActions>{renderActions(counterparty)}</PageActions>
         </PageHeader>

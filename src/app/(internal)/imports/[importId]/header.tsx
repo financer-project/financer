@@ -40,7 +40,7 @@ const ImportJobHeader = ({ importJob }: { importJob: ImportJobModel }) => {
             { label: "Imports", url: "/imports" },
             { label: importJob.name }
         ]}>
-            <PageTitle>Import Job Details</PageTitle>
+            <PageTitle>{importJob.name}</PageTitle>
             <PageDescription>Here can you edit, delete and view the import job details.</PageDescription>
             <PageActions>{renderActions(importJob)}</PageActions>
         </PageHeader>

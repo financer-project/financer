@@ -1,3 +1,5 @@
+"use client"
+
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/src/lib/components/ui/sidebar"
 import {
     DropdownMenu,
@@ -8,14 +10,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/src/lib/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/src/lib/components/ui/avatar"
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react"
+import { BookText, ChevronsUpDown, DollarSign, ExternalLink, LogOut } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useMutation } from "@blitzjs/rpc"
 import logout from "@/src/lib/model/auth/mutations/logout"
 import { useCurrentUser } from "@/src/lib/hooks/useCurrentUser"
 import { useIsMobile } from "@/src/lib/hooks/use-mobile"
+import { UserAvatar } from "@/src/lib/components/content/user"
 
 export function NavUser() {
     const user = useCurrentUser()
@@ -23,9 +25,6 @@ export function NavUser() {
 
     const router = useRouter()
     const [logoutMutation] = useMutation(logout)
-
-    const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
-    const avatarUrl = user.avatarPath ? `/api/users/avatar/${user.id}` : undefined
 
     return (
         <SidebarMenu>
@@ -35,14 +34,7 @@ export function NavUser() {
                         <SidebarMenuButton
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-                            <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage src={avatarUrl} alt={user.firstName} />
-                                <AvatarFallback className="rounded-lg bg-background">{initials}</AvatarFallback>
-                            </Avatar>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">{user.firstName}</span>
-                                <span className="truncate text-xs">{user.email}</span>
-                            </div>
+                            <UserAvatar showName={true} showEmail={true} user={user} />
                             <ChevronsUpDown className="ml-auto size-4" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
@@ -51,40 +43,24 @@ export function NavUser() {
                         side={isMobile ? "bottom" : "right"}
                         align="end"
                         sideOffset={4}>
-                        <DropdownMenuLabel className="p-0 font-normal">
-                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage src={avatarUrl} alt={user.firstName} />
-                                    <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-                                </Avatar>
-                                <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold">{user.firstName}</span>
-                                    <span className="truncate text-xs">{user.email}</span>
-                                </div>
-                            </div>
+                        <DropdownMenuLabel>
+                            <UserAvatar showName={true} showEmail={true} user={user} />
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
                             <DropdownMenuItem asChild>
-                                <Link href={"/settings"}>
-                                    <BadgeCheck />
-                                    Account
+                                <Link href={"https://financer-project.org/"}>
+                                    <DollarSign />
+                                    <span className={"grow"}>Financer</span>
+                                    <ExternalLink />
                                 </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Bell />
-                                Notifications
+                            <DropdownMenuItem asChild>
+                                <Link href={"https://docs.financer-project.org/"}>
+                                    <BookText />
+                                    <span className={"grow"}>Docs</span>
+                                    <ExternalLink />
+                                </Link>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
@@ -94,8 +70,7 @@ export function NavUser() {
                                 onClick={async () => {
                                     await logoutMutation()
                                     router.refresh()
-                                }}
-                            >
+                                }}>
                                 <LogOut />
                                 Log out
                             </Link>

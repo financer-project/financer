@@ -14,7 +14,7 @@ export async function generateMetadata(props: AccountPageProps): Promise<Metadat
     const params = await props.params
     const account = await fetchAccount(params.accountId)
     return {
-        title: `Account ${account.id} - ${account.name}`
+        title: account.name
     }
 }
 

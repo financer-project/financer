@@ -14,7 +14,6 @@ export default function NewImportPage() {
     return (
         <Page>
             <PageHeader items={[
-                { label: "Transactions", url: "/transactions" },
                 { label: "Imports", url: "/imports" },
                 { label: "New Import" }
             ]}>

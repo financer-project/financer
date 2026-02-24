@@ -16,7 +16,7 @@ export async function generateMetadata(props: TransactionPageProps): Promise<Met
     const params = await props.params
     const transaction = await fetchTransaction(params.transactionId)
     return {
-        title: `Transaction ${transaction.id} - ${transaction.name}`
+        title: transaction.name ?? transaction.category?.name ?? "Transaction"
     }
 }
 

@@ -14,7 +14,7 @@ export async function generateMetadata(props: CategoryPageProps): Promise<Metada
     const params = await props.params
     const category = await fetchCategory(params.categoryId)
     return {
-        title: `Category ${category.id} - ${category.name}`
+        title: category.name
     }
 }
 

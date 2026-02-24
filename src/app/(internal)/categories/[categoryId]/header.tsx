@@ -47,7 +47,7 @@ const CategoryHeader = ({ category }: { category: Category }) => {
             { label: "Categories", url: "/categories" },
             { label: category.name }
         ]}>
-            <PageTitle>Categories</PageTitle>
+            <PageTitle>{category.name}</PageTitle>
             <PageDescription>Here you can see all details of your category.</PageDescription>
             <PageActions>{renderActions(category)}</PageActions>
         </PageHeader>
