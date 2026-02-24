@@ -1,5 +1,5 @@
-import "../../../src/app/globals.css";
-import { AppRouterContext, AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import "../../../src/app/globals.css"
+import { AppRouterContext, AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 import { mount, MountOptions, MountReturn } from "cypress/react" // or 'cypress/react18'
 
 // Create a mock router

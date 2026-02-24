@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { forgotPasswordMailer } from "@/src/lib/mailers/forgotPasswordMailer"
 import { getEmailTransporter } from "@/src/lib/mailers/getEmailTransporter"
 import db from "@/src/lib/db"
-import nodemailer from "nodemailer"
 
 // Mock dependencies
 vi.mock("@/src/lib/mailers/getEmailTransporter", () => ({

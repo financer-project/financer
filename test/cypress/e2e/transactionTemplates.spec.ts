@@ -70,6 +70,34 @@ describe("Transaction Templates", () => {
         cy.get(".bg-primary").contains("Confirm").click()
     })
 
+    it("should be able to toggle template active status from detail page", () => {
+        // Create a template
+        cy.get("a[href='/transaction-templates/new']").click()
+
+        cy.get("input[name='name']").type("Toggle Test Template")
+        cy.selectField({ for: "type", value: "Income" })
+        cy.get("input[name='amount']").type("500")
+        cy.selectField({ for: "frequency", value: "Monthly" })
+        cy.get("button[type='submit']").click()
+
+        cy.url().should("match", /\/transaction-templates\/[^/]+$/)
+
+        // Template should be active by default
+        cy.contains("Active").should("exist")
+
+        // Deactivate via the switch
+        cy.get("#template-active").click()
+        cy.contains("Inactive").should("exist")
+
+        // Reactivate
+        cy.get("#template-active").click()
+        cy.contains("Active").should("exist")
+
+        // Clean up
+        cy.get(".bg-destructive").click()
+        cy.get(".bg-primary").contains("Confirm").click()
+    })
+
     describe("suggestions", () => {
         beforeEach(() => {
             cy.resetAndSeedDatabase(result => {
@@ -126,33 +154,5 @@ describe("Transaction Templates", () => {
             cy.contains("Monthly Subscription").should("be.visible")
             cy.get("#suggested-templates").contains("Show").should("not.exist")
         })
-    })
-
-    it("should be able to toggle template active status from detail page", () => {
-        // Create a template
-        cy.get("a[href='/transaction-templates/new']").click()
-
-        cy.get("input[name='name']").type("Toggle Test Template")
-        cy.selectField({ for: "type", value: "Income" })
-        cy.get("input[name='amount']").type("500")
-        cy.selectField({ for: "frequency", value: "Monthly" })
-        cy.get("button[type='submit']").click()
-
-        cy.url().should("match", /\/transaction-templates\/[^/]+$/)
-
-        // Template should be active by default
-        cy.contains("Active").should("exist")
-
-        // Deactivate via the switch
-        cy.get("#template-active").click()
-        cy.contains("Inactive").should("exist")
-
-        // Reactivate
-        cy.get("#template-active").click()
-        cy.contains("Active").should("exist")
-
-        // Clean up
-        cy.get(".bg-destructive").click()
-        cy.get(".bg-primary").contains("Confirm").click()
     })
 })

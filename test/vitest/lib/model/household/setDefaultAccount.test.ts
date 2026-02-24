@@ -3,7 +3,6 @@ import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import setDefaultAccount from "@/src/lib/model/household/mutations/setDefaultAccount"
 import getCurrentMembership from "@/src/lib/model/household/queries/getCurrentMembership"
 import createAccount from "@/src/lib/model/account/mutations/createAccount"
-import db from "@/src/lib/db"
 
 describe("setDefaultAccount mutation", () => {
     const utils = TestUtilityMock.getInstance()

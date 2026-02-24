@@ -1,4 +1,4 @@
-import { describe, expect, test, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, test, vi } from "vitest"
 import getProfile from "@/src/lib/model/user/queries/getProfile"
 import updateProfile from "@/src/lib/model/user/mutations/updateProfile"
 import deleteAvatar from "@/src/lib/model/user/mutations/deleteAvatar"

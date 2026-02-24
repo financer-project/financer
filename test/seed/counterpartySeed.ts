@@ -1,8 +1,7 @@
 import { Counterparty } from ".prisma/client"
 import db from "@/src/lib/db"
-import { Household } from "@prisma/client"
+import { CounterpartyType, Household } from "@prisma/client"
 import { HouseholdSeed } from "@/test/seed/households"
-import { CounterpartyType } from "@prisma/client"
 
 export interface CounterpartySeed {
     standard: {

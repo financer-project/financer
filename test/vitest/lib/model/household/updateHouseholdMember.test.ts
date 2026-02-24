@@ -3,7 +3,6 @@ import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import updateHouseholdMember from "@/src/lib/model/household/mutations/updateHouseholdMember"
 import addHouseholdMember from "@/src/lib/model/household/mutations/addHouseholdMember"
 import getHousehold from "@/src/lib/model/household/queries/getHousehold"
-import db from "@/src/lib/db"
 import { HouseholdRole } from "@prisma/client"
 
 describe("updateHouseholdMember mutation", () => {
