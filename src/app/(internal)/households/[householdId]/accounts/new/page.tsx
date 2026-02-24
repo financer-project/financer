@@ -14,7 +14,7 @@ export async function generateMetadata(props: HouseholdPageProps): Promise<Metad
     const params = await props.params
     const household = await fetchHousehold(params.householdId)
     return {
-        title: `Create new account for household ${household.name}`
+        title: "New Account"
     }
 }
 

@@ -20,7 +20,7 @@ export async function generateMetadata(
     const params = await props.params
     const account = await fetchAccount(params.accountId)
     return {
-        title: `Edit Account ${account.id} - ${account.name}`
+        title: `Edit ${account.name}`
     }
 }
 

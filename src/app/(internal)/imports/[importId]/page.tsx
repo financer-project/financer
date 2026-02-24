@@ -14,7 +14,7 @@ export async function generateMetadata(props: ImportJobPageProps): Promise<Metad
     const params = await props.params
     const importJob = await fetchImportJob(params.importId)
     return {
-        title: `Import ${importJob.id} - ${importJob.name}`
+        title: importJob.name
     }
 }
 

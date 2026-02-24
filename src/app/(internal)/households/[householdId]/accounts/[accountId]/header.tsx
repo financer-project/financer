@@ -63,7 +63,7 @@ const AccountHeader = ({ account }: { account: AccountModel }) => {
             { label: account.household.name, url: `/households/${account.householdId}` },
             { label: account.name }
         ]}>
-            <PageTitle>Account Details</PageTitle>
+            <PageTitle>{account.name}</PageTitle>
             <PageDescription>Here can you edit, delete and view the account details.</PageDescription>
             <PageActions>{renderHeaderButtons()}</PageActions>
         </PageHeader>

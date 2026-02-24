@@ -41,7 +41,7 @@ const TagHeader = ({ tag }: { tag: Tag }) => {
             { label: "Tags", url: "/tags" },
             { label: tag.name }
         ]}>
-            <PageTitle>Tag</PageTitle>
+            <PageTitle>{tag.name}</PageTitle>
             <PageDescription>Here you can see all details of your tag.</PageDescription>
             <PageActions>{renderActions(tag)}</PageActions>
         </PageHeader>

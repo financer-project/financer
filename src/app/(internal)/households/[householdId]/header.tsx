@@ -40,7 +40,7 @@ export default function HouseholdHeader({ household }: Readonly<{ household: Hou
             { label: "Households", url: "/households" },
             { label: household.name }
         ]}>
-            <PageTitle>Household Details</PageTitle>
+            <PageTitle>{household.name}</PageTitle>
             <PageDescription>Here can you edit, delete and view the household details.</PageDescription>
             <PageActions>{renderHeaderButtons()}</PageActions>
         </PageHeader>

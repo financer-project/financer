@@ -74,7 +74,7 @@ const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) =
             { label: "Transactions", url: "/transactions" },
             { label: transaction.name ?? transaction.category?.name ?? "Transaction Details" }
         ]}>
-            <PageTitle>Transaction</PageTitle>
+            <PageTitle>{transaction.name ?? transaction.category?.name ?? "Transaction"}</PageTitle>
             <PageDescription>Here you can see all details of your transaction.</PageDescription>
             <PageActions>{renderActions(transaction)}</PageActions>
         </PageHeader>
