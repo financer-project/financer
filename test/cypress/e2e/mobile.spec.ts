@@ -62,7 +62,8 @@ describe("Mobile Tests", () => {
         // Submit the form
         cy.get("button[type='submit']").click()
 
-        // Save the detail page URL before navigating away
+        // Wait for navigation away from the form, then save the detail page URL
+        cy.url().should("not.include", "/transactions/new")
         cy.url().as("transactionDetailUrl")
 
         // Verify transaction was created
