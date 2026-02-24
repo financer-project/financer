@@ -10,4 +10,5 @@ model Account {
     transactions Transaction[]
 
     defaultForMemberships HouseholdMembership[]
+    TransactionTemplate   TransactionTemplate[]
 }

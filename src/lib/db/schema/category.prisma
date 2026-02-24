@@ -12,7 +12,8 @@ model Category {
     parent       Category?     @relation(name: "CategoryHierarchy", fields: [parentId], references: [id])
     parentId     String?
     children     Category[]    @relation(name: "CategoryHierarchy")
-    transactions Transaction[]
+    transactions        Transaction[]
+    TransactionTemplate TransactionTemplate[]
 
     @@index([parentId])
 }

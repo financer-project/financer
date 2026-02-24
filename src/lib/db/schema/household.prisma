@@ -19,6 +19,8 @@ model Household {
     ImportJob ImportJob[]
 
     Counterparty Counterparty[] @relation(name: "HouseholdCounterparty")
+
+    TransactionTemplate TransactionTemplate[] @relation(name: "HouseholdTransactionTemplates")
 }
 
 model HouseholdMembership {

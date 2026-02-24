@@ -9,7 +9,6 @@ import { Badge } from "@/src/lib/components/ui/badge"
 import CounterpartyIcon from "@/src/lib/components/content/counterparties/CounterpartyIcon"
 import getImportJobs from "@/src/lib/model/imports/queries/getImportJobs"
 import { format as formatDate } from "date-fns"
-import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
 import { useCategories } from "@/src/lib/components/provider/CategoryProvider"
 import { useAccounts } from "@/src/lib/components/provider/AccountProvider"
 import { useCounterparties } from "@/src/lib/components/provider/CounterpartyProvider"
@@ -18,20 +17,114 @@ import { Prisma } from "@prisma/client"
 import { useTags } from "@/src/lib/components/provider/TagProvider"
 import { Paperclip } from "lucide-react"
 import { UserAvatar } from "@/src/lib/components/content/user"
+import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
 
-export const TransactionsList = withFormatters(({ formatters, hideFilters = false }: WithFormattersProps & {
+export const TransactionsList = withFormatters(({
+                                                    formatters,
+                                                    hideFilters = false,
+                                                    fixedFilters
+                                                }: WithFormattersProps & {
     hideFilters?: boolean
+    fixedFilters?: Prisma.TransactionWhereInput
 }) => {
     const currentHousehold = useCurrentHousehold()!
+    const showFilters = !hideFilters
 
-    // Load options for filters
     const accounts = useAccounts()
     const categories = useCategories()
     const counterparties = useCounterparties()
     const tags = useTags()
-    const [{ importJobs }] = useQuery(getImportJobs, { take: 200, orderBy: { createdAt: "desc" } })
+    const [{ importJobs }] = useQuery(getImportJobs, {
+        take: showFilters ? 200 : 1,
+        orderBy: { createdAt: "desc" }
+    })
 
-    const columns: TableColumn<TransactionModel>[] = [
+    const filters: FilterConfig<TransactionModel>[] = [
+        {
+            type: "select",
+            label: "Account",
+            property: "accountId",
+            multiSelect: true,
+            options: accounts.map((a) => ({ label: a.name, value: a.id }))
+        },
+        {
+            type: "select",
+            label: "Category",
+            property: "categoryId",
+            multiSelect: true,
+            options: [
+                { label: "Uncategorized", value: "null", render: label => (<ColoredTag label={label} />) },
+                ...categories.flatten().map((c) => ({
+                    label: c.data.name,
+                    value: c.data.id,
+                    render: (label: string) => (<ColoredTag color={c.data.color} label={label} />)
+                }))
+            ]
+        },
+        {
+            type: "select",
+            label: "Tag",
+            property: "tagId",
+            multiSelect: true,
+            options: tags.map((tag) => ({ label: tag.name, value: tag.id }))
+        },
+        {
+            type: "select",
+            label: "Counterparty",
+            property: "counterpartyId",
+            multiSelect: true,
+            options: counterparties.map((cp) => ({ label: cp.name, value: cp.id }))
+        },
+        {
+            type: "select",
+            label: "CSV Import",
+            property: "importJobId",
+            multiSelect: true,
+            options: importJobs.map((job) => ({
+                label: job.name ?? `Import ${formatDate(new Date(job.createdAt), "yyyy-MM-dd HH:mm")}`,
+                value: job.id,
+                render: (label: string) => (
+                    <div className="flex flex-col leading-tight">
+                        <span>{label}</span>
+                        <span className="text-xs text-muted-foreground">
+                            {formatDate(new Date(job.createdAt), "yyyy-MM-dd HH:mm")}
+                        </span>
+                    </div>
+                )
+            }))
+        },
+        {
+            type: "date",
+            label: "Date",
+            property: "valueDate"
+        }
+    ]
+
+    const searchConfig = {
+        fields: [
+            "name",
+            "description",
+            "account.name",
+            "category.name",
+            "counterparty.name"
+        ],
+        paramKey: "q"
+    }
+
+    const { page, pageSize, where } = useDataTable<TransactionModel, Prisma.TransactionWhereInput>({
+        filters,
+        search: searchConfig,
+        defaultPageSize: 25
+    })
+
+    const [{ transactions, count }] = usePaginatedQuery(getTransactions, {
+        skip: pageSize * page,
+        take: pageSize,
+        householdId: currentHousehold.id,
+        where: fixedFilters ? { ...where, ...fixedFilters } : where
+    })
+
+    const columns: TableColumn<typeof transactions[0]>[] = [
         {
             name: "Name",
             render: transaction => (
@@ -87,113 +180,24 @@ export const TransactionsList = withFormatters(({ formatters, hideFilters = fals
         },
         {
             name: "",
-            render: transaction => <UserAvatar user={transaction.createdBy} size="sm" />
-        },
-    ]
-
-    // Define dynamic filters
-    const filters: FilterConfig<TransactionModel>[] = [
-        {
-            type: "select",
-            label: "Account",
-            property: "accountId",
-            multiSelect: true,
-            options: accounts.map((a) => ({ label: a.name, value: a.id }))
-        },
-        {
-            type: "select",
-            label: "Category",
-            property: "categoryId",
-            multiSelect: true,
-            options: [
-                { label: "Uncategorized", value: "null", render: label => (<ColoredTag label={label} />) },
-                ...categories.flatten().map((c) => ({
-                    label: c.data.name,
-                    value: c.data.id,
-                    render: (label: string) => (<ColoredTag color={c.data.color} label={label} />)
-                }))
-            ]
-        },
-        {
-            type: "select",
-            label: "Tag",
-            property: "tagId",
-            multiSelect: true,
-            options: tags.map((tag) => ({ label: tag.name, value: tag.id }))
-        },
-        {
-            type: "select",
-            label: "Counterparty",
-            property: "counterpartyId",
-            multiSelect: true,
-            options: counterparties.map((cp) => ({ label: cp.name, value: cp.id }))
-        },
-        {
-            type: "select",
-            label: "CSV Import",
-            property: "importJobId",
-            multiSelect: true,
-            options: importJobs.map((job) => ({
-                label: job.name ?? `Import ${formatDate(new Date(job.createdAt), "yyyy-MM-dd HH:mm")}`,
-                value: job.id,
-                render: (label: string) => (
-                    <div className="flex flex-col leading-tight">
-                        <span>{label}</span>
-                        <span
-                            className="text-xs text-muted-foreground">{formatDate(new Date(job.createdAt), "yyyy-MM-dd HH:mm")}</span>
-                    </div>
-                )
-            }))
-        },
-        {
-            type: "date",
-            label: "Date",
-            property: "valueDate"
+            render: transaction => <UserAvatar user={transaction.createdBy ?? null} size="sm" />
         }
     ]
-
-    const searchConfig = {
-        fields: [
-            "name",
-            "description",
-            "account.name",
-            "category.name",
-            "counterparty.name"
-        ],
-        paramKey: "q"
-    }
-
-    const {
-        page,
-        pageSize,
-        where
-    } = useDataTable<TransactionModel, import("@/src/lib/db").Prisma.TransactionWhereInput>({
-        filters,
-        search: searchConfig,
-        defaultPageSize: 25
-    })
-
-    const [{ transactions, count }] = usePaginatedQuery(getTransactions, {
-        skip: pageSize * page,
-        take: pageSize,
-        householdId: currentHousehold.id,
-        where
-    })
 
     const canCreateTransaction = useAuthorize("create", Prisma.ModelName.Transaction, {}, true)
 
     return (
         <div>
             <DataTable data={transactions}
-                       filters={hideFilters ? undefined : filters}
-                       search={hideFilters ? undefined : {
+                       filters={showFilters ? filters : undefined}
+                       search={showFilters ? {
                            fields: searchConfig.fields,
                            paramKey: searchConfig.paramKey,
                            placeholder: "Search transactions"
-                       }}
+                       } : undefined}
                        columns={columns}
                        itemRoute={transaction => `/transactions/${transaction.id}`}
-                       createRoute={canCreateTransaction ? "/transactions/new" : undefined}
+                       createRoute={!hideFilters && canCreateTransaction ? "/transactions/new" : undefined}
                        count={count} />
         </div>
     )

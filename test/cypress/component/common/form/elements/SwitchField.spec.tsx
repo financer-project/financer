@@ -125,8 +125,8 @@ describe("<SwitchField />", () => {
             />
         )
 
-        // Check that the card has the appropriate class when showCard is true
-        cy.get(".shadow-sm").should("exist")
+        // Check that the card does NOT have shadow-none when showCard is true
+        cy.get(".shadow-none").should("not.exist")
 
         // Mount again with showCard false (default)
         cy.mount(
@@ -139,7 +139,7 @@ describe("<SwitchField />", () => {
             />
         )
 
-        // Check that the card has the appropriate class when showCard is false/undefined
-        cy.get(".shadow-sm").should("not.exist")
+        // Check that the card has shadow-none when showCard is false/undefined
+        cy.get(".shadow-none").should("exist")
     })
 })

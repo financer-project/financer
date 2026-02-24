@@ -32,6 +32,20 @@ export default defineConfig({
                 },
                 async createToken({ type, email, userId, content }: { type: string, email: string, userId: string, content?: unknown }) {
                     return dbContainer.createToken(type, email, userId, content)
+                },
+                async seedRecurringTransactions({ name, amount, type, count = 3 }: { name: string, amount: number, type: string, count?: number }) {
+                    const testData = dbContainer.getTestData()
+                    const accountId = testData.accounts.standard.id
+                    const signedAmount = type === "EXPENSE" ? -Math.abs(amount) : Math.abs(amount)
+                    const db = dbContainer.getDatabase()
+                    for (let i = 0; i < count; i++) {
+                        const valueDate = new Date()
+                        valueDate.setMonth(valueDate.getMonth() - (count - 1 - i))
+                        valueDate.setHours(0, 0, 0, 0)
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        await db.transaction.create({ data: { name, type: type as any, amount: signedAmount, valueDate, accountId } })
+                    }
+                    return null
                 }
             })
 

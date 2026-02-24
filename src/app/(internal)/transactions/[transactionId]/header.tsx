@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 import { PageActions, PageDescription, PageHeader, PageTitle } from "@/src/lib/components/content/page"
 import { ConfirmationDialog } from "@/src/lib/components/common/dialog/ConfirmationDialog"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
-import { CirclePlus } from "lucide-react"
+import { CirclePlus, LayoutTemplate } from "lucide-react"
 import { useAuthorize } from "@/src/lib/guard/hooks/useAuthorize"
 import { Prisma } from "@prisma/client"
 
@@ -17,14 +17,30 @@ const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) =
     const router = useRouter()
 
     const canCreateMore = useAuthorize("create", Prisma.ModelName.Transaction, {}, true)
+    const canCreateTemplate = useAuthorize("create", Prisma.ModelName.TransactionTemplate, {}, true)
     const canEdit = useAuthorize("update", Prisma.ModelName.Transaction, { id: transaction.id })
     const canDelete = useAuthorize("delete", Prisma.ModelName.Transaction, { id: transaction.id })
 
-    const renderActions = (transaction: TransactionModel) => (
+    const renderActions = (transaction: TransactionModel) => {
+        const templateParams = new URLSearchParams()
+        if (transaction.name) templateParams.set("name", transaction.name)
+        templateParams.set("type", transaction.type)
+        templateParams.set("amount", transaction.amount.toString())
+        templateParams.set("accountId", transaction.accountId)
+        if (transaction.description) templateParams.set("description", transaction.description)
+        if (transaction.categoryId) templateParams.set("categoryId", transaction.categoryId)
+        if (transaction.counterpartyId) templateParams.set("counterpartyId", transaction.counterpartyId)
+
+        return (
         <div className={"flex flex-row gap-2"}>
             {canCreateMore && (
                 <Button variant={"outline"} asChild>
                     <Link href={`/transactions/new`}><CirclePlus />Create more</Link>
+                </Button>
+            )}
+            {canCreateTemplate && (
+                <Button variant={"outline"} asChild>
+                    <Link href={`/transaction-templates/new?${templateParams.toString()}`}><LayoutTemplate />Create Template</Link>
                 </Button>
             )}
             {canEdit && (
@@ -50,7 +66,8 @@ const TransactionHeader = ({ transaction }: { transaction: TransactionModel }) =
                 </Button>
             )}
         </div>
-    )
+        )
+    }
 
     return (
         <PageHeader items={[

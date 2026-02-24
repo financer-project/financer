@@ -6,7 +6,7 @@ import FormElement, { FormElementProps } from "@/src/lib/components/common/form/
 import { useFormFieldInit } from "@/src/lib/hooks/use-form-field-init"
 
 export interface LabeledTextFieldProps<E, V> extends FormElementProps<E, V> {
-    type?: "text" | "password" | "email" | "number"
+    type?: "text" | "password" | "email" | "number" | "time"
 }
 
 export const TextField = <E, V>({ name, type = "text", ...props }: LabeledTextFieldProps<E, V>) => {

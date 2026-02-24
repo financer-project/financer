@@ -8,6 +8,7 @@ import DefaultSettingsSection from "./sections/DefaultSettingsSection"
 import UserManagementSection from "./sections/UserManagementSection"
 import EmailSettingsSection from "./sections/EmailSettingsSection"
 import SecuritySettingsSection from "./sections/SecuritySettingsSection"
+import TransactionTemplatesSection from "./sections/TransactionTemplatesSection"
 import Section from "@/src/lib/components/common/structure/Section"
 
 interface AdminSettingsFormProps<S extends z.ZodType<any, any>> extends FormProps<S> { //eslint-disable-line @typescript-eslint/no-explicit-any
@@ -38,6 +39,10 @@ export function AdminSettingsForm<S extends z.ZodType<any, any>>(props: Readonly
                         isSendingTestEmail={props.isSendingTestEmail}
                         defaultTestEmailRecipient={props.defaultTestEmailRecipient}
                     />
+                </Section>
+
+                <Section title={"Transaction Templates"}>
+                    <TransactionTemplatesSection />
                 </Section>
             </Form>
         </SectionContainer>

@@ -14,7 +14,7 @@ import getCategoryDistribution, {
     CategoryDistribution
 } from "@/src/lib/model/transactions/queries/getCategoryDistribution"
 import withFormatters, { WithFormattersProps } from "@/src/lib/util/formatter/withFormatters"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
 import { Suspense, useState } from "react"
 import { cn } from "@/src/lib/util/utils"
 import { CategoryType } from "@prisma/client"
@@ -36,17 +36,17 @@ const CategoryDistributionChart = ({ className }: { className?: string }) => {
     const expenseCategories = categories.filter(cat => cat.type === CategoryType.EXPENSE)
 
     return (
-        <Card className={cn("w-full", className)}>
-            <Tabs defaultValue="expenses" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <CardHeader className={"flex flex-row justify-between items-center"}>
-                    <div>
-                        <CardTitle>Category Distribution</CardTitle>
-                        <CardDescription>Breakdown by category.</CardDescription>
-                    </div>
-                    <TabsList >
-                        <TabsTrigger value="expenses">Expenses</TabsTrigger>
-                        <TabsTrigger value="income">Income</TabsTrigger>
-                    </TabsList>
+        <Tabs defaultValue="expenses" value={activeTab} onValueChange={setActiveTab} className={cn("w-full", className)}>
+            <Card className={"w-full"}>
+                <CardHeader>
+                    <CardTitle>Category Distribution</CardTitle>
+                    <CardDescription>Breakdown by category.</CardDescription>
+                    <CardAction>
+                        <TabsList>
+                            <TabsTrigger value="expenses">Expenses</TabsTrigger>
+                            <TabsTrigger value="income">Income</TabsTrigger>
+                        </TabsList>
+                    </CardAction>
                 </CardHeader>
                 <Separator />
                 <CardContent>
@@ -60,8 +60,8 @@ const CategoryDistributionChart = ({ className }: { className?: string }) => {
                         </TabsContent>
                     </Suspense>
                 </CardContent>
-            </Tabs>
-        </Card>
+            </Card>
+        </Tabs>
     )
 }
 
@@ -88,14 +88,14 @@ const DistributionChart = withFormatters(({ categories }: {
 
     return (
         <ChartContainer
-            className={cn("mx-auto aspect-square max-h-[250px] min-h-64")}
+            className={cn("mx-auto aspect-square max-h-60 min-h-64 w-full")}
             config={chartConfig}>
             <PieChart>
                 <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
                 <ChartLegend
-                    visibility={categories.length <= 5 ? "hidden" : undefined}
+                    visibility={categories.length >= 5 ? "hidden" : undefined}
                     content={<ChartLegendContent nameKey={"id"} />}
-                    className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center" />
+                    className="flex-wrap gap-2 *:basis-1/5 *:justify-center" />
                 <Pie
                     {...pieProps}
                     data={categories}

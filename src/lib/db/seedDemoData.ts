@@ -1,12 +1,20 @@
 import {
-    PrismaClient,
-    Role,
-    HouseholdRole,
     CategoryType,
     CounterpartyType,
-    TransactionType,
+    HouseholdRole,
+    PrismaClient,
+    RecurrenceFrequency,
+    Role,
+    TransactionType
 } from "@prisma/client"
 import { SecurePassword } from "@blitzjs/auth/secure-password"
+
+function daysFromNow(days: number): Date {
+    const d = new Date()
+    d.setDate(d.getDate() + days)
+    d.setHours(10, 0, 0, 0)
+    return d
+}
 
 function daysAgo(days: number): Date {
     const d = new Date()
@@ -519,4 +527,124 @@ async function seedHouseholdWithData(
     })
 
     console.log("[seed]   Transactions created")
+
+    // --- Transaction Templates ---
+    const createTemplate = (data: {
+        name: string
+        description?: string
+        type: TransactionType
+        amount: number
+        frequency: RecurrenceFrequency
+        startDate: Date
+        nextDueDate: Date
+        accountId: string
+        categoryId?: string
+        counterpartyId?: string
+    }) =>
+        db.transactionTemplate.create({
+            data: {
+                ...data,
+                householdId: household.id,
+                createdById: userId,
+                isActive: true,
+            },
+        })
+
+    await createTemplate({
+        name: "Monthly Salary",
+        description: "Regular monthly salary from Acme Corp",
+        type: TransactionType.INCOME,
+        amount: 3500,
+        frequency: RecurrenceFrequency.MONTHLY,
+        startDate: daysAgo(90),
+        nextDueDate: daysFromNow(5),
+        accountId: primaryAccount.id,
+        categoryId: salary.id,
+        counterpartyId: cpEmployer.id,
+    })
+
+    await createTemplate({
+        name: "Apartment Rent",
+        description: "Monthly rent payment",
+        type: TransactionType.EXPENSE,
+        amount: 950,
+        frequency: RecurrenceFrequency.MONTHLY,
+        startDate: daysAgo(90),
+        nextDueDate: daysFromNow(6),
+        accountId: primaryAccount.id,
+        categoryId: rentCat.id,
+        counterpartyId: cpLandlord.id,
+    })
+
+    await createTemplate({
+        name: "Electricity & Water",
+        type: TransactionType.EXPENSE,
+        amount: 120,
+        frequency: RecurrenceFrequency.MONTHLY,
+        startDate: daysAgo(90),
+        nextDueDate: daysFromNow(9),
+        accountId: primaryAccount.id,
+        categoryId: utilitiesCat.id,
+        counterpartyId: cpUtility.id,
+    })
+
+    await createTemplate({
+        name: "Netflix Subscription",
+        type: TransactionType.EXPENSE,
+        amount: 13.99,
+        frequency: RecurrenceFrequency.MONTHLY,
+        startDate: daysAgo(75),
+        nextDueDate: daysFromNow(19),
+        accountId: primaryAccount.id,
+        categoryId: streamingCat.id,
+        counterpartyId: cpStreaming.id,
+    })
+
+    await createTemplate({
+        name: "Gym Membership",
+        type: TransactionType.EXPENSE,
+        amount: 29.99,
+        frequency: RecurrenceFrequency.MONTHLY,
+        startDate: daysAgo(90),
+        nextDueDate: daysFromNow(4),
+        accountId: primaryAccount.id,
+        categoryId: gymCat.id,
+        counterpartyId: cpGym.id,
+    })
+
+    await createTemplate({
+        name: "Health Insurance",
+        type: TransactionType.EXPENSE,
+        amount: 85,
+        frequency: RecurrenceFrequency.MONTHLY,
+        startDate: daysAgo(90),
+        nextDueDate: daysFromNow(14),
+        accountId: primaryAccount.id,
+        categoryId: insuranceCat.id,
+        counterpartyId: cpInsurance.id,
+    })
+
+    await createTemplate({
+        name: "Monthly Transit Pass",
+        type: TransactionType.EXPENSE,
+        amount: 89,
+        frequency: RecurrenceFrequency.MONTHLY,
+        startDate: daysAgo(90),
+        nextDueDate: daysFromNow(3),
+        accountId: primaryAccount.id,
+        categoryId: publicTransitCat.id,
+    })
+
+    await createTemplate({
+        name: "Weekly Coffee",
+        type: TransactionType.EXPENSE,
+        amount: 6,
+        frequency: RecurrenceFrequency.WEEKLY,
+        startDate: daysAgo(90),
+        nextDueDate: daysFromNow(0),
+        accountId: primaryAccount.id,
+        categoryId: coffeeCat.id,
+    })
+
+    console.log("[seed]   Transaction templates created")
 }

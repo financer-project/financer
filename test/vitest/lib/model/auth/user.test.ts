@@ -1,6 +1,5 @@
-import { describe, expect, test, beforeEach } from "vitest"
+import { beforeEach, describe, expect, test } from "vitest"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
-import signup from "@/src/lib/model/auth/mutations/signup"
 import login from "@/src/lib/model/auth/mutations/login"
 import logout from "@/src/lib/model/auth/mutations/logout"
 import getCurrentUser from "@/src/lib/model/auth/queries/getCurrentUser"

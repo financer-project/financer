@@ -37,9 +37,28 @@ export function Form<S extends z.ZodType<any, any>>({
 
     const searchParams = useSearchParams() // Access query parameters dynamically
 
+    const parseUrlParam = (value: string): string | number | Date => {
+        // Try numeric conversion
+        if (/^-?\d+(\.\d+)?$/.test(value)) {
+            return Number.parseFloat(value)
+        }
+
+        // Try date conversion (YYYY-MM-DD or ISO format)
+        if (/^\d{4}-\d{2}-\d{2}(T|$)/.test(value)) {
+            const date = new Date(value)
+            if (!isNaN(date.getTime())) {
+                return date
+            }
+        }
+
+        return value
+    }
+
     const getInitialValues = (): z.infer<S> => {
         if (searchParams) {
-            const params = Object.fromEntries(searchParams.entries()) // Convert query params into an object
+            const params = Object.fromEntries(
+                [...searchParams.entries()].map(([key, value]) => [key, parseUrlParam(value)])
+            )
             return {
                 ...initialValues,
                 ...params

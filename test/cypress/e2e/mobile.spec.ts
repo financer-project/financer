@@ -38,6 +38,7 @@ describe("Mobile Tests", () => {
     it("should create transaction and show it in list on mobile", () => {
         // Navigate to transactions page first
         cy.get("button[data-sidebar='trigger']").click()
+        cy.get("div[data-sidebar='sidebar']").should("be.visible") // Wait for sidebar animation
         cy.get("li a[href='/transactions']").click()
 
         // Verify we're on transactions page
@@ -47,6 +48,9 @@ describe("Mobile Tests", () => {
         // Navigate to create transaction
         cy.get("a[href='/transactions/new']").first().click()
         cy.url().should("include", "/transactions/new")
+
+        // Wait for the form to be fully rendered before interacting
+        cy.get("input[name='name']").should("be.visible")
 
         // Fill transaction form
         cy.findSelectField({ contains: "My Account" }).should("exist")
@@ -63,6 +67,7 @@ describe("Mobile Tests", () => {
 
         // Navigate back to transactions list
         cy.get("button[data-sidebar='trigger']").click()
+        cy.get("div[data-sidebar='sidebar']").should("be.visible") // Wait for sidebar animation
         cy.get("li[data-sidebar='menu-item'] a[href='/transactions']").click()
         cy.get("div.text-lg").should("have.length", 3)
 

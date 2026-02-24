@@ -21,6 +21,7 @@ import {
     CogIcon,
     HouseIcon,
     ImportIcon,
+    RepeatIcon,
     ShieldIcon,
     StoreIcon,
     TagIcon
@@ -92,6 +93,11 @@ const getGroups = (isAdmin: boolean, canCreateTransaction: boolean): MenuGroup[]
                 title: "Counterparties",
                 url: "/counterparties",
                 icon: StoreIcon
+            },
+            {
+                title: "Transaction Templates",
+                url: "/transaction-templates",
+                icon: RepeatIcon
             }
         ]
     },

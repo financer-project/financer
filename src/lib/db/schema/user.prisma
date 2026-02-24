@@ -14,8 +14,9 @@ model User {
     memberships HouseholdMembership[]
     settings    Settings?             @relation("UserSettings")
 
-    createdTransactions Transaction[] @relation("TransactionCreatedBy")
-    createdHouseholds   Household[]   @relation("HouseholdCreatedBy")
+    createdTransactions         Transaction[]         @relation("TransactionCreatedBy")
+    createdHouseholds           Household[]           @relation("HouseholdCreatedBy")
+    createdTransactionTemplates TransactionTemplate[] @relation("TransactionTemplateCreatedBy")
 }
 
 model Settings {

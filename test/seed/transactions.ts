@@ -1,4 +1,4 @@
-import { Account, CategoryType, Household, Transaction } from "@prisma/client"
+import { Account, CategoryType, Transaction } from "@prisma/client"
 import db from "@/src/lib/db"
 import { AccountSeed } from "@/test/seed/accounts"
 import { CategorySeed } from "@/test/seed/categorySeed"

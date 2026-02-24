@@ -22,7 +22,10 @@ export const AdminSettingsSchema = z.object({
     defaultTheme: z.string().default("light"),
 
     // Onboarding Settings
-    onboardingCompleted: z.boolean().default(false)
+    onboardingCompleted: z.boolean().default(false),
+
+    // Transaction Template Settings
+    transactionTemplateCronTime: z.string().regex(/^\d{2}:\d{2}$/).default("00:00")
 })
 
 export const UpdateAdminSettingsSchema = AdminSettingsSchema

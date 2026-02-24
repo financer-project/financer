@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from "vitest"
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest"
 import db from "@/src/lib/db"
 import updateAdminSettings from "@/src/lib/model/settings/mutations/updateAdminSettings"
 import getAdminSettings from "@/src/lib/model/settings/queries/getAdminSettings"
 import sendTestEmail from "@/src/lib/model/settings/mutations/sendTestEmail"
 import TestUtilityMock from "@/test/utility/TestUtilityMock"
 import nodemailer from "nodemailer"
-import { getEmailTransporter } from "@/src/lib/mailers/getEmailTransporter"
 
 // Mock nodemailer
 vi.mock("nodemailer", () => ({

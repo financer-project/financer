@@ -44,6 +44,12 @@ declare global {
              *  - cy.findSelectField({ contains: 'My Account' }).should('exist')
              */
             findSelectField(options: FindSelectFieldOptions): Chainable<JQuery>
+
+            /**
+             * Seeds recurring transactions for the standard user's account.
+             * Useful for testing the suggested templates feature.
+             */
+            seedRecurringTransactions(options: { name: string, amount: number, type: "INCOME" | "EXPENSE", count?: number }): Chainable<void>
         }
     }
 }

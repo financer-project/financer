@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest"
+import { describe, expect, test } from "vitest"
 import { FormatterContext } from "@/src/lib/util/formatter/Formatter"
 import AmountFormatter from "@/src/lib/util/formatter/AmountFormatter"
 import CurrencyDescriptionFormatter from "@/src/lib/util/formatter/CurrencyDescriptionFormatter"

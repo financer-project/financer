@@ -170,6 +170,10 @@ Cypress.Commands.add("selectField", (opts) => {
         })
 })
 
+Cypress.Commands.add("seedRecurringTransactions", (options) => {
+    cy.task("seedRecurringTransactions", options)
+})
+
 // Read-only helper to locate a SelectField for assertions
 Cypress.Commands.add("findSelectField", (opts: FindSelectFieldOptions) => {
     const options = opts
