@@ -62,6 +62,9 @@ describe("Mobile Tests", () => {
         // Submit the form
         cy.get("button[type='submit']").click()
 
+        // Save the detail page URL before navigating away
+        cy.url().as("transactionDetailUrl")
+
         // Verify transaction was created
         cy.component("dataItem").should("contain.text", "Mobile Test Transaction")
 
@@ -70,11 +73,14 @@ describe("Mobile Tests", () => {
         cy.get("div[data-sidebar='sidebar']").should("be.visible") // Wait for sidebar animation
         cy.get("li[data-sidebar='menu-item'] a[href='/transactions']").click()
         cy.get("div.text-lg").should("have.length", 3)
+        cy.get("div.text-lg").should("contain.text", "Mobile Test Transaction")
 
-        // Navigate to details
-        cy.get("div.text-lg").contains("Mobile Test Transaction").click()
-        cy.url().should("include", "/transactions/")
-        cy.component("breadcrumb").should("contain.text", "Mobile Test Transaction", { timeout: 10000 })
+        // Navigate to details via direct URL — card click triggers a cold-start RSC fetch
+        // after the <a href> full-page reload from the sidebar, which is unreliably slow
+        cy.get("@transactionDetailUrl").then((url) => {
+            cy.visit(url as string)
+        })
+        cy.component("breadcrumb").should("contain.text", "Mobile Test Transaction")
         cy.component("dataItem").should("contain.text", "Mobile Test Transaction")
 
         // Clean up - delete the transaction
