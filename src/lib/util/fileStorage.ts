@@ -127,3 +127,85 @@ export function saveUserAvatar(userId: string, fileName: string, content: Buffer
 export function deleteUserAvatar(avatarPath: string): void {
     deleteFile(avatarPath)
 }
+
+const TEMP_DIR = path.join(DATA_DIR, "temp")
+
+interface TempFileMetadata {
+    originalName: string
+    mimeType: string
+    size: number
+    createdAt: string
+}
+
+/**
+ * Saves a file to the temp directory for later promotion to an attachment
+ */
+export function saveTempFile(tempFileId: string, fileName: string, buffer: Buffer, mimeType: string): void {
+    const tempFileDir = path.join(TEMP_DIR, tempFileId)
+    ensureDirectoryExists(tempFileDir)
+
+    const metadata: TempFileMetadata = {
+        originalName: fileName,
+        mimeType,
+        size: buffer.length,
+        createdAt: new Date().toISOString()
+    }
+
+    fs.writeFileSync(path.join(tempFileDir, "metadata.json"), JSON.stringify(metadata))
+    fs.writeFileSync(path.join(tempFileDir, fileName), buffer)
+}
+
+/**
+ * Reads a temp file and its metadata
+ */
+export function readTempFile(tempFileId: string): { buffer: Buffer; metadata: TempFileMetadata } {
+    const tempFileDir = path.join(TEMP_DIR, tempFileId)
+    const metadataPath = path.join(tempFileDir, "metadata.json")
+
+    if (!fs.existsSync(metadataPath)) {
+        throw new Error(`Temp file not found: ${tempFileId}`)
+    }
+
+    const metadata: TempFileMetadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"))
+    const buffer = fs.readFileSync(path.join(tempFileDir, metadata.originalName))
+
+    return { buffer, metadata }
+}
+
+/**
+ * Moves a temp file to its permanent attachment location and removes the temp dir
+ */
+export async function moveTempToAttachment(tempFileId: string, transactionId: string, attachmentId: string): Promise<string> {
+    const { buffer, metadata } = readTempFile(tempFileId)
+    const finalPath = await saveAttachmentFile(transactionId, attachmentId, metadata.originalName, buffer)
+
+    // Clean up temp dir
+    const tempFileDir = path.join(TEMP_DIR, tempFileId)
+    fs.rmSync(tempFileDir, { recursive: true, force: true })
+
+    return finalPath
+}
+
+/**
+ * Removes temp file directories older than maxAgeMs milliseconds
+ */
+export function cleanupExpiredTempFiles(maxAgeMs: number): void {
+    if (!fs.existsSync(TEMP_DIR)) return
+
+    const entries = fs.readdirSync(TEMP_DIR)
+    const cutoff = Date.now() - maxAgeMs
+
+    for (const entry of entries) {
+        const metadataPath = path.join(TEMP_DIR, entry, "metadata.json")
+        if (!fs.existsSync(metadataPath)) continue
+
+        try {
+            const metadata: TempFileMetadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"))
+            if (new Date(metadata.createdAt).getTime() < cutoff) {
+                fs.rmSync(path.join(TEMP_DIR, entry), { recursive: true, force: true })
+            }
+        } catch {
+            // Ignore malformed metadata
+        }
+    }
+}

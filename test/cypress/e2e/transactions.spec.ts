@@ -130,6 +130,61 @@ describe("Transactions", () => {
         cy.get(".bg-primary").contains("Confirm").click()
     })
 
+    it("should upload an invoice, pre-fill the form, and create a transaction with attachment", () => {
+        // Intercept the extract API so the test is deterministic (no real OCR/AI)
+        cy.intercept("POST", "/api/transactions/extract", {
+            statusCode: 200,
+            body: {
+                tempFileId: "test-temp-file-id",
+                fileName: "sample-invoice.pdf",
+                extraction: {
+                    name: "Acme Corp",
+                    amount: 199.99,
+                    type: "EXPENSE",
+                    valueDate: new Date("2024-03-15").toISOString(),
+                    description: null,
+                    counterpartyName: null,
+                    confidence: { amount: 0.8, type: 0.7 },
+                    rawText: ""
+                }
+            }
+        }).as("extractRequest")
+
+        // Stub createTransaction so the server never runs (temp file doesn't exist on disk)
+        // Blitz RPC wraps responses in SuperJSON — return a minimal valid transaction shape
+        cy.intercept("POST", "/api/rpc/createTransaction", {
+            statusCode: 200,
+            body: { result: { data: { json: { id: "stub-transaction-id" } } } }
+        }).as("createTransaction")
+
+        // Click the Upload Invoice button and attach the fixture PDF
+        cy.get("input[type='file']").selectFile(
+            "test/cypress/fixtures/sample-invoice.pdf",
+            { force: true }
+        )
+
+        cy.wait("@extractRequest")
+
+        // Should have navigated to /transactions/new with pre-filled fields
+        cy.url().should("include", "/transactions/new")
+        cy.url().should("include", "tempFileId=test-temp-file-id")
+
+        // Attachment indicator is shown
+        cy.contains("Invoice attached: sample-invoice.pdf").should("be.visible")
+
+        // Name field pre-filled
+        cy.get("input[name='name']").should("have.value", "Acme Corp")
+
+        // Type pre-filled as Expense
+        cy.findSelectField({ for: "type" }).should("contain.text", "Expense")
+
+        // Submit — verify tempFileId is sent in the request body (Blitz wraps params in "0")
+        cy.get("button[type='submit']").click()
+
+        cy.wait("@createTransaction").its("request.body.0.json.tempFileId")
+            .should("eq", "test-temp-file-id")
+    })
+
     it("should allow canceling the create tag dialog without affecting the form", () => {
         cy.get("a[href='/transactions/new']").first().click()
 

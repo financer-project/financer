@@ -16,7 +16,15 @@ export function NewTransaction() {
     const prefillFromFilters = {
         accountId: searchParams?.get("accountId") ?? undefined,
         categoryId: searchParams?.get("categoryId") ?? undefined,
-        counterpartyId: searchParams?.get("counterpartyId") ?? undefined
+        counterpartyId: searchParams?.get("counterpartyId") ?? undefined,
+        name: searchParams?.get("name") ?? undefined,
+        amount: searchParams?.get("amount") ? Number(searchParams.get("amount")) : undefined,
+        type: searchParams?.get("type") ?? undefined,
+        valueDate: searchParams?.get("valueDate") ? new Date(searchParams.get("valueDate")!) : undefined,
+        description: searchParams?.get("description") ?? undefined,
+        counterpartyName: searchParams?.get("counterpartyName") ?? undefined,
+        tempFileId: searchParams?.get("tempFileId") ?? undefined,
+        tempFileName: searchParams?.get("tempFileName") ?? undefined
     }
 
     return (

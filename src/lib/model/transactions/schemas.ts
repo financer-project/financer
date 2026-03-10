@@ -10,7 +10,9 @@ export const CreateTransactionSchema = z.object({
     valueDate: z.date(),
     description: z.string().nullable(),
     amount: z.number(),
-    tagIds: z.array(z.uuid()).optional()
+    tagIds: z.array(z.uuid()).optional(),
+    tempFileId: z.string().optional(),
+    tempFileName: z.string().optional()
 })
 
 export const UpdateTransactionSchema = CreateTransactionSchema.extend({

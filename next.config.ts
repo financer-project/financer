@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
         forceSwcTransforms: true
     },
     typedRoutes: true,
-    serverExternalPackages: ["bullmq"],
+    serverExternalPackages: ["bullmq", "pdf-parse", "tesseract.js", "@huggingface/transformers"],
     webpack: (config, { isServer }) => {
         if (isServer) {
             // Avoid bundling native dependencies
