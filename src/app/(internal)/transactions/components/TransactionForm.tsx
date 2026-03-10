@@ -20,6 +20,7 @@ import CounterpartyIcon from "@/src/lib/components/content/counterparties/Counte
 import { CreateTagDialog } from "@/src/app/(internal)/tags/components/CreateTagDialog"
 import { CreateCounterpartyDialog } from "@/src/app/(internal)/counterparties/components/CreateCounterpartyDialog"
 import { useFormikContext } from "formik"
+import { Paperclip } from "lucide-react"
 
 function TagsAndCounterpartyFields({ prefillCounterpartyId }: {
     prefillCounterpartyId?: string
@@ -88,6 +89,14 @@ interface PrefillFromFilters {
     accountId?: string
     categoryId?: string
     counterpartyId?: string
+    name?: string
+    amount?: number
+    type?: string
+    valueDate?: Date
+    description?: string
+    counterpartyName?: string
+    tempFileId?: string
+    tempFileName?: string
 }
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,8 +106,16 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
     const accounts = useAccounts()
     const defaultAccountId = useDefaultAccountId()
     const categories = useCategories()
+    const counterparties = useCounterparties()
 
-    const [transactionType, setTransactionType] = useState<TransactionType | null>(props.initialValues?.type ?? null)
+    // Resolve counterpartyId from counterpartyName if not already provided
+    const resolvedCounterpartyId = prefillFromFilters?.counterpartyId ??
+        (prefillFromFilters?.counterpartyName
+            ? counterparties.find(cp => cp.name.toLowerCase() === prefillFromFilters.counterpartyName!.toLowerCase())?.id
+            : undefined)
+
+    const prefillType = (prefillFromFilters?.type as TransactionType | undefined) ?? null
+    const [transactionType, setTransactionType] = useState<TransactionType | null>(props.initialValues?.type ?? prefillType)
 
     const onCategorySelect = (categoryId: string | null) => {
         const category = categories.findNode((category) => category.id === categoryId)
@@ -109,6 +126,13 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
 
     return (
         <Form<S> {...formProps}>
+            {prefillFromFilters?.tempFileId && (
+                <div className="flex items-center gap-2 rounded-md border border-border bg-muted px-3 py-2 text-sm text-muted-foreground mb-2">
+                    <Paperclip className="h-4 w-4 shrink-0" />
+                    <span>Invoice attached: {prefillFromFilters.tempFileName ?? "file"}</span>
+                </div>
+            )}
+
             <Section title={"Basic Data"}>
                 <div className={"flex flex-row gap-4"}>
                     <SelectFormField<Transaction>
@@ -123,12 +147,13 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                 <div className={"flex flex-row gap-4"}>
                     <TextField<Transaction, string>
                         label={"Name"}
-                        name={"name"} />
+                        name={"name"}
+                        value={prefillFromFilters?.name} />
 
                     <DatePickerFormField<Transaction>
                         name={"valueDate"}
                         label={"Value Date"}
-                        value={props.initialValues?.valueDate ?? DateTime.now().toJSDate()}
+                        value={props.initialValues?.valueDate ?? prefillFromFilters?.valueDate ?? DateTime.now().toJSDate()}
                         required />
                 </div>
 
@@ -157,6 +182,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                 <TextAreaField<Transaction>
                     label={"Description"}
                     name={"description"}
+                    value={prefillFromFilters?.description}
                     required />
 
                 <div className={"flex flex-row gap-4"}>
@@ -175,7 +201,7 @@ export function TransactionForm<S extends z.ZodType<any, any>>(props: Readonly<F
                             }))} />
                 </div>
                 <TagsAndCounterpartyFields
-                    prefillCounterpartyId={prefillFromFilters?.counterpartyId} />
+                    prefillCounterpartyId={resolvedCounterpartyId} />
             </Section>
         </Form>
     )

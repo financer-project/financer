@@ -33,6 +33,8 @@ export interface DataTableProps<T> {
         /** Optional URL param key; defaults to "q" */
         paramKey?: string
     }
+    /** Additional action buttons rendered next to the Create button */
+    additionalActions?: React.ReactNode
 }
 
 export const DataTable = <T, >({
@@ -42,7 +44,8 @@ export const DataTable = <T, >({
                                    createRoute,
                                    filters,
                                    search,
-                                   count
+                                   count,
+                                   additionalActions
                                }: DataTableProps<T>) => {
     const searchParams = useSearchParams()
 
@@ -69,16 +72,19 @@ export const DataTable = <T, >({
 
     return (
         <div className="flex flex-col gap-4 w-full">
-            {(search || filters || createRoute) && (
+            {(search || filters || createRoute || additionalActions) && (
                 <div className="flex flex-row justify-between items-start gap-4 w-full">
                     {/* 1. Dynamic Filter Toolbar */}
                     <TableToolbar filters={filters} search={search} />
 
-                    {createHref && (
-                        <div className="flex flex-row ml-auto items-center">
-                            <Button variant={"outline"} asChild>
-                                <Link href={createHref}><PlusCircle /> Create</Link>
-                            </Button>
+                    {(createHref || additionalActions) && (
+                        <div className="flex flex-row ml-auto items-center gap-2">
+                            {additionalActions}
+                            {createHref && (
+                                <Button variant={"outline"} asChild>
+                                    <Link href={createHref}><PlusCircle /> Create</Link>
+                                </Button>
+                            )}
                         </div>
                     )}
                 </div>

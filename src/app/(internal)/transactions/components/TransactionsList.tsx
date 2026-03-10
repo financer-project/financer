@@ -18,6 +18,7 @@ import { useTags } from "@/src/lib/components/provider/TagProvider"
 import { Paperclip } from "lucide-react"
 import { UserAvatar } from "@/src/lib/components/content/user"
 import { TransactionModel } from "@/src/lib/model/transactions/queries/getTransaction"
+import { InvoiceUploadButton } from "./InvoiceUploadButton"
 
 export const TransactionsList = withFormatters(({
                                                     formatters,
@@ -198,6 +199,7 @@ export const TransactionsList = withFormatters(({
                        columns={columns}
                        itemRoute={transaction => `/transactions/${transaction.id}`}
                        createRoute={!hideFilters && canCreateTransaction ? "/transactions/new" : undefined}
+                       additionalActions={!hideFilters && canCreateTransaction ? <InvoiceUploadButton /> : undefined}
                        count={count} />
         </div>
     )
