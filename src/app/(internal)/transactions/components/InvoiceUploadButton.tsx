@@ -41,9 +41,10 @@ export function InvoiceUploadButton() {
             params.set("tempFileId", tempFileId)
             params.set("tempFileName", fileName)
             if (extraction.name) params.set("name", extraction.name)
-            if (extraction.amount !== null) params.set("amount", String(extraction.amount))
+            if (extraction.amount !== null) params.set("amount", String(Math.round(extraction.amount * 100) / 100))
             if (extraction.type) params.set("type", extraction.type)
-            if (extraction.valueDate) params.set("valueDate", extraction.valueDate)
+            // Use date-only string (YYYY-MM-DD) to avoid timezone shifts when reconstructing
+            if (extraction.valueDate) params.set("valueDate", extraction.valueDate.slice(0, 10))
             if (extraction.description) params.set("description", extraction.description)
             if (extraction.counterpartyName) params.set("counterpartyName", extraction.counterpartyName)
 

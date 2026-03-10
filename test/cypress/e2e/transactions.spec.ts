@@ -150,9 +150,12 @@ describe("Transactions", () => {
             }
         }).as("extractRequest")
 
-        // Intercept the create mutation to inject the tempFileId into the response
-        // without needing a real file on disk — we just verify the form submits
-        cy.intercept("POST", "/api/rpc/createTransaction").as("createTransaction")
+        // Stub createTransaction so the server never runs (temp file doesn't exist on disk)
+        // Blitz RPC wraps responses in SuperJSON — return a minimal valid transaction shape
+        cy.intercept("POST", "/api/rpc/createTransaction", {
+            statusCode: 200,
+            body: { result: { data: { json: { id: "stub-transaction-id" } } } }
+        }).as("createTransaction")
 
         // Click the Upload Invoice button and attach the fixture PDF
         cy.get("input[type='file']").selectFile(
@@ -175,12 +178,11 @@ describe("Transactions", () => {
         // Type pre-filled as Expense
         cy.findSelectField({ for: "type" }).should("contain.text", "Expense")
 
-        // Fill in the required Account field (already defaulted) and submit
+        // Submit — verify tempFileId is sent in the request body (Blitz wraps params in "0")
         cy.get("button[type='submit']").click()
 
-        cy.wait("@createTransaction").its("request.body").should("deep.include", {
-            tempFileId: "test-temp-file-id"
-        })
+        cy.wait("@createTransaction").its("request.body.0.json.tempFileId")
+            .should("eq", "test-temp-file-id")
     })
 
     it("should allow canceling the create tag dialog without affecting the form", () => {

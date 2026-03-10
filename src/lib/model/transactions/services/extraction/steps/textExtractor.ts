@@ -4,8 +4,9 @@ import path from "path"
 const MIN_PDF_TEXT_LENGTH = 50
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
+    // Use lib/pdf-parse directly to avoid the test-file side-effect in the main entry
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const pdfParse = require("pdf-parse")
+    const pdfParse = require("pdf-parse/lib/pdf-parse")
     const data = await pdfParse(buffer)
     return data.text ?? ""
 }
