@@ -91,6 +91,61 @@ describe("Transactions", () => {
         cy.get("tbody tr").should("have.length", 2)
     })
 
+    it("should filter transactions by counterparty (multi-select) and reset", () => {
+        // Standard user is seeded with 2 transactions (Income, Cost of Living), neither
+        // has a counterparty attached. Create two transactions that do, via the create
+        // form (mirroring the existing tag/counterparty creation test above), so the
+        // filter has real matching rows to assert against.
+        cy.get("tbody tr").should("have.length", 2)
+
+        cy.get("a[href='/transactions/new']").first().click()
+        cy.findSelectField({ contains: "My Account" }).should("exist")
+        cy.get("input[name='name']").type("Employer Payment")
+        cy.selectField({ for: "type", value: "Income" })
+        cy.get("input[name='amount']").type("500.00")
+        cy.selectField({ for: "categoryId", value: "Income" })
+        cy.selectField({ for: "counterpartyId", value: "Test Employer" })
+        cy.get("button[type='submit']").click()
+        // Submitting a new transaction navigates to its detail page, not back to the list.
+        cy.url().should("include", "/transactions/")
+        cy.visit("/transactions")
+
+        cy.get("a[href='/transactions/new']").first().click()
+        cy.findSelectField({ contains: "My Account" }).should("exist")
+        cy.get("input[name='name']").type("Merchant Purchase")
+        cy.selectField({ for: "type", value: "Expense" })
+        cy.get("input[name='amount']").type("30.00")
+        cy.selectField({ for: "categoryId", value: "Cost of Living" })
+        cy.selectField({ for: "counterpartyId", value: "Test Merchant" })
+        cy.get("button[type='submit']").click()
+        cy.url().should("include", "/transactions/")
+        cy.visit("/transactions")
+
+        // Spec-local uncaught-exception handler: log the real error instead of letting
+        // Cypress swallow it, without touching the global allowlist in support/e2e.ts.
+        cy.on("uncaught:exception", (err) => {
+            // eslint-disable-next-line no-console
+            console.log("[BUG-01 diagnosis] uncaught exception:", err.message, "\n", err.stack)
+            return false
+        })
+
+        cy.get("tbody tr").should("have.length", 4)
+
+        // Single-select: Test Employer -> expect only the Employer Payment transaction
+        cy.selectField({ contains: "Counterparty", value: "Test Employer" })
+        cy.url().should("include", "counterpartyId=")
+        cy.get("tbody tr").should("have.length", 1)
+        cy.get("tbody tr td").first().should("contain.text", "Employer Payment")
+
+        // Multi-select: add Test Merchant -> expect the union (2 rows)
+        cy.selectField({ contains: "Counterparty", value: "Test Merchant" })
+        cy.get("tbody tr").should("have.length", 2)
+
+        // Reset -> back to all 4 rows
+        cy.contains("button", "Reset").click()
+        cy.get("tbody tr").should("have.length", 4)
+    })
+
     it("should create a new tag inline from the transaction form", () => {
         cy.get("a[href='/transactions/new']").first().click()
 
