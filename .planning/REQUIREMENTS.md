@@ -65,28 +65,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | TBD | Pending |
-| BUG-02 | TBD | Pending |
-| TEST-01 | TBD | Pending |
-| DEPS-01 | TBD | Pending |
-| DEPS-02 | TBD | Pending |
-| GRP-01 | TBD | Pending |
-| GRP-02 | TBD | Pending |
-| GRP-03 | TBD | Pending |
-| GRP-04 | TBD | Pending |
-| GRP-05 | TBD | Pending |
-| GRP-06 | TBD | Pending |
-| GRP-07 | TBD | Pending |
-| GRP-08 | TBD | Pending |
-| GRP-09 | TBD | Pending |
-| GRP-10 | TBD | Pending |
-| GRP-11 | TBD | Pending |
+| BUG-01 | Phase 1 | Pending |
+| BUG-02 | Phase 1 | Pending |
+| TEST-01 | Phase 1 | Pending |
+| DEPS-01 | Phase 2 | Pending |
+| DEPS-02 | Phase 2 | Pending |
+| GRP-01 | Phase 3 | Pending |
+| GRP-02 | Phase 3 | Pending |
+| GRP-03 | Phase 3 | Pending |
+| GRP-04 | Phase 4 | Pending |
+| GRP-05 | Phase 4 | Pending |
+| GRP-06 | Phase 4 | Pending |
+| GRP-07 | Phase 4 | Pending |
+| GRP-08 | Phase 4 | Pending |
+| GRP-09 | Phase 4 | Pending |
+| GRP-10 | Phase 5 | Pending |
+| GRP-11 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16 ⚠️ (pending roadmap creation)
+- Mapped to phases: 16
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-08-21*
-*Last updated: 2026-08-21 after initial definition*
+*Last updated: 2026-08-21 after roadmap creation (traceability mapped)*
