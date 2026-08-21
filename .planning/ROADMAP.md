@@ -34,8 +34,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can Tab forward and Shift+Tab backward through a transaction form and focus lands on every date and select field in visual order, with no field skipped or trapped
   3. The Cypress E2E suite finishes in measurably less CI wall-clock time than the recorded pre-change baseline, with the before/after numbers captured
   4. LCOV coverage after the speed-up is equal to or higher than the pre-change baseline, and the sped-up suite passes 3+ consecutive CI runs with no new flake
-**Plans**: TBD
-**Notes**: Prefer moving unit-testable logic into Vitest over cutting `retries.runMode` or `after()` cleanup (PITFALLS #8). If specs are parallelized, each worker needs its own database — the current single shared Testcontainers instance will corrupt data across workers.
+**Plans**: 4 plans in 3 waves
+Plans:
+- [ ] 01-01-PLAN.md — BUG-01: reproduce the Counterparty filter failure end-to-end, then fix it to the correctness bar (wave 1)
+- [ ] 01-02-PLAN.md — BUG-02: restore native Tab / Shift+Tab order through the transaction form's date and select fields (wave 1)
+- [ ] 01-03-PLAN.md — TEST-01: record the pre-change CI baseline, then shard the E2E suite across a GitHub Actions matrix (wave 2)
+- [ ] 01-04-PLAN.md — TEST-01: tune the shard count empirically, prove coverage parity and three-run stability, close out BASELINE.md (wave 3)
+**Notes**: Prefer moving unit-testable logic into Vitest over cutting `retries.runMode` or `after()` cleanup (PITFALLS #8). If specs are parallelized, each worker needs its own database — the current single shared Testcontainers instance will corrupt data across workers. Plan 01-03 is sequenced after the two bug-fix plans deliberately: both add E2E specs, so capturing the baseline afterwards keeps the before/after comparison like-for-like.
 
 ### Phase 2: Prisma 7 Migration & Dependency Refresh
 **Goal**: The entire existing application runs unchanged, from the user's point of view, on a Prisma 7 client with a driver adapter — with all other dependencies refreshed inside their current majors
