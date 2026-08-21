@@ -131,18 +131,64 @@ describe("Transactions", () => {
 
         cy.get("tbody tr").should("have.length", 4)
 
+        // Household counterparties, for the household-scope assertion below.
+        const householdCounterpartyNames = ["Test Merchant", "Test Employer", "Test Utility"]
+
+        // Capture the unfiltered row order (by Name column) to assert against later.
+        let unfilteredNames: string[] = []
+        cy.get("tbody tr td:nth-child(1)").then(($cells) => {
+            unfilteredNames = [...$cells].map((el) => el.innerText.trim())
+        })
+
         // Single-select: Test Employer -> expect only the Employer Payment transaction
         cy.selectField({ contains: "Counterparty", value: "Test Employer" })
         cy.url().should("include", "counterpartyId=")
         cy.get("tbody tr").should("have.length", 1)
         cy.get("tbody tr td").first().should("contain.text", "Employer Payment")
+        cy.get("tbody tr td:nth-child(4)").each(($cell) => {
+            expect(householdCounterpartyNames.some((name) => $cell.text().includes(name))).to.be.true
+        })
 
-        // Multi-select: add Test Merchant -> expect the union (2 rows)
+        // Multi-select: add Test Merchant -> expect the union (2 rows), in the same
+        // relative order they appeared in the unfiltered list (ordering behavior).
         cy.selectField({ contains: "Counterparty", value: "Test Merchant" })
         cy.get("tbody tr").should("have.length", 2)
+        cy.get("tbody tr td:nth-child(1)").then(($cells) => {
+            const filteredNames = [...$cells].map((el) => el.innerText.trim())
+            const relativeIndices = filteredNames.map((name) => unfilteredNames.indexOf(name))
+            expect(relativeIndices).to.deep.equal([...relativeIndices].sort((a, b) => a - b))
+        })
+        cy.get("tbody tr td:nth-child(4)").each(($cell) => {
+            expect(householdCounterpartyNames.some((name) => $cell.text().includes(name))).to.be.true
+        })
 
-        // Reset -> back to all 4 rows
+        // Toggle: re-selecting an already-selected counterparty removes it rather than
+        // duplicating it in the URL param.
+        cy.selectField({ contains: "Counterparty", value: "Test Employer" })
+        cy.get("tbody tr").should("have.length", 1)
+        cy.get("tbody tr td").first().should("contain.text", "Merchant Purchase")
+        cy.url().then((url) => {
+            const params = new URL(url).searchParams
+            const ids = (params.get("counterpartyId") ?? "").split(",").filter(Boolean)
+            expect(ids.length).to.equal(new Set(ids).size)
+        })
+
+        // Toggle down to zero (rather than pressing Reset): deselecting the last
+        // remaining counterparty drops counterpartyId from the URL and restores the
+        // full unfiltered list.
+        cy.selectField({ contains: "Counterparty", value: "Test Merchant" })
+        cy.url().should("not.include", "counterpartyId=")
+        cy.get("tbody tr").should("have.length", 4)
+
+        // Empty result: a counterparty with no matching transactions renders zero rows
+        // and no error.
+        cy.selectField({ contains: "Counterparty", value: "Test Utility" })
+        cy.url().should("include", "counterpartyId=")
+        cy.get("tbody tr").should("have.length", 0)
+
+        // Reset -> back to all 4 rows, counterpartyId cleared from the URL.
         cy.contains("button", "Reset").click()
+        cy.url().should("not.include", "counterpartyId=")
         cy.get("tbody tr").should("have.length", 4)
     })
 
