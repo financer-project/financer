@@ -353,19 +353,21 @@ it("should filter transactions by category (multi-select) and reset", () => {
 
 **If this table is empty:** N/A — see entries above; all should be treated as needing at most a quick confirmation during planning/execution, not as blocking unknowns.
 
-## Open Questions
+## Open Questions — ALL RESOLVED IN PLANS
 
-1. **What is the actual error/stack trace for BUG-01 (#78)?**
+All three questions below are answered by a committed task in this phase's plans; each carries its inline `RESOLVED` mapping. None remains open as a blocking unknown at execution time.
+
+1. **What is the actual error/stack trace for BUG-01 (#78)?** — RESOLVED: Plan 01-01 Task 1 (dedicated diagnosis task captures the verbatim error text, stack, RPC response body and originating layer via a seven-step escalation ladder, and writes the finding to SUMMARY before any fix code is written)
    - What we know: The full client→server→Prisma filter pipeline was traced and shows no structural defect distinguishing Counterparty from the working Category filter. D-02's `"null"`-token theory is not reachable via the Counterparty filter's current UI (no such option exists in its list).
    - What's unclear: Whether the crash is a client-side React error (e.g., a render-time exception), a Blitz RPC/network error, a Prisma runtime error, or something specific to certain data states (e.g., a transaction whose `counterpartyId` references a deleted/orphaned `Counterparty` row — not directly tested this session).
    - Recommendation: The first plan task for BUG-01 should be a pure diagnosis task: run the app locally (or via a throwaway Cypress spec with `cy.on('uncaught:exception', ...)` to capture the error), exercise single-select, multi-select, and clear interactions against the Counterparty filter, and record the exact error before writing any fix code.
 
-2. **Does `DatePicker.tsx`'s date field actually skip in Tab order, or only the Select fields?**
+2. **Does `DatePicker.tsx`'s date field actually skip in Tab order, or only the Select fields?** — RESOLVED: Plan 01-02 Task 3 (the recorded-forward-path spec asserts the Value Date trigger appears in the native Tab path and still opens its calendar on click, converting assumption A3 from inference to an on-browser assertion)
    - What we know: Source-level analysis suggests the date field's trigger wraps a real `<Button>` (natively focusable), architecturally different from the Select fields' bare-`<div>` trigger.
    - What's unclear: Whether the outer wrapping `<div>` (which Radix's `asChild` also clones `aria-*`/`onClick` handlers onto) introduces a *different* bug — e.g., a double-toggle on click (both the inner Button's onClick and the outer div's Radix-injected onClick firing on the same click event via bubbling) — this wasn't confirmed on-browser.
    - Recommendation: Test the date field explicitly during BUG-02 implementation, both for Tab-reachability and for correct open/close behavior on click, even though it's not the primary suspect.
 
-3. **What shard count actually minimizes CI wall-clock time for this suite (D-09)?**
+3. **What shard count actually minimizes CI wall-clock time for this suite (D-09)?** — RESOLVED: Plan 01-04 Task 1 (measures at least two candidate shard counts against real CI runs, adopts the lowest slowest-shard E2E stage duration, and records the measured numbers and any diminishing return per D-09/D-11)
    - What we know: 14 spec files, roughly 37-186 lines each (no single dominant outlier), diminishing returns expected past 4-6 shards per CONTEXT.md's framing.
    - What's unclear: The actual empirical curve — runner startup/Testcontainers-boot overhead per shard vs. spec execution time saved — can only be measured via real CI runs (D-11 requires this), not estimated statically.
    - Recommendation: Start with 4 shards as a reasonable first measurement point, capture wall-clock time in `BASELINE.md`, and only invest in tuning up/down if the phase's time budget allows a second measurement pass.
