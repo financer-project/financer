@@ -38,11 +38,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The Cypress E2E suite finishes in measurably less CI wall-clock time than the recorded pre-change baseline, with the before/after numbers captured
   4. LCOV coverage after the speed-up is equal to or higher than the pre-change baseline, and the sped-up suite passes 3+ consecutive CI runs with no new flake
 
-**Plans**: 4 plans in 3 waves
+**Plans**: 1/4 plans executed in 3 waves
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — BUG-01: reproduce the Counterparty filter failure end-to-end, then fix it to the correctness bar (wave 1)
+- [x] 01-01-PLAN.md — BUG-01: reproduce the Counterparty filter failure end-to-end, then fix it to the correctness bar (wave 1)
 - [ ] 01-02-PLAN.md — BUG-02: restore native Tab / Shift+Tab order through the transaction form's date and select fields (wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
@@ -130,7 +130,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Bug Fixes & E2E Baseline | 0/TBD | Not started | - |
+| 1. Bug Fixes & E2E Baseline | 1/4 | In Progress|  |
 | 2. Prisma 7 Migration & Dependency Refresh | 0/TBD | Not started | - |
 | 3. Splitting Groups — Foundation | 0/TBD | Not started | - |
 | 4. Splitting Groups — Expenses, Splits, Balances & Settlement | 0/TBD | Not started | - |

@@ -4,16 +4,16 @@ milestone: v1.1.0
 current_phase: 01
 current_phase_name: Bug Fixes & E2E Baseline
 status: executing
-stopped_at: Phase 01 UI-SPEC approved
-last_updated: "2026-08-21T15:16:46.102Z"
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-08-21T22:19:08.209Z"
 last_activity: 2026-08-21
 last_activity_desc: Phase 01 execution started
-state_head: f4764081ad1b247fb68f29f683585fab55a4ce95
+state_head: 7db35d4dd348af06aebac67e8909c6dd5b090aa2
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 4
-  completed_plans: 0
+  completed_plans: 1
 ---
 
 # Project State
@@ -29,8 +29,8 @@ See: .planning/PROJECT.md (updated 2026-08-21)
 
 Milestone: v1.1.0 (mode: mvp)
 Phase: 01 (Bug Fixes & E2E Baseline) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 01
+Plan: 2 of 4
+Status: Ready to execute
 Last activity: 2026-08-21 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -55,6 +55,11 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 01 P01 | 33min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -66,6 +71,7 @@ Recent decisions affecting current work:
 - [Roadmap]: Bug fixes/test baseline first, Prisma 7 migration isolated second, Splitting Groups built against the stabilized v7 client — never interleaved (ARCHITECTURE anti-pattern 4)
 - [Roadmap]: Splitting Groups sliced into 3 vertical MVP increments — foundation (schema/tokens) → core expense/split/balance/settle loop → lifecycle/close
 - [Roadmap]: Phase 2 is gated on a `enhancePrisma()` + driver-adapter spike; a failed spike stops the migration rather than proceeding
+- [Phase 01]: BUG-01: no defect found in Counterparty filter; reported crash traced to a separate Tag filter defect (property: tagId has no Transaction scalar), recorded out-of-scope for /gsd-capture
 
 ### Pending Todos
 
@@ -92,6 +98,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-08-21T10:16:58.815Z
-Stopped at: Phase 01 UI-SPEC approved
-Resume file: .planning/phases/01-bug-fixes-e2e-baseline/01-UI-SPEC.md
+Last session: 2026-08-21T22:19:08.197Z
+Stopped at: Completed 01-01-PLAN.md
+Resume file: None
