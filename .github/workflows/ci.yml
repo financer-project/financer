@@ -54,6 +54,7 @@ jobs:
         with:
           name: next-build
           path: .next
+          include-hidden-files: true
 
   unit-tests:
     name: Build, Check & Test / Unit Tests
