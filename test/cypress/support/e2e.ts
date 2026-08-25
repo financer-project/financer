@@ -2,6 +2,7 @@ import "./commands"
 import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
 import "@cypress/code-coverage/support"
+import "cypress-real-events/support"
 import Chainable = Cypress.Chainable
 
 declare global {
