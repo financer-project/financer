@@ -280,6 +280,12 @@ jobs:
       - name: Merge Coverage
         run: yarn coverage:merge
 
+      - name: Upload merged coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: merged-lcov
+          path: .test/lcov.info
+
       - name: SonarQube Scan for PR
         uses: sonarsource/sonarqube-scan-action@v4
         if: github.event_name == 'pull_request'
