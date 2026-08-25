@@ -2,6 +2,7 @@ import "./commands"
 import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
 import "@cypress/code-coverage/support"
+import "cypress-real-events/support"
 import Chainable = Cypress.Chainable
 
 declare global {
@@ -50,6 +51,16 @@ declare global {
              * Useful for testing the suggested templates feature.
              */
             seedRecurringTransactions(options: { name: string, amount: number, type: "INCOME" | "EXPENSE", count?: number }): Chainable<void>
+
+            /**
+             * cypress-real-events: fires a genuine native key event (via Chrome DevTools
+             * Protocol) rather than a synthetic keydown simulation. Registered at runtime by
+             * `import "cypress-real-events/support"` above; that subpath's own `support.d.ts`
+             * ships no types (only `index.d.ts` does), so TypeScript reports this as missing —
+             * declared here explicitly per the package's own documented fallback.
+             * @see https://github.com/dmtrKovalenko/cypress-real-events#cyrealpress
+             */
+            realPress(keyOrShortcut: string | string[], options?: { pressDelay?: number, log?: boolean }): Chainable<void>
         }
     }
 }
