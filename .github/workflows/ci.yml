@@ -162,8 +162,14 @@ jobs:
       # test/cypress/e2e/*.spec.ts files (15 as of this restructure,
       # re-verify at .planning/phases/01-bug-fixes-e2e-baseline/BASELINE.md) -
       # a shard with zero assigned specs fails rather than passing vacuously.
+      #
+      # Adopted at 4 shards after empirical measurement (plan 01-04, Task 1):
+      # 2-shard run 32876358524 (13m53s total, 8m56s slowest-shard E2E stage) vs
+      # 4-shard run 32880497661 (11m24s total, 6m46s slowest-shard E2E stage) -
+      # 4 shards is strictly better on both metrics. See BASELINE.md for the
+      # full shard-count justification.
       matrix:
-        shard: [1, 2]
+        shard: [1, 2, 3, 4]
 
     steps:
       - name: Checkout Code
