@@ -1,5 +1,6 @@
 import { defineConfig } from "cypress"
 import codeCoverageTask from "@cypress/code-coverage/task"
+import cypressSplit from "cypress-split"
 import TestUtilityDBContainer from "./test/utility/TestUtilityDBContainer"
 
 export default defineConfig({
@@ -19,6 +20,7 @@ export default defineConfig({
         specPattern: "test/cypress/e2e/**/*.spec.ts",
         setupNodeEvents(on, config) {
             codeCoverageTask(on, config)
+            cypressSplit(on, config)
             const dbContainer = TestUtilityDBContainer.getInstance()
 
             on("task", {
@@ -61,7 +63,8 @@ export default defineConfig({
         },
         experimentalRunAllSpecs: true,
         requestTimeout: 20000,
-        defaultCommandTimeout: 20000
+        defaultCommandTimeout: 20000,
+        video: false
     },
 
     fixturesFolder: "test/cypress/fixtures",
