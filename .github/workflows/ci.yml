@@ -9,8 +9,8 @@ on:
       - '**'
 
 jobs:
-  ci:
-    name: Build, Check & Test
+  build-and-lint:
+    name: Build, Check & Test / Build & Lint
     runs-on: ubuntu-latest
 
     steps:
@@ -49,13 +49,183 @@ jobs:
       - name: Run ESLint
         run: yarn lint
 
+      - name: Upload build output
+        uses: actions/upload-artifact@v5
+        with:
+          name: next-build
+          path: .next
+          include-hidden-files: true
+
+  unit-tests:
+    name: Build, Check & Test / Unit Tests
+    runs-on: ubuntu-latest
+    needs: build-and-lint
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install package manager (from package.json)
+        run: |
+          corepack enable
+          corepack install
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+            ~/.cache/Cypress
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Generate Prisma Client
+        run: yarn db:generate
+
       - name: Run Unit Tests
         run: yarn test:unit
+
+      - name: Upload unit coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: unit-coverage
+          path: .test/unit/coverage
+
+  component-tests:
+    name: Build, Check & Test / Component Tests
+    runs-on: ubuntu-latest
+    needs: build-and-lint
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install package manager (from package.json)
+        run: |
+          corepack enable
+          corepack install
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+            ~/.cache/Cypress
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Generate Prisma Client
+        run: yarn db:generate
 
       - name: Run Component Tests
         uses: cypress-io/github-action@v6
         with:
           component: true
+
+      - name: Upload component coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: component-coverage
+          # nyc.config.js's report-dir (.test/coverage/) is the single shared
+          # location @cypress/code-coverage writes to when the CI step runs
+          # cypress-io/github-action directly (bypassing the yarn cypress:*
+          # scripts' --report-dir CLI overrides) - .test/component/coverage
+          # never existed and silently uploaded 0 files (plan 01-04, Task 2).
+          path: .test/coverage
+
+  e2e-tests:
+    name: Build, Check & Test / E2E Tests (shard ${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    needs: build-and-lint
+    strategy:
+      fail-fast: false
+      # NOTE: shard count here must stay at or below the number of
+      # test/cypress/e2e/*.spec.ts files (15 as of this restructure,
+      # re-verify at .planning/phases/01-bug-fixes-e2e-baseline/BASELINE.md) -
+      # a shard with zero assigned specs fails rather than passing vacuously.
+      # Enforced by the "Guard shard count against spec-file count" step below,
+      # which fails fast before install/build if this invariant is ever violated.
+      #
+      # Adopted at 4 shards after empirical measurement (plan 01-04, Task 1):
+      # 2-shard run 32876358524 (13m53s total, 8m56s slowest-shard E2E stage) vs
+      # 4-shard run 32880497661 (11m24s total, 6m46s slowest-shard E2E stage) -
+      # 4 shards is strictly better on both metrics. See BASELINE.md for the
+      # full shard-count justification.
+      matrix:
+        shard: [1, 2, 3, 4]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Guard shard count against spec-file count
+        run: |
+          SPEC_COUNT=$(ls test/cypress/e2e/*.spec.ts | wc -l)
+          SHARD_COUNT=${{ strategy.job-total }}
+          if [ "$SPEC_COUNT" -lt "$SHARD_COUNT" ]; then
+            echo "::error::Spec count ($SPEC_COUNT) is less than shard count ($SHARD_COUNT) - a shard would receive zero specs and fail rather than passing vacuously. Reduce the matrix shard count or add spec files."
+            exit 1
+          fi
+          echo "Spec count: $SPEC_COUNT, shard count: $SHARD_COUNT - guard passed"
+
+      - name: Install package manager (from package.json)
+        run: |
+          corepack enable
+          corepack install
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+            ~/.cache/Cypress
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Generate Prisma Client
+        run: yarn db:generate
+
+      - name: Download build output
+        uses: actions/download-artifact@v4
+        with:
+          name: next-build
+          path: .next
 
       - name: Run E2E Tests
         uses: cypress-io/github-action@v6
@@ -67,9 +237,74 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: mysql://financer-test:password@localhost:3307/financer-test
           SESSION_SECRET_KEY: test-session-secret-which-is-32-bytes-long
+          SPLIT: ${{ strategy.job-total }}
+          SPLIT_INDEX: ${{ strategy.job-index }}
+
+      - name: Upload E2E coverage (shard ${{ matrix.shard }})
+        uses: actions/upload-artifact@v5
+        with:
+          name: e2e-coverage-shard-${{ matrix.shard }}
+          # Same fix as "Upload component coverage" above: .test/e2e/coverage
+          # never existed - the real report lands at nyc.config.js's shared
+          # report-dir, .test/coverage/ (plan 01-04, Task 2).
+          path: .test/coverage
+
+      - name: Upload screenshots (shard ${{ matrix.shard }})
+        uses: actions/upload-artifact@v5
+        if: failure()
+        with:
+          name: cypress-screenshots-shard-${{ matrix.shard }}
+          path: .test/e2e/screenshots
+
+  merge-coverage-and-sonar:
+    name: Build, Check & Test / Merge Coverage & SonarQube
+    runs-on: ubuntu-latest
+    needs: [unit-tests, component-tests, e2e-tests]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install package manager (from package.json)
+        run: |
+          corepack enable
+          corepack install
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+            ~/.cache/Cypress
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-coverage*'
+          path: .test/
 
       - name: Merge Coverage
         run: yarn coverage:merge
+
+      - name: Upload merged coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: merged-lcov
+          path: .test/lcov.info
 
       - name: SonarQube Scan for PR
         uses: sonarsource/sonarqube-scan-action@v4
@@ -92,10 +327,3 @@ jobs:
         with:
           args: >
             --define sonar.branch.name=main
-
-      - name: Upload screenshots
-        uses: actions/upload-artifact@v5
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: .test/e2e/screenshots

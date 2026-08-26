@@ -91,6 +91,131 @@ describe("Transactions", () => {
         cy.get("tbody tr").should("have.length", 2)
     })
 
+    it("should filter transactions by counterparty (multi-select) and reset", () => {
+        // Standard user is seeded with 2 transactions (Income, Cost of Living), neither
+        // has a counterparty attached. Create two transactions that do, via the create
+        // form (mirroring the existing tag/counterparty creation test above), so the
+        // filter has real matching rows to assert against.
+        cy.get("tbody tr").should("have.length", 2)
+
+        cy.get("a[href='/transactions/new']").first().click()
+        cy.findSelectField({ contains: "My Account" }).should("exist")
+        cy.get("input[name='name']").type("Employer Payment")
+        cy.selectField({ for: "type", value: "Income" })
+        cy.get("input[name='amount']").type("500.00")
+        cy.selectField({ for: "categoryId", value: "Income" })
+        cy.selectField({ for: "counterpartyId", value: "Test Employer" })
+        cy.get("button[type='submit']").click()
+        // Submitting a new transaction navigates to its detail page, not back to the list.
+        cy.url().should("include", "/transactions/")
+        cy.visit("/transactions")
+
+        cy.get("a[href='/transactions/new']").first().click()
+        cy.findSelectField({ contains: "My Account" }).should("exist")
+        cy.get("input[name='name']").type("Merchant Purchase")
+        cy.selectField({ for: "type", value: "Expense" })
+        cy.get("input[name='amount']").type("30.00")
+        cy.selectField({ for: "categoryId", value: "Cost of Living" })
+        cy.selectField({ for: "counterpartyId", value: "Test Merchant" })
+        cy.get("button[type='submit']").click()
+        cy.url().should("include", "/transactions/")
+        cy.visit("/transactions")
+
+        // Spec-local uncaught-exception handler: log the real error instead of letting
+        // Cypress swallow it, without touching the global allowlist in support/e2e.ts.
+        // `return false` is deliberate - it lets the remaining filter assertions run to
+        // completion instead of aborting at the moment of the throw - but the captured
+        // error is asserted `undefined` at the end of this test (see below), so a real
+        // uncaught exception still fails this test with the real message attached.
+        //
+        // The same two messages the global handler in support/e2e.ts already allow-lists
+        // (DYNAMIC_SERVER_USAGE, Minified React error #419) are exempted here too, rather
+        // than captured. Verified empirically: "Minified React error #419" occurs
+        // deterministically during this test's own create -> visit -> filter flow against
+        // the production build used in E2E (unrelated to counterparty filtering - it is
+        // the same known-benign class the global handler already tolerates for every other
+        // test). Capturing it here would fail this test on every run regardless of BUG-01,
+        // which is the exact false-positive the global allowlist exists to prevent.
+        let uncaughtError: Error | undefined
+        cy.on("uncaught:exception", (err) => {
+            const isKnownBenign = err.message.includes("DYNAMIC_SERVER_USAGE") || err.message.includes("Minified React error #419")
+            if (!isKnownBenign) uncaughtError = err
+            // eslint-disable-next-line no-console
+            console.log("[BUG-01 diagnosis] uncaught exception:", err.message, "\n", err.stack)
+            return false
+        })
+
+        cy.get("tbody tr").should("have.length", 4)
+
+        // Household counterparties, for the household-scope assertion below.
+        const householdCounterpartyNames = ["Test Merchant", "Test Employer", "Test Utility"]
+
+        // Capture the unfiltered row order (by Name column) to assert against later.
+        let unfilteredNames: string[] = []
+        cy.get("tbody tr td:nth-child(1)").then(($cells) => {
+            unfilteredNames = [...$cells].map((el) => el.innerText.trim())
+        })
+
+        // Single-select: Test Employer -> expect only the Employer Payment transaction
+        cy.selectField({ contains: "Counterparty", value: "Test Employer" })
+        cy.url().should("include", "counterpartyId=")
+        cy.get("tbody tr").should("have.length", 1)
+        cy.get("tbody tr td").first().should("contain.text", "Employer Payment")
+        cy.get("tbody tr td:nth-child(4)").each(($cell) => {
+            expect(householdCounterpartyNames.some((name) => $cell.text().includes(name))).to.be.true
+        })
+
+        // Multi-select: add Test Merchant -> expect the union (2 rows), in the same
+        // relative order they appeared in the unfiltered list (ordering behavior).
+        cy.selectField({ contains: "Counterparty", value: "Test Merchant" })
+        cy.get("tbody tr").should("have.length", 2)
+        cy.get("tbody tr td:nth-child(1)").then(($cells) => {
+            const filteredNames = [...$cells].map((el) => el.innerText.trim())
+            const relativeIndices = filteredNames.map((name) => unfilteredNames.indexOf(name))
+            expect(relativeIndices).to.deep.equal([...relativeIndices].sort((a, b) => a - b))
+        })
+        cy.get("tbody tr td:nth-child(4)").each(($cell) => {
+            expect(householdCounterpartyNames.some((name) => $cell.text().includes(name))).to.be.true
+        })
+
+        // Toggle: re-selecting an already-selected counterparty removes it rather than
+        // duplicating it in the URL param.
+        cy.selectField({ contains: "Counterparty", value: "Test Employer" })
+        cy.get("tbody tr").should("have.length", 1)
+        cy.get("tbody tr td").first().should("contain.text", "Merchant Purchase")
+        cy.url().then((url) => {
+            const params = new URL(url).searchParams
+            const ids = (params.get("counterpartyId") ?? "").split(",").filter(Boolean)
+            expect(ids.length).to.equal(new Set(ids).size)
+        })
+
+        // Toggle down to zero (rather than pressing Reset): deselecting the last
+        // remaining counterparty drops counterpartyId from the URL and restores the
+        // full unfiltered list.
+        cy.selectField({ contains: "Counterparty", value: "Test Merchant" })
+        cy.url().should("not.include", "counterpartyId=")
+        cy.get("tbody tr").should("have.length", 4)
+
+        // Empty result: a counterparty with no matching transactions renders zero rows
+        // and no error.
+        cy.selectField({ contains: "Counterparty", value: "Test Utility" })
+        cy.url().should("include", "counterpartyId=")
+        cy.get("tbody tr").should("have.length", 0)
+
+        // Reset -> back to all 4 rows, counterpartyId cleared from the URL.
+        cy.contains("button", "Reset").click()
+        cy.url().should("not.include", "counterpartyId=")
+        cy.get("tbody tr").should("have.length", 4)
+
+        // Permanent regression guard for BUG-01: if any uncaught exception occurred
+        // anywhere above during the counterparty-filter interactions, fail loudly here
+        // with the real error message rather than letting the spec-local handler above
+        // silently swallow it.
+        cy.then(() => {
+            expect(uncaughtError, uncaughtError ? `uncaught exception: ${uncaughtError.message}` : undefined).to.be.undefined
+        })
+    })
+
     it("should create a new tag inline from the transaction form", () => {
         cy.get("a[href='/transactions/new']").first().click()
 
