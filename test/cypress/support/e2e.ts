@@ -3,7 +3,11 @@ import { User } from "@prisma/client"
 import { TestData } from "@/test/utility/TestUtility"
 import "@cypress/code-coverage/support"
 import "cypress-real-events/support"
+import type { keyCodeDefinitions } from "cypress-real-events/keyCodeDefinitions"
+import type { RealPressOptions } from "cypress-real-events/commands/realPress"
 import Chainable = Cypress.Chainable
+
+type RealPressKey = keyof typeof keyCodeDefinitions
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -57,10 +61,13 @@ declare global {
              * Protocol) rather than a synthetic keydown simulation. Registered at runtime by
              * `import "cypress-real-events/support"` above; that subpath's own `support.d.ts`
              * ships no types (only `index.d.ts` does), so TypeScript reports this as missing —
-             * declared here explicitly per the package's own documented fallback.
+             * only the `Chainable` member declaration is local, because the `support` subpath
+             * ships no ambient augmentation. The key union (`RealPressKey`) and options type
+             * (`RealPressOptions`) are taken from the package's own declarations, so a
+             * misspelled key name fails `tsc` instead of type-checking as a bare string.
              * @see https://github.com/dmtrKovalenko/cypress-real-events#cyrealpress
              */
-            realPress(keyOrShortcut: string | string[], options?: { pressDelay?: number, log?: boolean }): Chainable<void>
+            realPress(keyOrShortcut: RealPressKey | RealPressKey[], options?: RealPressOptions): Chainable<void>
         }
     }
 }
