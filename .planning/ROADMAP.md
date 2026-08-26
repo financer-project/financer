@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The Cypress E2E suite finishes in measurably less CI wall-clock time than the recorded pre-change baseline, with the before/after numbers captured
   4. LCOV coverage after the speed-up is equal to or higher than the pre-change baseline, and the sped-up suite passes 3+ consecutive CI runs with no new flake
 
-**Plans**: 4/4 plans executed in 3 waves
+**Plans**: 7 plans — 4/4 original plans executed in 3 waves; 3 gap-closure plans added in 2 waves after verification found 2 gaps
 Plans:
 **Wave 1**
 
@@ -52,6 +52,12 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 01-04-PLAN.md — TEST-01: tune the shard count empirically, prove coverage parity and three-run stability, close out BASELINE.md (wave 3)
+
+**Gap closure** *(from 01-VERIFICATION.md — status gaps_found, 12/14 must-haves verified)*
+
+- [ ] 01-05-PLAN.md — Gap 1 / CR-01: make the Counterparty regression test able to fail on the exception it targets, and prove it red; plus WR-01 realPress typing and WR-02 shard-count guard (gap wave 1)
+- [ ] 01-06-PLAN.md — Gap 2 / TEST-01: enumerate the exact source lines behind the 7-10 line coverage shortfall and cover them deterministically (gap wave 1)
+- [ ] 01-07-PLAN.md — Gap 2 / TEST-01: decide criterion 4 on a fresh CI-sourced figure, with a blocking human decision if a shortfall remains (gap wave 2)
 
 **Notes**: Prefer moving unit-testable logic into Vitest over cutting `retries.runMode` or `after()` cleanup (PITFALLS #8). If specs are parallelized, each worker needs its own database — the current single shared Testcontainers instance will corrupt data across workers. Plan 01-03 is sequenced after the two bug-fix plans deliberately: both add E2E specs, so capturing the baseline afterwards keeps the before/after comparison like-for-like.
 
@@ -130,7 +136,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Bug Fixes & E2E Baseline | 4/4 | In Progress|  |
+| 1. Bug Fixes & E2E Baseline | 4/7 | Gap closure planned |  |
 | 2. Prisma 7 Migration & Dependency Refresh | 0/TBD | Not started | - |
 | 3. Splitting Groups — Foundation | 0/TBD | Not started | - |
 | 4. Splitting Groups — Expenses, Splits, Balances & Settlement | 0/TBD | Not started | - |
