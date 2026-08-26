@@ -167,6 +167,8 @@ jobs:
       # test/cypress/e2e/*.spec.ts files (15 as of this restructure,
       # re-verify at .planning/phases/01-bug-fixes-e2e-baseline/BASELINE.md) -
       # a shard with zero assigned specs fails rather than passing vacuously.
+      # Enforced by the "Guard shard count against spec-file count" step below,
+      # which fails fast before install/build if this invariant is ever violated.
       #
       # Adopted at 4 shards after empirical measurement (plan 01-04, Task 1):
       # 2-shard run 32876358524 (13m53s total, 8m56s slowest-shard E2E stage) vs
@@ -179,6 +181,16 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Guard shard count against spec-file count
+        run: |
+          SPEC_COUNT=$(ls test/cypress/e2e/*.spec.ts | wc -l)
+          SHARD_COUNT=${{ strategy.job-total }}
+          if [ "$SPEC_COUNT" -lt "$SHARD_COUNT" ]; then
+            echo "::error::Spec count ($SPEC_COUNT) is less than shard count ($SHARD_COUNT) - a shard would receive zero specs and fail rather than passing vacuously. Reduce the matrix shard count or add spec files."
+            exit 1
+          fi
+          echo "Spec count: $SPEC_COUNT, shard count: $SHARD_COUNT - guard passed"
 
       - name: Install package manager (from package.json)
         run: |

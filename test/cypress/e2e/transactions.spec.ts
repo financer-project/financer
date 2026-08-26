@@ -123,7 +123,23 @@ describe("Transactions", () => {
 
         // Spec-local uncaught-exception handler: log the real error instead of letting
         // Cypress swallow it, without touching the global allowlist in support/e2e.ts.
+        // `return false` is deliberate - it lets the remaining filter assertions run to
+        // completion instead of aborting at the moment of the throw - but the captured
+        // error is asserted `undefined` at the end of this test (see below), so a real
+        // uncaught exception still fails this test with the real message attached.
+        //
+        // The same two messages the global handler in support/e2e.ts already allow-lists
+        // (DYNAMIC_SERVER_USAGE, Minified React error #419) are exempted here too, rather
+        // than captured. Verified empirically: "Minified React error #419" occurs
+        // deterministically during this test's own create -> visit -> filter flow against
+        // the production build used in E2E (unrelated to counterparty filtering - it is
+        // the same known-benign class the global handler already tolerates for every other
+        // test). Capturing it here would fail this test on every run regardless of BUG-01,
+        // which is the exact false-positive the global allowlist exists to prevent.
+        let uncaughtError: Error | undefined
         cy.on("uncaught:exception", (err) => {
+            const isKnownBenign = err.message.includes("DYNAMIC_SERVER_USAGE") || err.message.includes("Minified React error #419")
+            if (!isKnownBenign) uncaughtError = err
             // eslint-disable-next-line no-console
             console.log("[BUG-01 diagnosis] uncaught exception:", err.message, "\n", err.stack)
             return false
@@ -190,6 +206,14 @@ describe("Transactions", () => {
         cy.contains("button", "Reset").click()
         cy.url().should("not.include", "counterpartyId=")
         cy.get("tbody tr").should("have.length", 4)
+
+        // Permanent regression guard for BUG-01: if any uncaught exception occurred
+        // anywhere above during the counterparty-filter interactions, fail loudly here
+        // with the real error message rather than letting the spec-local handler above
+        // silently swallow it.
+        cy.then(() => {
+            expect(uncaughtError, uncaughtError ? `uncaught exception: ${uncaughtError.message}` : undefined).to.be.undefined
+        })
     })
 
     it("should create a new tag inline from the transaction form", () => {
