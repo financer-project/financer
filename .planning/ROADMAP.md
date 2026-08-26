@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The Cypress E2E suite finishes in measurably less CI wall-clock time than the recorded pre-change baseline, with the before/after numbers captured
   4. LCOV coverage after the speed-up is equal to or higher than the pre-change baseline, and the sped-up suite passes 3+ consecutive CI runs with no new flake
 
-**Plans**: 3/4 plans executed in 3 waves
+**Plans**: 4/4 plans executed in 3 waves
 Plans:
 **Wave 1**
 
@@ -51,7 +51,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-04-PLAN.md — TEST-01: tune the shard count empirically, prove coverage parity and three-run stability, close out BASELINE.md (wave 3)
+- [x] 01-04-PLAN.md — TEST-01: tune the shard count empirically, prove coverage parity and three-run stability, close out BASELINE.md (wave 3)
 
 **Notes**: Prefer moving unit-testable logic into Vitest over cutting `retries.runMode` or `after()` cleanup (PITFALLS #8). If specs are parallelized, each worker needs its own database — the current single shared Testcontainers instance will corrupt data across workers. Plan 01-03 is sequenced after the two bug-fix plans deliberately: both add E2E specs, so capturing the baseline afterwards keeps the before/after comparison like-for-like.
 
@@ -130,7 +130,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Bug Fixes & E2E Baseline | 3/4 | In Progress|  |
+| 1. Bug Fixes & E2E Baseline | 4/4 | In Progress|  |
 | 2. Prisma 7 Migration & Dependency Refresh | 0/TBD | Not started | - |
 | 3. Splitting Groups — Foundation | 0/TBD | Not started | - |
 | 4. Splitting Groups — Expenses, Splits, Balances & Settlement | 0/TBD | Not started | - |
