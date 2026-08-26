@@ -263,6 +263,100 @@ the same outcome this plan's own action text prescribes for the fallback (expire
 path, applied here because the named lines themselves are provably unreachable within this
 task's constraints rather than because the artifact expired.
 
+### Coverage gap-closure outcome (plan 01-06, Task 2)
+
+**All ten named lines: uncloseable within this task's scope, individually confirmed.**
+Working the drop table one row at a time, each of the ten lines enumerated above was
+re-checked against the current local `.test/unit/coverage/lcov.info` (pre-existing state,
+before this task's additions) and confirmed still at 0 hits, then checked against the three
+closure levers this task is actually permitted to use:
+
+| # | File:Line | Why it cannot be closed here |
+|---|---|---|
+| 1–2 | `CategoriesList.tsx:52,62` | `Array.prototype.sort`'s comparator is only invoked by `TreeView` (a separate child component) during real React reconciliation with ≥ 2 sibling nodes; V8 skips calling the comparator entirely for shorter arrays. Reaching this requires a full render (`TreeView` executing its own body), not merely calling `CategoriesList()` — which only builds a lazy JSX descriptor object without invoking children. |
+| 3 | `ImportWizard.tsx:51` | The line sits inside a module-scope `importSchema` object; the schema is constructed on import but never `.parse()`/`.safeParse()`'d at runtime — only the smaller per-step schemas (`uploadSchema` etc.) are passed to Formik's `toFormikValidationSchema`. A test that merely imports the module to execute this statement, without a real assertion tied to observable behaviour, would violate this plan's own "no test whose only effect is to execute a line" prohibition; the schema is not exported so its validation behaviour cannot be asserted from a test file without a `src/` change (out of this task's file scope). |
+| 4–8 | `DateFilter.tsx:108,111,114,117,120` | Each is a `<Button onClick={() => applyPreset(...)}>` handler; the callback body only runs on a real click inside a rendered DOM tree. `applyPreset` itself is not exported, so its date-range logic cannot be asserted without either rendering the component or exporting/extracting the function (a `src/` change, out of scope for this task). |
+| 9 | `ConfirmationDialog.tsx:74` | The `onClick={() => setOpen(false)}` handler only runs on a real click. Rendering this component at all additionally calls `document.createElement` / `createRoot` directly in its function body, which requires a DOM — Vitest's current `environment` is the Node default (no `jsdom`), and changing it is a forbidden `vitest.config.ts` edit for this task. |
+| 10 | `MultiStepForm.tsx:213` | `onClickAction={index => setCurrentStep(index)}` is invoked by `StepsVisualization` only when a step indicator is clicked; same real-render requirement as the rows above. |
+
+Closing any of these ten would require one of: adding `@testing-library/react` (a new
+dependency — `package.json` must stay byte-identical per this task's acceptance criteria),
+enabling a `jsdom`/browser `environment` in `vitest.config.ts` (also gated byte-identical),
+or extracting the callback logic into an exported, independently-testable function in `src/`
+(outside this task's `test/vitest/**` + this-file diff scope, and an architectural decision
+in its own right — new exported utility surface, however small — not an auto-fix). None of
+those three changes is available to this task. This is a deliberate scope boundary, not an
+oversight: closing these lines is the correct subject for a decision at plan `01-07`'s
+checkpoint, which can weigh whether to expand scope (add `@testing-library/react`,
+enable `jsdom`) against accepting the small, now-fully-named residual gap.
+
+**Numeric bar satisfied via genuinely under-tested pure logic (no per-line drop explained).**
+Since none of the ten named lines could be closed, and per this plan's own
+`planner_assumptions` #7 ("a partial closure is a valid outcome"), local unit `LH` was instead
+raised above the 10-line union size by adding real, assertion-bearing tests for previously
+**zero-coverage** pure-logic functions with no rendering, DOM, or Prisma dependency — the same
+outcome this plan's action text already prescribes for the fallback (expired-artifact) path,
+applied here because the named lines are provably unreachable rather than because the artifact
+expired. Three functions were selected, all in `src/lib/util/`, all previously at 0 local
+hits:
+
+| Function | File | Before | Tests added |
+|---|---|---|---|
+| `formatFileSize` | `src/lib/util/formatter/FileSizeFormatter.ts` | 0/10 hit | 8 tests — zero-byte (default and forced-unit label), auto-unit selection at B/KB/MB scale, the `Math.min` clamp at the TB ceiling for values beyond the `UNITS` table, forced-unit override, and custom `decimals` on both the auto and forced-unit paths |
+| `UserFormatter.format` | `src/lib/util/formatter/UserFormatter.ts` | 0/1 hit | 2 tests — correct `firstName lastName` concatenation and an explicit "does not swap the parts" assertion |
+| `cn` | `src/lib/util/utils.ts` | 0/1 hit | 5 tests — plain merging, dropping falsy conditional values, keeping truthy ones, array flattening, and a `twMerge`-specific conflict-resolution case (`cn("p-2", "p-4")` must resolve to `"p-4"`, not concatenate both) |
+
+Added under `test/vitest/lib/util/formatter/formatter.test.ts` (extended existing file, new
+`describe` blocks for `UserFormatter` and `formatFileSize`) and
+`test/vitest/lib/util/utils.test.ts` (new file), following the existing
+describe/test structure and `FormatterContext` fixtures already used in that file.
+
+**Local before/after measurement** (computed identically to Task 1: `DA:` record count = LF,
+count with hits > 0 = LH, read from `.test/unit/coverage/lcov.info` after `yarn test:unit`):
+
+| | LF | LH |
+|---|---|---|
+| Before this task's additions | 3826 | 1110 |
+| After this task's additions | 3826 | 1122 |
+| Delta | **0** (unchanged, as required) | **+12** |
+
+LF is byte-identical before and after (3826 both times — confirming no source file entered or
+left the instrumented set), and LH rose by 12, exceeding the 10-line union size of Task 1's
+drop table. This is a **local, unit-only** figure; the authoritative merged figure (unit + E2E
+shards combined, matching the methodology of the "Coverage comparison (D-10, criterion 4)"
+table above) can only come from a fresh CI run, which is plan `01-07`'s job, not this task's.
+
+**Teeth check — every new test observed failing against a deliberate break, then reverted:**
+
+| Test file | Break applied | Result | Reverted |
+|---|---|---|---|
+| `formatter.test.ts` (`formatFileSize`) | Shifted the auto-unit index by `+1` in the `Math.min(...)` calculation | 4 tests went red (auto-KB, auto-MB, custom-decimals, and the original small-value case shifted a unit) | Yes |
+| `formatter.test.ts` (`formatFileSize`) | Removed the `Math.min` TB clamp entirely | The TB-clamp test went red (`"1.0 undefined"` — indexed past the end of `UNITS`) | Yes |
+| `formatter.test.ts` (`formatFileSize`) | Changed the zero-byte default unit from `"B"` to `"KB"` | The zero-byte default test went red; the forced-unit zero-byte test stayed green (confirming the two tests exercise distinct branches) | Yes |
+| `formatter.test.ts` (`formatFileSize`) | Added `+ 1` to the forced-unit `divisor` exponent | The forced-unit and custom-decimals tests both went red | Yes |
+| `formatter.test.ts` (`UserFormatter`) | Swapped `firstName`/`lastName` order in the return template | Both `UserFormatter` tests went red | Yes |
+| `utils.test.ts` (`cn`) | Replaced `twMerge(clsx(inputs))` with plain `clsx(inputs)` | Only the Tailwind-conflict-resolution test went red (the other four `cn` tests, which do not exercise `twMerge`'s conflict resolution, correctly stayed green) | Yes |
+
+Every break was applied to `src/`, confirmed red via `yarn vitest run <file> --coverage=false`,
+then reverted; `git diff --stat` against these three source files shows no residual change.
+
+**Verification commands run:**
+- `yarn test:unit` — exit 0, 44 files / 370 tests passed
+- `grep -rc 'istanbul ignore' src/ | grep -v ':0$' | wc -l` — `0`
+- `git diff --exit-code -- nyc.config.js vitest.config.ts cypress.config.ts package.json` — no output
+- `yarn tsc --noEmit` — **pre-existing failure, not introduced by this task.** Three errors are
+  reported, all in files this task never touched: `test/cypress/e2e/mobile.spec.ts:82` (a
+  `JQuery<HTMLElement>`-to-`string` cast) and two in
+  `test/vitest/app/api/transactions/attachments/attachmentRoutes.test.ts` (missing
+  `transactionTemplateId` field on a test fixture after a Prisma schema change from an earlier
+  phase-01 plan). Confirmed neither new test file (`formatter.test.ts`, `utils.test.ts`)
+  appears anywhere in the error output. This is an out-of-scope, pre-existing defect per this
+  executor's scope-boundary rule — not fixed here, flagged for the phase verifier and for
+  plan `01-07`'s checkpoint.
+
+**Every line in the drop table is accounted for above** — none is silently omitted; all ten
+carry an individual, specific reason they were not closed in this task.
+
 ### Flake-check (D-09, criterion 5)
 
 Every CI run below was triggered on the temporary validation branch
