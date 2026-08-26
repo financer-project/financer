@@ -150,7 +150,12 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: component-coverage
-          path: .test/component/coverage
+          # nyc.config.js's report-dir (.test/coverage/) is the single shared
+          # location @cypress/code-coverage writes to when the CI step runs
+          # cypress-io/github-action directly (bypassing the yarn cypress:*
+          # scripts' --report-dir CLI overrides) - .test/component/coverage
+          # never existed and silently uploaded 0 files (plan 01-04, Task 2).
+          path: .test/coverage
 
   e2e-tests:
     name: Build, Check & Test / E2E Tests (shard ${{ matrix.shard }})
@@ -227,7 +232,10 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: e2e-coverage-shard-${{ matrix.shard }}
-          path: .test/e2e/coverage
+          # Same fix as "Upload component coverage" above: .test/e2e/coverage
+          # never existed - the real report lands at nyc.config.js's shared
+          # report-dir, .test/coverage/ (plan 01-04, Task 2).
+          path: .test/coverage
 
       - name: Upload screenshots (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v5
@@ -279,6 +287,12 @@ jobs:
 
       - name: Merge Coverage
         run: yarn coverage:merge
+
+      - name: Upload merged coverage
+        uses: actions/upload-artifact@v5
+        with:
+          name: merged-lcov
+          path: .test/lcov.info
 
       - name: SonarQube Scan for PR
         uses: sonarsource/sonarqube-scan-action@v4
