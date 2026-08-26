@@ -161,6 +161,15 @@ None — no new network endpoint, auth path, file-access pattern, or schema chan
 - The local unit-coverage numeric bar (LH rose by more than the union size) is met and documented; the authoritative merged-coverage figure still requires a fresh CI run, which is `01-07`'s job.
 - The pre-existing `yarn tsc --noEmit` failure (2 errors, unrelated files) should be surfaced to `01-07`'s checkpoint or the phase verifier, since it affects the phase-wide type-check gate independent of this plan.
 
+## Self-Check: PASSED
+
+- FOUND: `test/vitest/lib/util/utils.test.ts`
+- FOUND: `test/vitest/lib/util/formatter/formatter.test.ts`
+- FOUND: `.planning/phases/01-bug-fixes-e2e-baseline/01-06-SUMMARY.md`
+- FOUND commit: `dd93324` (Task 1)
+- FOUND commit: `d725fea` (Task 2)
+- FOUND commit: `41b18d0` (SUMMARY)
+
 ---
 *Phase: 01-bug-fixes-e2e-baseline*
 *Completed: 2026-08-26*
