@@ -9,8 +9,8 @@ Requirements for the v1.1.0 milestone. Each maps to roadmap phases.
 
 ### Bug Fixes
 
-- [x] **BUG-01**: Counterparty filter on the Transaction List works without throwing an error (#78)
-- [x] **BUG-02**: Tab-key navigation correctly moves focus through date and select fields in forms (#76)
+- [ ] **BUG-01**: Counterparty filter on the Transaction List works without throwing an error (#78)
+- [ ] **BUG-02**: Tab-key navigation correctly moves focus through date and select fields in forms (#76)
 
 ### Test Infrastructure
 
@@ -65,8 +65,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 1 | Complete |
-| BUG-02 | Phase 1 | Complete |
+| BUG-01 | Phase 1 | Gaps Found |
+| BUG-02 | Phase 1 | Gaps Found |
 | TEST-01 | Phase 1 | Pending |
 | DEPS-01 | Phase 2 | Pending |
 | DEPS-02 | Phase 2 | Pending |
