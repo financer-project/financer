@@ -124,6 +124,145 @@ architecture) — not a structural coverage loss. This is a genuine, small short
 strict `>=` reading of criterion 4; it is diagnosed and explained here rather than adjusted away,
 per this plan's own instruction not to paper over a shortfall.
 
+### Coverage gap-closure investigation (plan 01-06)
+
+**Purpose.** The section above diagnoses the 7–10 line shortfall as "most plausibly
+execution-order-sensitive" without naming a single line. This section names them: every
+source line that was hit in the Before merged LCOV and unhit in an After sample, enumerated
+by file path and line number, classified, and either closed or given an individual written
+reason it cannot be.
+
+**Method.** Repository ownership of the run IDs was resolved first, since BASELINE.md's own
+Provenance section links `github.com/financer-project/financer` while the local `origin`
+remote is `github.com/raphaelmue/financer-blitz` — confirmed via
+`gh api repos/financer-project/financer/actions/runs/32869899958/artifacts`, which returned
+the Before run's artifact (`lcov-info`, not `merged-lcov` — the Before run predates the
+permanent upload-step naming), not expired (`expires_at: 2026-11-23T16:06:06Z`), satisfying
+this task's precondition. The three merged LCOV files were downloaded with
+`gh run download {id} -R financer-project/financer -n {artifact-name} -D {dir}`:
+
+- Before: run `32869899958`, artifact `lcov-info`
+- After sample 1: run `32887712546`, artifact `merged-lcov`
+- After sample 2: run `32905249686`, artifact `merged-lcov`
+
+Each file was parsed with a throwaway Node script (grouping `DA:<line>,<hits>` records under
+their preceding `SF:<path>` header) run outside the repository's tracked files; the three
+downloaded LCOV files and the script were kept in a scratch directory and never staged.
+
+**Integrity checks — all passed:**
+
+| Check | Result |
+|---|---|
+| `SF:` path sets identical, Before vs After sample 1 | **identical** |
+| `SF:` path sets identical, Before vs After sample 2 | **identical** |
+| `SF:` path sets identical, After sample 1 vs After sample 2 | **identical** |
+| Per-file `DA:` record counts matching across all three files | **0 mismatches** (every file's line count is identical in all three samples) |
+| Total `DA:` records per file | **3827** in Before, After sample 1, and After sample 2 |
+| Recomputed LH (count of `DA:` records with hits > 0) | Before **2956**, After sample 1 **2949**, After sample 2 **2946** — reproduces the figures already recorded in the "Coverage comparison (D-10, criterion 4)" table above |
+
+No source file entered or left the instrumented set and no line numbers moved between the
+Before commit and the After commits — the three samples are directly, line-for-line
+comparable.
+
+**Drop/gain computation.** For each After sample, the set of `(file, line)` pairs with
+hits > 0 in Before and exactly 0 in that After sample was computed ("drops"), and the reverse
+direction (0 in Before, > 0 in After) was also computed ("gains"), since a net figure could be
+composed of a larger number of drops partly offset by gains:
+
+| | After sample 1 (`32887712546`) | After sample 2 (`32905249686`) |
+|---|---|---|
+| Drops (Before hit → After unhit) | 10 | 10 |
+| Gains (Before unhit → After hit) | 3 | 0 |
+| Net LH change | 2956 − 10 + 3 = **2949** ✓ | 2956 − 10 + 0 = **2946** ✓ |
+
+Both net figures reproduce the recorded LH totals exactly, reconciling the "7–10 lines"
+language already in this document: the **drop set itself is identical and stable across both
+samples (10 lines, exact same file/line pairs in both — intersection = union = 10, not an
+unstable subset)**. The apparent "7 vs 10" spread in the original comparison was never
+run-to-run instability in *which* lines drop — it was 3 unrelated lines in
+`src/app/error.tsx` (the global error-boundary component: lines 7, 9, 12) that happened to
+gain coverage in After sample 1 only, partially offsetting the same 10-line drop. This is a
+materially different, more precise finding than the "execution-order-sensitive, roughly
+7–10 lines" language above: the drop is one stable, fully named 10-line set; the 7-vs-10
+spread is a separate, unrelated 3-line gain that is not part of the shortfall this plan closes
+(a `<div>`/error-page render path is out of scope here and not attributable to the shard
+change in any way this investigation can support).
+
+**The 10 dropped lines, enumerated and classified.**
+
+| # | File | Line | Source text | Classification |
+|---|---|---|---|---|
+| 1 | `src/app/(internal)/categories/components/CategoriesList.tsx` | 52 | `sort={(a, b) => a.name.localeCompare(b.name)}` (Income `TreeView`) | Browser-only behaviour |
+| 2 | `src/app/(internal)/categories/components/CategoriesList.tsx` | 62 | `sort={(a, b) => a.name.localeCompare(b.name)}` (Expense `TreeView`) | Browser-only behaviour |
+| 3 | `src/app/(internal)/imports/components/ImportWizard.tsx` | 51 | `file: z.any().refine(file => file, "File is required"),` (inside the module-scope `importSchema` object literal) | Browser-only behaviour |
+| 4 | `src/lib/components/common/data/table/filters/DateFilter.tsx` | 108 | `<Button size="sm" variant="secondary" onClick={() => applyPreset("thisMonth")}>` | Browser-only behaviour |
+| 5 | `src/lib/components/common/data/table/filters/DateFilter.tsx` | 111 | `<Button size="sm" variant="secondary" onClick={() => applyPreset("lastMonth")}>` | Browser-only behaviour |
+| 6 | `src/lib/components/common/data/table/filters/DateFilter.tsx` | 114 | `<Button size="sm" variant="secondary" onClick={() => applyPreset("last7")}>` | Browser-only behaviour |
+| 7 | `src/lib/components/common/data/table/filters/DateFilter.tsx` | 117 | `<Button size="sm" variant="secondary" onClick={() => applyPreset("last30")}>` | Browser-only behaviour |
+| 8 | `src/lib/components/common/data/table/filters/DateFilter.tsx` | 120 | `<Button size="sm" variant="secondary" onClick={() => applyPreset("thisYear")}>` | Browser-only behaviour |
+| 9 | `src/lib/components/common/dialog/ConfirmationDialog.tsx` | 74 | `<Button onClick={() => setOpen(false)} variant="outline">` (inside `AlertDialogCancel`) | Browser-only behaviour |
+| 10 | `src/lib/components/common/form/MultiStepForm.tsx` | 213 | `onClickAction={index => setCurrentStep(index)}` (passed to `StepsVisualization`) | Browser-only behaviour |
+
+**Why all ten are "browser-only behaviour", not "pure logic reachable from a unit test".**
+Every one of these ten lines is a JSX-embedded callback (an `onClick` handler, or an
+`Array.prototype.sort` comparator passed as a prop) defined *inside* a React function
+component's render body, or — for line 3 — a statement whose enclosing module also only
+renders through a component. Istanbul's line-coverage model marks the *body* of such a
+callback as hit only when the callback is actually **invoked** — for the five `DateFilter`
+presets and the `ConfirmationDialog` cancel button, invocation requires a real click event
+inside a rendered DOM tree; for the two `CategoriesList` sort comparators, invocation requires
+`Array.prototype.sort` to run its comparator, which V8 skips entirely for arrays of length < 2
+and which happens inside `TreeView` (a separate child component), reachable only through full
+React reconciliation, not through calling `CategoriesList()` as a plain function; for
+`MultiStepForm`'s `onClickAction`, invocation requires clicking a step indicator in
+`StepsVisualization`. None of this is reachable by importing the module alone (which only
+executes module-scope statements, not function bodies) or by calling the exported component
+function directly without a real render pass (JSX creation is lazy — it builds element
+descriptor objects, it does not invoke child components or callbacks passed as props).
+
+This was checked empirically, not assumed: the current local `.test/unit/coverage/lcov.info`
+already shows every one of the five files above at 0 local unit hits for these exact lines
+(`CategoriesList.tsx` 0/18, `ImportWizard.tsx` 0/35, `ConfirmationDialog.tsx` 0/18,
+`MultiStepForm.tsx` 0/58 before this plan's Task 2 changes), confirming no existing or
+straightforward new Vitest unit test reaches them. `DateFilter.tsx` already has 12/66 lines
+covered locally — but only its non-JSX pure functions (`parseRange`, and
+`DateFilterStrategy.getWhereClause`, exercised by an existing test) — never its five preset
+`onClick` bodies, for the identical reason.
+
+Rendering any of these components in a genuine way (to actually invoke the callback and mark
+the line hit) would require either `@testing-library/react` (not an existing dependency —
+adding it is a `package.json` change, explicitly forbidden for Task 2) or enabling a
+`jsdom`/browser-like `environment` in `vitest.config.ts` (also explicitly forbidden — Task 2's
+own acceptance criteria gates on `vitest.config.ts` being byte-identical). `ConfirmationDialog`
+additionally calls `document.createElement` / `createRoot` directly in its function body,
+which has no meaning under Vitest's current `environment: 'node'` default regardless of
+mocking. Extracting any of these callbacks into an exported, independently-testable pure
+function would be a `src/` change, which is also outside Task 2's permitted diff (`test/vitest/**`
+and this file only) and would itself be an architectural change requiring a decision, not an
+auto-fix. Given the codebase's existing Vitest suite is exclusively `.test.ts` (zero `.tsx`
+test files exist anywhere in `test/vitest/`, confirmed by directory search), there is no
+established, in-scope lever to reach these ten lines without one of the three changes above.
+
+**Reverse-direction gains (for completeness, not part of the shortfall).** Three lines in
+`src/app/error.tsx` (the Next.js global error boundary — lines 7, 9, 12) were hit in After
+sample 1 but not in Before or After sample 2. This is consistent with a transient,
+non-reproducing runtime error being triggered during that specific CI attempt (per the
+Flake-check table below, run `32887712546` needed one job rerun after an `accounts.spec.ts`
+timeout) — not a structural change caused by sharding, and not something this plan's scope
+extends to chasing further.
+
+**Outcome — carried into Task 2.** All ten lines are classified "browser-only behaviour" and,
+per Task 2's action for that bucket combined with Task 2's own file-scope restriction (only
+`test/vitest/**/*.test.ts` and this file may change — no Cypress spec, `vitest.config.ts`, or
+`package.json` edit is in scope for that task), none of the ten can be closed within this
+plan. Task 2 records the individual reason for each line below and, per this plan's own
+`planner_assumptions` #7 ("a partial closure is a valid outcome"), raises local unit LH by
+more than the 10-line union size via genuinely under-tested, previously-zero-coverage pure
+logic elsewhere — satisfying the numeric bar without describing the original per-line drop,
+the same outcome this plan's own action text prescribes for the fallback (expired-artifact)
+path, applied here because the named lines themselves are provably unreachable within this
+task's constraints rather than because the artifact expired.
+
 ### Flake-check (D-09, criterion 5)
 
 Every CI run below was triggered on the temporary validation branch
@@ -224,3 +363,11 @@ issues.
 
 Every number in the "Before" and "After" sections above is attributable to one of the run IDs
 listed here, per D-11. None was timed locally, estimated, or assumed identical across runs.
+
+**Coverage gap-closure investigation (plan `01-06`):** reuses the same three run IDs already
+listed above — `32869899958` (Before, artifact `lcov-info`), `32887712546` (After sample 1,
+artifact `merged-lcov`) and `32905249686` (After sample 2, artifact `merged-lcov`) — no new CI
+run was triggered for this plan's Task 1. Repository ownership was independently re-confirmed
+via `gh api repos/financer-project/financer/actions/runs/32869899958/artifacts` before
+downloading (per this plan's own precondition), and none of the three artifacts had expired at
+the time of download.
