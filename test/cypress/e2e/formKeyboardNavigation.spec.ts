@@ -27,23 +27,27 @@ describe("Transaction form keyboard navigation (#76 regression)", () => {
         return el.tagName.toLowerCase()
     }
 
-    // Walk forward (or backward, with shift) pressing the given number of Tab steps,
-    // recording the identity of every focused element along the way.
-    const tabPath = (steps: number, shift = false) => {
+    // Walk forward (or backward, with shift) pressing Tab, recording the identity of every
+    // focused element. The walk stops before pressing Tab again once stopAt matches, so focus
+    // never leaves the page (tabbing past the last control drops focus into the browser chrome,
+    // where `cy.focused()` finds nothing). `steps` is only an upper bound for safety.
+    const tabPath = (steps: number, shift = false, stopAt?: (id: string) => boolean) => {
         const path: string[] = []
         let chain: Cypress.Chainable<JQuery<HTMLElement>> = cy.focused()
+            .then(($el) => { path.push(identity($el)); return $el })
+
         for (let i = 0; i < steps; i++) {
             chain = chain.then(($el) => {
-                path.push(identity($el))
+                if (stopAt && stopAt(path[path.length - 1])) {
+                    return cy.wrap($el)
+                }
                 if (shift) cy.realPress(["Shift", "Tab"])
                 else cy.realPress("Tab")
-                return cy.focused()
+                return cy.focused().then(($next) => { path.push(identity($next)); return $next })
             })
         }
-        return chain.then(($el) => {
-            path.push(identity($el))
-            return cy.wrap(path)
-        })
+
+        return chain.then(() => cy.wrap(path))
     }
 
     it("Tabs forward through every date and select field in visual order and Shift+Tabs back in exact reverse", () => {
@@ -53,11 +57,13 @@ describe("Transaction form keyboard navigation (#76 regression)", () => {
         // conditional extra stop because it carries a default value).
         cy.get("label[for='accountId']").next("[role='select-field']").focus()
 
-        let forwardPath: string[] = []
+        // The create form's submit button is the last control to walk up to.
+        const isSubmit = (id: string) => id.startsWith("button:Create Transaction")
 
-        // Walk far enough to pass the submit button. Conditional clear-button stops are absorbed
-        // automatically by recording the observed path rather than assuming an element list.
-        cy.then(() => tabPath(16)).then((forward: string[]) => {
+        // Walk forward, recording the observed path, and stop at the submit button. Conditional
+        // clear-button stops are absorbed automatically by recording the observed path.
+        let forwardPath: string[] = []
+        cy.then(() => tabPath(20, false, isSubmit)).then((forward: string[]) => {
             forwardPath = forward
 
             const anchors = [
@@ -80,8 +86,9 @@ describe("Transaction form keyboard navigation (#76 regression)", () => {
             }
         })
 
-        // Shift+Tab must retrace the exact observed forward path in reverse.
-        cy.then(() => tabPath(16, true)).then((backward: string[]) => {
+        // Shift+Tab from the submit button (where the forward walk stopped) must retrace the
+        // exact observed forward path in reverse, stopping back at the Account select.
+        cy.then(() => tabPath(forwardPath.length, true, (id) => id === forwardPath[0])).then((backward: string[]) => {
             const expected = [...forwardPath].reverse()
             expect(backward, "Shift+Tab path equals exact reverse of forward Tab path").to.deep.equal(expected)
         })
