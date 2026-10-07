@@ -17,6 +17,13 @@ export interface SelectFilterConfig<T> extends BaseFilterConfig<T> {
     type: "select"
     options: { label: string; value: string; render?: (label: string) => ReactNode }[]
     multiSelect?: boolean
+    /**
+     * When set, `property` is treated as a scalar on this to-many relation and every clause is
+     * emitted as `{ [relationField]: { some: { [property]: ... } } }` instead of `{ [property]: ... }`.
+     * Example: Tag filter on `Transaction` uses `property: "tagId"`, `relationField: "tags"` because
+     * tags live on the `TransactonTags` join relation, not as a `tagId` scalar on `Transaction`.
+     */
+    relationField?: string
 }
 
 export interface DateFilterConfig<T> extends BaseFilterConfig<T> {

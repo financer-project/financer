@@ -103,6 +103,45 @@ describe("buildPrismaWhere", () => {
                 ]
             })
         })
+
+        it("wraps a multi-select clause in a to-many relation filter when relationField is set", () => {
+            const filters: SelectFilterConfig<any>[] = [{
+                label: "Tag",
+                property: "tagId",
+                type: "select",
+                relationField: "tags",
+                multiSelect: true,
+                options: []
+            }]
+            const searchParams = new URLSearchParams("tagId=abc,def")
+
+            const result = buildPrismaWhere({ searchParams, filters })
+
+            expect(result).toEqual({
+                AND: [
+                    { tags: { some: { tagId: { in: ["abc", "def"] } } } }
+                ]
+            })
+        })
+
+        it("keeps scalar behaviour for a relationField single-select with a null sentinel", () => {
+            const filters: SelectFilterConfig<any>[] = [{
+                label: "Tag",
+                property: "tagId",
+                type: "select",
+                relationField: "tags",
+                options: []
+            }]
+            const searchParams = new URLSearchParams("tagId=null")
+
+            const result = buildPrismaWhere({ searchParams, filters })
+
+            expect(result).toEqual({
+                AND: [
+                    { tags: { some: { tagId: { equals: null } } } }
+                ]
+            })
+        })
     })
 
     describe("DateFilterStrategy", () => {
