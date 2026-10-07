@@ -204,14 +204,24 @@ export function SelectField<T, >({
             <PopoverTrigger asChild>
                 <InputGroup
                     role="select-field"
+                    tabIndex={readonly ? -1 : 0}
                     className={cn(
                         "cursor-pointer shadow-sm text-sm",
+                        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
                         readonly && "opacity-50 pointer-events-none",
                         props.className
                     )}
                     onClick={(event) => {
                         event.preventDefault()
                         if (!readonly) setIsOpen(true)
+                    }}
+                    onKeyDown={(event) => {
+                        if (event.target !== event.currentTarget) return
+                        if (readonly) return
+                        if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
+                            event.preventDefault()
+                            setIsOpen(true)
+                        }
                     }}>
                     <div className="flex items-center flex-1 px-3 min-w-0">
                         {renderButtonContent(internalValue)}

@@ -7557,6 +7557,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cypress-real-events@npm:1.15.0":
+  version: 1.15.0
+  resolution: "cypress-real-events@npm:1.15.0"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x || ^14.x || ^15.x
+  checksum: 10c0/effb064bed46c8f059ff0b4d315e3cf0a23e2d411948431475ef1b939db8cc1624a7ca033a57dd8d8e3a297240deb298423464bf12a441330d449a06060ba423
+  languageName: node
+  linkType: hard
+
 "cypress@npm:^15.10.0":
   version: 15.10.0
   resolution: "cypress@npm:15.10.0"
@@ -9628,6 +9637,7 @@ __metadata:
     cmdk: "npm:1.1.1"
     currency-codes: "npm:2.2.0"
     cypress: "npm:^15.10.0"
+    cypress-real-events: "npm:1.15.0"
     date-fns: "npm:^4.1.0"
     dotenv-cli: "npm:10.0.0"
     eslint: "npm:^9.39.1"
