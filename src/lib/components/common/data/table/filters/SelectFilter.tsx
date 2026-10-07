@@ -48,6 +48,13 @@ export const SelectFilterStrategy: FilterStrategy<unknown, SelectFilterConfig<un
         // Handle multi and single select, with special support for string "null" meaning actual NULL
         const values = value.split(",").filter((v) => v !== "")
 
+        // Wrap scalar clauses in a to-many relation filter when the config targets a relation
+        // (e.g. the Tag filter emits { tags: { some: { tagId: { in: [...] } } } }).
+        const wrap = (clause: Record<string, unknown>): Record<string, unknown> =>
+            config.relationField
+                ? { [config.relationField]: { some: clause } }
+                : clause
+
         if (config.multiSelect) {
             // Map the special token "null" to a real null and build appropriate clause
             const mapped = values.map((v) => (v === "null" ? null : v))
@@ -55,25 +62,25 @@ export const SelectFilterStrategy: FilterStrategy<unknown, SelectFilterConfig<un
             const hasNull = mapped.some((v) => v === null)
 
             if (hasNull && nonNullValues.length > 0) {
-                return {
+                return wrap({
                     OR: [
                         { [config.property]: { in: nonNullValues } },
                         { [config.property]: { equals: null } }
                     ]
-                }
+                })
             }
 
             if (hasNull) {
-                return { [config.property]: { equals: null } }
+                return wrap({ [config.property]: { equals: null } })
             }
 
-            return nonNullValues.length > 0 ? { [config.property]: { in: nonNullValues } } : {}
+            return nonNullValues.length > 0 ? wrap({ [config.property]: { in: nonNullValues } }) : {}
         }
 
         // single-select
         if (value === "null") {
-            return { [config.property]: { equals: null } }
+            return wrap({ [config.property]: { equals: null } })
         }
-        return { [config.property]: { equals: value } }
+        return wrap({ [config.property]: { equals: value } })
     }
 }

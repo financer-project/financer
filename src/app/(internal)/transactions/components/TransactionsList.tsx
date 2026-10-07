@@ -65,6 +65,7 @@ export const TransactionsList = withFormatters(({
             type: "select",
             label: "Tag",
             property: "tagId",
+            relationField: "tags",
             multiSelect: true,
             options: tags.map((tag) => ({ label: tag.name, value: tag.id }))
         },
